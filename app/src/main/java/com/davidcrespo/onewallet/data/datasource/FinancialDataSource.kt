@@ -1,7 +1,7 @@
-package com.davidcrespo.onewallet.data.remote
+package com.davidcrespo.onewallet.data.datasource
 
 import com.davidcrespo.onewallet.data.models.PriceResponse
-
+import com.davidcrespo.onewallet.data.remote.ApiClient
 
 class FinancialDataSource {
 

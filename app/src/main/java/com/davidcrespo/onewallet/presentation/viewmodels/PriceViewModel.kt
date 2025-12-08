@@ -2,7 +2,7 @@ package com.davidcrespo.onewallet.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.davidcrespo.onewallet.data.remote.FinancialDataSource
+import com.davidcrespo.onewallet.data.datasource.FinancialDataSource
 import com.davidcrespo.onewallet.data.repository.FinancialRepositoryImpl
 import com.davidcrespo.onewallet.domain.usecase.GetPriceUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
