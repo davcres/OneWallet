@@ -17,13 +17,10 @@ class PriceViewModel : ViewModel() {
     // This should be injected with a DI framework like Hilt
     private val getPriceUseCase = GetPriceUseCase(FinancialRepositoryImpl(FinancialDataSource()))
 
-    init {
-        getPrice()
-    }
 
-    private fun getPrice() {
+    fun getPrice(symbol: String) {
         viewModelScope.launch {
-            val result = getPriceUseCase()
+            val result = getPriceUseCase(symbol)
             result.onSuccess {
                 _priceState.value = "$${it.price}"
             }.onFailure {

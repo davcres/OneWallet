@@ -5,6 +5,14 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
 }
 
+// Intentamos leer primero de secrets.properties (root extra), luego de env var (para CI)
+val apiKey: String = (rootProject.extra["TWELVE_DATA_API_KEY"] as? String)
+    ?: System.getenv("TWELVE_DATA_API_KEY")
+    ?: throw GradleException(
+        "TWELVE_DATA_API_KEY not set. " +
+                "Add it to secrets.properties (root) or as env var TWELVE_DATA_API_KEY"
+    )
+
 android {
     namespace = "com.davidcrespo.onewallet"
     compileSdk {
@@ -19,6 +27,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "TWELVE_DATA_API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -39,6 +49,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

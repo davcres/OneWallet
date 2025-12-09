@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.data.remote
 
+import com.davidcrespo.onewallet.BuildConfig
 import com.davidcrespo.onewallet.data.models.PriceResponse
 import io.ktor.client.*
 import io.ktor.client.call.body
@@ -30,10 +31,10 @@ object ApiClient {
         }
     }
 
-    suspend fun getPrice(): PriceResponse {
+    suspend fun getPrice(symbol: String): PriceResponse {
         return client.get("price") {
-            parameter("symbol", "AAPL")
-            parameter("apikey", "d1cb7e42e33b44d4a73e2e1927a6372c")
+            parameter("symbol", symbol)
+            parameter("apikey", BuildConfig.TWELVE_DATA_API_KEY)
         }.body()
     }
 }

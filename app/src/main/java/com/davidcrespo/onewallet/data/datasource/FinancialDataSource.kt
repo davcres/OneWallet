@@ -5,7 +5,7 @@ import com.davidcrespo.onewallet.data.remote.ApiClient
 
 class FinancialDataSource {
 
-    suspend fun getPrice(): PriceResponse {
-        return ApiClient.getPrice()
+    suspend fun getPrice(symbol: String): PriceResponse {
+        return ApiClient.getPrice(symbol)
     }
 }
