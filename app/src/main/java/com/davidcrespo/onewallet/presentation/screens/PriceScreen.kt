@@ -12,11 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.davidcrespo.onewallet.presentation.viewmodels.PriceViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PriceScreen(
     modifier: Modifier = Modifier,
-    viewModel: PriceViewModel = viewModel()
+    viewModel: PriceViewModel = koinViewModel()
 ) {
     val price by viewModel.priceState.collectAsState()
 

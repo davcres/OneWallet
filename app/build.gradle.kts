@@ -29,6 +29,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "TWELVE_DATA_API_KEY", "\"$apiKey\"")
+        buildConfigField("String", "BASE_URL", "\"api.twelvedata.com\"")
     }
 
     buildTypes {
@@ -72,8 +73,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // Ktor
-    implementation("io.ktor:ktor-client-core:2.3.10")
-    implementation("io.ktor:ktor-client-cio:2.3.10")
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.10")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.10")
+    implementation(libs.bundles.ktor)
+
+    // Koin
+    implementation(libs.bundles.koin)
 }
