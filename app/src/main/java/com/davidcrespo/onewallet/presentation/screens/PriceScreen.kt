@@ -1,16 +1,15 @@
 package com.davidcrespo.onewallet.presentation.screens
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.davidcrespo.onewallet.presentation.viewmodels.PriceViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -20,14 +19,19 @@ fun PriceScreen(
     viewModel: PriceViewModel = koinViewModel()
 ) {
     val price by viewModel.priceState.collectAsState()
-
-    val currentSymbol = rememberUpdatedState("AAPL")
+    val quote by viewModel.quoteState.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.getPrice(currentSymbol.value)
+        viewModel.getPrice("AAPL")
+        viewModel.getQuote("GOOGL")
     }
 
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = price)
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = "Twelve Data: $price")
+        Text(text = "Finnhub: $quote")
     }
 }

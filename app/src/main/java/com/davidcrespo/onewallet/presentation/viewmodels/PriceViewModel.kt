@@ -22,4 +22,18 @@ class PriceViewModel(private val getPriceUseCase: GetPriceUseCase) : ViewModel()
             }
         }
     }
+
+    private val _quoteState = MutableStateFlow<String>("Loading...")
+    val quoteState = _quoteState.asStateFlow()
+
+    fun getQuote(symbol: String) {
+        viewModelScope.launch {
+            val result = getPriceUseCase(symbol)
+            result.onSuccess {
+                _quoteState.value = "$${it.price}"
+            }.onFailure {
+                _quoteState.value = "Error: ${it.message}"
+            }
+        }
+    }
 }

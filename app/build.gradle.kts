@@ -6,11 +6,17 @@ plugins {
 }
 
 // Intentamos leer primero de secrets.properties (root extra), luego de env var (para CI)
-val apiKey: String = (rootProject.extra["TWELVE_DATA_API_KEY"] as? String)
+val twelveDataApiKey: String = (rootProject.extra["TWELVE_DATA_API_KEY"] as? String)
     ?: System.getenv("TWELVE_DATA_API_KEY")
     ?: throw GradleException(
         "TWELVE_DATA_API_KEY not set. " +
                 "Add it to secrets.properties (root) or as env var TWELVE_DATA_API_KEY"
+    )
+val finnhubApiKey: String = (rootProject.extra["FINNHUB_API_KEY"] as? String)
+    ?: System.getenv("FINNHUB_API_KEY")
+    ?: throw GradleException(
+        "FINNHUB_API_KEY not set. " +
+                "Add it to secrets.properties (root) or as env var FINNHUB_API_KEY"
     )
 
 android {
@@ -28,8 +34,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "TWELVE_DATA_API_KEY", "\"$apiKey\"")
-        buildConfigField("String", "BASE_URL", "\"api.twelvedata.com\"")
+        buildConfigField("String", "TWELVE_DATA_API_KEY", "\"$twelveDataApiKey\"")
+        buildConfigField("String", "FINNHUB_API_KEY", "\"$finnhubApiKey\"")
+        buildConfigField("String", "TWELVE_DATA_BASE_URL", "\"api.twelvedata.com\"")
+        buildConfigField("String", "FINNHUB_BASE_URL", "\"finnhub.io/api/v1\"")
     }
 
     buildTypes {
