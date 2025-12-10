@@ -27,6 +27,18 @@ class PriceViewModel(
             is PriceIntent.LoadInitialData -> loadInitialData()
             is PriceIntent.SearchQueryChanged -> updateSearchQuery(intent.query)
             is PriceIntent.SelectSymbol -> selectSymbol(intent.symbol)
+            is PriceIntent.MoveSymbol -> moveSymbol(intent.fromIndex, intent.toIndex)
+        }
+    }
+
+    private fun moveSymbol(fromIndex: Int, toIndex: Int) {
+        _uiState.update { currentState ->
+            val mutableList = currentState.selectedSymbols.toMutableList()
+            if (fromIndex in mutableList.indices && toIndex in mutableList.indices) {
+                val item = mutableList.removeAt(fromIndex)
+                mutableList.add(toIndex, item)
+            }
+            currentState.copy(selectedSymbols = mutableList)
         }
     }
 
@@ -44,7 +56,18 @@ class PriceViewModel(
     }
 
     private fun selectSymbol(symbol: StockInfo) {
-        updateSearchQuery(symbol.displaySymbol)
+        _uiState.update { currentState ->
+            val newList = if (currentState.selectedSymbols.any { it.displaySymbol == symbol.displaySymbol }) {
+                currentState.selectedSymbols
+            } else {
+                currentState.selectedSymbols + symbol
+            }
+            currentState.copy(
+                selectedSymbols = newList,
+                searchQuery = "",
+                filteredSymbols = emptyList()
+            )
+        }
         // Optionally fetch price/quote for selected symbol here if desired
     }
 
