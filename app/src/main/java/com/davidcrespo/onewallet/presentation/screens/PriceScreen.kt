@@ -20,8 +20,10 @@ fun PriceScreen(
 ) {
     val price by viewModel.priceState.collectAsState()
     val quote by viewModel.quoteState.collectAsState()
+    val symbols by viewModel.symbolsState.collectAsState()
 
     LaunchedEffect(Unit) {
+        viewModel.getSymbols("US")
         viewModel.getPrice("AAPL")
         viewModel.getQuote("GOOGL")
     }

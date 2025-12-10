@@ -1,6 +1,6 @@
 package com.davidcrespo.onewallet.domain.usecase
 
-import com.davidcrespo.onewallet.domain.model.Quote
+import com.davidcrespo.onewallet.domain.model.finnhub.Quote
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 
 class GetQuoteUseCase(private val repository: FinancialRepository) {

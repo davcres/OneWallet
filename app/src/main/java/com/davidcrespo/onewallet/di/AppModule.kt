@@ -9,6 +9,7 @@ import com.davidcrespo.onewallet.data.repository.FinancialRepositoryImpl
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.usecase.GetPriceUseCase
 import com.davidcrespo.onewallet.domain.usecase.GetQuoteUseCase
+import com.davidcrespo.onewallet.domain.usecase.GetSymbolsUseCase
 import com.davidcrespo.onewallet.presentation.viewmodels.PriceViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -63,6 +64,7 @@ val appModule = module {
     single<FinancialRepository> { FinancialRepositoryImpl(get(), get()) }
 
     single { GetPriceUseCase(get()) }
+    single { GetSymbolsUseCase(get()) }
     single { GetQuoteUseCase(get()) }
 
     viewModelOf(::PriceViewModel)

@@ -1,11 +1,13 @@
 package com.davidcrespo.onewallet.data.repository
 
 import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubDataSource
+import com.davidcrespo.onewallet.data.remote.finnhub.models.StockInfoResponse
 import com.davidcrespo.onewallet.data.remote.finnhub.models.toDomain
 import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.twelveData.models.toDomain
-import com.davidcrespo.onewallet.domain.model.Price
-import com.davidcrespo.onewallet.domain.model.Quote
+import com.davidcrespo.onewallet.domain.model.twelveData.Price
+import com.davidcrespo.onewallet.domain.model.finnhub.Quote
+import com.davidcrespo.onewallet.domain.model.finnhub.StockInfo
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 
 class FinancialRepositoryImpl(
@@ -16,6 +18,15 @@ class FinancialRepositoryImpl(
         return try {
             val priceResponse = twelveDataDataSource.getPrice(symbol)
             Result.success(priceResponse.toDomain())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getSymbols(exchange: String): Result<List<StockInfo>> {
+        return try {
+            val quoteResponse = finnhubDataSource.getSymbols(exchange)
+            Result.success(quoteResponse.map { it.toDomain() })
         } catch (e: Exception) {
             Result.failure(e)
         }

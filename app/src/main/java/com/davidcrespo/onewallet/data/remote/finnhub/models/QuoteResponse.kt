@@ -1,6 +1,6 @@
 package com.davidcrespo.onewallet.data.remote.finnhub.models
 
-import com.davidcrespo.onewallet.domain.model.Quote
+import com.davidcrespo.onewallet.domain.model.finnhub.Quote
 import kotlinx.serialization.Serializable
 
 @Serializable

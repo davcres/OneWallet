@@ -2,14 +2,21 @@ package com.davidcrespo.onewallet.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.davidcrespo.onewallet.domain.model.finnhub.StockInfo
 import com.davidcrespo.onewallet.domain.usecase.GetPriceUseCase
+import com.davidcrespo.onewallet.domain.usecase.GetQuoteUseCase
+import com.davidcrespo.onewallet.domain.usecase.GetSymbolsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class PriceViewModel(private val getPriceUseCase: GetPriceUseCase) : ViewModel() {
+class PriceViewModel(
+    private val getPriceUseCase: GetPriceUseCase,
+    private val getSymbolsUseCase: GetSymbolsUseCase,
+    private val getQuoteUseCase: GetQuoteUseCase,
+) : ViewModel() {
 
-    private val _priceState = MutableStateFlow<String>("Loading...")
+    private val _priceState = MutableStateFlow("Loading...")
     val priceState = _priceState.asStateFlow()
 
     fun getPrice(symbol: String) {
@@ -23,14 +30,28 @@ class PriceViewModel(private val getPriceUseCase: GetPriceUseCase) : ViewModel()
         }
     }
 
-    private val _quoteState = MutableStateFlow<String>("Loading...")
+    private val _symbolsState = MutableStateFlow<List<StockInfo>>(emptyList())
+    val symbolsState = _symbolsState.asStateFlow()
+
+    fun getSymbols(exchange: String) {
+        viewModelScope.launch {
+            val result = getSymbolsUseCase(exchange)
+            result.onSuccess {
+                _symbolsState.value = it
+            }.onFailure {
+                _symbolsState.value = emptyList()
+            }
+        }
+    }
+
+    private val _quoteState = MutableStateFlow("Loading...")
     val quoteState = _quoteState.asStateFlow()
 
     fun getQuote(symbol: String) {
         viewModelScope.launch {
-            val result = getPriceUseCase(symbol)
+            val result = getQuoteUseCase(symbol)
             result.onSuccess {
-                _quoteState.value = "$${it.price}"
+                _quoteState.value = "$${it.currentPrice}"
             }.onFailure {
                 _quoteState.value = "Error: ${it.message}"
             }
