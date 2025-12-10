@@ -6,26 +6,36 @@ import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.rounded.DragHandle
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
@@ -42,10 +52,13 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.davidcrespo.onewallet.domain.model.PortfolioItem
@@ -99,8 +112,15 @@ fun PriceScreen(
                     expanded = true
                 },
                 label = { Text("Buscar símbolo") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Search,
+                        contentDescription = "Buscar"
+                    )
+                },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor()
@@ -109,20 +129,47 @@ fun PriceScreen(
             if (uiState.filteredSymbols.isNotEmpty()) {
                 ExposedDropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
                 ) {
                     uiState.filteredSymbols.take(50).forEach { symbol ->
                         DropdownMenuItem(
                             text = {
-                                Column {
-                                    Text(
-                                        text = symbol.displaySymbol,
-                                        style = MaterialTheme.typography.titleSmall
-                                    )
-                                    Text(
-                                        text = symbol.description,
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Surface(
+                                        shape = CircleShape,
+                                        color = MaterialTheme.colorScheme.surfaceVariant,
+                                        modifier = Modifier.size(32.dp)
+                                    ) {
+                                        Box(contentAlignment = Alignment.Center) {
+                                            Text(
+                                                text = symbol.displaySymbol.firstOrNull()?.toString() ?: "?",
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.width(12.dp))
+
+                                    Column {
+                                        Text(
+                                            text = symbol.displaySymbol,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Text(
+                                            text = symbol.description,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
                                 }
                             },
                             onClick = {
@@ -145,8 +192,8 @@ fun PriceScreen(
 
         LazyColumn(
             state = listState,
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(12.dp) // Increased spacing for cards
         ) {
             itemsIndexed(items = uiState.portfolioItems, key = { _, item -> item.stockInfo.displaySymbol }) { index, portfolioItem ->
                 val currentItemIndex by rememberUpdatedState(index)
@@ -169,7 +216,7 @@ fun PriceScreen(
                     state = dismissState,
                     backgroundContent = {
                         val color = if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
-                            Color.Red
+                            Color.Red.copy(alpha = 0.8f)
                         } else {
                             Color.Transparent
                         }
@@ -177,6 +224,7 @@ fun PriceScreen(
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
+                                .clip(RoundedCornerShape(12.dp)) // Match card shape
                                 .background(color)
                                 .padding(horizontal = 20.dp),
                             contentAlignment = Alignment.CenterEnd
@@ -189,17 +237,8 @@ fun PriceScreen(
                         }
                     },
                     content = {
-                        ListItem(
-                            headlineContent = { Text(portfolioItem.stockInfo.displaySymbol) },
-                            supportingContent = {
-                                Column {
-                                    Text(portfolioItem.stockInfo.description)
-                                    Text("Qty: ${portfolioItem.quantity}")
-                                }
-                            },
-                            trailingContent = { Text(portfolioItem.stockInfo.currency) },
-                            tonalElevation = if (isDragging) 8.dp else 2.dp,
-                            shadowElevation = if (isDragging) 8.dp else 2.dp,
+                        PortfolioItemCard(
+                            item = portfolioItem,
                             modifier = Modifier
                                 .graphicsLayer {
                                     translationY = if (isDragging) draggingItemOffset else 0f
@@ -254,9 +293,92 @@ fun PriceScreen(
                                 }
                         )
                     },
-                    modifier = Modifier.zIndex(zIndex) // Apply zIndex to SwipeBox
+                    modifier = Modifier.zIndex(zIndex)
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun PortfolioItemCard(
+    item: PortfolioItem,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Avatar / Icon
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                modifier = Modifier.size(40.dp)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(
+                        text = item.stockInfo.displaySymbol.firstOrNull()?.toString() ?: "?",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            // Main Info
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = item.stockInfo.displaySymbol,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = item.stockInfo.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            // Quantity & Badge
+            Column(horizontalAlignment = Alignment.End) {
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                ) {
+                    Text(
+                        text = "x ${item.quantity}",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                    )
+                }
+                Text(
+                    text = item.stockInfo.currency,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(8.dp))
+            
+            // Drag Handle Indicator
+            Icon(
+                imageVector = Icons.Rounded.DragHandle,
+                contentDescription = "Reorder",
+                tint = MaterialTheme.colorScheme.outlineVariant
+            )
         }
     }
 }
@@ -280,7 +402,10 @@ fun QuantityDialog(
                     onValueChange = { text = it },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
-                    modifier = Modifier.padding(top = 8.dp)
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
                 )
             }
         },
