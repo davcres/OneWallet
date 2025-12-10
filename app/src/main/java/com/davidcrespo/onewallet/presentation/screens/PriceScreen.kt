@@ -35,6 +35,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -62,22 +63,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.davidcrespo.onewallet.domain.model.PortfolioItem
+import com.davidcrespo.onewallet.domain.model.finnhub.StockInfo
 import com.davidcrespo.onewallet.presentation.contract.PriceIntent
 import com.davidcrespo.onewallet.presentation.viewmodels.PriceViewModel
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PriceScreen(
     modifier: Modifier = Modifier,
     viewModel: PriceViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    var expanded by remember { mutableStateOf(false) }
-
-    val listState = rememberLazyListState()
-    var draggingItemIndex by remember { mutableStateOf<Int?>(null) }
-    var draggingItemOffset by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(Unit) {
         viewModel.handleIntent(PriceIntent.LoadInitialData)
@@ -100,87 +96,12 @@ fun PriceScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = it },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                value = uiState.searchQuery,
-                onValueChange = {
-                    viewModel.handleIntent(PriceIntent.SearchQueryChanged(it))
-                    expanded = true
-                },
-                label = { Text("Buscar símbolo") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Search,
-                        contentDescription = "Buscar"
-                    )
-                },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor()
-            )
-
-            if (uiState.filteredSymbols.isNotEmpty()) {
-                ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
-                ) {
-                    uiState.filteredSymbols.take(50).forEach { symbol ->
-                        DropdownMenuItem(
-                            text = {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Surface(
-                                        shape = CircleShape,
-                                        color = MaterialTheme.colorScheme.surfaceVariant,
-                                        modifier = Modifier.size(32.dp)
-                                    ) {
-                                        Box(contentAlignment = Alignment.Center) {
-                                            Text(
-                                                text = symbol.displaySymbol.firstOrNull()?.toString() ?: "?",
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                fontWeight = FontWeight.Bold,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            )
-                                        }
-                                    }
-
-                                    Spacer(modifier = Modifier.width(12.dp))
-
-                                    Column {
-                                        Text(
-                                            text = symbol.displaySymbol,
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = symbol.description,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                    }
-                                }
-                            },
-                            onClick = {
-                                viewModel.handleIntent(PriceIntent.SelectSymbol(symbol))
-                                expanded = false
-                            }
-                        )
-                    }
-                }
-            }
-        }
+        StockSearchBar(
+            query = uiState.searchQuery,
+            onQueryChange = { viewModel.handleIntent(PriceIntent.SearchQueryChanged(it)) },
+            filteredSymbols = uiState.filteredSymbols,
+            onSymbolSelected = { viewModel.handleIntent(PriceIntent.SelectSymbol(it)) }
+        )
 
         HorizontalDivider()
 
@@ -190,112 +111,222 @@ fun PriceScreen(
             modifier = Modifier.align(Alignment.Start)
         )
 
-        LazyColumn(
-            state = listState,
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp) // Increased spacing for cards
-        ) {
-            itemsIndexed(items = uiState.portfolioItems, key = { _, item -> item.stockInfo.displaySymbol }) { index, portfolioItem ->
-                val currentItemIndex by rememberUpdatedState(index)
-                val isDragging = index == draggingItemIndex
-                val zIndex = if (isDragging) 1f else 0f
-                val scale = if (isDragging) 1.05f else 1f
+        PortfolioList(
+            items = uiState.portfolioItems,
+            onMove = { from, to -> viewModel.handleIntent(PriceIntent.MoveSymbol(from, to)) },
+            onRemove = { viewModel.handleIntent(PriceIntent.RemoveItem(it)) },
+            onEdit = { viewModel.handleIntent(PriceIntent.EditQuantity(it)) }
+        )
+    }
+}
 
-                val dismissState = rememberSwipeToDismissBoxState(
-                    confirmValueChange = {
-                        if (it == SwipeToDismissBoxValue.EndToStart) {
-                            viewModel.handleIntent(PriceIntent.RemoveItem(portfolioItem))
-                            true
-                        } else {
-                            false
-                        }
-                    }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun StockSearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    filteredSymbols: List<StockInfo>,
+    onSymbolSelected: (StockInfo) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        modifier = modifier.fillMaxWidth()
+    ) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = {
+                onQueryChange(it)
+                expanded = true
+            },
+            label = { Text("Buscar símbolo") },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Rounded.Search,
+                    contentDescription = "Buscar"
                 )
+            },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor()
+        )
 
-                SwipeToDismissBox(
-                    state = dismissState,
-                    backgroundContent = {
-                        val color = if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
-                            Color.Red.copy(alpha = 0.8f)
-                        } else {
-                            Color.Transparent
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(RoundedCornerShape(12.dp)) // Match card shape
-                                .background(color)
-                                .padding(horizontal = 20.dp),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Borrar",
-                                tint = Color.White
-                            )
-                        }
-                    },
-                    content = {
-                        PortfolioItemCard(
-                            item = portfolioItem,
-                            modifier = Modifier
-                                .graphicsLayer {
-                                    translationY = if (isDragging) draggingItemOffset else 0f
-                                    scaleX = scale
-                                    scaleY = scale
+        if (filteredSymbols.isNotEmpty()) {
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
+            ) {
+                filteredSymbols.take(50).forEach { symbol ->
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Surface(
+                                    shape = CircleShape,
+                                    color = MaterialTheme.colorScheme.surfaceVariant,
+                                    modifier = Modifier.size(32.dp)
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Text(
+                                            text = symbol.displaySymbol.firstOrNull()?.toString() ?: "?",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
                                 }
-                                .clickable { viewModel.handleIntent(PriceIntent.EditQuantity(portfolioItem)) }
-                                .pointerInput(Unit) {
-                                    detectDragGesturesAfterLongPress(
-                                        onDragStart = {
-                                            draggingItemIndex = currentItemIndex
-                                            draggingItemOffset = 0f
-                                        },
-                                        onDrag = { change, dragAmount ->
-                                            change.consume()
-                                            draggingItemOffset += dragAmount.y
 
-                                            val currentDraggingIndex = draggingItemIndex ?: return@detectDragGesturesAfterLongPress
-                                            val currentItemInfo = listState.layoutInfo.visibleItemsInfo
-                                                .find { it.index == currentDraggingIndex } ?: return@detectDragGesturesAfterLongPress
+                                Spacer(modifier = Modifier.width(12.dp))
 
-                                            val currentItemCenter = currentItemInfo.offset + currentItemInfo.size / 2
-                                            val dragOffsetAbsolute = currentItemCenter + draggingItemOffset
-
-                                            // Find the item we are hovering over
-                                            val targetItem = listState.layoutInfo.visibleItemsInfo.find { itemInfo ->
-                                                itemInfo.index != currentDraggingIndex &&
-                                                        dragOffsetAbsolute > itemInfo.offset &&
-                                                        dragOffsetAbsolute < (itemInfo.offset + itemInfo.size)
-                                            }
-
-                                            if (targetItem != null) {
-                                                val targetIndex = targetItem.index
-                                                // Trigger the move
-                                                viewModel.handleIntent(PriceIntent.MoveSymbol(currentDraggingIndex, targetIndex))
-                                                // Update the tracking index to the new position
-                                                draggingItemIndex = targetIndex
-
-                                                val distance = targetItem.offset - currentItemInfo.offset
-                                                draggingItemOffset -= distance
-                                            }
-                                        },
-                                        onDragEnd = {
-                                            draggingItemIndex = null
-                                            draggingItemOffset = 0f
-                                        },
-                                        onDragCancel = {
-                                            draggingItemIndex = null
-                                            draggingItemOffset = 0f
-                                        }
+                                Column {
+                                    Text(
+                                        text = symbol.displaySymbol,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = symbol.description,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 }
-                        )
-                    },
-                    modifier = Modifier.zIndex(zIndex)
-                )
+                            }
+                        },
+                        onClick = {
+                            onSymbolSelected(symbol)
+                            expanded = false
+                        }
+                    )
+                }
             }
+        }
+    }
+}
+
+@Composable
+private fun PortfolioList(
+    items: List<PortfolioItem>,
+    onMove: (Int, Int) -> Unit,
+    onRemove: (PortfolioItem) -> Unit,
+    onEdit: (PortfolioItem) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val listState = rememberLazyListState()
+    var draggingItemIndex by remember { mutableStateOf<Int?>(null) }
+    var draggingItemOffset by remember { mutableFloatStateOf(0f) }
+
+    LazyColumn(
+        state = listState,
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        itemsIndexed(items = items, key = { _, item -> item.stockInfo.displaySymbol }) { index, portfolioItem ->
+            val currentItemIndex by rememberUpdatedState(index)
+            val isDragging = index == draggingItemIndex
+            val zIndex = if (isDragging) 1f else 0f
+            val scale = if (isDragging) 1.05f else 1f
+
+            val dismissState = rememberSwipeToDismissBoxState(
+                confirmValueChange = {
+                    if (it == SwipeToDismissBoxValue.EndToStart) {
+                        onRemove(portfolioItem)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            )
+
+            SwipeToDismissBox(
+                state = dismissState,
+                backgroundContent = {
+                    val color = if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
+                        Color.Red.copy(alpha = 0.8f)
+                    } else {
+                        Color.Transparent
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(color)
+                            .padding(horizontal = 20.dp),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Borrar",
+                            tint = Color.White
+                        )
+                    }
+                },
+                content = {
+                    PortfolioItemCard(
+                        item = portfolioItem,
+                        modifier = Modifier
+                            .graphicsLayer {
+                                translationY = if (isDragging) draggingItemOffset else 0f
+                                scaleX = scale
+                                scaleY = scale
+                            }
+                            .clickable { onEdit(portfolioItem) }
+                            .pointerInput(Unit) {
+                                detectDragGesturesAfterLongPress(
+                                    onDragStart = {
+                                        draggingItemIndex = currentItemIndex
+                                        draggingItemOffset = 0f
+                                    },
+                                    onDrag = { change, dragAmount ->
+                                        change.consume()
+                                        draggingItemOffset += dragAmount.y
+
+                                        val currentDraggingIndex = draggingItemIndex ?: return@detectDragGesturesAfterLongPress
+                                        val currentItemInfo = listState.layoutInfo.visibleItemsInfo
+                                            .find { it.index == currentDraggingIndex } ?: return@detectDragGesturesAfterLongPress
+
+                                        val currentItemCenter = currentItemInfo.offset + currentItemInfo.size / 2
+                                        val dragOffsetAbsolute = currentItemCenter + draggingItemOffset
+
+                                        val targetItem = listState.layoutInfo.visibleItemsInfo.find { itemInfo ->
+                                            itemInfo.index != currentDraggingIndex &&
+                                                    dragOffsetAbsolute > itemInfo.offset &&
+                                                    dragOffsetAbsolute < (itemInfo.offset + itemInfo.size)
+                                        }
+
+                                        if (targetItem != null) {
+                                            val targetIndex = targetItem.index
+                                            onMove(currentDraggingIndex, targetIndex)
+                                            draggingItemIndex = targetIndex
+                                            val distance = targetItem.offset - currentItemInfo.offset
+                                            draggingItemOffset -= distance
+                                        }
+                                    },
+                                    onDragEnd = {
+                                        draggingItemIndex = null
+                                        draggingItemOffset = 0f
+                                    },
+                                    onDragCancel = {
+                                        draggingItemIndex = null
+                                        draggingItemOffset = 0f
+                                    }
+                                )
+                            }
+                    )
+                },
+                modifier = Modifier.zIndex(zIndex)
+            )
         }
     }
 }
@@ -317,7 +348,6 @@ fun PortfolioItemCard(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Avatar / Icon
             Surface(
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.primaryContainer,
@@ -334,7 +364,6 @@ fun PortfolioItemCard(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Main Info
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = item.stockInfo.displaySymbol,
@@ -350,7 +379,6 @@ fun PortfolioItemCard(
                 )
             }
 
-            // Quantity & Badge
             Column(horizontalAlignment = Alignment.End) {
                 Surface(
                     shape = RoundedCornerShape(8.dp),
@@ -373,7 +401,6 @@ fun PortfolioItemCard(
             
             Spacer(modifier = Modifier.width(8.dp))
             
-            // Drag Handle Indicator
             Icon(
                 imageVector = Icons.Rounded.DragHandle,
                 contentDescription = "Reorder",
