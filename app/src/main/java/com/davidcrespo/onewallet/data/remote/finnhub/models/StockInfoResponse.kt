@@ -22,5 +22,6 @@ fun StockInfoResponse.toDomain() = StockInfo(
     description = description,
     displaySymbol = displaySymbol,
     figi = figi,
+    isin = isin,
     type = type
 )
