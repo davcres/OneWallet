@@ -22,7 +22,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.presentation.contract.PriceIntent
+import com.davidcrespo.onewallet.presentation.screens.components.ExpandableFab
 import com.davidcrespo.onewallet.presentation.screens.components.PortfolioList
+import com.davidcrespo.onewallet.presentation.screens.components.dialogs.BankDepositDialog
 import com.davidcrespo.onewallet.presentation.screens.components.dialogs.StockDetailDialog
 import com.davidcrespo.onewallet.presentation.viewmodels.PriceViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -84,6 +86,13 @@ fun PriceScreen(
             )
         }
 
+        // Floating Action Button
+        ExpandableFab(
+            onAddInvestmentClick = { /* TODO: Show search bar */ },
+            onAddBankClick = { viewModel.handleIntent(PriceIntent.ShowBankDialog) },
+            modifier = Modifier.align(Alignment.BottomEnd)
+        )
+
         if (uiState.isLoading) {
             Box(
                 modifier = Modifier
@@ -96,12 +105,23 @@ fun PriceScreen(
             }
         }
 
+        // Edit Quantity Dialog
         if (uiState.editingItem != null) {
             StockDetailDialog(
                 item = uiState.editingItem!!,
                 onDismiss = { viewModel.handleIntent(PriceIntent.EditQuantity(null)) },
                 onConfirmQuantity = { quantity ->
                     viewModel.handleIntent(PriceIntent.UpdateQuantity(uiState.editingItem!!, quantity))
+                }
+            )
+        }
+
+        // Add Bank/Deposit Dialog
+        if (uiState.isBankDialogVisible) {
+            BankDepositDialog(
+                onDismiss = { viewModel.handleIntent(PriceIntent.DismissBankDialog) },
+                onConfirm = { name, amount ->
+                    viewModel.handleIntent(PriceIntent.AddBankItem(name, amount))
                 }
             )
         }

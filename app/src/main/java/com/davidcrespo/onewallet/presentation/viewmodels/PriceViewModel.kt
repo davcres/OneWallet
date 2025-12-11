@@ -21,6 +21,7 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 import kotlinx.coroutines.flow.combine
+import java.util.UUID
 
 class PriceViewModel(
     private val getPriceUseCase: GetPriceUseCase,
@@ -44,7 +45,12 @@ class PriceViewModel(
                 _prices
             ) { items, prices ->
                 items.map { item ->
-                    item.copy(currentPrice = prices[item.stockInfo.displaySymbol])
+                    if (item.stockInfo.type == "CASH") {
+                        // Cash items always have a price of 1.0 (currency unit)
+                        item.copy(currentPrice = 1.0)
+                    } else {
+                        item.copy(currentPrice = prices[item.stockInfo.displaySymbol])
+                    }
                 }
             }.collect { mappedItems ->
                 val totalValue = mappedItems.sumOf { 
@@ -63,7 +69,11 @@ class PriceViewModel(
     }
 
     private fun fetchPricesForItems(items: List<PortfolioItem>) {
-        val symbolsToFetch = items.map { it.stockInfo.displaySymbol }.distinct()
+        // Filter out CASH items, we don't fetch quotes for them
+        val symbolsToFetch = items
+            .filter { it.stockInfo.type != "CASH" }
+            .map { it.stockInfo.displaySymbol }
+            .distinct()
         
         viewModelScope.launch {
             val currentMap = _prices.value
@@ -93,6 +103,27 @@ class PriceViewModel(
             is PriceIntent.EditQuantity -> _uiState.update { it.copy(editingItem = intent.item) }
             is PriceIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity)
             is PriceIntent.RemoveItem -> removeItem(intent.item)
+            
+            is PriceIntent.ShowBankDialog -> _uiState.update { it.copy(isBankDialogVisible = true) }
+            is PriceIntent.DismissBankDialog -> _uiState.update { it.copy(isBankDialogVisible = false) }
+            is PriceIntent.AddBankItem -> addBankItem(intent.name, intent.amount)
+        }
+    }
+
+    private fun addBankItem(name: String, amount: Double) {
+        viewModelScope.launch {
+            // Create a custom StockInfo for the bank item
+            val bankStockInfo = StockInfo(
+                description = "Efectivo / Banco",
+                displaySymbol = name,
+                currency = "USD", // Or default app currency
+                type = "CASH",
+                figi = "CASH_${UUID.randomUUID()}", // Unique ID
+                isin = ""
+            )
+            
+            addPortfolioItemUseCase(bankStockInfo, amount)
+            _uiState.update { it.copy(isBankDialogVisible = false) }
         }
     }
 
