@@ -14,11 +14,7 @@ data class PortfolioItemEntity(
     val isin: String,
     val type: String,
     val quantity: Double,
-    val sortOrder: Int,
-    val dcaAmount: Double,
-    val dcaFrequency: String,
-    val dcaStartDate: Long?,
-    val dcaInitialInvestment: Double
+    val sortOrder: Int
 )
 
 fun PortfolioItemEntity.toDomain() = StockInfo(
@@ -32,11 +28,7 @@ fun PortfolioItemEntity.toDomain() = StockInfo(
 
 fun StockInfo.toEntity(
     quantity: Double,
-    sortOrder: Int,
-    dcaAmount: Double = 0.0,
-    dcaFrequency: String = "Mensual",
-    dcaStartDate: Long? = null,
-    dcaInitialInvestment: Double = 0.0
+    sortOrder: Int
 ) = PortfolioItemEntity(
     displaySymbol = displaySymbol,
     description = description,
@@ -45,9 +37,5 @@ fun StockInfo.toEntity(
     isin = isin,
     type = type,
     quantity = quantity,
-    sortOrder = sortOrder,
-    dcaAmount = dcaAmount,
-    dcaFrequency = dcaFrequency,
-    dcaStartDate = dcaStartDate,
-    dcaInitialInvestment = dcaInitialInvestment
+    sortOrder = sortOrder
 )

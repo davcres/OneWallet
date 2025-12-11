@@ -22,12 +22,5 @@ sealed interface PriceIntent {
     data class MoveSymbol(val fromIndex: Int, val toIndex: Int) : PriceIntent
     data class EditQuantity(val item: PortfolioItem?) : PriceIntent
     data class UpdateQuantity(val item: PortfolioItem, val quantity: Double) : PriceIntent
-    data class UpdateDca(
-        val item: PortfolioItem, 
-        val amount: Double, 
-        val frequency: String,
-        val startDate: Long?,
-        val initialInvestment: Double
-    ) : PriceIntent
     data class RemoveItem(val item: PortfolioItem) : PriceIntent
 }

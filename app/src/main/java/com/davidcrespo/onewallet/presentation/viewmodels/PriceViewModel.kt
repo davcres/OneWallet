@@ -11,7 +11,6 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.AddPortfolioItemUseCas
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.ReorderPortfolioItemsUseCase
-import com.davidcrespo.onewallet.domain.usecase.portfolio.UpdateDcaSettingsUseCase
 import com.davidcrespo.onewallet.presentation.contract.PriceIntent
 import com.davidcrespo.onewallet.presentation.contract.PriceUiState
 import kotlinx.coroutines.Job
@@ -30,8 +29,7 @@ class PriceViewModel(
     private val getPortfolioItemsUseCase: GetPortfolioItemsUseCase,
     private val addPortfolioItemUseCase: AddPortfolioItemUseCase,
     private val reorderPortfolioItemsUseCase: ReorderPortfolioItemsUseCase,
-    private val removePortfolioItemUseCase: RemovePortfolioItemUseCase,
-    private val updateDcaSettingsUseCase: UpdateDcaSettingsUseCase
+    private val removePortfolioItemUseCase: RemovePortfolioItemUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PriceUiState())
@@ -50,11 +48,6 @@ class PriceViewModel(
                 }
             }.collect { mappedItems ->
                 _uiState.update { it.copy(portfolioItems = mappedItems) }
-                // Trigger fetch if we have items without prices or just refresh periodically?
-                // For now, let's trigger fetch whenever the list structure changes significantly,
-                // or we can just fetch for all. To avoid infinite loops (fetch -> update price -> collect),
-                // we only fetch if the symbol isn't in our cache OR we want to force refresh.
-                // Simple strategy: Trigger fetch for all items once they are loaded.
                 fetchPricesForItems(mappedItems)
             }
         }
@@ -62,14 +55,6 @@ class PriceViewModel(
 
     private fun fetchPricesForItems(items: List<PortfolioItem>) {
         val symbolsToFetch = items.map { it.stockInfo.displaySymbol }.distinct()
-        // We could filter out symbols we already have recently fetched to avoid spam,
-        // but for "real-time" feel, fetching is okay.
-        // However, this `collect` block runs every time `_prices` updates too!
-        // We must avoid infinite loop. `_prices` update -> combine -> collect -> fetch -> `_prices` update.
-        // CHECK: We should only fetch if we don't have the price or if explicitly requested.
-        // But the user wants the price.
-        // Better: Launch a separate job to fetch prices that doesn't depend on the `combine` flow directly for triggering.
-        // Or check if cache is missing.
         
         viewModelScope.launch {
             val currentMap = _prices.value
@@ -78,13 +63,8 @@ class PriceViewModel(
             if (missingSymbols.isNotEmpty()) {
                 val newPrices = currentMap.toMutableMap()
                 missingSymbols.forEach { symbol ->
-                    // Launch parallel fetches
                     launch {
                         getQuoteUseCase(symbol).onSuccess { quote ->
-                            // We need to update the map safely. Since we are in main scope/launch,
-                            // we should aggregate or use thread-safe structure.
-                            // Simpler: update state flow individually or batch.
-                            // Let's update _prices StateFlow.
                             _prices.update { it + (symbol to quote.currentPrice) }
                         }.onFailure {
                             // Handle error or ignore
@@ -103,27 +83,7 @@ class PriceViewModel(
             is PriceIntent.MoveSymbol -> moveSymbol(intent.fromIndex, intent.toIndex)
             is PriceIntent.EditQuantity -> _uiState.update { it.copy(editingItem = intent.item) }
             is PriceIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity)
-            is PriceIntent.UpdateDca -> updateDca(
-                intent.item, 
-                intent.amount, 
-                intent.frequency, 
-                intent.startDate, 
-                intent.initialInvestment
-            )
             is PriceIntent.RemoveItem -> removeItem(intent.item)
-        }
-    }
-
-    private fun updateDca(
-        item: PortfolioItem, 
-        amount: Double, 
-        frequency: String,
-        startDate: Long?,
-        initialInvestment: Double
-    ) {
-        viewModelScope.launch {
-            updateDcaSettingsUseCase(item.stockInfo, amount, frequency, startDate, initialInvestment)
-            _uiState.update { it.copy(editingItem = null) }
         }
     }
 
@@ -163,9 +123,6 @@ class PriceViewModel(
         viewModelScope.launch {
             addPortfolioItemUseCase(symbol, 0.0) // Default quantity 0.0
             updateSearchQuery("")
-            // Clear search result/dropdown? The query change above does it if we bind it.
-            // But we also want to close the dropdown if open.
-            // The UI observes searchQuery. If we set it to "", filtered list becomes empty or we handle it.
             _uiState.update { it.copy(filteredSymbols = emptyList()) }
         }
     }
@@ -176,15 +133,6 @@ class PriceViewModel(
             val item = currentList.removeAt(fromIndex)
             currentList.add(toIndex, item)
             
-            // Optimistically update UI (though flow from DB will eventually update it)
-            // Ideally we wait for DB, but for drag and drop responsiveness we might need this.
-            // However, since we observe DB, if we update DB, it will emit new list.
-            // If we update UI manually here, we might get a race condition with DB emission.
-            // BUT, updating DB is async.
-            // For now, let's just launch the reorder usecase.
-            // The UI state update in `moveSymbol` was crucial for the drag animation consistency?
-            // Actually, if we rely on DB flow, there might be a delay.
-            // Let's keep optimistic update but be aware.
             _uiState.update { it.copy(portfolioItems = currentList) }
             
             viewModelScope.launch {

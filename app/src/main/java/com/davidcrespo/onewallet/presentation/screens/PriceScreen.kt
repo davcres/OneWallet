@@ -86,17 +86,6 @@ fun PriceScreen(
                 onDismiss = { viewModel.handleIntent(PriceIntent.EditQuantity(null)) },
                 onConfirmQuantity = { quantity ->
                     viewModel.handleIntent(PriceIntent.UpdateQuantity(uiState.editingItem!!, quantity))
-                },
-                onConfirmDca = { amount, frequency, startDate, initialInvestment ->
-                    viewModel.handleIntent(
-                        PriceIntent.UpdateDca(
-                            uiState.editingItem!!,
-                            amount,
-                            frequency,
-                            startDate,
-                            initialInvestment
-                        )
-                    )
                 }
             )
         }
