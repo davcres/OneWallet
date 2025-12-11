@@ -21,6 +21,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
+import kotlinx.coroutines.flow.combine
+
 class PriceViewModel(
     private val getPriceUseCase: GetPriceUseCase,
     private val getSymbolsUseCase: GetSymbolsUseCase,
@@ -35,10 +37,60 @@ class PriceViewModel(
     private val _uiState = MutableStateFlow(PriceUiState())
     val uiState = _uiState.asStateFlow()
 
+    private val _prices = MutableStateFlow<Map<String, Double>>(emptyMap())
+
     init {
         viewModelScope.launch {
-            getPortfolioItemsUseCase().collect { items ->
-                _uiState.update { it.copy(portfolioItems = items) }
+            combine(
+                getPortfolioItemsUseCase(),
+                _prices
+            ) { items, prices ->
+                items.map { item ->
+                    item.copy(currentPrice = prices[item.stockInfo.displaySymbol])
+                }
+            }.collect { mappedItems ->
+                _uiState.update { it.copy(portfolioItems = mappedItems) }
+                // Trigger fetch if we have items without prices or just refresh periodically?
+                // For now, let's trigger fetch whenever the list structure changes significantly,
+                // or we can just fetch for all. To avoid infinite loops (fetch -> update price -> collect),
+                // we only fetch if the symbol isn't in our cache OR we want to force refresh.
+                // Simple strategy: Trigger fetch for all items once they are loaded.
+                fetchPricesForItems(mappedItems)
+            }
+        }
+    }
+
+    private fun fetchPricesForItems(items: List<PortfolioItem>) {
+        val symbolsToFetch = items.map { it.stockInfo.displaySymbol }.distinct()
+        // We could filter out symbols we already have recently fetched to avoid spam,
+        // but for "real-time" feel, fetching is okay.
+        // However, this `collect` block runs every time `_prices` updates too!
+        // We must avoid infinite loop. `_prices` update -> combine -> collect -> fetch -> `_prices` update.
+        // CHECK: We should only fetch if we don't have the price or if explicitly requested.
+        // But the user wants the price.
+        // Better: Launch a separate job to fetch prices that doesn't depend on the `combine` flow directly for triggering.
+        // Or check if cache is missing.
+        
+        viewModelScope.launch {
+            val currentMap = _prices.value
+            val missingSymbols = symbolsToFetch.filter { !currentMap.containsKey(it) }
+            
+            if (missingSymbols.isNotEmpty()) {
+                val newPrices = currentMap.toMutableMap()
+                missingSymbols.forEach { symbol ->
+                    // Launch parallel fetches
+                    launch {
+                        getQuoteUseCase(symbol).onSuccess { quote ->
+                            // We need to update the map safely. Since we are in main scope/launch,
+                            // we should aggregate or use thread-safe structure.
+                            // Simpler: update state flow individually or batch.
+                            // Let's update _prices StateFlow.
+                            _prices.update { it + (symbol to quote.currentPrice) }
+                        }.onFailure {
+                            // Handle error or ignore
+                        }
+                    }
+                }
             }
         }
     }

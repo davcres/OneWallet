@@ -23,7 +23,8 @@ class PortfolioRepositoryImpl(
                     dcaAmount = entity.dcaAmount,
                     dcaFrequency = entity.dcaFrequency,
                     dcaStartDate = entity.dcaStartDate,
-                    dcaInitialInvestment = entity.dcaInitialInvestment
+                    dcaInitialInvestment = entity.dcaInitialInvestment,
+                    currentPrice = null
                 )
             }
         }

@@ -78,6 +78,8 @@ fun PortfolioItemCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 
+                // if (item.currentPrice != null) block moved to the right Column
+                
                 if (item.dcaAmount > 0.0) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -106,23 +108,39 @@ fun PortfolioItemCard(
             }
 
             Column(horizontalAlignment = Alignment.End) {
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                ) {
+                if (item.currentPrice != null) {
+                    val totalValue = item.quantity * item.currentPrice
                     Text(
-                        text = "x ${item.quantity}",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                        text = "$${String.format("%.2f", totalValue)}", // Main prominent value
+                        style = MaterialTheme.typography.titleMedium, // Or titleSmall
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "${String.format("%.2f", item.quantity)} acciones ${item.stockInfo.currency} @ $${String.format("%.2f", item.currentPrice)}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else {
+                    // Fallback to old quantity display if price not available
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    ) {
+                        Text(
+                            text = "x ${item.quantity}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                        )
+                    }
+                    Text(
+                        text = item.stockInfo.currency, // Currency from stock info, but could be derived from total value.
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.outline
                     )
                 }
-                Text(
-                    text = item.stockInfo.currency,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.outline
-                )
             }
             
             Spacer(modifier = Modifier.width(8.dp))

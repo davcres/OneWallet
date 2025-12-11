@@ -9,5 +9,6 @@ data class PortfolioItem(
     val dcaAmount: Double = 0.0,
     val dcaFrequency: String = "Mensual", // Diario, Semanal, Mensual
     val dcaStartDate: Long? = null,
-    val dcaInitialInvestment: Double = 0.0
+    val dcaInitialInvestment: Double = 0.0,
+    val currentPrice: Double? = null // Transient field, not persisted
 )
