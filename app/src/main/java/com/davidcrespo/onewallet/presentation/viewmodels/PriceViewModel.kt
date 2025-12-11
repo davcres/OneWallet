@@ -47,7 +47,16 @@ class PriceViewModel(
                     item.copy(currentPrice = prices[item.stockInfo.displaySymbol])
                 }
             }.collect { mappedItems ->
-                _uiState.update { it.copy(portfolioItems = mappedItems) }
+                val totalValue = mappedItems.sumOf { 
+                    it.quantity * (it.currentPrice ?: 0.0) 
+                }
+                
+                _uiState.update { 
+                    it.copy(
+                        portfolioItems = mappedItems,
+                        totalBalance = totalValue
+                    ) 
+                }
                 fetchPricesForItems(mappedItems)
             }
         }

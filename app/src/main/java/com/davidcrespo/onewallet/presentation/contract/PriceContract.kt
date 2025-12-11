@@ -9,6 +9,7 @@ data class PriceUiState(
     val symbols: List<StockInfo> = emptyList(),
     val filteredSymbols: List<StockInfo> = emptyList(),
     val portfolioItems: List<PortfolioItem> = emptyList(),
+    val totalBalance: Double = 0.0,
     val searchQuery: String = "",
     val editingItem: PortfolioItem? = null,
     val isLoading: Boolean = true,
