@@ -55,6 +55,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -432,6 +435,17 @@ fun QuantityDialog(
     onConfirm: (Double) -> Unit
 ) {
     var text by remember { mutableStateOf(item.quantity.toString()) }
+    val focusRequester = remember { FocusRequester() }
+    var hasClearedZero by remember { mutableStateOf(false) }
+
+    // Request focus and clear "0.0" if present on initial display
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        if (item.quantity == 0.0) {
+            text = ""
+            hasClearedZero = true // Ensure it's cleared only once on initial focus if 0.0
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -441,21 +455,36 @@ fun QuantityDialog(
                 Text(text = "Introduce la cantidad para ${item.stockInfo.displaySymbol}:")
                 OutlinedTextField(
                     value = text,
-                    onValueChange = { text = it },
+                    onValueChange = { newValue ->
+                        // Allow clearing the text manually, but handle the initial 0.0 clear
+                        text = newValue
+                        if (item.quantity == 0.0 && newValue.isEmpty()) {
+                            hasClearedZero = true // If user manually clears, consider zero cleared.
+                        }
+                    },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp)
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { focusState ->
+                            if (focusState.isFocused && item.quantity == 0.0 && !hasClearedZero) {
+                                text = ""
+                                hasClearedZero = true
+                            }
+                        }
                 )
             }
         },
         confirmButton = {
             Button(
                 onClick = {
-                    text.toDoubleOrNull()?.let { onConfirm(it) }
-                }
+                    val quantity = text.toDoubleOrNull() ?: 0.0 // Default to 0.0 if empty or invalid
+                    onConfirm(quantity)
+                },
+                enabled = text.toDoubleOrNull() != null && text.isNotBlank() // Enable only if valid number
             ) {
                 Text("Guardar")
             }
