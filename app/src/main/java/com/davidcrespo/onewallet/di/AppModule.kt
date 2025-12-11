@@ -33,7 +33,13 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
+import android.content.Context
+
 val appModule = module {
+
+    single {
+        androidContext().getSharedPreferences("onewallet_prefs", Context.MODE_PRIVATE)
+    }
 
     single {
         Room.databaseBuilder(

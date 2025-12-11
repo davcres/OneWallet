@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.presentation.viewmodels
 
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davidcrespo.onewallet.domain.model.PortfolioItem
@@ -31,13 +32,16 @@ class PriceViewModel(
     private val getPortfolioItemsUseCase: GetPortfolioItemsUseCase,
     private val addPortfolioItemUseCase: AddPortfolioItemUseCase,
     private val reorderPortfolioItemsUseCase: ReorderPortfolioItemsUseCase,
-    private val removePortfolioItemUseCase: RemovePortfolioItemUseCase
+    private val removePortfolioItemUseCase: RemovePortfolioItemUseCase,
+    private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PriceUiState())
     val uiState = _uiState.asStateFlow()
 
     private val _prices = MutableStateFlow<Map<String, Double>>(emptyMap())
+
+    private val PREF_CUSTOM_SORT = "is_custom_sort"
 
     init {
         viewModelScope.launch {
@@ -57,9 +61,20 @@ class PriceViewModel(
                     it.quantity * (it.currentPrice ?: 0.0) 
                 }
                 
+                // Check if user has manually reordered the list
+                val isCustomSort = sharedPreferences.getBoolean(PREF_CUSTOM_SORT, false)
+                
+                val displayItems = if (isCustomSort) {
+                    // Respect DB sort order (already sorted by repository)
+                    mappedItems
+                } else {
+                    // Default: Sort by Total Value ($) Descending
+                    mappedItems.sortedByDescending { it.quantity * (it.currentPrice ?: 0.0) }
+                }
+
                 _uiState.update { 
                     it.copy(
-                        portfolioItems = mappedItems,
+                        portfolioItems = displayItems,
                         totalBalance = totalValue
                     ) 
                 }
@@ -194,16 +209,24 @@ class PriceViewModel(
             val item = currentList.removeAt(fromIndex)
             currentList.add(toIndex, item)
             
+            // Optimistic update
             _uiState.update { it.copy(portfolioItems = currentList) }
             
+            // Switch to Custom Sort Mode
+            if (!sharedPreferences.getBoolean(PREF_CUSTOM_SORT, false)) {
+                sharedPreferences.edit().putBoolean(PREF_CUSTOM_SORT, true).apply()
+            }
+
             viewModelScope.launch {
+                // This saves the current list order (which includes the user's latest move)
+                // effectively "locking in" the order as manual.
                 reorderPortfolioItemsUseCase(currentList)
             }
         }
     }
 
     private fun filterSymbols(symbols: List<StockInfo>, query: String): List<StockInfo> {
-        if (query.isBlank()) return symbols // Return all if query is blank
+        if (query.isBlank()) return symbols
         return symbols.filter {
             it.description.contains(query, ignoreCase = true) ||
             it.displaySymbol.contains(query, ignoreCase = true) ||
@@ -231,7 +254,7 @@ class PriceViewModel(
                 _uiState.update {
                     it.copy(
                         symbols = sortedSymbols,
-                        filteredSymbols = sortedSymbols // Initialize filtered with all sorted
+                        filteredSymbols = sortedSymbols
                     )
                 }
             }.onFailure {
