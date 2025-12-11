@@ -27,6 +27,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -79,44 +80,58 @@ fun PriceScreen(
         viewModel.handleIntent(PriceIntent.LoadInitialData)
     }
 
-    if (uiState.editingItem != null) {
-        QuantityDialog(
-            item = uiState.editingItem!!,
-            onDismiss = { viewModel.handleIntent(PriceIntent.EditQuantity(null)) },
-            onConfirm = { quantity ->
-                viewModel.handleIntent(PriceIntent.UpdateQuantity(uiState.editingItem!!, quantity))
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            StockSearchBar(
+                query = uiState.searchQuery,
+                onQueryChange = { viewModel.handleIntent(PriceIntent.SearchQueryChanged(it)) },
+                filteredSymbols = uiState.filteredSymbols,
+                onSymbolSelected = { viewModel.handleIntent(PriceIntent.SelectSymbol(it)) }
+            )
+
+            HorizontalDivider()
+
+            Text(
+                text = "Elementos Seleccionados:",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            PortfolioList(
+                items = uiState.portfolioItems,
+                onMove = { from, to -> viewModel.handleIntent(PriceIntent.MoveSymbol(from, to)) },
+                onRemove = { viewModel.handleIntent(PriceIntent.RemoveItem(it)) },
+                onEdit = { viewModel.handleIntent(PriceIntent.EditQuantity(it)) }
+            )
+        }
+
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+                    .clickable(enabled = false) {},
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
-        )
-    }
+        }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        StockSearchBar(
-            query = uiState.searchQuery,
-            onQueryChange = { viewModel.handleIntent(PriceIntent.SearchQueryChanged(it)) },
-            filteredSymbols = uiState.filteredSymbols,
-            onSymbolSelected = { viewModel.handleIntent(PriceIntent.SelectSymbol(it)) }
-        )
-
-        HorizontalDivider()
-
-        Text(
-            text = "Elementos Seleccionados:",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.align(Alignment.Start)
-        )
-
-        PortfolioList(
-            items = uiState.portfolioItems,
-            onMove = { from, to -> viewModel.handleIntent(PriceIntent.MoveSymbol(from, to)) },
-            onRemove = { viewModel.handleIntent(PriceIntent.RemoveItem(it)) },
-            onEdit = { viewModel.handleIntent(PriceIntent.EditQuantity(it)) }
-        )
+        if (uiState.editingItem != null) {
+            QuantityDialog(
+                item = uiState.editingItem!!,
+                onDismiss = { viewModel.handleIntent(PriceIntent.EditQuantity(null)) },
+                onConfirm = { quantity ->
+                    viewModel.handleIntent(PriceIntent.UpdateQuantity(uiState.editingItem!!, quantity))
+                }
+            )
+        }
     }
 }
 

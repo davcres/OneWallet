@@ -16,6 +16,8 @@ import com.davidcrespo.onewallet.presentation.contract.PriceUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class PriceViewModel(
@@ -65,9 +67,15 @@ class PriceViewModel(
     }
 
     private fun loadInitialData() {
-        getSymbols("US")
-        getPrice("AAPL")
-        getQuote("GOOGL")
+        _uiState.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            val jobs = mutableListOf<Job>()
+            jobs.add(launch { getSymbols("US") })
+            jobs.add(launch { getPrice("AAPL") })
+            jobs.add(launch { getQuote("GOOGL") })
+            jobs.joinAll()
+            _uiState.update { it.copy(isLoading = false) }
+        }
     }
 
     private fun updateSearchQuery(query: String) {

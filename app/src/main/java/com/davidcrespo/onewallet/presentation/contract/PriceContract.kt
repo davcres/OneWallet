@@ -11,7 +11,7 @@ data class PriceUiState(
     val portfolioItems: List<PortfolioItem> = emptyList(),
     val searchQuery: String = "",
     val editingItem: PortfolioItem? = null,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val error: String? = null
 )
 
