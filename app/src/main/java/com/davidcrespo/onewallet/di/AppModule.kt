@@ -18,6 +18,7 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.AddPortfolioItemUseCas
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.ReorderPortfolioItemsUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.UpdateDcaSettingsUseCase
 import com.davidcrespo.onewallet.presentation.viewmodels.PriceViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -91,6 +92,7 @@ val appModule = module {
     single { AddPortfolioItemUseCase(get()) }
     single { ReorderPortfolioItemsUseCase(get()) }
     single { RemovePortfolioItemUseCase(get()) }
+    single { UpdateDcaSettingsUseCase(get()) }
 
     viewModelOf(::PriceViewModel)
 }

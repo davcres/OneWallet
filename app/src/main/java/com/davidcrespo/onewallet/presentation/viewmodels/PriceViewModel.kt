@@ -11,13 +11,14 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.AddPortfolioItemUseCas
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.ReorderPortfolioItemsUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.UpdateDcaSettingsUseCase
 import com.davidcrespo.onewallet.presentation.contract.PriceIntent
 import com.davidcrespo.onewallet.presentation.contract.PriceUiState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class PriceViewModel(
@@ -27,7 +28,8 @@ class PriceViewModel(
     private val getPortfolioItemsUseCase: GetPortfolioItemsUseCase,
     private val addPortfolioItemUseCase: AddPortfolioItemUseCase,
     private val reorderPortfolioItemsUseCase: ReorderPortfolioItemsUseCase,
-    private val removePortfolioItemUseCase: RemovePortfolioItemUseCase
+    private val removePortfolioItemUseCase: RemovePortfolioItemUseCase,
+    private val updateDcaSettingsUseCase: UpdateDcaSettingsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PriceUiState())
@@ -49,7 +51,27 @@ class PriceViewModel(
             is PriceIntent.MoveSymbol -> moveSymbol(intent.fromIndex, intent.toIndex)
             is PriceIntent.EditQuantity -> _uiState.update { it.copy(editingItem = intent.item) }
             is PriceIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity)
+            is PriceIntent.UpdateDca -> updateDca(
+                intent.item, 
+                intent.amount, 
+                intent.frequency, 
+                intent.startDate, 
+                intent.initialInvestment
+            )
             is PriceIntent.RemoveItem -> removeItem(intent.item)
+        }
+    }
+
+    private fun updateDca(
+        item: PortfolioItem, 
+        amount: Double, 
+        frequency: String,
+        startDate: Long?,
+        initialInvestment: Double
+    ) {
+        viewModelScope.launch {
+            updateDcaSettingsUseCase(item.stockInfo, amount, frequency, startDate, initialInvestment)
+            _uiState.update { it.copy(editingItem = null) }
         }
     }
 
@@ -71,8 +93,6 @@ class PriceViewModel(
         viewModelScope.launch {
             val jobs = mutableListOf<Job>()
             jobs.add(launch { getSymbols("US") })
-            jobs.add(launch { getPrice("AAPL") })
-            jobs.add(launch { getQuote("GOOGL") })
             jobs.joinAll()
             _uiState.update { it.copy(isLoading = false) }
         }

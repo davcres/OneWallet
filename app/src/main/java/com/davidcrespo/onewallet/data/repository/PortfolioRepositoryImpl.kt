@@ -19,7 +19,11 @@ class PortfolioRepositoryImpl(
                 PortfolioItem(
                     stockInfo = entity.toDomain(),
                     quantity = entity.quantity,
-                    sortOrder = entity.sortOrder
+                    sortOrder = entity.sortOrder,
+                    dcaAmount = entity.dcaAmount,
+                    dcaFrequency = entity.dcaFrequency,
+                    dcaStartDate = entity.dcaStartDate,
+                    dcaInitialInvestment = entity.dcaInitialInvestment
                 )
             }
         }
@@ -28,7 +32,31 @@ class PortfolioRepositoryImpl(
     override suspend fun addOrUpdateItem(stockInfo: StockInfo, quantity: Double) {
         val existingItem = dao.getItem(stockInfo.displaySymbol)
         val sortOrder = existingItem?.sortOrder ?: ((dao.getMaxSortOrder() ?: 0) + 1)
-        dao.insertOrUpdate(stockInfo.toEntity(quantity, sortOrder))
+        // Preserve existing DCA settings if updating quantity
+        val dcaAmount = existingItem?.dcaAmount ?: 0.0
+        val dcaFrequency = existingItem?.dcaFrequency ?: "Mensual"
+        val dcaStartDate = existingItem?.dcaStartDate
+        val dcaInitialInvestment = existingItem?.dcaInitialInvestment ?: 0.0
+        
+        dao.insertOrUpdate(stockInfo.toEntity(quantity, sortOrder, dcaAmount, dcaFrequency, dcaStartDate, dcaInitialInvestment))
+    }
+
+    override suspend fun updateDcaSettings(
+        stockInfo: StockInfo, 
+        dcaAmount: Double, 
+        dcaFrequency: String,
+        dcaStartDate: Long?,
+        dcaInitialInvestment: Double
+    ) {
+        val existingItem = dao.getItem(stockInfo.displaySymbol) ?: return
+        dao.insertOrUpdate(stockInfo.toEntity(
+            existingItem.quantity, 
+            existingItem.sortOrder, 
+            dcaAmount, 
+            dcaFrequency, 
+            dcaStartDate, 
+            dcaInitialInvestment
+        ))
     }
 
     override suspend fun removeItem(stockInfo: StockInfo) {
@@ -46,7 +74,14 @@ class PortfolioRepositoryImpl(
     override suspend fun updateOrder(items: List<PortfolioItem>) {
         // Update sortOrder for each item based on list index
         val updatedEntities = items.mapIndexed { index, item ->
-            item.stockInfo.toEntity(item.quantity, index + 1)
+            item.stockInfo.toEntity(
+                item.quantity, 
+                index + 1, 
+                item.dcaAmount, 
+                item.dcaFrequency,
+                item.dcaStartDate,
+                item.dcaInitialInvestment
+            )
         }
         dao.updatePortfolioOrder(updatedEntities)
     }

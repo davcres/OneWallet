@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.presentation.contract.PriceIntent
 import com.davidcrespo.onewallet.presentation.screens.components.PortfolioList
-import com.davidcrespo.onewallet.presentation.screens.components.QuantityDialog
+import com.davidcrespo.onewallet.presentation.screens.components.dialogs.StockDetailDialog
 import com.davidcrespo.onewallet.presentation.screens.components.StockSearchBar
 import com.davidcrespo.onewallet.presentation.viewmodels.PriceViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -81,11 +81,22 @@ fun PriceScreen(
         }
 
         if (uiState.editingItem != null) {
-            QuantityDialog(
+            StockDetailDialog(
                 item = uiState.editingItem!!,
                 onDismiss = { viewModel.handleIntent(PriceIntent.EditQuantity(null)) },
-                onConfirm = { quantity ->
+                onConfirmQuantity = { quantity ->
                     viewModel.handleIntent(PriceIntent.UpdateQuantity(uiState.editingItem!!, quantity))
+                },
+                onConfirmDca = { amount, frequency, startDate, initialInvestment ->
+                    viewModel.handleIntent(
+                        PriceIntent.UpdateDca(
+                            uiState.editingItem!!,
+                            amount,
+                            frequency,
+                            startDate,
+                            initialInvestment
+                        )
+                    )
                 }
             )
         }
