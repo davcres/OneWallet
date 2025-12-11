@@ -110,12 +110,19 @@ fun PortfolioItemCard(
             Column(horizontalAlignment = Alignment.End) {
                 if (item.currentPrice != null) {
                     val totalValue = item.quantity * item.currentPrice
-                    Text(
-                        text = "$${String.format("%.2f", totalValue)}", // Main prominent value
-                        style = MaterialTheme.typography.titleMedium, // Or titleSmall
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        modifier = Modifier.padding(bottom = 4.dp) // Add padding similar to quantity badge
+                    ) {
+                        Text(
+                            text = "$${String.format("%.2f", totalValue)}",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp) // Add internal padding
+                        )
+                    }
                     Text(
                         text = "${String.format("%.2f", item.quantity)} acciones ${item.stockInfo.currency} @ $${String.format("%.2f", item.currentPrice)}",
                         style = MaterialTheme.typography.labelSmall,
