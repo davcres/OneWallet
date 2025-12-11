@@ -3,7 +3,13 @@ package com.davidcrespo.onewallet.presentation.contract
 import com.davidcrespo.onewallet.domain.model.PortfolioItem
 import com.davidcrespo.onewallet.domain.model.finnhub.StockInfo
 
+enum class PriceScreenType {
+    Portfolio,
+    AddInvestment
+}
+
 data class PriceUiState(
+    val currentScreen: PriceScreenType = PriceScreenType.Portfolio,
     val price: String = "Wait...",
     val quote: String = "Wait...",
     val symbols: List<StockInfo> = emptyList(),
@@ -26,6 +32,10 @@ sealed interface PriceIntent {
     data class UpdateQuantity(val item: PortfolioItem, val quantity: Double) : PriceIntent
     data class RemoveItem(val item: PortfolioItem) : PriceIntent
     
+    // Navigation Intents
+    data object NavigateToAddInvestment : PriceIntent
+    data object NavigateBack : PriceIntent
+
     // Bank Dialog Intents
     data object ShowBankDialog : PriceIntent
     data object DismissBankDialog : PriceIntent

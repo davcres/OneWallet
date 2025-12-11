@@ -12,6 +12,7 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCa
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.ReorderPortfolioItemsUseCase
 import com.davidcrespo.onewallet.presentation.contract.PriceIntent
+import com.davidcrespo.onewallet.presentation.contract.PriceScreenType
 import com.davidcrespo.onewallet.presentation.contract.PriceUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,7 +47,6 @@ class PriceViewModel(
             ) { items, prices ->
                 items.map { item ->
                     if (item.stockInfo.type == "CASH") {
-                        // Cash items always have a price of 1.0 (currency unit)
                         item.copy(currentPrice = 1.0)
                     } else {
                         item.copy(currentPrice = prices[item.stockInfo.displaySymbol])
@@ -69,7 +69,6 @@ class PriceViewModel(
     }
 
     private fun fetchPricesForItems(items: List<PortfolioItem>) {
-        // Filter out CASH items, we don't fetch quotes for them
         val symbolsToFetch = items
             .filter { it.stockInfo.type != "CASH" }
             .map { it.stockInfo.displaySymbol }
@@ -107,18 +106,35 @@ class PriceViewModel(
             is PriceIntent.ShowBankDialog -> _uiState.update { it.copy(isBankDialogVisible = true) }
             is PriceIntent.DismissBankDialog -> _uiState.update { it.copy(isBankDialogVisible = false) }
             is PriceIntent.AddBankItem -> addBankItem(intent.name, intent.amount)
+
+            is PriceIntent.NavigateToAddInvestment -> {
+                _uiState.update { 
+                    it.copy(
+                        currentScreen = PriceScreenType.AddInvestment,
+                        searchQuery = "",
+                        filteredSymbols = it.symbols
+                    ) 
+                }
+            }
+            is PriceIntent.NavigateBack -> {
+                _uiState.update { 
+                    it.copy(
+                        currentScreen = PriceScreenType.Portfolio,
+                        searchQuery = ""
+                    ) 
+                }
+            }
         }
     }
 
     private fun addBankItem(name: String, amount: Double) {
         viewModelScope.launch {
-            // Create a custom StockInfo for the bank item
             val bankStockInfo = StockInfo(
                 description = "Efectivo / Banco",
                 displaySymbol = name,
-                currency = "USD", // Or default app currency
+                currency = "USD",
                 type = "CASH",
-                figi = "CASH_${UUID.randomUUID()}", // Unique ID
+                figi = "CASH_${UUID.randomUUID()}",
                 isin = ""
             )
             
@@ -161,9 +177,14 @@ class PriceViewModel(
 
     private fun selectSymbol(symbol: StockInfo) {
         viewModelScope.launch {
-            addPortfolioItemUseCase(symbol, 0.0) // Default quantity 0.0
-            updateSearchQuery("")
-            _uiState.update { it.copy(filteredSymbols = emptyList()) }
+            addPortfolioItemUseCase(symbol, 0.0)
+            // Navigate back to portfolio after adding
+            _uiState.update { 
+                it.copy(
+                    currentScreen = PriceScreenType.Portfolio,
+                    searchQuery = ""
+                ) 
+            }
         }
     }
 
@@ -182,7 +203,7 @@ class PriceViewModel(
     }
 
     private fun filterSymbols(symbols: List<StockInfo>, query: String): List<StockInfo> {
-        if (query.isBlank()) return emptyList()
+        if (query.isBlank()) return symbols // Return all if query is blank
         return symbols.filter {
             it.description.contains(query, ignoreCase = true) ||
             it.displaySymbol.contains(query, ignoreCase = true) ||
@@ -206,10 +227,11 @@ class PriceViewModel(
         viewModelScope.launch {
             val result = getSymbolsUseCase(exchange)
             result.onSuccess { symbols ->
+                val sortedSymbols = symbols.sortedBy { it.displaySymbol }
                 _uiState.update {
                     it.copy(
-                        symbols = symbols,
-                        filteredSymbols = filterSymbols(symbols, it.searchQuery)
+                        symbols = sortedSymbols,
+                        filteredSymbols = sortedSymbols // Initialize filtered with all sorted
                     )
                 }
             }.onFailure {
