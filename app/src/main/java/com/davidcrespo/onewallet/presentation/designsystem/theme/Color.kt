@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.ui.theme
+package com.davidcrespo.onewallet.presentation.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 

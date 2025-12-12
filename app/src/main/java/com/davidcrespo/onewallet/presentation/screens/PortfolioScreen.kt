@@ -18,8 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.davidcrespo.onewallet.presentation.contract.PriceIntent
 import com.davidcrespo.onewallet.presentation.contract.PriceUiState
+import com.davidcrespo.onewallet.presentation.designsystem.composables.AnimatedText
 import com.davidcrespo.onewallet.presentation.screens.components.ExpandableFab
 import com.davidcrespo.onewallet.presentation.screens.components.PortfolioList
 import com.davidcrespo.onewallet.presentation.screens.components.dialogs.BankDepositDialog
@@ -54,9 +56,9 @@ fun PortfolioScreen(
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
-                    Text(
+                    AnimatedText(
                         text = "$${String.format("%.2f", uiState.totalBalance)}",
-                        style = MaterialTheme.typography.displayMedium,
+                        fontSize = 45.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )

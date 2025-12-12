@@ -90,11 +90,13 @@ fun PortfolioItemCard(
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp) // Add internal padding
                         )
                     }
-                    Text(
-                        text = "${String.format("%.2f", item.quantity)} acciones ${item.stockInfo.currency} @ $${String.format("%.2f", item.currentPrice)}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    if (item.stockInfo.type != "CASH") {
+                        Text(
+                            text = "${String.format("%.2f", item.quantity)} acciones ${item.stockInfo.currency} @ $${String.format("%.2f", item.currentPrice)}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 } else {
                     // Fallback to old quantity display if price not available
                     Surface(

@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.ui.theme
+package com.davidcrespo.onewallet.presentation.designsystem.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

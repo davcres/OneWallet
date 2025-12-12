@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.ui.theme
+package com.davidcrespo.onewallet.presentation.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

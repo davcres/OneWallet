@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.davidcrespo.onewallet.presentation.screens.PriceScreen
-import com.davidcrespo.onewallet.ui.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
