@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.presentation.screens.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
@@ -148,6 +149,13 @@ fun PortfolioList(
                     )
                 },
                 modifier = Modifier.zIndex(zIndex)
+                    .then(
+                        if (draggingItemIndex == null) {
+                            Modifier.animateItem()
+                        } else {
+                            Modifier
+                        }
+                    )
             )
         }
     }

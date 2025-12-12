@@ -8,7 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,16 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.davidcrespo.onewallet.presentation.contract.PriceIntent
 import com.davidcrespo.onewallet.presentation.contract.PriceUiState
-import com.davidcrespo.onewallet.presentation.designsystem.composables.AnimatedText
+import com.davidcrespo.onewallet.presentation.designsystem.composables.AnimatedCounter
 import com.davidcrespo.onewallet.presentation.screens.components.ExpandableFab
 import com.davidcrespo.onewallet.presentation.screens.components.PortfolioList
 import com.davidcrespo.onewallet.presentation.screens.components.dialogs.BankDepositDialog
 import com.davidcrespo.onewallet.presentation.screens.components.dialogs.StockDetailDialog
-
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 
 @Composable
 fun PortfolioScreen(
@@ -75,8 +74,9 @@ fun PortfolioScreen(
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
-                        AnimatedText(
-                            text = "${String.format("%.2f", uiState.totalBalance)} €",
+                        AnimatedCounter(
+                            targetValue = uiState.totalBalance,
+                            suffix = " €",
                             fontSize = 45.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
