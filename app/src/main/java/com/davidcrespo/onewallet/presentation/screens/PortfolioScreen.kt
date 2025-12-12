@@ -31,12 +31,46 @@ import com.davidcrespo.onewallet.presentation.screens.components.PortfolioList
 import com.davidcrespo.onewallet.presentation.screens.components.dialogs.BankDepositDialog
 import com.davidcrespo.onewallet.presentation.screens.components.dialogs.StockDetailDialog
 
+import androidx.compose.ui.text.style.TextAlign
+import kotlinx.coroutines.delay
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+
 @Composable
 fun PortfolioScreen(
     uiState: PriceUiState,
     onIntent: (PriceIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val richPhrases = remember {
+        listOf(
+            "Demasiado dinero para mostrarlo sin gafas de sol.",
+            "A Hacienda le gusta esto.",
+            "Eres rico, ¿para qué quieres saber si has ganado 5€ más o menos?",
+            "Con esto te dejan entrar al Época sin hacer cola.",
+            "Seguro que te puedes permitir hacerle un bizum al humilde desarrollador de la app.",
+            "¿Seguro que no has añadido ceros de más? Te dejo un momento para reflexionar.",
+            "Deja algo para los demás Javito.",
+        )
+    }
+    var currentRichPhrase by remember { mutableStateOf(richPhrases.random()) }
+
+    LaunchedEffect(uiState.totalBalance) {
+        if (uiState.totalBalance > 5_000_000) {
+            while (true) {
+                currentRichPhrase = richPhrases.random()
+                delay(10000)
+            }
+        }
+    }
+
     Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -74,13 +108,32 @@ fun PortfolioScreen(
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
-                        AnimatedCounter(
-                            targetValue = uiState.totalBalance,
-                            suffix = " €",
-                            fontSize = 45.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+                        
+                        if (uiState.totalBalance > 5_000_000) {
+                            AnimatedContent(
+                                targetState = currentRichPhrase,
+                                transitionSpec = { fadeIn() togetherWith fadeOut() },
+                                label = "RichPhraseTransition"
+                            ) { phrase ->
+                                Text(
+                                    text = phrase,
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    textAlign = TextAlign.Center,
+                                    lineHeight = 30.sp,
+                                    modifier = Modifier.padding(horizontal = 8.dp)
+                                )
+                            }
+                        } else {
+                            AnimatedCounter(
+                                targetValue = uiState.totalBalance,
+                                suffix = " €",
+                                fontSize = 45.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
                     }
                 }
             }
