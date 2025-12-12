@@ -56,17 +56,18 @@ class PriceViewModel(
                         item.copy(currentPrice = 1.0)
                     } else {
                         // Prices in map are already converted to EUR
+                        val convertedPrice = prices[item.stockInfo.displaySymbol]
                         item.copy(currentPrice = convertedPrice)
                     }
                 }
             }.collect { mappedItems ->
-                val totalValue = mappedItems.sumOf { 
-                    it.quantity * (it.currentPrice ?: 0.0) 
+                val totalValue = mappedItems.sumOf {
+                    it.quantity * (it.currentPrice ?: 0.0)
                 }
-                
+
                 // Check if user has manually reordered the list
                 val isCustomSort = sharedPreferences.getBoolean(PREF_CUSTOM_SORT, false)
-                
+
                 val displayItems = if (isCustomSort) {
                     // Respect DB sort order (already sorted by repository)
                     mappedItems
@@ -75,11 +76,11 @@ class PriceViewModel(
                     mappedItems.sortedByDescending { it.quantity * (it.currentPrice ?: 0.0) }
                 }
 
-                _uiState.update { 
+                _uiState.update {
                     it.copy(
                         portfolioItems = displayItems,
                         totalBalance = totalValue
-                    ) 
+                    )
                 }
                 fetchPricesForItems(mappedItems)
             }
@@ -91,17 +92,17 @@ class PriceViewModel(
             .filter { it.stockInfo.type != "CASH" }
             .map { it.stockInfo.displaySymbol }
             .distinct()
-        
+
         viewModelScope.launch {
             val currentMap = _prices.value
             val missingSymbols = symbolsToFetch.filter { !currentMap.containsKey(it) }
-            
+
             if (missingSymbols.isNotEmpty()) {
                 missingSymbols.forEach { symbol ->
                     launch {
                         getQuoteUseCase(symbol).onSuccess { quote ->
                             // Convert price to EUR
-                            // Assuming quote comes in USD for US stocks. 
+                            // Assuming quote comes in USD for US stocks.
                             // Ideally, we check quote.currency or stockInfo.currency, but Finnhub free tier is limited.
                             // We applied getSymbols("US"), so likely USD.
                             val priceInEur = quote.currentPrice * _usdToEurRate
