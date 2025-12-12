@@ -85,8 +85,9 @@ class PriceViewModel(
                     )
                 }
 
-                // Save Snapshot if prices are available
-                if (mappedItems.isNotEmpty() && mappedItems.any { (it.currentPrice ?: 0.0) > 0.0 }) {
+                // Save Snapshot if prices are available OR if list is empty (to clear snapshot)
+                val hasPrices = mappedItems.any { (it.currentPrice ?: 0.0) > 0.0 }
+                if (mappedItems.isEmpty() || hasPrices) {
                    saveMonthlySnapshotUseCase(mappedItems) 
                 }
 

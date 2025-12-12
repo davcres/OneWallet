@@ -9,11 +9,15 @@ class SaveMonthlySnapshotUseCase(
     private val portfolioSnapshotDao: PortfolioSnapshotDao
 ) {
     suspend operator fun invoke(items: List<PortfolioItem>) {
-        if (items.isEmpty()) return
-
         val now = LocalDate.now()
         val year = now.year
         val month = now.monthValue
+        
+        if (items.isEmpty()) {
+            portfolioSnapshotDao.deleteSnapshotsForMonth(year, month)
+            return
+        }
+
         val timestamp = System.currentTimeMillis()
 
         val snapshots = items.mapNotNull { item ->
