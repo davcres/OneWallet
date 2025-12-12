@@ -7,6 +7,7 @@ import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.twelveData.models.toDomain
 import com.davidcrespo.onewallet.domain.model.twelveData.Price
 import com.davidcrespo.onewallet.domain.model.finnhub.Quote
+import com.davidcrespo.onewallet.domain.model.finnhub.Rate
 import com.davidcrespo.onewallet.domain.model.finnhub.StockInfo
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 
@@ -36,6 +37,15 @@ class FinancialRepositoryImpl(
         return try {
             val quoteResponse = finnhubDataSource.getPrice(symbol)
             Result.success(quoteResponse.toDomain())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getUsdEur(): Result<Rate> {
+        return try {
+            val rate = finnhubDataSource.getUsdEur()
+            Result.success(rate.toDomain())
         } catch (e: Exception) {
             Result.failure(e)
         }

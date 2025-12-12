@@ -2,6 +2,7 @@ package com.davidcrespo.onewallet.data.remote.finnhub
 
 import com.davidcrespo.onewallet.BuildConfig
 import com.davidcrespo.onewallet.data.remote.finnhub.models.QuoteResponse
+import com.davidcrespo.onewallet.data.remote.finnhub.models.RateResponse
 import com.davidcrespo.onewallet.data.remote.finnhub.models.StockInfoResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -21,6 +22,14 @@ class FinnhubApiClient(private val client: HttpClient) {
         return client.get("${FinnhubApiConfig.BASE_URL}/${FinnhubApiConfig.GetQuote.PATH}") {
             parameter(FinnhubApiConfig.GetQuote.SYMBOL, symbol)
             parameter(FinnhubApiConfig.GetQuote.TOKEN, BuildConfig.FINNHUB_API_KEY)
+        }.body()
+    }
+
+    suspend fun getUsdEur(): RateResponse {
+        return client.get("${FinnhubApiConfig.BASE_URL}/${FinnhubApiConfig.GetRate.PATH}") {
+            parameter(FinnhubApiConfig.GetRate.FROM, "USD")
+            parameter(FinnhubApiConfig.GetRate.TO, "EUR")
+            parameter(FinnhubApiConfig.GetRate.TOKEN, BuildConfig.FINNHUB_API_KEY)
         }.body()
     }
 }

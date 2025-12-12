@@ -83,7 +83,7 @@ fun PortfolioItemCard(
                         modifier = Modifier.padding(bottom = 4.dp) // Add padding similar to quantity badge
                     ) {
                         Text(
-                            text = "$${String.format("%.2f", totalValue)}",
+                            text = "${String.format("%.2f", totalValue)} €",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -92,7 +92,7 @@ fun PortfolioItemCard(
                     }
                     if (item.stockInfo.type != "CASH") {
                         Text(
-                            text = "${String.format("%.2f", item.quantity)} acciones ${item.stockInfo.currency} @ $${String.format("%.2f", item.currentPrice)}",
+                            text = "${String.format("%.2f", item.quantity)} acciones ${item.stockInfo.currency} @ ${String.format("%.2f", item.currentPrice)} €",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

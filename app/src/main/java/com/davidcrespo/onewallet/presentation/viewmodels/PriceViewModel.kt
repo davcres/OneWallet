@@ -8,6 +8,7 @@ import com.davidcrespo.onewallet.domain.model.finnhub.StockInfo
 import com.davidcrespo.onewallet.domain.usecase.GetPriceUseCase
 import com.davidcrespo.onewallet.domain.usecase.GetQuoteUseCase
 import com.davidcrespo.onewallet.domain.usecase.GetSymbolsUseCase
+import com.davidcrespo.onewallet.domain.usecase.GetUsdEurUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.AddPortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
@@ -33,6 +34,7 @@ class PriceViewModel(
     private val addPortfolioItemUseCase: AddPortfolioItemUseCase,
     private val reorderPortfolioItemsUseCase: ReorderPortfolioItemsUseCase,
     private val removePortfolioItemUseCase: RemovePortfolioItemUseCase,
+    private val getUsdEurUseCase: GetUsdEurUseCase,
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
@@ -40,6 +42,7 @@ class PriceViewModel(
     val uiState = _uiState.asStateFlow()
 
     private val _prices = MutableStateFlow<Map<String, Double>>(emptyMap())
+    private var _usdToEurRate: Double = 1.0
 
     private val PREF_CUSTOM_SORT = "is_custom_sort"
 
@@ -53,6 +56,7 @@ class PriceViewModel(
                     if (item.stockInfo.type == "CASH") {
                         item.copy(currentPrice = 1.0)
                     } else {
+                        // Prices in map are already converted to EUR
                         item.copy(currentPrice = prices[item.stockInfo.displaySymbol])
                     }
                 }
@@ -94,11 +98,15 @@ class PriceViewModel(
             val missingSymbols = symbolsToFetch.filter { !currentMap.containsKey(it) }
             
             if (missingSymbols.isNotEmpty()) {
-                val newPrices = currentMap.toMutableMap()
                 missingSymbols.forEach { symbol ->
                     launch {
                         getQuoteUseCase(symbol).onSuccess { quote ->
-                            _prices.update { it + (symbol to quote.currentPrice) }
+                            // Convert price to EUR
+                            // Assuming quote comes in USD for US stocks. 
+                            // Ideally, we check quote.currency or stockInfo.currency, but Finnhub free tier is limited.
+                            // We applied getSymbols("US"), so likely USD.
+                            val priceInEur = quote.currentPrice * _usdToEurRate
+                            _prices.update { it + (symbol to priceInEur) }
                         }.onFailure {
                             // Handle error or ignore
                         }
@@ -147,7 +155,7 @@ class PriceViewModel(
             val bankStockInfo = StockInfo(
                 description = "Efectivo / Banco",
                 displaySymbol = name,
-                currency = "USD",
+                currency = "EUR",
                 type = "CASH",
                 figi = "CASH_${UUID.randomUUID()}",
                 isin = ""
@@ -174,6 +182,13 @@ class PriceViewModel(
     private fun loadInitialData() {
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
+            // Fetch exchange rate first
+            getUsdEurUseCase().onSuccess { rate ->
+                _usdToEurRate = rate
+            }.onFailure {
+                _usdToEurRate = 1.0 // Fallback or handle error
+            }
+
             val jobs = mutableListOf<Job>()
             jobs.add(launch { getSymbols("US") })
             jobs.joinAll()
@@ -235,17 +250,6 @@ class PriceViewModel(
         }
     }
 
-    private fun getPrice(symbol: String) {
-        viewModelScope.launch {
-            val result = getPriceUseCase(symbol)
-            result.onSuccess { priceObj ->
-                _uiState.update { it.copy(price = "$${priceObj.price}") }
-            }.onFailure { error ->
-                _uiState.update { it.copy(price = "Error: ${error.message}") }
-            }
-        }
-    }
-
     private fun getSymbols(exchange: String) {
         viewModelScope.launch {
             val result = getSymbolsUseCase(exchange)
@@ -259,17 +263,6 @@ class PriceViewModel(
                 }
             }.onFailure {
                 _uiState.update { it.copy(symbols = emptyList(), filteredSymbols = emptyList()) }
-            }
-        }
-    }
-
-    private fun getQuote(symbol: String) {
-        viewModelScope.launch {
-            val result = getQuoteUseCase(symbol)
-            result.onSuccess { quoteObj ->
-                _uiState.update { it.copy(quote = "$${quoteObj.currentPrice}") }
-            }.onFailure { error ->
-                _uiState.update { it.copy(quote = "Error: ${error.message}") }
             }
         }
     }

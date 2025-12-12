@@ -14,6 +14,7 @@ import com.davidcrespo.onewallet.domain.repository.PortfolioRepository
 import com.davidcrespo.onewallet.domain.usecase.GetPriceUseCase
 import com.davidcrespo.onewallet.domain.usecase.GetQuoteUseCase
 import com.davidcrespo.onewallet.domain.usecase.GetSymbolsUseCase
+import com.davidcrespo.onewallet.domain.usecase.GetUsdEurUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.AddPortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
@@ -94,6 +95,7 @@ val appModule = module {
     single { GetPriceUseCase(get()) }
     single { GetSymbolsUseCase(get()) }
     single { GetQuoteUseCase(get()) }
+    single { GetUsdEurUseCase(get()) }
     
     single { GetPortfolioItemsUseCase(get()) }
     single { AddPortfolioItemUseCase(get()) }

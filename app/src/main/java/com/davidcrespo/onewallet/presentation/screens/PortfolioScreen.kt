@@ -57,7 +57,7 @@ fun PortfolioScreen(
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     AnimatedText(
-                        text = "$${String.format("%.2f", uiState.totalBalance)}",
+                        text = "${String.format("%.2f", uiState.totalBalance)} €",
                         fontSize = 45.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer

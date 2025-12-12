@@ -46,7 +46,7 @@ fun BankDepositDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text(text = "Total dinero ($):")
+                Text(text = "Total dinero (€):")
                 OutlinedTextField(
                     value = amountText,
                     onValueChange = { amountText = it },
