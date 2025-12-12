@@ -36,5 +36,10 @@ fun PriceScreen(
                 modifier = modifier
             )
         }
+        PriceScreenType.History -> {
+            HistoryScreen(
+                onBack = { viewModel.handleIntent(PriceIntent.NavigateBack) }
+            )
+        }
     }
 }

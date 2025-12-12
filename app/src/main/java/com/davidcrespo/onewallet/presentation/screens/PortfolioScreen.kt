@@ -27,6 +27,11 @@ import com.davidcrespo.onewallet.presentation.screens.components.PortfolioList
 import com.davidcrespo.onewallet.presentation.screens.components.dialogs.BankDepositDialog
 import com.davidcrespo.onewallet.presentation.screens.components.dialogs.StockDetailDialog
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+
 @Composable
 fun PortfolioScreen(
     uiState: PriceUiState,
@@ -47,21 +52,36 @@ fun PortfolioScreen(
                 color = MaterialTheme.colorScheme.primaryContainer,
                 shape = MaterialTheme.shapes.medium
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Balance Total",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                    AnimatedText(
-                        text = "${String.format("%.2f", uiState.totalBalance)} €",
-                        fontSize = 45.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    IconButton(
+                        onClick = { onIntent(PriceIntent.NavigateToHistory) },
+                        modifier = Modifier.align(Alignment.TopEnd)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = "Historial",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Balance Total",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                        AnimatedText(
+                            text = "${String.format("%.2f", uiState.totalBalance)} €",
+                            fontSize = 45.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
                 }
             }
 
@@ -101,10 +121,10 @@ fun PortfolioScreen(
         // Edit Quantity Dialog
         if (uiState.editingItem != null) {
             StockDetailDialog(
-                item = uiState.editingItem!!,
+                item = uiState.editingItem,
                 onDismiss = { onIntent(PriceIntent.EditQuantity(null)) },
                 onConfirmQuantity = { quantity ->
-                    onIntent(PriceIntent.UpdateQuantity(uiState.editingItem!!, quantity))
+                    onIntent(PriceIntent.UpdateQuantity(uiState.editingItem, quantity))
                 }
             )
         }

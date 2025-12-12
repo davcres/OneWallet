@@ -13,6 +13,7 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.AddPortfolioItemUseCas
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.ReorderPortfolioItemsUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlySnapshotUseCase
 import com.davidcrespo.onewallet.presentation.contract.PriceIntent
 import com.davidcrespo.onewallet.presentation.contract.PriceScreenType
 import com.davidcrespo.onewallet.presentation.contract.PriceUiState
@@ -34,6 +35,7 @@ class PriceViewModel(
     private val reorderPortfolioItemsUseCase: ReorderPortfolioItemsUseCase,
     private val removePortfolioItemUseCase: RemovePortfolioItemUseCase,
     private val getUsdEurUseCase: GetUsdEurUseCase,
+    private val saveMonthlySnapshotUseCase: SaveMonthlySnapshotUseCase,
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
@@ -82,6 +84,12 @@ class PriceViewModel(
                         totalBalance = totalValue
                     )
                 }
+
+                // Save Snapshot if prices are available
+                if (mappedItems.isNotEmpty() && mappedItems.any { (it.currentPrice ?: 0.0) > 0.0 }) {
+                   saveMonthlySnapshotUseCase(mappedItems) 
+                }
+
                 fetchPricesForItems(mappedItems)
             }
         }
@@ -137,6 +145,11 @@ class PriceViewModel(
                         searchQuery = "",
                         filteredSymbols = it.symbols
                     ) 
+                }
+            }
+            is PriceIntent.NavigateToHistory -> {
+                _uiState.update {
+                    it.copy(currentScreen = PriceScreenType.History)
                 }
             }
             is PriceIntent.NavigateBack -> {

@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.activity.compose.BackHandler
 import com.davidcrespo.onewallet.presentation.contract.PriceIntent
 import com.davidcrespo.onewallet.presentation.contract.PriceUiState
 import com.davidcrespo.onewallet.presentation.screens.components.StockListItem
@@ -29,6 +30,10 @@ fun AddInvestmentScreen(
     onIntent: (PriceIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    BackHandler {
+        onIntent(PriceIntent.NavigateBack)
+    }
+
     Scaffold(
         topBar = {
             Column {

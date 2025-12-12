@@ -5,7 +5,8 @@ import com.davidcrespo.onewallet.domain.model.finnhub.StockInfo
 
 enum class PriceScreenType {
     Portfolio,
-    AddInvestment
+    AddInvestment,
+    History
 }
 
 data class PriceUiState(
@@ -34,6 +35,7 @@ sealed interface PriceIntent {
     
     // Navigation Intents
     data object NavigateToAddInvestment : PriceIntent
+    data object NavigateToHistory : PriceIntent
     data object NavigateBack : PriceIntent
 
     // Bank Dialog Intents

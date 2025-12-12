@@ -35,6 +35,10 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 import android.content.Context
+import com.davidcrespo.onewallet.domain.usecase.portfolio.GetMonthlyDetailUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.GetMonthlyHistoryUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlySnapshotUseCase
+import com.davidcrespo.onewallet.presentation.viewmodels.HistoryViewModel
 
 val appModule = module {
 
@@ -48,11 +52,11 @@ val appModule = module {
             AppDatabase::class.java,
             "onewallet-db"
         )
-        .fallbackToDestructiveMigration()
         .build()
     }
 
     single { get<AppDatabase>().portfolioDao() }
+    single { get<AppDatabase>().portfolioSnapshotDao() }
 
     single {
         HttpClient(CIO) {
@@ -101,6 +105,11 @@ val appModule = module {
     single { AddPortfolioItemUseCase(get()) }
     single { ReorderPortfolioItemsUseCase(get()) }
     single { RemovePortfolioItemUseCase(get()) }
+    
+    single { SaveMonthlySnapshotUseCase(get()) }
+    single { GetMonthlyHistoryUseCase(get()) }
+    single { GetMonthlyDetailUseCase(get()) }
 
     viewModelOf(::PriceViewModel)
+    viewModelOf(::HistoryViewModel)
 }
