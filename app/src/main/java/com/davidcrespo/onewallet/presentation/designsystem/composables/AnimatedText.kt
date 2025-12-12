@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.presentation.designsystem.composables
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
@@ -43,7 +44,8 @@ fun AnimatedText(
             AnimatedContent(
                 targetState = char,
                 transitionSpec = {
-                    slideInVertically { it } togetherWith slideOutVertically { -it }
+                    slideInVertically(animationSpec = tween(durationMillis = 500)) { it } togetherWith
+                    slideOutVertically(animationSpec = tween(durationMillis = 500)) { -it }
                 }, label = ""
             ) { char ->
                 Text(
