@@ -92,7 +92,7 @@ fun PortfolioItemCard(
                     }
                     if (item.stockInfo.type != "CASH") {
                         Text(
-                            text = "${String.format("%.2f", item.quantity)} acciones ${item.stockInfo.currency} @ ${String.format("%.2f", item.currentPrice)} €",
+                            text = "${String.format("%.2f", item.quantity)} acciones @ ${String.format("%.2f", item.currentPrice)} €",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

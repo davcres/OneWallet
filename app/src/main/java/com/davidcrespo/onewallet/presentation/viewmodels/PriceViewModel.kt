@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-
 import kotlinx.coroutines.flow.combine
 import java.util.UUID
 
@@ -57,7 +56,7 @@ class PriceViewModel(
                         item.copy(currentPrice = 1.0)
                     } else {
                         // Prices in map are already converted to EUR
-                        item.copy(currentPrice = prices[item.stockInfo.displaySymbol])
+                        item.copy(currentPrice = convertedPrice)
                     }
                 }
             }.collect { mappedItems ->

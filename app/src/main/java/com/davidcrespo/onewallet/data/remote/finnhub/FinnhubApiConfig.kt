@@ -14,12 +14,4 @@ object FinnhubApiConfig {
         const val SYMBOL = "symbol"
         const val TOKEN = "token"
     }
-
-    object GetRate {
-        const val PATH = "forex/rate"
-        const val FROM = "base"
-        const val TO = "symbol"
-        const val TOKEN = "token"
-
-    }
 }

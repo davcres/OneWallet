@@ -8,4 +8,12 @@ object TwelveDataApiConfig {
         const val SYMBOL = "symbol"
         const val API_KEY = "apikey"
     }
+
+    object GetRate {
+        const val PATH = "currency_conversion"
+        const val FROM_TO = "symbol"
+        const val AMOUNT = "amount"
+        const val API_KEY = "apikey"
+
+    }
 }
