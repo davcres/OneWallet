@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">OneWallet Portafolio</string>
+    <string name="widget_portfolio_description">Tu cartera</string>
 </resources>

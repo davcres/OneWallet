@@ -33,4 +33,7 @@ abstract class PortfolioSnapshotDao {
 
     @Query("SELECT * FROM monthly_portfolio_snapshots WHERE year = :year AND month = :month")
     abstract suspend fun getSnapshotDetails(year: Int, month: Int): List<MonthlyPortfolioSnapshotEntity>
+
+    @Query("SELECT * FROM monthly_portfolio_snapshots ORDER BY year DESC, month DESC LIMIT 1")
+    abstract suspend fun getLatestSnapshotOneItem(): MonthlyPortfolioSnapshotEntity?
 }

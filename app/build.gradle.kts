@@ -61,6 +61,9 @@ android {
         compose = true
         buildConfig = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
+    }
 }
 
 dependencies {
@@ -93,4 +96,8 @@ dependencies {
 
     // Koin
     implementation(libs.bundles.koin)
+
+    // Glance (Widgets)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
 }

@@ -1,6 +1,8 @@
 package com.davidcrespo.onewallet.presentation.viewmodels
 
+import android.content.Context
 import android.content.SharedPreferences
+import androidx.glance.appwidget.updateAll
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davidcrespo.onewallet.domain.model.PortfolioItem
@@ -17,13 +19,14 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlySnapshotUse
 import com.davidcrespo.onewallet.presentation.contract.PriceIntent
 import com.davidcrespo.onewallet.presentation.contract.PriceScreenType
 import com.davidcrespo.onewallet.presentation.contract.PriceUiState
+import com.davidcrespo.onewallet.widget.portfolio.PortfolioWidget
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.combine
 import java.util.UUID
 
 class PriceViewModel(
@@ -36,7 +39,8 @@ class PriceViewModel(
     private val removePortfolioItemUseCase: RemovePortfolioItemUseCase,
     private val getUsdEurUseCase: GetUsdEurUseCase,
     private val saveMonthlySnapshotUseCase: SaveMonthlySnapshotUseCase,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PriceUiState())
@@ -88,7 +92,9 @@ class PriceViewModel(
                 // Save Snapshot if prices are available OR if list is empty (to clear snapshot)
                 val hasPrices = mappedItems.any { (it.currentPrice ?: 0.0) > 0.0 }
                 if (mappedItems.isEmpty() || hasPrices) {
-                   saveMonthlySnapshotUseCase(mappedItems) 
+                   saveMonthlySnapshotUseCase(mappedItems)
+                   // Update Widget
+                    PortfolioWidget().updateAll(context)
                 }
 
                 fetchPricesForItems(mappedItems)

@@ -1,7 +1,9 @@
 package com.davidcrespo.onewallet.data.local.database.entities
 
 import androidx.room.Entity
+import kotlinx.serialization.Serializable
 
+@Serializable
 @Entity(tableName = "monthly_portfolio_snapshots", primaryKeys = ["year", "month", "symbol"])
 data class MonthlyPortfolioSnapshotEntity(
     val year: Int,

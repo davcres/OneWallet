@@ -21,6 +21,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
+        <receiver android:name=".widget.portfolio.PortfolioWidgetReceiver"
+            android:exported="true"
+            android:label="Portfolio Widget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <!-- <action android:name="android.appwidget.action.APPWIDGET_ENABLED" /> --> <!-- Nos avisa cuando se añade el primer widget en el dispositivo -->
+                <!-- <action android:name="android.appwidget.action.APPWIDGET_DISABLED" /> --> <!-- Nos avisa cuando se borra el ultimo widget del dispositivo -->
+                <!-- <action android:name="android.appwidget.action.APPWIDGET_DELETED" /> --> <!-- Nos avisa cuando se borra un ultimo widget del dispositivo -->
+                <!-- <action android:name="android.intent.action.BOOT_COMPLETED" /> --> <!-- Nos avisa cuando se reinicia el dispositivo. Necesita permiso RECEIVE_BOOT_COMPLETED en el manifest -->
+                <!-- <action android:name="android.intent.action.ACTION_POWER_CONNECTED" /> --> <!-- Nos avisa cuando se enchufa el dispositivo -->
+                <!-- <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" /> --> <!-- Nos avisa cuando se desenchufa el dispositivo -->
+                <!-- <action android:name="android.intent.action.BATTERY_LOW" /> --> <!-- Nos avisa cuando bateria baja -->
+                <!-- <action android:name="android.intent.action.BATTERY_OKAY" /> --> <!-- Nos avisa cuando bateria ok -->
+                <!-- <action android:name="android.net.conn.CONNECTIVITY_CHANGE" /> --> <!-- Nos avisa cuando se cambia de red (wifi/3g/4g/5g...). Necesita permiso ACCESS_NETWORK_STATE en el manifest -->
+                <!-- <action android:name="android.net.wifi.STATE_CHANGE" /> --> <!-- Nos avisa cuando se cambia de red (Solo WIFI). Necesita permiso ACCESS_WIFI_STATE en el manifest -->
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_portfolio_info" />
+        </receiver>
+
+    </application>
 </manifest>
