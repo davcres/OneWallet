@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.data.remote.finnhub
 
 import com.davidcrespo.onewallet.BuildConfig
+import com.davidcrespo.onewallet.data.remote.finnhub.models.CryptoSymbolResponse
 import com.davidcrespo.onewallet.data.remote.finnhub.models.QuoteResponse
 import com.davidcrespo.onewallet.data.remote.finnhub.models.StockInfoResponse
 import io.ktor.client.HttpClient
@@ -14,6 +15,13 @@ class FinnhubApiClient(private val client: HttpClient) {
         return client.get("${FinnhubApiConfig.BASE_URL}/${FinnhubApiConfig.GetSymbols.PATH}") {
             parameter(FinnhubApiConfig.GetSymbols.EXCHANGE, exchange)
             parameter(FinnhubApiConfig.GetSymbols.TOKEN, BuildConfig.FINNHUB_API_KEY)
+        }.body()
+    }
+
+    suspend fun getCryptoSymbols(exchange: String): List<CryptoSymbolResponse> {
+        return client.get("${FinnhubApiConfig.BASE_URL}/${FinnhubApiConfig.GetCryptoSymbols.PATH}") {
+            parameter(FinnhubApiConfig.GetCryptoSymbols.EXCHANGE, exchange)
+            parameter(FinnhubApiConfig.GetCryptoSymbols.TOKEN, BuildConfig.FINNHUB_API_KEY)
         }.body()
     }
 

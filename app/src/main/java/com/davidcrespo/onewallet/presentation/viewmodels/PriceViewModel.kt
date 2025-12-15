@@ -108,16 +108,29 @@ class PriceViewModel(
     private fun fetchPricesForItems(items: List<PortfolioItem>) {
         val symbolsToFetch = items
             .filter { it.stockInfo.type != "CASH" && it.stockInfo.manualPrice == null }
-            .map { it.stockInfo.displaySymbol }
-            .distinct()
+            .distinctBy { it.stockInfo.displaySymbol }
 
         viewModelScope.launch {
             val currentMap = _prices.value
-            val missingSymbols = symbolsToFetch.filter { !currentMap.containsKey(it) }
+            
+            symbolsToFetch.forEach { item ->
+                val symbol = item.stockInfo.displaySymbol
+                if (currentMap.containsKey(symbol)) return@forEach
 
-            if (missingSymbols.isNotEmpty()) {
-                missingSymbols.forEach { symbol ->
-                    launch {
+                launch {
+                    if (item.stockInfo.type == "CRYPTO") {
+                        if (item.stockInfo.displaySymbol.endsWith("EUR")) {
+                            getPriceUseCase(symbol).onSuccess { price ->
+                                _prices.update { it + (symbol to price.price.toDouble()) }
+                            }
+                        } else {
+                            getPriceUseCase(symbol).onSuccess { price ->
+                                val priceInEur = price.price.toDouble() * _usdToEurRate
+                                _prices.update { it + (symbol to priceInEur) }
+                            }
+                        }
+                    } else {
+                        // Use Finnhub for Stocks
                         getQuoteUseCase(symbol).onSuccess { quote ->
                             // Convert price to EUR
                             // Assuming quote comes in USD for US stocks.
@@ -157,9 +170,24 @@ class PriceViewModel(
                     it.copy(
                         currentScreen = PriceScreenType.AddInvestment,
                         searchQuery = "",
-                        filteredSymbols = it.symbols
+                        filteredSymbols = emptyList(), // Clear previous list
+                        symbols = emptyList(), // Clear previous list
+                        isCryptoSearch = false
                     )
                 }
+                getSymbols("US", isCrypto = false)
+            }
+            is PriceIntent.NavigateToAddCrypto -> {
+                _uiState.update {
+                    it.copy(
+                        currentScreen = PriceScreenType.AddInvestment, // Reuse screen
+                        searchQuery = "",
+                        filteredSymbols = emptyList(),
+                        symbols = emptyList(),
+                        isCryptoSearch = true
+                    )
+                }
+                getSymbols("binance", isCrypto = true)
             }
             is PriceIntent.NavigateToHistory -> {
                 _uiState.update {
@@ -231,10 +259,6 @@ class PriceViewModel(
             }.onFailure {
                 _usdToEurRate = 1.0 // Fallback or handle error
             }
-
-            val jobs = mutableListOf<Job>()
-            jobs.add(launch { getSymbols("US") })
-            jobs.joinAll()
             _uiState.update { it.copy(isLoading = false) }
         }
     }
@@ -250,7 +274,15 @@ class PriceViewModel(
 
     private fun selectSymbol(symbol: StockInfo) {
         viewModelScope.launch {
-            addPortfolioItemUseCase(symbol, 0.0)
+            var finalSymbol = symbol
+            if (_uiState.value.isCryptoSearch) {
+                finalSymbol = symbol.copy(
+                    displaySymbol = symbol.displaySymbol,
+                    description = symbol.description.ifBlank { symbol.displaySymbol }
+                )
+            }
+
+            addPortfolioItemUseCase(finalSymbol, 0.0)
             // Navigate back to portfolio after adding
             _uiState.update { 
                 it.copy(
@@ -284,28 +316,42 @@ class PriceViewModel(
     }
 
     private fun filterSymbols(symbols: List<StockInfo>, query: String): List<StockInfo> {
-        if (query.isBlank()) return symbols
-        return symbols.filter {
-            it.description.contains(query, ignoreCase = true) ||
-            it.displaySymbol.contains(query, ignoreCase = true) ||
-            it.figi.contains(query, ignoreCase = true) ||
-            it.isin.contains(query, ignoreCase = true)
+        val filtered = if (query.isBlank()) {
+            symbols
+        } else {
+            symbols.filter {
+                it.description.contains(query, ignoreCase = true) ||
+                it.displaySymbol.contains(query, ignoreCase = true) ||
+                it.figi.contains(query, ignoreCase = true) ||
+                it.isin.contains(query, ignoreCase = true)
+            }
+        }
+
+        return if (_uiState.value.isCryptoSearch) {
+            filtered.filter {
+                it.displaySymbol.endsWith("/EUR", ignoreCase = true) ||
+                it.displaySymbol.endsWith("/USD", ignoreCase = true)
+            }
+        } else {
+            filtered
         }
     }
 
-    private fun getSymbols(exchange: String) {
+    private fun getSymbols(exchange: String, isCrypto: Boolean) {
+        _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            val result = getSymbolsUseCase(exchange)
+            val result = getSymbolsUseCase(exchange, isCrypto)
             result.onSuccess { symbols ->
                 val sortedSymbols = symbols.sortedBy { it.displaySymbol }
                 _uiState.update {
                     it.copy(
                         symbols = sortedSymbols,
-                        filteredSymbols = sortedSymbols
+                        filteredSymbols = sortedSymbols,
+                        isLoading = false
                     )
                 }
             }.onFailure {
-                _uiState.update { it.copy(symbols = emptyList(), filteredSymbols = emptyList()) }
+                _uiState.update { it.copy(symbols = emptyList(), filteredSymbols = emptyList(), isLoading = false) }
             }
         }
     }

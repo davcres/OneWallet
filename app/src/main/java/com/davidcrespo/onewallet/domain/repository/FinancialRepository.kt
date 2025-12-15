@@ -8,6 +8,7 @@ import com.davidcrespo.onewallet.domain.model.finnhub.StockInfo
 interface FinancialRepository {
     suspend fun getPrice(symbol: String): Result<Price>
     suspend fun getSymbols(exchange: String): Result<List<StockInfo>>
+    suspend fun getCryptoSymbols(exchange: String): Result<List<StockInfo>>
     suspend fun getQuote(symbol: String): Result<Quote>
     suspend fun getUsdEur(): Result<Rate>
 }

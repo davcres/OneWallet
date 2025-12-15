@@ -32,6 +32,15 @@ class FinancialRepositoryImpl(
         }
     }
 
+    override suspend fun getCryptoSymbols(exchange: String): Result<List<StockInfo>> {
+        return try {
+            val cryptoResponse = finnhubDataSource.getCryptoSymbols(exchange)
+            Result.success(cryptoResponse.map { it.toDomain() })
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override suspend fun getQuote(symbol: String): Result<Quote> {
         return try {
             val quoteResponse = finnhubDataSource.getPrice(symbol)

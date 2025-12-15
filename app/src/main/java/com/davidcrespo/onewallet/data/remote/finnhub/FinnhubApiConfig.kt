@@ -9,6 +9,12 @@ object FinnhubApiConfig {
         const val TOKEN = "token"
     }
 
+    object GetCryptoSymbols {
+        const val PATH = "crypto/symbol"
+        const val EXCHANGE = "exchange"
+        const val TOKEN = "token"
+    }
+
     object GetQuote {
         const val PATH = "quote"
         const val SYMBOL = "symbol"

@@ -21,6 +21,7 @@ data class PriceUiState(
     val editingItem: PortfolioItem? = null,
     val isBankDialogVisible: Boolean = false,
     val isFundDialogVisible: Boolean = false,
+    val isCryptoSearch: Boolean = false,
     val isLoading: Boolean = true,
     val error: String? = null
 )
@@ -36,6 +37,7 @@ sealed interface PriceIntent {
     
     // Navigation Intents
     data object NavigateToAddInvestment : PriceIntent
+    data object NavigateToAddCrypto : PriceIntent
     data object NavigateToHistory : PriceIntent
     data object NavigateBack : PriceIntent
 

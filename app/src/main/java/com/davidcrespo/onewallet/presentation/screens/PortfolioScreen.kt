@@ -158,6 +158,7 @@ fun PortfolioScreen(
             onAddInvestmentClick = { onIntent(PriceIntent.NavigateToAddInvestment) },
             onAddBankClick = { onIntent(PriceIntent.ShowBankDialog) },
             onAddFundClick = { onIntent(PriceIntent.ShowFundDialog) },
+            onAddCryptoClick = { onIntent(PriceIntent.NavigateToAddCrypto) },
             modifier = Modifier.align(Alignment.BottomEnd)
         )
 

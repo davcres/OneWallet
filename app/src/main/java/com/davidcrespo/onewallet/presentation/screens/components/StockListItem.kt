@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.domain.model.finnhub.StockInfo
 
+import androidx.compose.ui.text.font.FontWeight
+
 @Composable
 fun StockListItem(
     stock: StockInfo,
@@ -28,15 +30,23 @@ fun StockListItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = stock.displaySymbol,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = stock.description,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            if (stock.type == "CRYPTO") {
+                Text(
+                    text = stock.displaySymbol,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            } else {
+                Text(
+                    text = stock.displaySymbol,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = stock.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
         Spacer(modifier = Modifier.width(8.dp))
         Text(

@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CurrencyBitcoin
+import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.material.icons.filled.ShowChart
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -30,13 +32,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
-import androidx.compose.material.icons.filled.PieChart
-
 @Composable
 fun ExpandableFab(
     onAddInvestmentClick: () -> Unit,
     onAddBankClick: () -> Unit,
     onAddFundClick: () -> Unit,
+    onAddCryptoClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -60,6 +61,15 @@ fun ExpandableFab(
                     text = "Acciones",
                     onClick = {
                         onAddInvestmentClick()
+                        expanded = false
+                    }
+                )
+
+                FabItem(
+                    icon = Icons.Default.CurrencyBitcoin,
+                    text = "Cripto",
+                    onClick = {
+                        onAddCryptoClick()
                         expanded = false
                     }
                 )
