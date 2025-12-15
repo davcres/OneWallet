@@ -60,6 +60,9 @@ class PriceViewModel(
                 items.map { item ->
                     if (item.stockInfo.type == "CASH") {
                         item.copy(currentPrice = 1.0)
+                    } else if (item.stockInfo.manualPrice != null) {
+                        // Use manually set price for Funds/ETFs
+                        item.copy(currentPrice = item.stockInfo.manualPrice)
                     } else {
                         // Prices in map are already converted to EUR
                         val convertedPrice = prices[item.stockInfo.displaySymbol]
@@ -94,7 +97,7 @@ class PriceViewModel(
                 if (mappedItems.isEmpty() || hasPrices) {
                    saveMonthlySnapshotUseCase(mappedItems)
                    // Update Widget
-                    PortfolioWidget().updateAll(context)
+                   PortfolioWidget().updateAll(context)
                 }
 
                 fetchPricesForItems(mappedItems)
@@ -104,7 +107,7 @@ class PriceViewModel(
 
     private fun fetchPricesForItems(items: List<PortfolioItem>) {
         val symbolsToFetch = items
-            .filter { it.stockInfo.type != "CASH" }
+            .filter { it.stockInfo.type != "CASH" && it.stockInfo.manualPrice == null }
             .map { it.stockInfo.displaySymbol }
             .distinct()
 
@@ -140,18 +143,22 @@ class PriceViewModel(
             is PriceIntent.EditQuantity -> _uiState.update { it.copy(editingItem = intent.item) }
             is PriceIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity)
             is PriceIntent.RemoveItem -> removeItem(intent.item)
-            
+
             is PriceIntent.ShowBankDialog -> _uiState.update { it.copy(isBankDialogVisible = true) }
             is PriceIntent.DismissBankDialog -> _uiState.update { it.copy(isBankDialogVisible = false) }
             is PriceIntent.AddBankItem -> addBankItem(intent.name, intent.amount)
 
+            is PriceIntent.ShowFundDialog -> _uiState.update { it.copy(isFundDialogVisible = true) }
+            is PriceIntent.DismissFundDialog -> _uiState.update { it.copy(isFundDialogVisible = false) }
+            is PriceIntent.AddFundItem -> addFundItem(intent.name, intent.quantity, intent.price)
+
             is PriceIntent.NavigateToAddInvestment -> {
-                _uiState.update { 
+                _uiState.update {
                     it.copy(
                         currentScreen = PriceScreenType.AddInvestment,
                         searchQuery = "",
                         filteredSymbols = it.symbols
-                    ) 
+                    )
                 }
             }
             is PriceIntent.NavigateToHistory -> {
@@ -160,16 +167,32 @@ class PriceViewModel(
                 }
             }
             is PriceIntent.NavigateBack -> {
-                _uiState.update { 
+                _uiState.update {
                     it.copy(
                         currentScreen = PriceScreenType.Portfolio,
                         searchQuery = ""
-                    ) 
+                    )
                 }
             }
         }
     }
 
+    private fun addFundItem(name: String, quantity: Double, price: Double) {
+        viewModelScope.launch {
+            val fundStockInfo = StockInfo(
+                description = "Fondo / ETF",
+                displaySymbol = name,
+                currency = "EUR",
+                type = "FUND",
+                figi = "FUND_${UUID.randomUUID()}",
+                isin = "",
+                manualPrice = price
+            )
+
+            addPortfolioItemUseCase(fundStockInfo, quantity)
+            _uiState.update { it.copy(isFundDialogVisible = false) }
+        }
+    }
     private fun addBankItem(name: String, amount: Double) {
         viewModelScope.launch {
             val bankStockInfo = StockInfo(

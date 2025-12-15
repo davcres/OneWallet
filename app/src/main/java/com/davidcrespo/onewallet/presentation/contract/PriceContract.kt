@@ -20,6 +20,7 @@ data class PriceUiState(
     val searchQuery: String = "",
     val editingItem: PortfolioItem? = null,
     val isBankDialogVisible: Boolean = false,
+    val isFundDialogVisible: Boolean = false,
     val isLoading: Boolean = true,
     val error: String? = null
 )
@@ -42,4 +43,9 @@ sealed interface PriceIntent {
     data object ShowBankDialog : PriceIntent
     data object DismissBankDialog : PriceIntent
     data class AddBankItem(val name: String, val amount: Double) : PriceIntent
+
+    // Fund Dialog Intents
+    data object ShowFundDialog : PriceIntent
+    data object DismissFundDialog : PriceIntent
+    data class AddFundItem(val name: String, val quantity: Double, val price: Double) : PriceIntent
 }

@@ -42,6 +42,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import com.davidcrespo.onewallet.presentation.screens.components.dialogs.FundDepositDialog
 
 @Composable
 fun PortfolioScreen(
@@ -156,6 +157,7 @@ fun PortfolioScreen(
         ExpandableFab(
             onAddInvestmentClick = { onIntent(PriceIntent.NavigateToAddInvestment) },
             onAddBankClick = { onIntent(PriceIntent.ShowBankDialog) },
+            onAddFundClick = { onIntent(PriceIntent.ShowFundDialog) },
             modifier = Modifier.align(Alignment.BottomEnd)
         )
 
@@ -188,6 +190,16 @@ fun PortfolioScreen(
                 onDismiss = { onIntent(PriceIntent.DismissBankDialog) },
                 onConfirm = { name, amount ->
                     onIntent(PriceIntent.AddBankItem(name, amount))
+                }
+            )
+        }
+
+        // Add Fund/ETF Dialog
+        if (uiState.isFundDialogVisible) {
+            FundDepositDialog(
+                onDismiss = { onIntent(PriceIntent.DismissFundDialog) },
+                onConfirm = { name, quantity, price ->
+                    onIntent(PriceIntent.AddFundItem(name, quantity, price))
                 }
             )
         }

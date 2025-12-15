@@ -6,5 +6,6 @@ data class StockInfo(
     val displaySymbol: String,
     val figi: String,
     val isin: String,
-    val type: String
+    val type: String,
+    val manualPrice: Double? = null
 )

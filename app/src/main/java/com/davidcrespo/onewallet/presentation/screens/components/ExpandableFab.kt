@@ -30,10 +30,13 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
+import androidx.compose.material.icons.filled.PieChart
+
 @Composable
 fun ExpandableFab(
     onAddInvestmentClick: () -> Unit,
     onAddBankClick: () -> Unit,
+    onAddFundClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -54,9 +57,18 @@ fun ExpandableFab(
             Column(horizontalAlignment = Alignment.End) {
                 FabItem(
                     icon = Icons.Default.ShowChart,
-                    text = "Inversiones",
+                    text = "Acciones",
                     onClick = {
                         onAddInvestmentClick()
+                        expanded = false
+                    }
+                )
+
+                FabItem(
+                    icon = Icons.Default.PieChart,
+                    text = "Fondo / ETF",
+                    onClick = {
+                        onAddFundClick()
                         expanded = false
                     }
                 )

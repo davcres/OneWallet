@@ -14,7 +14,8 @@ data class PortfolioItemEntity(
     val isin: String,
     val type: String,
     val quantity: Double,
-    val sortOrder: Int
+    val sortOrder: Int,
+    val manualPrice: Double? = null
 )
 
 fun PortfolioItemEntity.toDomain() = StockInfo(
@@ -23,7 +24,8 @@ fun PortfolioItemEntity.toDomain() = StockInfo(
     displaySymbol = displaySymbol,
     figi = figi,
     isin = isin,
-    type = type
+    type = type,
+    manualPrice = manualPrice
 )
 
 fun StockInfo.toEntity(
@@ -37,5 +39,6 @@ fun StockInfo.toEntity(
     isin = isin,
     type = type,
     quantity = quantity,
-    sortOrder = sortOrder
+    sortOrder = sortOrder,
+    manualPrice = manualPrice
 )
