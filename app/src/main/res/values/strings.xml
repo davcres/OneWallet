@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">OneWallet Portafolio</string>
-    <string name="widget_portfolio_description">Tu cartera</string>
+    <string name="widget_portfolio_description">Consulta los valores de tu cartera</string>
+    <string name="widget_stocks_description">Sigue la cotización de tus activos en tiempo real</string>
 </resources>
