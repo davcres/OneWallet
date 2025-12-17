@@ -39,8 +39,8 @@ jobs:
 
       - name: Create secrets.properties
         run: |
-          echo "API_KEY=${{ secrets.API_KEY }}" >> $GITHUB_WORKSPACE/secrets.properties
-          echo "ANOTHER_KEY=${{ secrets.ANOTHER_KEY }}" >> $GITHUB_WORKSPACE/secrets.properties
+          echo "FINNHUB_API_KEY=${{ secrets.FINNHUB_API_KEY }}" >> $GITHUB_WORKSPACE/secrets.properties
+          echo "TWELVE_DATA_API_KEY=${{ secrets.TWELVE_DATA_API_KEY }}" >> $GITHUB_WORKSPACE/secrets.properties
 
       - name: Build app
         run: ./gradlew assemble
