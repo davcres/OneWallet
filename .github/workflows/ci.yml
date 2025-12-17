@@ -1,0 +1,38 @@
+name: Android CI
+
+# name: Nombre del workflow
+# on: Cada vez que se produzca x accion (push, pull_request...)
+  # branches: en que ramas se ejecutara el workflow
+# jobs: tareas que va a realizar el workflow
+  # build: hace un build para comprobar que todo ok
+    # runs-on: donde se quiere ejecutar el workflow (normalmente en la ult version de ubuntu)
+  # steps: pasos que va a hacer
+    # - uses: action/x ejecuta esta accion de github
+    # - uses: actions/checkout@v3 -> prepara el workflow del proyecto
+    # - uses: actions/setup-java@v3 -> configura java (with: java configuration)
+    # - uses: actions/gradle-build-action@v2 -> configura gradle
+    # - name: Nombre que le damos a la siguiente accion(uses) que se va a hacer
+    # run: Ejecuta comandos de gradle locales
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+  steps:
+    - uses: actions/checkout@v3 # preparar workflow
+    - name: Setup JDK 11
+      uses: actions/setup-java@v3 # preparar java
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+    - name: Setup Gradle
+      uses: actions/gradle-build-action@v2 # preparar gradle
+    - name: Build app
+      run: ./gradlew assemble
