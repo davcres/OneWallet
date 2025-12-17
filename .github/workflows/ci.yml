@@ -27,10 +27,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3 # preparar workflow
 
-      - name: Setup JDK 11
+      - name: Setup JDK 17
         uses: actions/setup-java@v3 # preparar java
         with:
-          java-version: '11'
+          java-version: '17'
           distribution: 'temurin'
           cache: gradle
 
