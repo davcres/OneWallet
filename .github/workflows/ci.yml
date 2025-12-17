@@ -10,7 +10,7 @@ name: Android CI
     # - uses: action/x ejecuta esta accion de github
     # - uses: actions/checkout@v3 -> prepara el workflow del proyecto
     # - uses: actions/setup-java@v3 -> configura java (with: java configuration)
-    # - uses: actions/gradle-build-action@v2 -> configura gradle
+    # - uses: gradle/gradle-build-action@v2 -> configura gradle
     # - name: Nombre que le damos a la siguiente accion(uses) que se va a hacer
     # run: Ejecuta comandos de gradle locales
 
@@ -33,6 +33,6 @@ jobs:
           distribution: 'temurin'
           cache: gradle
       - name: Setup Gradle
-        uses: actions/gradle-build-action@v2 # preparar gradle
+        uses: gradle/gradle-build-action@v2 # preparar gradle
       - name: Build app
         run: ./gradlew assemble
