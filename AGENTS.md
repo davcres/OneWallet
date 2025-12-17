@@ -85,6 +85,7 @@ We use **MVI** for state management to ensure a unidirectional data flow and pre
 *   **Domain:** 100% unit test coverage for Use Cases (fast, pure Kotlin).
 *   **Data:** Unit test Repositories and Mappers using mocks (Mockk/Mockito).
 *   **Presentation:** Unit test ViewModels (verify State updates and Effects). UI Tests (Compose Test Rule) for critical flows.
+*   Every time a new class is created or modified, ensure that the old tests passes and are updated with the new changes, and create test class if necessary.
 
 ### Naming Conventions
 *   **Use Cases:** `Verb` + `Noun` + `UseCase` (e.g., `LoginUserUseCase`).
