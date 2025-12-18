@@ -48,7 +48,11 @@ class HistoricalViewModel(
                 monthlyEntries.firstOrNull()?.let { it.year == year && it.month == month } == true
             }.orEmpty()
 
-            _uiState.update { it.copy(selectedMonthDetail = details) }
+            _uiState.update {
+                it.copy(
+                    selectedMonthDetail = details.sortedByDescending { it.quantity * it.price }
+                )
+            }
         }
     }
 
