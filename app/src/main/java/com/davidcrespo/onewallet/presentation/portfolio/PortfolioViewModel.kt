@@ -119,12 +119,15 @@ class PortfolioViewModel(
                         getInvestmentPriceUseCase(symbol, item.type)
                             .fold(
                                 onSuccess = { investmentFromApi ->
-                                    if (investmentFromApi.currency == Currency.EUR) {
-                                        investmentFromApi
+                                    val newPrice = if (investmentFromApi.currency == Currency.EUR) {
+                                        investmentFromApi.price
                                     } else {
-                                        val eurPrice = investmentFromApi.price * currentUsdEurRate
-                                        investmentFromApi.setNewPrice(eurPrice)
+                                        investmentFromApi.price * currentUsdEurRate
                                     }
+
+                                    item.copy(
+                                        price = newPrice
+                                    )
                                 },
                                 onFailure = {
                                     item
