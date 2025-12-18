@@ -1,0 +1,94 @@
+package com.davidcrespo.onewallet.presentation.market
+
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.presentation.market.components.MarketListItem
+import com.davidcrespo.onewallet.presentation.market.components.MarketSearchBar
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+fun AddInvestmentScreen(
+    isCrypto: Boolean,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: MarketViewModel = koinViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.handleIntent(MarketIntent.LoadInitialData(isCrypto))
+    }
+
+    BackHandler {
+        onBack()
+    }
+
+    if (uiState.navigateBack) {
+        onBack()
+    }
+
+    Scaffold(
+        topBar = {
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver"
+                        )
+                    }
+                    
+                    Box(modifier = Modifier.weight(1f)) {
+                        MarketSearchBar(
+                            query = uiState.searchQuery,
+                            onQueryChange = { viewModel.handleIntent(MarketIntent.SearchQueryChanged(it)) },
+                            assets = emptyList(), // We don't want the dropdown here, we use the main list
+                            onAssetSelected = {}
+                        )
+                    }
+                }
+                HorizontalDivider()
+            }
+        },
+        modifier = modifier.fillMaxSize()
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            items(uiState.marketAssets) { marketAsset ->
+                MarketListItem(
+                    marketAsset = marketAsset,
+                    onClick = { viewModel.handleIntent(MarketIntent.SelectAsset(marketAsset)) }
+                )
+                HorizontalDivider()
+            }
+        }
+    }
+}

@@ -1,10 +1,15 @@
 package com.davidcrespo.onewallet.domain.usecase.portfolio
 
-import com.davidcrespo.onewallet.domain.model.finnhub.StockInfo
+import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.repository.PortfolioRepository
+import java.time.LocalDate
 
 class RemovePortfolioItemUseCase(private val repository: PortfolioRepository) {
-    suspend operator fun invoke(stockInfo: StockInfo) {
-        repository.removeItem(stockInfo)
+    suspend operator fun invoke(investment: Investment) {
+        val now = LocalDate.now()
+        val year = now.year
+        val month = now.monthValue
+
+        repository.removeItem(investment, year, month)
     }
 }

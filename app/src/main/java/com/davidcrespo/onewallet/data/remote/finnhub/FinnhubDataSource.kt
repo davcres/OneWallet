@@ -1,20 +1,21 @@
 package com.davidcrespo.onewallet.data.remote.finnhub
 
-import com.davidcrespo.onewallet.data.remote.finnhub.models.CryptoSymbolResponse
-import com.davidcrespo.onewallet.data.remote.finnhub.models.QuoteResponse
-import com.davidcrespo.onewallet.data.remote.finnhub.models.StockInfoResponse
+import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
+import com.davidcrespo.onewallet.data.remote.finnhub.models.MarketCryptoResponse
+import com.davidcrespo.onewallet.data.remote.finnhub.models.MarketStockResponse
+import com.davidcrespo.onewallet.data.remote.finnhub.models.toInvestDto
 
 class FinnhubDataSource(private val finnhubApiClient: FinnhubApiClient) {
 
-    suspend fun getSymbols(exchange: String): List<StockInfoResponse> {
-        return finnhubApiClient.getSymbols(exchange)
+    suspend fun getStocksSymbols(exchange: String): List<MarketStockResponse> {
+        return finnhubApiClient.getStocksSymbols(exchange)
     }
 
-    suspend fun getCryptoSymbols(exchange: String): List<CryptoSymbolResponse> {
+    suspend fun getCryptoSymbols(exchange: String): List<MarketCryptoResponse> {
         return finnhubApiClient.getCryptoSymbols(exchange)
     }
 
-    suspend fun getPrice(symbol: String): QuoteResponse {
-        return finnhubApiClient.getQuote(symbol)
+    suspend fun getStockPrice(symbol: String): InvestmentDto {
+        return finnhubApiClient.getStockPrice(symbol).toInvestDto(symbol)
     }
 }

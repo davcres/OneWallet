@@ -1,14 +1,13 @@
 package com.davidcrespo.onewallet.domain.repository
 
-import com.davidcrespo.onewallet.domain.model.twelveData.Price
-import com.davidcrespo.onewallet.domain.model.finnhub.Quote
-import com.davidcrespo.onewallet.domain.model.finnhub.Rate
-import com.davidcrespo.onewallet.domain.model.finnhub.StockInfo
+import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.market.MarketAsset
+import com.davidcrespo.onewallet.domain.model.rate.Rate
 
 interface FinancialRepository {
-    suspend fun getPrice(symbol: String): Result<Price>
-    suspend fun getSymbols(exchange: String): Result<List<StockInfo>>
-    suspend fun getCryptoSymbols(exchange: String): Result<List<StockInfo>>
-    suspend fun getQuote(symbol: String): Result<Quote>
+    suspend fun getInvestmentPrice(symbol: String, type: InvestmentType): Result<Investment>
+    suspend fun getStocksSymbols(exchange: String): Result<List<MarketAsset>>
+    suspend fun getCryptosSymbols(exchange: String): Result<List<MarketAsset>>
     suspend fun getUsdEur(): Result<Rate>
 }
