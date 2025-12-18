@@ -1,6 +1,5 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -59,7 +58,6 @@ fun PortfolioScreen(
     }
 
     LaunchedEffect(uiState.portfolioItems) {
-        Log.e("***", "uiState.portfolioItems: ${uiState.portfolioItems}")
         viewModel.handleIntent(PortfolioIntent.UpdateBalance)
     }
 

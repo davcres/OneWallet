@@ -1,7 +1,8 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
 import android.content.Context
-import androidx.glance.appwidget.updateAll
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davidcrespo.onewallet.domain.model.investment.Currency
@@ -13,7 +14,9 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCa
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetUsdEurUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUseCase
+import com.davidcrespo.onewallet.widget.portfolio.PortfolioPrefsKeys
 import com.davidcrespo.onewallet.widget.portfolio.PortfolioWidget
+import com.davidcrespo.onewallet.widget.stocks.StocksPrefsKeys
 import com.davidcrespo.onewallet.widget.stocks.StocksWidget
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -59,10 +62,6 @@ class PortfolioViewModel(
         viewModelScope.launch {
             getUsdEurRate()
             getPortfolioItems()
-            sortPortfolioItems()
-            setTotalBalance()
-            savePortfolio()
-            updateWidgets()
         }
         _uiState.update { it.copy(isLoading = false) }
     }
@@ -82,7 +81,6 @@ class PortfolioViewModel(
                 _uiState.update { it.copy(isLoading = false, error = e.message) }
             }
             .collect { items ->
-                _uiState.update { it.copy(portfolioItems = items.toMutableList()) }
                 fetchPricesForItems(items)
             }
     }
@@ -91,6 +89,9 @@ class PortfolioViewModel(
         viewModelScope.launch {
             val symbolsWithPrice = uiState.value.symbolsWithPrice
 
+            val symbolsToSave = items
+                .filter { it.type == InvestmentType.FUND || it.type == InvestmentType.CASH }
+                .distinctBy { it.symbol }.toMutableList()
             val symbolsToFetch = items
                 .filter { it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO }
                 .distinctBy { it.symbol }
@@ -102,23 +103,30 @@ class PortfolioViewModel(
                 launch {
                     getInvestmentPriceUseCase(symbol, item.type)
                         .onSuccess { investment ->
-                            val portfolioItems = _uiState.value.portfolioItems
-                            portfolioItems.remove(item)
-                            if (investment.currency == Currency.EUR) {
-                                portfolioItems.add(investment)
+                            val newItem = if (investment.currency == Currency.EUR) {
+                                investment
                             } else {
                                 val newPrice = investment.price * _uiState.value.usdEurRate
-                                portfolioItems.add(investment.setNewPrice(newPrice))
+                                investment.setNewPrice(newPrice)
                             }
+                            symbolsToSave.add(newItem)
                             _uiState.update {
                                 it.copy(
-                                    portfolioItems = portfolioItems,
                                     symbolsWithPrice = uiState.value.symbolsWithPrice + investment.symbol
                                 )
                             }
+                            savePortfolio()
                         }
                 }
             }
+            _uiState.update {
+                it.copy(
+                    portfolioItems = symbolsToSave
+                )
+            }
+
+            sortPortfolioItems()
+            updateWidgets()
         }
     }
 
@@ -149,8 +157,27 @@ class PortfolioViewModel(
     }
 
     private suspend fun updateWidgets() {
-        PortfolioWidget().updateAll(context)
-        StocksWidget().updateAll(context)
+        val items = _uiState.value.portfolioItems
+        val balance = items.sumOf { it.quantity * it.price }
+
+        GlanceAppWidgetManager(context).getGlanceIds(PortfolioWidget::class.java).forEach { glanceId ->
+            updateAppWidgetState(context, glanceId) { prefs ->
+                prefs[PortfolioPrefsKeys.balance] = balance
+                prefs[PortfolioPrefsKeys.items] = items.map {
+                    "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
+                }.toSet()
+            }
+            PortfolioWidget().update(context, glanceId)
+        }
+
+        GlanceAppWidgetManager(context).getGlanceIds(StocksWidget::class.java).forEach { glanceId ->
+            updateAppWidgetState(context, glanceId) { prefs ->
+                prefs[StocksPrefsKeys.stocks] = items.map {
+                    "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
+                }.toSet()
+            }
+            StocksWidget().update(context, glanceId)
+        }
     }
 
     private fun addFundItem(name: String, quantity: Double, price: Double) {

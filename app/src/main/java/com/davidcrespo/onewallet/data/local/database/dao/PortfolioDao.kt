@@ -19,13 +19,13 @@ abstract class PortfolioDao {
     @Query("SELECT * FROM monthly_portfolio_table WHERE symbol = :symbol AND year = :year AND month = :month LIMIT 1")
     abstract fun getItem(symbol: String, year: Int, month: Int): Flow<InvestmentEntity?>
 
-    @Query("SELECT * FROM monthly_portfolio_table GROUP BY year, month ORDER BY year DESC, month DESC")
+    @Query("SELECT * FROM monthly_portfolio_table ORDER BY year DESC, month DESC")
     abstract fun getMonthsPortfolio(): Flow<List<InvestmentEntity>>
 
     @Query("SELECT * FROM monthly_portfolio_table WHERE year = :year AND month = :month")
     abstract fun getPortfolio(year: Int, month: Int): Flow<List<InvestmentEntity>>
 
-    @Query("SELECT * FROM monthly_portfolio_table ORDER BY year DESC, month DESC LIMIT 1")
+    @Query("SELECT * FROM monthly_portfolio_table WHERE (year, month) = (SELECT year, month FROM monthly_portfolio_table ORDER BY year DESC, month DESC LIMIT 1)")
     abstract fun getLatestPortfolio(): Flow<List<InvestmentEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

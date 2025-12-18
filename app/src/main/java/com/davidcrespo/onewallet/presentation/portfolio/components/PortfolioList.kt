@@ -1,6 +1,5 @@
 package com.davidcrespo.onewallet.presentation.portfolio.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
@@ -45,7 +44,6 @@ fun PortfolioList(
     onEdit: (Investment) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Log.e("***", "items.size: ${items.size}")
     val listState = rememberLazyListState()
     var draggingItemIndex by remember { mutableStateOf<Int?>(null) }
     var draggingItemOffset by remember { mutableFloatStateOf(0f) }
