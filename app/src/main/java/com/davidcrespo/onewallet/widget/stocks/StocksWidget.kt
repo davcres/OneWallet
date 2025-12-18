@@ -221,7 +221,13 @@ class GetPortfolioCallback() : ActionCallback, KoinComponent {
         parameters: ActionParameters
     ) {
         runCatching {
-            portfolioDao.getLatestPortfolio().map { it.map { it.toDomain() } }.collect { portfolioData ->
+            portfolioDao.getLatestPortfolio().map {
+                it.filter {
+                    it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO
+                }.map {
+                    it.toDomain()
+                }
+            }.collect { portfolioData ->
 
                 updateAppWidgetState(context, glanceId) { prefs: MutablePreferences ->
                     prefs[StocksPrefsKeys.stocks] = portfolioData.map {

@@ -30,11 +30,11 @@ class MarketViewModel(
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             val result = getMarketAssetsUseCase(isCrypto)
-            result.onSuccess { symbols ->
+            result.onSuccess { marketAssets ->
                 _uiState.update {
                     it.copy(
-                        marketAssets = symbols,
-                        filteredAssets = symbols,
+                        marketAssets = marketAssets,
+                        filteredAssets = marketAssets,
                         isCrypto = isCrypto,
                         isLoading = false
                     )

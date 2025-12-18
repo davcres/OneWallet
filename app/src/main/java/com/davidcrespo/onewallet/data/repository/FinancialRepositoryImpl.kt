@@ -103,7 +103,7 @@ class FinancialRepositoryImpl(
     override suspend fun getStocksSymbols(exchange: String): Result<List<MarketAsset>> {
         return try {
             val quoteResponse = finnhubDataSource.getStocksSymbols(exchange)
-            Result.success(quoteResponse.map { it.toDomain() })
+            Result.success(quoteResponse.mapNotNull { it.toDomain() })
         } catch (e: Exception) {
             Result.failure(e)
         }

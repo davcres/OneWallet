@@ -18,6 +18,9 @@ import com.davidcrespo.onewallet.widget.portfolio.PortfolioPrefsKeys
 import com.davidcrespo.onewallet.widget.portfolio.PortfolioWidget
 import com.davidcrespo.onewallet.widget.stocks.StocksPrefsKeys
 import com.davidcrespo.onewallet.widget.stocks.StocksWidget
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -81,54 +84,78 @@ class PortfolioViewModel(
                 _uiState.update { it.copy(isLoading = false, error = e.message) }
             }
             .collect { items ->
+                _uiState.update { it.copy(portfolioItems = items.toMutableList()) }
+                
                 fetchPricesForItems(items)
+                
+                _uiState.update { it.copy(isLoading = false) }
             }
     }
 
     private fun fetchPricesForItems(items: List<Investment>) {
         viewModelScope.launch {
-            val symbolsWithPrice = uiState.value.symbolsWithPrice
+            // Stable shot of initial state (avoid read _uiState in concurrent coroutines)
+            val currentUsdEurRate = _uiState.value.usdEurRate
+            val alreadyPricedSymbols = _uiState.value.symbolsWithPrice.toSet()
 
-            val symbolsToSave = items
+            // Keep Funds/Cash
+            val fixedItems = items
                 .filter { it.type == InvestmentType.FUND || it.type == InvestmentType.CASH }
-                .distinctBy { it.symbol }.toMutableList()
-            val symbolsToFetch = items
+                .distinctBy { it.symbol }
+
+            // Stocks/Crypto to update
+            val marketItems = items
                 .filter { it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO }
                 .distinctBy { it.symbol }
 
-            symbolsToFetch.forEach { item ->
-                val symbol = item.symbol
-                if (symbolsWithPrice.contains(symbol)) return@forEach
+            // Concurrent fetch
+            val updatedMarketItems: List<Investment> = coroutineScope {
+                marketItems.map { item ->
+                    async {
+                        val symbol = item.symbol
 
-                launch {
-                    getInvestmentPriceUseCase(symbol, item.type)
-                        .onSuccess { investment ->
-                            val newItem = if (investment.currency == Currency.EUR) {
-                                investment
-                            } else {
-                                val newPrice = investment.price * _uiState.value.usdEurRate
-                                investment.setNewPrice(newPrice)
-                            }
-                            symbolsToSave.add(newItem)
-                            _uiState.update {
-                                it.copy(
-                                    symbolsWithPrice = uiState.value.symbolsWithPrice + investment.symbol
-                                )
-                            }
-                            savePortfolio()
-                        }
-                }
+                        if (symbol in alreadyPricedSymbols) return@async item
+
+                        getInvestmentPriceUseCase(symbol, item.type)
+                            .fold(
+                                onSuccess = { investmentFromApi ->
+                                    if (investmentFromApi.currency == Currency.EUR) {
+                                        investmentFromApi
+                                    } else {
+                                        val eurPrice = investmentFromApi.price * currentUsdEurRate
+                                        investmentFromApi.setNewPrice(eurPrice)
+                                    }
+                                },
+                                onFailure = {
+                                    item
+                                }
+                            )
+                    }
+                }.awaitAll()
             }
+
+            // Final list to save
+            val symbolsToSave: List<Investment> = (fixedItems + updatedMarketItems).distinctBy { it.symbol }
+
+            // Update symbolsWithPrice
+            val newSymbolsWithPrice = (alreadyPricedSymbols + updatedMarketItems.map { it.symbol }).toList()
+
             _uiState.update {
                 it.copy(
-                    portfolioItems = symbolsToSave
+                    portfolioItems = symbolsToSave.toMutableList(),
+                    symbolsWithPrice = newSymbolsWithPrice
                 )
+            }
+
+            if (updatedMarketItems.any { it.symbol !in alreadyPricedSymbols }) {
+                savePortfolio(symbolsToSave)
             }
 
             sortPortfolioItems()
             updateWidgets()
         }
     }
+
 
     private fun sortPortfolioItems() {
         _uiState.update {
@@ -152,14 +179,15 @@ class PortfolioViewModel(
         }
     }
 
-    private suspend fun savePortfolio() {
-        saveMonthlyPortfolioUseCase(_uiState.value.portfolioItems)
+    private suspend fun savePortfolio(items: List<Investment>) {
+        saveMonthlyPortfolioUseCase(items)
     }
 
     private suspend fun updateWidgets() {
         val items = _uiState.value.portfolioItems
         val balance = items.sumOf { it.quantity * it.price }
 
+        // PortfolioWidget
         GlanceAppWidgetManager(context).getGlanceIds(PortfolioWidget::class.java).forEach { glanceId ->
             updateAppWidgetState(context, glanceId) { prefs ->
                 prefs[PortfolioPrefsKeys.balance] = balance
@@ -170,9 +198,12 @@ class PortfolioViewModel(
             PortfolioWidget().update(context, glanceId)
         }
 
+        // StocksWidget
         GlanceAppWidgetManager(context).getGlanceIds(StocksWidget::class.java).forEach { glanceId ->
             updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[StocksPrefsKeys.stocks] = items.map {
+                prefs[StocksPrefsKeys.stocks] = items.filter { 
+                    it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO
+                }.map {
                     "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
                 }.toSet()
             }

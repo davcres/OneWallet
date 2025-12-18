@@ -9,16 +9,22 @@ import kotlinx.serialization.Serializable
 data class MarketStockResponse(
     val symbol: String,
     val description: String,
-    val currency: Currency,
+    val currency: String,
     val figi: String,
     val type: String
 )
 
-fun MarketStockResponse.toDomain() = MarketAsset(
-    symbol = symbol,
-    currency = currency,
-    type = InvestmentType.STOCK,
-    description = description,
-    figi = figi,
-    stockType = type
-)
+fun MarketStockResponse.toDomain(): MarketAsset? {
+    return if (currency.isNotEmpty()) {
+        MarketAsset(
+            symbol = symbol,
+            currency = Currency.USD,
+            type = InvestmentType.STOCK,
+            description = description,
+            figi = figi,
+            stockType = type
+        )
+    } else {
+        null
+    }
+}

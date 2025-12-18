@@ -82,7 +82,7 @@ fun AddInvestmentScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            items(uiState.marketAssets) { marketAsset ->
+            items(uiState.filteredAssets) { marketAsset ->
                 MarketListItem(
                     marketAsset = marketAsset,
                     onClick = { viewModel.handleIntent(MarketIntent.SelectAsset(marketAsset)) }

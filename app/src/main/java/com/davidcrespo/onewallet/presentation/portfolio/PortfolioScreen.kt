@@ -65,7 +65,7 @@ fun PortfolioScreen(
         listOf(
             "Demasiado dinero para mostrarlo sin gafas de sol.",
             "A Hacienda le gusta esto.",
-            "Eres rico, ¿para qué quieres saber si has ganado 5€ más o menos?",
+            "Eres rico, ¿para qué quieres saber si has ganado 5€ más?",
             "Con esto te dejan entrar al Época sin hacer cola.",
             "Seguro que te puedes permitir hacerle un bizum al humilde desarrollador de la app.",
             "¿Seguro que no has añadido ceros de más? Te dejo un momento para reflexionar.",
