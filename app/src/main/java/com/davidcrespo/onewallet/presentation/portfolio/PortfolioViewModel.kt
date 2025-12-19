@@ -87,6 +87,8 @@ class PortfolioViewModel(
                 _uiState.update { it.copy(portfolioItems = items.toMutableList()) }
                 
                 fetchPricesForItems(items)
+                sortPortfolioItems()
+                updateWidgets()
                 
                 _uiState.update { it.copy(isLoading = false) }
             }
@@ -153,9 +155,6 @@ class PortfolioViewModel(
             if (updatedMarketItems.any { it.symbol !in alreadyPricedSymbols }) {
                 savePortfolio(symbolsToSave)
             }
-
-            sortPortfolioItems()
-            updateWidgets()
         }
     }
 
@@ -186,31 +185,33 @@ class PortfolioViewModel(
         saveMonthlyPortfolioUseCase(items)
     }
 
-    private suspend fun updateWidgets() {
-        val items = _uiState.value.portfolioItems
-        val balance = items.sumOf { it.quantity * it.price }
+    private fun updateWidgets() {
+        viewModelScope.launch {
+            val items = _uiState.value.portfolioItems
+            val balance = items.sumOf { it.quantity * it.price }
 
-        // PortfolioWidget
-        GlanceAppWidgetManager(context).getGlanceIds(PortfolioWidget::class.java).forEach { glanceId ->
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[PortfolioPrefsKeys.balance] = balance
-                prefs[PortfolioPrefsKeys.items] = items.map {
-                    "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
-                }.toSet()
+            // PortfolioWidget
+            GlanceAppWidgetManager(context).getGlanceIds(PortfolioWidget::class.java).forEach { glanceId ->
+                updateAppWidgetState(context, glanceId) { prefs ->
+                    prefs[PortfolioPrefsKeys.balance] = balance
+                    prefs[PortfolioPrefsKeys.items] = items.map {
+                        "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
+                    }.toSet()
+                }
+                PortfolioWidget().update(context, glanceId)
             }
-            PortfolioWidget().update(context, glanceId)
-        }
 
-        // StocksWidget
-        GlanceAppWidgetManager(context).getGlanceIds(StocksWidget::class.java).forEach { glanceId ->
-            updateAppWidgetState(context, glanceId) { prefs ->
-                prefs[StocksPrefsKeys.stocks] = items.filter { 
-                    it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO
-                }.map {
-                    "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
-                }.toSet()
+            // StocksWidget
+            GlanceAppWidgetManager(context).getGlanceIds(StocksWidget::class.java).forEach { glanceId ->
+                updateAppWidgetState(context, glanceId) { prefs ->
+                    prefs[StocksPrefsKeys.stocks] = items.filter {
+                        it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO
+                    }.map {
+                        "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
+                    }.toSet()
+                }
+                StocksWidget().update(context, glanceId)
             }
-            StocksWidget().update(context, glanceId)
         }
     }
 
