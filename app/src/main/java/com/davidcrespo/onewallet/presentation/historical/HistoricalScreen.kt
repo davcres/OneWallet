@@ -1,6 +1,5 @@
 package com.davidcrespo.onewallet.presentation.historical
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,22 +45,15 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoryScreen(
+fun HistoricalScreen(
     onBack: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: HistoricalViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.handleIntent(HistoricalIntent.LoadInitialData)
-    }
-
-    BackHandler {
-        if (uiState.selectedMonthDetail != null) {
-            viewModel.handleIntent(HistoricalIntent.DismissDetail)
-        } else {
-            onBack()
-        }
     }
 
     Scaffold(

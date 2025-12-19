@@ -1,6 +1,5 @@
 package com.davidcrespo.onewallet.presentation.market
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +26,7 @@ import com.davidcrespo.onewallet.presentation.market.components.MarketSearchBar
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AddInvestmentScreen(
+fun MarketScreen(
     isCrypto: Boolean,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -37,10 +36,6 @@ fun AddInvestmentScreen(
 
     LaunchedEffect(Unit) {
         viewModel.handleIntent(MarketIntent.LoadInitialData(isCrypto))
-    }
-
-    BackHandler {
-        onBack()
     }
 
     if (uiState.navigateBack) {

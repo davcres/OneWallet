@@ -100,4 +100,7 @@ dependencies {
     // Glance (Widgets)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)
+
+    // Navigation
+    implementation(libs.bundles.navigation)
 }
