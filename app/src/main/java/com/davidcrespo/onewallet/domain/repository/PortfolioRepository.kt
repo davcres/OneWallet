@@ -1,12 +1,10 @@
 package com.davidcrespo.onewallet.domain.repository
 
-import com.davidcrespo.onewallet.domain.model.PortfolioItem
-import com.davidcrespo.onewallet.domain.model.finnhub.StockInfo
+import com.davidcrespo.onewallet.domain.model.investment.Investment
 import kotlinx.coroutines.flow.Flow
 
 interface PortfolioRepository {
-    fun getPortfolioItems(): Flow<List<PortfolioItem>>
-    suspend fun addOrUpdateItem(stockInfo: StockInfo, quantity: Double)
-    suspend fun removeItem(stockInfo: StockInfo)
-    suspend fun updateOrder(items: List<PortfolioItem>)
+    suspend fun getPortfolioItems(): Flow<List<Investment>>
+    suspend fun addOrUpdateItem(investment: Investment)
+    suspend fun removeItem(investment: Investment, year: Int, month: Int)
 }

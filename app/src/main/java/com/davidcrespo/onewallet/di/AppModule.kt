@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.di
 
+import android.content.Context
 import android.util.Log
 import androidx.room.Room
 import com.davidcrespo.onewallet.data.local.database.AppDatabase
@@ -11,20 +12,23 @@ import com.davidcrespo.onewallet.data.repository.FinancialRepositoryImpl
 import com.davidcrespo.onewallet.data.repository.PortfolioRepositoryImpl
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.repository.PortfolioRepository
-import com.davidcrespo.onewallet.domain.usecase.GetPriceUseCase
-import com.davidcrespo.onewallet.domain.usecase.GetQuoteUseCase
-import com.davidcrespo.onewallet.domain.usecase.GetSymbolsUseCase
-import com.davidcrespo.onewallet.domain.usecase.GetUsdEurUseCase
-import com.davidcrespo.onewallet.domain.usecase.portfolio.AddPortfolioItemUseCase
+import com.davidcrespo.onewallet.domain.usecase.historical.GetMonthlyHistoryUseCase
+import com.davidcrespo.onewallet.domain.usecase.market.AddMarketAssetToPortfolioUseCase
+import com.davidcrespo.onewallet.domain.usecase.market.GetMarketAssetsUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.AddInvestmentToPortfolioUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.GetInvestmentPriceUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.GetUsdEurUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
-import com.davidcrespo.onewallet.domain.usecase.portfolio.ReorderPortfolioItemsUseCase
-import com.davidcrespo.onewallet.presentation.viewmodels.PriceViewModel
+import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUseCase
+import com.davidcrespo.onewallet.presentation.historical.HistoricalViewModel
+import com.davidcrespo.onewallet.presentation.market.MarketViewModel
+import com.davidcrespo.onewallet.presentation.portfolio.PortfolioViewModel
+import com.davidcrespo.onewallet.presentation.main.MainViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
@@ -33,12 +37,6 @@ import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-
-import android.content.Context
-import com.davidcrespo.onewallet.domain.usecase.portfolio.GetMonthlyDetailUseCase
-import com.davidcrespo.onewallet.domain.usecase.portfolio.GetMonthlyHistoryUseCase
-import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlySnapshotUseCase
-import com.davidcrespo.onewallet.presentation.viewmodels.HistoryViewModel
 
 val appModule = module {
 
@@ -56,7 +54,6 @@ val appModule = module {
     }
 
     single { get<AppDatabase>().portfolioDao() }
-    single { get<AppDatabase>().portfolioSnapshotDao() }
 
     single {
         HttpClient(CIO) {
@@ -96,20 +93,20 @@ val appModule = module {
     single<FinancialRepository> { FinancialRepositoryImpl(get(), get()) }
     single<PortfolioRepository> { PortfolioRepositoryImpl(get()) }
 
-    single { GetPriceUseCase(get()) }
-    single { GetSymbolsUseCase(get()) }
-    single { GetQuoteUseCase(get()) }
+    single { GetInvestmentPriceUseCase(get()) }
+    single { GetMarketAssetsUseCase(get()) }
     single { GetUsdEurUseCase(get()) }
     
     single { GetPortfolioItemsUseCase(get()) }
-    single { AddPortfolioItemUseCase(get()) }
-    single { ReorderPortfolioItemsUseCase(get()) }
+    single { AddInvestmentToPortfolioUseCase(get()) }
+    single { AddMarketAssetToPortfolioUseCase(get()) }
     single { RemovePortfolioItemUseCase(get()) }
     
-    single { SaveMonthlySnapshotUseCase(get()) }
+    single { SaveMonthlyPortfolioUseCase(get()) }
     single { GetMonthlyHistoryUseCase(get()) }
-    single { GetMonthlyDetailUseCase(get()) }
 
-    viewModelOf(::PriceViewModel)
-    viewModelOf(::HistoryViewModel)
+    viewModelOf(::MainViewModel)
+    viewModelOf(::PortfolioViewModel)
+    viewModelOf(::MarketViewModel)
+    viewModelOf(::HistoricalViewModel)
 }

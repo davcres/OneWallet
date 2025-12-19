@@ -41,8 +41,12 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.davidcrespo.onewallet.MainActivity
 import com.davidcrespo.onewallet.R
-import com.davidcrespo.onewallet.data.local.database.dao.PortfolioSnapshotDao
-import com.davidcrespo.onewallet.data.local.database.entities.MonthlyPortfolioSnapshotEntity
+import com.davidcrespo.onewallet.data.local.database.dao.PortfolioDao
+import com.davidcrespo.onewallet.data.local.database.entities.toDomain
+import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -61,7 +65,7 @@ class StocksWidget : GlanceAppWidget() {
 
     @Composable
     fun StocksWidgetContent(
-        stocks: List<MonthlyPortfolioSnapshotEntity>
+        stocks: List<Investment>
     ) {
 
         Column(
@@ -119,7 +123,7 @@ class StocksWidget : GlanceAppWidget() {
     }
 
     @Composable
-    fun StockList(items: List<MonthlyPortfolioSnapshotEntity>) {
+    fun StockList(items: List<Investment>) {
         LazyColumn(
             modifier = GlanceModifier.fillMaxSize(),
             horizontalAlignment = Alignment.Start
@@ -160,7 +164,7 @@ class StocksWidget : GlanceAppWidget() {
     }
 
     @Composable
-    fun StockRow(item: MonthlyPortfolioSnapshotEntity) {
+    fun StockRow(item: Investment) {
         Row(
             modifier = GlanceModifier
                 .clickable(actionStartActivity<MainActivity>())
@@ -190,17 +194,18 @@ class StocksWidget : GlanceAppWidget() {
     }
 
 
-    private fun stringToPortfolio(items: Set<String>): List<MonthlyPortfolioSnapshotEntity> {
+    private fun stringToPortfolio(items: Set<String>): List<Investment> {
         return items.map { item ->
             val parts = item.split("|")
-            MonthlyPortfolioSnapshotEntity(
+            Investment(
                 symbol = parts[0],
-                price = parts[1].toDoubleOrNull() ?: 0.0,
-                quantity = parts[2].toDoubleOrNull() ?: 0.0,
-                currency = parts[3],
-                year = parts[4].toIntOrNull() ?: 0,
-                month = parts[5].toIntOrNull() ?: 0,
-                timestamp = parts[6].toLongOrNull() ?: 0,
+                quantity = parts[1].toDoubleOrNull() ?: 0.0,
+                price = parts[2].toDoubleOrNull() ?: 0.0,
+                previousPrice = parts[3].toDoubleOrNull() ?: 0.0,
+                currency = Currency.valueOf(parts[4]),
+                type = InvestmentType.valueOf(parts[5]),
+                year = parts[6].toIntOrNull() ?: 0,
+                month = parts[7].toIntOrNull() ?: 0,
             )
         }
     }
@@ -208,7 +213,7 @@ class StocksWidget : GlanceAppWidget() {
 
 class GetPortfolioCallback() : ActionCallback, KoinComponent {
 
-    private val snapshotDao: PortfolioSnapshotDao by inject()
+    private val portfolioDao: PortfolioDao by inject()
 
     override suspend fun onAction(
         context: Context,
@@ -216,22 +221,22 @@ class GetPortfolioCallback() : ActionCallback, KoinComponent {
         parameters: ActionParameters
     ) {
         runCatching {
-            var portfolioData: List<MonthlyPortfolioSnapshotEntity> = emptyList()
+            portfolioDao.getLatestPortfolio().map {
+                it.filter {
+                    it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO
+                }.map {
+                    it.toDomain()
+                }
+            }.collect { portfolioData ->
 
-            val latestItem = snapshotDao.getLatestSnapshotOneItem()
-            if (latestItem != null) {
-                val snapshots =
-                    snapshotDao.getSnapshotDetails(latestItem.year, latestItem.month)
-                portfolioData = snapshots
+                updateAppWidgetState(context, glanceId) { prefs: MutablePreferences ->
+                    prefs[StocksPrefsKeys.stocks] = portfolioData.map {
+                        "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
+                    }.toSet()
+                }
+
+                StocksWidget().update(context, glanceId)
             }
-
-            updateAppWidgetState(context, glanceId) { prefs: MutablePreferences ->
-                prefs[StocksPrefsKeys.stocks] = portfolioData.map {
-                    "${it.symbol}|${it.price}|${it.quantity}|${it.currency}|${it.year}|${it.month}|${it.timestamp}"
-                }.toSet()
-            }
-
-            StocksWidget().update(context, glanceId)
         }.onFailure {
             it.printStackTrace()
         }

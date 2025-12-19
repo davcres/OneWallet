@@ -30,7 +30,7 @@ The project strictly follows **Clean Architecture**, dividing the codebase into 
 *   **Components:**
     *   **UI Components:** Activities, Fragments, Jetpack Compose functions.
     *   **ViewModels:** Manage UI state and handle business logic execution via Use Cases.
-    *   **MVI Contracts:** Define State, Events, and Effects.
+    *   **MVI Contracts:** Define State, Events, and Effects. Always add a new field to state. Do not create a new val, var or MutableStateFlow.
 
 ---
 

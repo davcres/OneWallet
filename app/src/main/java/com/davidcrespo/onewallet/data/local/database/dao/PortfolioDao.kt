@@ -1,37 +1,48 @@
 package com.davidcrespo.onewallet.data.local.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import androidx.room.Update
-import com.davidcrespo.onewallet.data.local.database.entities.PortfolioItemEntity
+import com.davidcrespo.onewallet.data.local.database.entities.InvestmentEntity
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Write/Update/Delete -> Suspend
+ * Read -> Flow (always updated)
+ * Read -> Suspend (One shot data)
+ */
 @Dao
-interface PortfolioDao {
-    @Query("SELECT * FROM portfolio_items ORDER BY sortOrder ASC")
-    fun getAllPortfolioItems(): Flow<List<PortfolioItemEntity>>
+abstract class PortfolioDao {
 
-    @Query("SELECT * FROM portfolio_items WHERE displaySymbol = :symbol LIMIT 1")
-    suspend fun getItem(symbol: String): PortfolioItemEntity?
+    @Query("SELECT * FROM monthly_portfolio_table WHERE symbol = :symbol AND year = :year AND month = :month LIMIT 1")
+    abstract fun getItem(symbol: String, year: Int, month: Int): Flow<InvestmentEntity?>
+
+    @Query("SELECT * FROM monthly_portfolio_table ORDER BY year DESC, month DESC")
+    abstract fun getMonthsPortfolio(): Flow<List<InvestmentEntity>>
+
+    @Query("SELECT * FROM monthly_portfolio_table WHERE year = :year AND month = :month")
+    abstract fun getPortfolio(year: Int, month: Int): Flow<List<InvestmentEntity>>
+
+    @Query("SELECT * FROM monthly_portfolio_table WHERE (year, month) = (SELECT year, month FROM monthly_portfolio_table ORDER BY year DESC, month DESC LIMIT 1)")
+    abstract fun getLatestPortfolio(): Flow<List<InvestmentEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdate(item: PortfolioItemEntity)
+    abstract suspend fun insertPortfolio(investments: List<InvestmentEntity>)
 
-    @Delete
-    suspend fun delete(item: PortfolioItemEntity)
-
-    @Query("SELECT MAX(sortOrder) FROM portfolio_items")
-    suspend fun getMaxSortOrder(): Int?
-
-    @Update
-    suspend fun updateItems(items: List<PortfolioItemEntity>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertOrUpdate(item: InvestmentEntity)
 
     @Transaction
-    suspend fun updatePortfolioOrder(items: List<PortfolioItemEntity>) {
-        updateItems(items)
+    open suspend fun updateMonthPortfolio(year: Int, month: Int, investments: List<InvestmentEntity>) {
+        deleteMonthPortfolio(year, month)
+        insertPortfolio(investments)
     }
+
+    @Query("DELETE FROM monthly_portfolio_table WHERE symbol = :symbol AND year = :year AND month = :month")
+    abstract suspend fun deleteInvestment(symbol: String, year: Int, month: Int)
+
+    @Query("DELETE FROM monthly_portfolio_table WHERE year = :year AND month = :month")
+    abstract suspend fun deleteMonthPortfolio(year: Int, month: Int)
 }

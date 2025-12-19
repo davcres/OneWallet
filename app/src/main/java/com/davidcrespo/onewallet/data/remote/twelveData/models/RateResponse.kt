@@ -1,6 +1,6 @@
 package com.davidcrespo.onewallet.data.remote.twelveData.models
 
-import com.davidcrespo.onewallet.domain.model.finnhub.Rate
+import com.davidcrespo.onewallet.domain.model.rate.Rate
 import kotlinx.serialization.Serializable
 
 @Serializable

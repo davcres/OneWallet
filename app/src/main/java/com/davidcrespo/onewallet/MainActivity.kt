@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.davidcrespo.onewallet.presentation.screens.PriceScreen
+import com.davidcrespo.onewallet.presentation.main.MainScreen
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             OneWalletTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    PriceScreen(
+                    MainScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
