@@ -1,6 +1,5 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -80,16 +79,6 @@ fun PortfolioScreen(
                 currentRichPhrase = richPhrases.random()
                 delay(10000)
             }
-        }
-    }
-
-    BackHandler {
-        if (uiState.editingItem != null) {
-            viewModel.handleIntent(PortfolioIntent.EditQuantity(null))
-        } else if (uiState.isFundDialogVisible) {
-            viewModel.handleIntent(PortfolioIntent.DismissBankDialog)
-        } else if (uiState.isBankDialogVisible) {
-            viewModel.handleIntent(PortfolioIntent.DismissBankDialog)
         }
     }
 

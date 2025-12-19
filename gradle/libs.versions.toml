@@ -14,6 +14,8 @@ ktor = "3.3.3"
 room = "2.6.1"
 ksp = "2.1.0-1.0.29"
 glance = "1.1.1"
+navigation3 = "1.0.0"
+navigation3-viewmodel = "2.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +45,9 @@ ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" } # Jetpack Navigation3 for runtime navigation features (NavController, NavHost).
+navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" } # Jetpack Navigation3 UI helpers (BottomNavigationView, NavigationView).
+navigation3-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "navigation3-viewmodel" } # Jetpack Navigation3 integration with ViewModel (ViewModelStore support).
 
 [bundles]
 koin = [
@@ -55,6 +60,12 @@ ktor = [
     "ktor-client-content-negotiation",
     "ktor-client-logging",
     "ktor-serialization-kotlinx-json"
+]
+
+navigation = [
+    "navigation3-runtime",
+    "navigation3-ui",
+    "navigation3-viewmodel",
 ]
 
 [plugins]
