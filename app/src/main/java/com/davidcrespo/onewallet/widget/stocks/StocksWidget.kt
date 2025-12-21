@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.glance.ColorFilter
@@ -23,7 +22,6 @@ import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
-import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.background
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
@@ -41,14 +39,11 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.davidcrespo.onewallet.MainActivity
 import com.davidcrespo.onewallet.R
-import com.davidcrespo.onewallet.data.local.database.dao.PortfolioDao
-import com.davidcrespo.onewallet.data.local.database.entities.toDomain
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
-import kotlinx.coroutines.flow.map
+import com.davidcrespo.onewallet.widget.WidgetsRefreshWorker
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class StocksWidget : GlanceAppWidget() {
 
@@ -213,33 +208,12 @@ class StocksWidget : GlanceAppWidget() {
 
 class GetPortfolioCallback() : ActionCallback, KoinComponent {
 
-    private val portfolioDao: PortfolioDao by inject()
-
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        runCatching {
-            portfolioDao.getLatestPortfolio().map {
-                it.filter {
-                    it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO
-                }.map {
-                    it.toDomain()
-                }
-            }.collect { portfolioData ->
-
-                updateAppWidgetState(context, glanceId) { prefs: MutablePreferences ->
-                    prefs[StocksPrefsKeys.stocks] = portfolioData.map {
-                        "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
-                    }.toSet()
-                }
-
-                StocksWidget().update(context, glanceId)
-            }
-        }.onFailure {
-            it.printStackTrace()
-        }
+        WidgetsRefreshWorker.enqueue(context)
     }
 }
 

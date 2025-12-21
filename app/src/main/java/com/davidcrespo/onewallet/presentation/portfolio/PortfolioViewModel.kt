@@ -1,8 +1,6 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
 import android.content.Context
-import androidx.glance.appwidget.GlanceAppWidgetManager
-import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davidcrespo.onewallet.domain.model.investment.Currency
@@ -14,10 +12,7 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCa
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetUsdEurUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUseCase
-import com.davidcrespo.onewallet.widget.portfolio.PortfolioPrefsKeys
-import com.davidcrespo.onewallet.widget.portfolio.PortfolioWidget
-import com.davidcrespo.onewallet.widget.stocks.StocksPrefsKeys
-import com.davidcrespo.onewallet.widget.stocks.StocksWidget
+import com.davidcrespo.onewallet.widget.WidgetsRefreshWorker
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -186,33 +181,7 @@ class PortfolioViewModel(
     }
 
     private fun updateWidgets() {
-        viewModelScope.launch {
-            val items = _uiState.value.portfolioItems
-            val balance = items.sumOf { it.quantity * it.price }
-
-            // PortfolioWidget
-            GlanceAppWidgetManager(context).getGlanceIds(PortfolioWidget::class.java).forEach { glanceId ->
-                updateAppWidgetState(context, glanceId) { prefs ->
-                    prefs[PortfolioPrefsKeys.balance] = balance
-                    prefs[PortfolioPrefsKeys.items] = items.map {
-                        "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
-                    }.toSet()
-                }
-                PortfolioWidget().update(context, glanceId)
-            }
-
-            // StocksWidget
-            GlanceAppWidgetManager(context).getGlanceIds(StocksWidget::class.java).forEach { glanceId ->
-                updateAppWidgetState(context, glanceId) { prefs ->
-                    prefs[StocksPrefsKeys.stocks] = items.filter {
-                        it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO
-                    }.map {
-                        "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
-                    }.toSet()
-                }
-                StocksWidget().update(context, glanceId)
-            }
-        }
+        WidgetsRefreshWorker.enqueue(context)
     }
 
     private fun addFundItem(name: String, quantity: Double, price: Double) {

@@ -24,6 +24,7 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUs
 import com.davidcrespo.onewallet.presentation.historical.HistoricalViewModel
 import com.davidcrespo.onewallet.presentation.market.MarketViewModel
 import com.davidcrespo.onewallet.presentation.portfolio.PortfolioViewModel
+import com.davidcrespo.onewallet.widget.WidgetsRefreshWorker
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
@@ -34,6 +35,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.dsl.worker
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -51,6 +53,8 @@ val appModule = module {
         )
         .build()
     }
+
+    worker { WidgetsRefreshWorker(get(), get()) }
 
     single { get<AppDatabase>().portfolioDao() }
 

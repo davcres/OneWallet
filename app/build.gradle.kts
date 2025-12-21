@@ -103,4 +103,8 @@ dependencies {
 
     // Navigation
     implementation(libs.bundles.navigation)
+
+    // Work Manager
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.koin.androidx.workmanager)
 }
