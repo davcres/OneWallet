@@ -5,8 +5,8 @@ import androidx.datastore.preferences.core.MutablePreferences
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.work.CoroutineWorker
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.util.concurrent.TimeUnit
 
 class WidgetsRefreshWorker(
     appContext: Context,
@@ -80,14 +81,16 @@ class WidgetsRefreshWorker(
         private const val WIDGET_TAG = "widgets_refresh"
 
         fun enqueue(context: Context) {
-            val req = OneTimeWorkRequestBuilder<WidgetsRefreshWorker>()
+            val req = PeriodicWorkRequestBuilder<WidgetsRefreshWorker>(
+                1, TimeUnit.HOURS
+            )
                 .addTag(WIDGET_TAG)
                 .build()
 
-            WorkManager.getInstance(context).enqueueUniqueWork(
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WIDGET_TAG,
-                ExistingWorkPolicy.KEEP
-                , req
+                ExistingPeriodicWorkPolicy.KEEP,
+                req
             )
         }
     }
