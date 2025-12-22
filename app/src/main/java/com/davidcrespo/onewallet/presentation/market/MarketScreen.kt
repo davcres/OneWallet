@@ -61,9 +61,7 @@ fun MarketScreen(
                     Box(modifier = Modifier.weight(1f)) {
                         MarketSearchBar(
                             query = uiState.searchQuery,
-                            onQueryChange = { viewModel.handleIntent(MarketIntent.SearchQueryChanged(it)) },
-                            assets = emptyList(), // We don't want the dropdown here, we use the main list
-                            onAssetSelected = {}
+                            onQueryChange = { viewModel.handleIntent(MarketIntent.SearchQueryChanged(it)) }
                         )
                     }
                 }
