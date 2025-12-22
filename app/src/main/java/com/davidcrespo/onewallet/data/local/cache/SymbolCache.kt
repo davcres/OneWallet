@@ -2,6 +2,6 @@ package com.davidcrespo.onewallet.data.local.cache
 
 interface SymbolCache {
 
-    fun getCachedSymbolIfValid(symbol: String, validCacheHours: Long): Double?
-    fun setCachedSymbol(symbol: String, price: Double)
+    suspend fun getCachedSymbolIfValid(symbol: String, validCacheHours: Long): Double?
+    suspend fun setCachedSymbol(symbol: String, price: Double)
 }

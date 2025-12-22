@@ -10,6 +10,7 @@ import com.davidcrespo.onewallet.data.local.cache.SymbolCacheImpl
 import com.davidcrespo.onewallet.data.local.database.AppDatabase
 import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubApiClient
 import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubDataSource
+import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiClient
 import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiClient
 import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.repository.FinancialRepositoryImpl
@@ -95,12 +96,13 @@ val appModule = module {
 
     single { TwelveDataApiClient(get()) }
     single { FinnhubApiClient(get()) }
+    single { TelegramApiClient(get()) }
 
     single { TwelveDataDataSource(get()) }
     single { FinnhubDataSource(get()) }
 
-    single<SymbolCache> { SymbolCacheImpl(get()) }
-    single<MarketCache> { MarketCacheImpl(get(), get(), get()) }
+    single<SymbolCache> { SymbolCacheImpl(get(), get()) }
+    single<MarketCache> { MarketCacheImpl(get(), get(), get(), get()) }
 
     single<FinancialRepository> { FinancialRepositoryImpl(get(), get(), get(), get()) }
     single<PortfolioRepository> { PortfolioRepositoryImpl(get()) }
