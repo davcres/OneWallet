@@ -38,7 +38,6 @@ class PortfolioViewModel(
 
     fun handleIntent(intent: PortfolioIntent) {
         when (intent) {
-            is PortfolioIntent.LoadInitialData -> loadInitialData()
             is PortfolioIntent.UpdateBalance -> setTotalBalance()
 
             is PortfolioIntent.EditQuantity -> _uiState.update { it.copy(editingItem = intent.item) }
@@ -53,6 +52,10 @@ class PortfolioViewModel(
             is PortfolioIntent.ShowBankDialog -> _uiState.update { it.copy(isBankDialogVisible = true) }
             is PortfolioIntent.DismissBankDialog -> _uiState.update { it.copy(isBankDialogVisible = false) }
         }
+    }
+
+    init {
+        loadInitialData()
     }
 
     private fun loadInitialData() {
@@ -181,7 +184,9 @@ class PortfolioViewModel(
     }
 
     private fun updateWidgets() {
-        WidgetsRefreshWorker.enqueue(context)
+        viewModelScope.launch {
+            WidgetsRefreshWorker.enqueue(context)
+        }
     }
 
     private fun addFundItem(name: String, quantity: Double, price: Double) {

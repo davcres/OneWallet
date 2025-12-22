@@ -52,10 +52,6 @@ fun PortfolioScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.handleIntent(PortfolioIntent.LoadInitialData)
-    }
-
     LaunchedEffect(uiState.portfolioItems) {
         viewModel.handleIntent(PortfolioIntent.UpdateBalance)
     }

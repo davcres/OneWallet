@@ -15,7 +15,6 @@ data class PortfolioUiState(
 )
 
 sealed interface PortfolioIntent {
-    data object LoadInitialData : PortfolioIntent
     data object UpdateBalance : PortfolioIntent
 
     data class EditQuantity(val item: Investment?) : PortfolioIntent
