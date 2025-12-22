@@ -185,7 +185,7 @@ class PortfolioViewModel(
 
     private fun updateWidgets() {
         viewModelScope.launch {
-            WidgetsRefreshWorker.enqueue(context)
+            WidgetsRefreshWorker.enqueueNow(context)
         }
     }
 

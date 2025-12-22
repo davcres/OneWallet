@@ -40,7 +40,6 @@ import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.widget.WidgetsRefreshWorker
-import org.koin.core.component.KoinComponent
 import kotlin.math.roundToInt
 
 class PortfolioWidget : GlanceAppWidget() {
@@ -221,14 +220,14 @@ class PortfolioWidget : GlanceAppWidget() {
     }
 }
 
-class GetPortfolioCallback() : ActionCallback, KoinComponent {
+class GetPortfolioCallback() : ActionCallback {
 
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        WidgetsRefreshWorker.enqueue(context)
+        WidgetsRefreshWorker.enqueueNow(context)
     }
 }
 
