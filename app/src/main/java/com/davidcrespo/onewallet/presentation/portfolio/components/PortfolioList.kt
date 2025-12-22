@@ -1,5 +1,8 @@
 package com.davidcrespo.onewallet.presentation.portfolio.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
@@ -19,6 +22,7 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +38,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.davidcrespo.onewallet.domain.model.investment.Investment
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +59,14 @@ fun PortfolioList(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         itemsIndexed(items = items, key = { _, item -> item.symbol }) { index, portfolioItem ->
+            var visible by remember { mutableStateOf(false) }
+
+            // Animation with waterfall effect
+            LaunchedEffect(Unit) {
+                delay(index * 100L)
+                visible = true
+            }
+
             val currentItemIndex by rememberUpdatedState(index)
             val isDragging = index == draggingItemIndex
             val zIndex = if (isDragging) 1f else 0f
@@ -70,99 +83,106 @@ fun PortfolioList(
                 }
             )
 
-            SwipeToDismissBox(
-                state = dismissState,
-                backgroundContent = {
-                    val color = if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
-                        Color.Red.copy(alpha = 0.8f)
-                    } else {
-                        Color.Transparent
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(color)
-                            .padding(horizontal = 20.dp),
-                        contentAlignment = Alignment.CenterEnd
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Borrar",
-                            tint = Color.White
-                        )
-                    }
-                },
-                content = {
-                    PortfolioItemCard(
-                        item = portfolioItem,
-                        modifier = Modifier
-                            .graphicsLayer {
-                                translationY = if (isDragging) draggingItemOffset else 0f
-                                scaleX = scale
-                                scaleY = scale
-                            }
-                            .clickable { onEdit(portfolioItem) }
-                            .pointerInput(Unit) {
-                                detectDragGesturesAfterLongPress(
-                                    onDragStart = {
-                                        draggingItemIndex = currentItemIndex
-                                        draggingItemOffset = 0f
-                                    },
-                                    onDrag = { change, dragAmount ->
-                                        change.consume()
-                                        draggingItemOffset += dragAmount.y
-
-                                        val currentDraggingIndex = draggingItemIndex
-                                            ?: return@detectDragGesturesAfterLongPress
-                                        val currentItemInfo = listState.layoutInfo.visibleItemsInfo
-                                            .find { it.index == currentDraggingIndex }
-                                            ?: return@detectDragGesturesAfterLongPress
-
-                                        val currentItemCenter =
-                                            currentItemInfo.offset + currentItemInfo.size / 2
-                                        val dragOffsetAbsolute =
-                                            currentItemCenter + draggingItemOffset
-
-                                        val targetItem =
-                                            listState.layoutInfo.visibleItemsInfo.find { itemInfo ->
-                                                itemInfo.index != currentDraggingIndex &&
-                                                        dragOffsetAbsolute > itemInfo.offset &&
-                                                        dragOffsetAbsolute < (itemInfo.offset + itemInfo.size)
-                                            }
-
-                                        if (targetItem != null) {
-                                            val targetIndex = targetItem.index
-                                            onMove(currentDraggingIndex, targetIndex)
-                                            draggingItemIndex = targetIndex
-                                            val distance =
-                                                targetItem.offset - currentItemInfo.offset
-                                            draggingItemOffset -= distance
-                                        }
-                                    },
-                                    onDragEnd = {
-                                        draggingItemIndex = null
-                                        draggingItemOffset = 0f
-                                    },
-                                    onDragCancel = {
-                                        draggingItemIndex = null
-                                        draggingItemOffset = 0f
-                                    }
-                                )
-                            }
-                    )
-                },
-                modifier = Modifier
-                    .zIndex(zIndex)
-                    .then(
-                        if (draggingItemIndex == null) {
-                            Modifier.animateItem()
+            AnimatedVisibility(
+                visible = visible,
+                enter = slideInHorizontally(
+                    initialOffsetX = { -it }
+                ) + fadeIn()
+            ) {
+                SwipeToDismissBox(
+                    state = dismissState,
+                    backgroundContent = {
+                        val color = if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
+                            Color.Red.copy(alpha = 0.8f)
                         } else {
-                            Modifier
+                            Color.Transparent
                         }
-                    )
-            )
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(color)
+                                .padding(horizontal = 20.dp),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Borrar",
+                                tint = Color.White
+                            )
+                        }
+                    },
+                    content = {
+                        PortfolioItemCard(
+                            item = portfolioItem,
+                            modifier = Modifier
+                                .graphicsLayer {
+                                    translationY = if (isDragging) draggingItemOffset else 0f
+                                    scaleX = scale
+                                    scaleY = scale
+                                }
+                                .clickable { onEdit(portfolioItem) }
+                                .pointerInput(Unit) {
+                                    detectDragGesturesAfterLongPress(
+                                        onDragStart = {
+                                            draggingItemIndex = currentItemIndex
+                                            draggingItemOffset = 0f
+                                        },
+                                        onDrag = { change, dragAmount ->
+                                            change.consume()
+                                            draggingItemOffset += dragAmount.y
+
+                                            val currentDraggingIndex = draggingItemIndex
+                                                ?: return@detectDragGesturesAfterLongPress
+                                            val currentItemInfo = listState.layoutInfo.visibleItemsInfo
+                                                .find { it.index == currentDraggingIndex }
+                                                ?: return@detectDragGesturesAfterLongPress
+
+                                            val currentItemCenter =
+                                                currentItemInfo.offset + currentItemInfo.size / 2
+                                            val dragOffsetAbsolute =
+                                                currentItemCenter + draggingItemOffset
+
+                                            val targetItem =
+                                                listState.layoutInfo.visibleItemsInfo.find { itemInfo ->
+                                                    itemInfo.index != currentDraggingIndex &&
+                                                            dragOffsetAbsolute > itemInfo.offset &&
+                                                            dragOffsetAbsolute < (itemInfo.offset + itemInfo.size)
+                                                }
+
+                                            if (targetItem != null) {
+                                                val targetIndex = targetItem.index
+                                                onMove(currentDraggingIndex, targetIndex)
+                                                draggingItemIndex = targetIndex
+                                                val distance =
+                                                    targetItem.offset - currentItemInfo.offset
+                                                draggingItemOffset -= distance
+                                            }
+                                        },
+                                        onDragEnd = {
+                                            draggingItemIndex = null
+                                            draggingItemOffset = 0f
+                                        },
+                                        onDragCancel = {
+                                            draggingItemIndex = null
+                                            draggingItemOffset = 0f
+                                        }
+                                    )
+                                }
+                        )
+                    },
+                    modifier = Modifier
+                        .zIndex(zIndex)
+                        .then(
+                            if (draggingItemIndex == null) {
+                                Modifier.animateItem()
+                            } else {
+                                Modifier
+                            }
+                        )
+                )
+            }
         }
     }
 }

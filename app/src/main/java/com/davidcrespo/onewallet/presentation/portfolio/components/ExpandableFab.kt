@@ -23,9 +23,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -34,13 +31,14 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ExpandableFab(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
     onAddStockClick: () -> Unit,
     onAddCryptoClick: () -> Unit,
     onAddFundClick: () -> Unit,
     onAddBankClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
     val rotation by animateFloatAsState(
         targetValue = if (expanded) 135f else 0f, 
         label = "fab_rotation"
@@ -61,7 +59,7 @@ fun ExpandableFab(
                     text = "Acciones",
                     onClick = {
                         onAddStockClick()
-                        expanded = false
+                        onExpandedChange(false)
                     }
                 )
 
@@ -70,7 +68,7 @@ fun ExpandableFab(
                     text = "Cripto",
                     onClick = {
                         onAddCryptoClick()
-                        expanded = false
+                        onExpandedChange(false)
                     }
                 )
 
@@ -79,7 +77,7 @@ fun ExpandableFab(
                     text = "Fondo / ETF",
                     onClick = {
                         onAddFundClick()
-                        expanded = false
+                        onExpandedChange(false)
                     }
                 )
                 
@@ -88,14 +86,14 @@ fun ExpandableFab(
                     text = "Banco / Deposito",
                     onClick = {
                         onAddBankClick()
-                        expanded = false
+                        onExpandedChange(false)
                     }
                 )
             }
         }
         
         FloatingActionButton(
-            onClick = { expanded = !expanded }
+            onClick = { onExpandedChange(!expanded) }
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
