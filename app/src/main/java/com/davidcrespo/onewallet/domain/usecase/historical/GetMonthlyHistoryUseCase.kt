@@ -1,7 +1,7 @@
 package com.davidcrespo.onewallet.domain.usecase.historical
 
-import com.davidcrespo.onewallet.data.local.database.dao.PortfolioDao
-import com.davidcrespo.onewallet.data.local.database.entities.toDomain
+import com.davidcrespo.onewallet.data.local.database.portfolio.dao.PortfolioDao
+import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toDomain
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

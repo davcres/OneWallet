@@ -18,4 +18,17 @@ data class Investment(
     fun setDate(month: Int, year: Int): Investment {
         return this.copy(month = month, year = year)
     }
+
+    companion object {
+        fun fromCache(symbol: String, price: Double, type: InvestmentType) = Investment(
+            symbol = symbol,
+            quantity = 0.0,
+            price = price,
+            previousPrice = 0.0,
+            currency = Currency.USD,
+            type = type,
+            year = 0,
+            month = 0
+        )
+    }
 }

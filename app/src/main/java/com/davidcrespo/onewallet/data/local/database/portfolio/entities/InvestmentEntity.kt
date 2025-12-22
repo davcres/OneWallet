@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.data.local.database.entities
+package com.davidcrespo.onewallet.data.local.database.portfolio.entities
 
 import androidx.room.Entity
 import com.davidcrespo.onewallet.domain.model.investment.Currency

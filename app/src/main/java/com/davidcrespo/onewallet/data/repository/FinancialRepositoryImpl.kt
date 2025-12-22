@@ -1,8 +1,14 @@
 package com.davidcrespo.onewallet.data.repository
 
+import com.davidcrespo.onewallet.data.local.cache.MarketCache
+import com.davidcrespo.onewallet.data.local.cache.SymbolCache
+import com.davidcrespo.onewallet.data.local.database.market.entities.toCryptoEntity
+import com.davidcrespo.onewallet.data.local.database.market.entities.toDomain
+import com.davidcrespo.onewallet.data.local.database.market.entities.toStockEntity
 import com.davidcrespo.onewallet.data.remote.dto.toDomain
 import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubDataSource
 import com.davidcrespo.onewallet.data.remote.finnhub.models.toDomain
+import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiConfig.GetRate.USD_EUR
 import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.twelveData.models.toDomain
 import com.davidcrespo.onewallet.domain.model.investment.Investment
@@ -13,7 +19,9 @@ import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 
 class FinancialRepositoryImpl(
     private val twelveDataDataSource: TwelveDataDataSource,
-    private val finnhubDataSource: FinnhubDataSource
+    private val finnhubDataSource: FinnhubDataSource,
+    private val symbolCache: SymbolCache,
+    private val marketCache: MarketCache
 ) : FinancialRepository {
     override suspend fun getInvestmentPrice(
         symbol: String,
@@ -28,7 +36,21 @@ class FinancialRepositoryImpl(
 
     private suspend fun getCryptoPrice(symbol: String): Result<Investment> {
         return try {
-            val priceResponse = twelveDataDataSource.getCryptoPrice(symbol)
+            val cachedPrice = symbolCache.getCachedSymbolIfValid(symbol, 1)
+
+            val investment = if (cachedPrice != null) {
+                Investment.fromCache(
+                    symbol = symbol,
+                    price = cachedPrice,
+                    type = InvestmentType.CRYPTO
+                )
+            } else {
+                val investmentDto = twelveDataDataSource.getCryptoPrice(symbol)
+                symbolCache.setCachedSymbol(symbol, investmentDto.price)
+                investmentDto.toDomain()
+            }
+
+
             //TODO***
             /*val currentPrice = priceResponse.price
 
@@ -69,7 +91,7 @@ class FinancialRepositoryImpl(
                 )
             }*/
 
-            Result.success(priceResponse.toDomain())
+            Result.success(investment)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -77,7 +99,19 @@ class FinancialRepositoryImpl(
 
     private suspend fun getStockPrice(symbol: String): Result<Investment> {
         return try {
-            val stockPrice = finnhubDataSource.getStockPrice(symbol)
+            val cachedPrice = symbolCache.getCachedSymbolIfValid(symbol, 1)
+
+            val investment = if (cachedPrice != null) {
+                Investment.fromCache(
+                    symbol = symbol,
+                    price = cachedPrice,
+                    type = InvestmentType.STOCK
+                )
+            } else {
+                val investmentDto = finnhubDataSource.getStockPrice(symbol)
+                symbolCache.setCachedSymbol(symbol, investmentDto.price)
+                investmentDto.toDomain()
+            }
             //TODO***
             // Recupera el item de local y actualiza con el nuevo precio
             /*val item = historicalPortfolioDao.getItem(symbol)
@@ -94,40 +128,64 @@ class FinancialRepositoryImpl(
                 )
             }*/
 
-            return Result.success(stockPrice.toDomain())
+            return Result.success(investment)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
     override suspend fun getStocksSymbols(exchange: String): Result<List<MarketAsset>> {
-        return try {
-            val quoteResponse = finnhubDataSource.getStocksSymbols(exchange)
-            Result.success(quoteResponse.mapNotNull { it.toDomain() })
-        } catch (e: Exception) {
-            Result.failure(e)
+        return runCatching {
+            val cachedStocks = marketCache.getCachedStockMarketIfValid(24)
+
+            val stocks = if (cachedStocks.isNotEmpty()) {
+                cachedStocks.map { it.toDomain() }
+            } else {
+                val stocksResponse = finnhubDataSource.getStocksSymbols(exchange)
+                marketCache.setCachedStockMarket(stocksResponse.mapNotNull { it.toStockEntity() })
+                stocksResponse.mapNotNull { it.toDomain() }
+            }
+
+            Result.success(stocks)
+        }.getOrElse {
+            Result.failure(it)
         }
     }
 
     override suspend fun getCryptosSymbols(exchange: String): Result<List<MarketAsset>> {
-        return try {
-            val cryptoResponse = finnhubDataSource.getCryptoSymbols(exchange)
-            val filterCryptos = cryptoResponse.filter {
-                it.displaySymbol.endsWith("/EUR", ignoreCase = true) ||
-                it.displaySymbol.endsWith("/USDC", ignoreCase = true)
+        return runCatching {
+            val cachedCryptos = marketCache.getCachedCryptoMarketIfValid(24)
+
+            val cryptos = if (cachedCryptos.isNotEmpty()) {
+                cachedCryptos.map { it.toDomain() }
+            } else {
+                val cryptosResponse = finnhubDataSource.getCryptoSymbols(exchange)
+                val filteredCryptos = cryptosResponse.filter {
+                    it.displaySymbol.endsWith("/EUR", ignoreCase = true) ||
+                    it.displaySymbol.endsWith("/USDC", ignoreCase = true)
+                }
+                marketCache.setCachedCryptoMarket(filteredCryptos.map { it.toCryptoEntity() })
+                filteredCryptos.map { it.toDomain() }
             }
-            Result.success(filterCryptos.map { it.toDomain() })
-        } catch (e: Exception) {
-            Result.failure(e)
+
+            Result.success(cryptos)
+        }.getOrElse {
+            Result.failure(it)
         }
     }
 
     override suspend fun getUsdEur(): Result<Rate> {
-        return try {
-            val rate = twelveDataDataSource.getUsdEur()
-            Result.success(rate.toDomain())
-        } catch (e: Exception) {
-            Result.failure(e)
+        return runCatching {
+            val cachedRate = symbolCache.getCachedSymbolIfValid(USD_EUR, 24)
+            if (cachedRate != null) {
+                Result.success(Rate(USD_EUR, cachedRate))
+            } else {
+                val rate = twelveDataDataSource.getUsdEur()
+                symbolCache.setCachedSymbol(rate.symbol, rate.rate)
+                Result.success(rate.toDomain())
+            }
+        }.getOrElse {
+            Result.failure(it)
         }
     }
 }

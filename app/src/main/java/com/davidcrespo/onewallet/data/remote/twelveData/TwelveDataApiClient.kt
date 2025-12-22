@@ -19,7 +19,7 @@ class TwelveDataApiClient(private val client: HttpClient) {
 
     suspend fun getUsdEur(): RateResponse {
         return client.get("${TwelveDataApiConfig.BASE_URL}/${TwelveDataApiConfig.GetRate.PATH}") {
-            parameter(TwelveDataApiConfig.GetRate.FROM_TO, "USD/EUR")
+            parameter(TwelveDataApiConfig.GetRate.FROM_TO, TwelveDataApiConfig.GetRate.USD_EUR)
             parameter(TwelveDataApiConfig.GetRate.AMOUNT, 1)
             parameter(TwelveDataApiConfig.GetRate.API_KEY, BuildConfig.TWELVE_DATA_API_KEY)
         }.body()

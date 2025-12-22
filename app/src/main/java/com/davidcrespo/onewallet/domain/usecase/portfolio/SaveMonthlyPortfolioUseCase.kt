@@ -1,7 +1,7 @@
 package com.davidcrespo.onewallet.domain.usecase.portfolio
 
-import com.davidcrespo.onewallet.data.local.database.dao.PortfolioDao
-import com.davidcrespo.onewallet.data.local.database.entities.toEntity
+import com.davidcrespo.onewallet.data.local.database.portfolio.dao.PortfolioDao
+import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toEntity
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import java.time.LocalDate
 

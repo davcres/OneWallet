@@ -1,11 +1,11 @@
-package com.davidcrespo.onewallet.data.local.database.dao
+package com.davidcrespo.onewallet.data.local.database.portfolio.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.davidcrespo.onewallet.data.local.database.entities.InvestmentEntity
+import com.davidcrespo.onewallet.data.local.database.portfolio.entities.InvestmentEntity
 import kotlinx.coroutines.flow.Flow
 
 /**

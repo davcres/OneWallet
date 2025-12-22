@@ -3,6 +3,10 @@ package com.davidcrespo.onewallet.di
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
+import com.davidcrespo.onewallet.data.local.cache.MarketCache
+import com.davidcrespo.onewallet.data.local.cache.MarketCacheImpl
+import com.davidcrespo.onewallet.data.local.cache.SymbolCache
+import com.davidcrespo.onewallet.data.local.cache.SymbolCacheImpl
 import com.davidcrespo.onewallet.data.local.database.AppDatabase
 import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubApiClient
 import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubDataSource
@@ -57,6 +61,8 @@ val appModule = module {
     worker { WidgetsRefreshWorker(get(), get()) }
 
     single { get<AppDatabase>().portfolioDao() }
+    single { get<AppDatabase>().stockMarketDao() }
+    single { get<AppDatabase>().cryptoMarketDao() }
 
     single {
         HttpClient(CIO) {
@@ -93,7 +99,10 @@ val appModule = module {
     single { TwelveDataDataSource(get()) }
     single { FinnhubDataSource(get()) }
 
-    single<FinancialRepository> { FinancialRepositoryImpl(get(), get()) }
+    single<SymbolCache> { SymbolCacheImpl(get()) }
+    single<MarketCache> { MarketCacheImpl(get(), get(), get()) }
+
+    single<FinancialRepository> { FinancialRepositoryImpl(get(), get(), get(), get()) }
     single<PortfolioRepository> { PortfolioRepositoryImpl(get()) }
 
     single { GetInvestmentPriceUseCase(get()) }

@@ -1,8 +1,8 @@
 package com.davidcrespo.onewallet.data.repository
 
-import com.davidcrespo.onewallet.data.local.database.dao.PortfolioDao
-import com.davidcrespo.onewallet.data.local.database.entities.toDomain
-import com.davidcrespo.onewallet.data.local.database.entities.toEntity
+import com.davidcrespo.onewallet.data.local.database.portfolio.dao.PortfolioDao
+import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toDomain
+import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toEntity
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.repository.PortfolioRepository
 import kotlinx.coroutines.flow.Flow
