@@ -9,8 +9,10 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -27,9 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.presentation.portfolio.components.ExpandableFab
+import com.davidcrespo.onewallet.core.extensions.presentation.composables.OWFloatingActionButton
+import com.davidcrespo.onewallet.presentation.portfolio.components.Header
 import com.davidcrespo.onewallet.presentation.portfolio.components.PortfolioList
 import com.davidcrespo.onewallet.presentation.portfolio.components.TotalBalance
+import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddInvestmentBottomSheet
+import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AssetType
 import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.BankDepositDialog
 import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.FundDepositDialog
 import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.StockDetailDialog
@@ -73,17 +78,24 @@ fun PortfolioScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                Header(
+                    navigateToHistorical = navigateToHistorical
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 TotalBalance(
                     totalBalance = uiState.totalBalance,
-                    navigateToHistorical = navigateToHistorical,
                     modifier = Modifier.fillMaxWidth()
                 )
 
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
-                    text = "Tu Portafolio",
+                    text = "Tus inversiones",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.align(Alignment.Start)
@@ -123,17 +135,28 @@ fun PortfolioScreen(
                         fabButtonExpanded = false
                     }
             )
+
+            AddInvestmentBottomSheet(
+                visible = fabButtonExpanded,
+                onDismiss = { fabButtonExpanded = false },
+                onAssetTypeClick = { asset ->
+                    when (asset) {
+                        AssetType.Stock -> navigateToMarket(false)
+                        AssetType.Crypto -> navigateToMarket(true)
+                        AssetType.Fund -> viewModel.handleIntent(PortfolioIntent.ShowFundDialog)
+                        AssetType.Bank -> viewModel.handleIntent(PortfolioIntent.ShowBankDialog)
+                    }
+                    fabButtonExpanded = false
+                }
+            )
         }
 
-        // Floating Action Button
-        ExpandableFab(
+        OWFloatingActionButton(
             expanded = fabButtonExpanded,
             onExpandedChange = { fabButtonExpanded = it },
-            onAddStockClick = { navigateToMarket(false) },
-            onAddBankClick = { viewModel.handleIntent(PortfolioIntent.ShowBankDialog) },
-            onAddFundClick = { viewModel.handleIntent(PortfolioIntent.ShowFundDialog) },
-            onAddCryptoClick = { navigateToMarket(true) },
-            modifier = Modifier.align(Alignment.BottomEnd)
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.BottomEnd)
         )
 
         // Edit Quantity Dialog

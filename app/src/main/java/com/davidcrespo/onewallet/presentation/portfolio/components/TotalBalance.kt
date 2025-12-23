@@ -5,17 +5,14 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +36,6 @@ import kotlinx.coroutines.delay
 @Composable
 fun TotalBalance(
     totalBalance: Double,
-    navigateToHistorical: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val richPhrases = remember {
@@ -69,62 +65,48 @@ fun TotalBalance(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .background(
                     brush = cardGlowBrush(),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(32.dp)
                 )
                 .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(
-                onClick = navigateToHistorical,
-                modifier = Modifier.align(Alignment.TopEnd)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.DateRange,
-                    contentDescription = "Historial",
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
+            Text(
+                text = "Balance Total",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
 
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.Center),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Balance Total",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+            Spacer(modifier = Modifier.height(8.dp))
 
-                if (totalBalance > 1_000_000) {
-                    AnimatedContent(
-                        targetState = currentRichPhrase,
-                        transitionSpec = { fadeIn() togetherWith fadeOut() },
-                        label = "RichPhraseTransition"
-                    ) { phrase ->
-                        Text(
-                            text = phrase,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            textAlign = TextAlign.Center,
-                            lineHeight = 30.sp,
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        )
-                    }
-                } else {
-                    AnimatedCounter(
-                        targetValue = totalBalance,
-                        suffix = " €",
-                        fontSize = 45.sp,
+            if (totalBalance > 1_000_000) {
+                AnimatedContent(
+                    targetState = currentRichPhrase,
+                    transitionSpec = { fadeIn() togetherWith fadeOut() },
+                    label = "RichPhraseTransition"
+                ) { phrase ->
+                    Text(
+                        text = phrase,
+                        fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 30.sp,
+                        modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }
+            } else {
+                AnimatedCounter(
+                    targetValue = totalBalance,
+                    suffix = " €",
+                    fontSize = 45.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             }
         }
     }

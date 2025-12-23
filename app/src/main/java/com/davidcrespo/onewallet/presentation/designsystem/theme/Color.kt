@@ -8,7 +8,7 @@ val MintPrimary = Color(0xFF35F28F)
 val OnMintPrimary = Color(0xFF052112)
 
 val MintContainer = Color(0xFF123826)
-val OnMintContainer = Color(0xFFC8F7DD)
+val OnMintContainer = Color(0xFFFFFFFF)
 
 // Secondary
 val SecondaryGreen = Color(0xFF22C55E)
