@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.domain.model.investment.Investment
@@ -86,9 +87,13 @@ fun PortfolioList(
                     state = dismissState,
                     backgroundContent = {
                         val color = if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
-                            Color.Red.copy(alpha = 0.8f)
+                            Brush.horizontalGradient(
+                                colors = listOf(Color.Transparent, Color.Red.copy(alpha = 0.8f))
+                            )
                         } else {
-                            Color.Transparent
+                            Brush.horizontalGradient(
+                                colors = listOf(Color.Transparent, Color.Transparent)
+                            )
                         }
 
                         Box(
@@ -111,9 +116,9 @@ fun PortfolioList(
                             item = portfolioItem,
                             modifier = Modifier
                                 .clickable { onEdit(portfolioItem) }
-                                .bounceClick()
                         )
-                    }
+                    },
+                    modifier = Modifier.bounceClick()
                 )
             }
         }
