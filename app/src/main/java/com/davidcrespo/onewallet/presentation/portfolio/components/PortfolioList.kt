@@ -1,6 +1,8 @@
 package com.davidcrespo.onewallet.presentation.portfolio.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.background
@@ -38,7 +40,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.davidcrespo.onewallet.domain.model.investment.Investment
-import com.davidcrespo.onewallet.presentation.designsystem.composables.spring
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -88,7 +89,10 @@ fun PortfolioList(
                 visible = visible,
                 enter = slideInHorizontally(
                     initialOffsetX = { -it },
-                    animationSpec = spring()
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessVeryLow
+                    )
                 ) + fadeIn()
             ) {
                 SwipeToDismissBox(

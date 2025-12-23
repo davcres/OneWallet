@@ -63,6 +63,7 @@ fun PortfolioItemCard(
                 Text(
                     text = item.symbol,
                     style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.Bold
                 )
                 //TODO***
@@ -76,46 +77,25 @@ fun PortfolioItemCard(
             }
 
             Column(horizontalAlignment = Alignment.End) {
-                if (item.price != null) {//TODO***
-                    val totalValue = item.quantity * item.price
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colorScheme.secondaryContainer,
-                        modifier = Modifier.padding(bottom = 4.dp) // Add padding similar to quantity badge
-                    ) {
-                        Text(
-                            text = "${String.format("%.2f", totalValue)} €",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp) // Add internal padding
-                        )
-                    }
-                    if (item.type != InvestmentType.CASH) {
-                        Text(
-                            text = "${String.format("%.2f", item.quantity)} acciones @ ${String.format("%.2f", item.price)} €",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                } else {
-                    // Fallback to old quantity display if price not available
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colorScheme.secondaryContainer,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    ) {
-                        Text(
-                            text = "x ${item.quantity}",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-                        )
-                    }
+                val totalValue = item.quantity * item.price
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                ) {
                     Text(
-                        text = item.currency.name, // Currency from stock info, but could be derived from total value.
+                        text = "${String.format("%.2f", totalValue)} €",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                    )
+                }
+                if (item.type != InvestmentType.CASH) {
+                    Text(
+                        text = "${String.format("%.2f", item.quantity)} acciones @ ${String.format("%.2f", item.price)} €",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.outline
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }

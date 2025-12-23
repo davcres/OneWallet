@@ -1,7 +1,9 @@
 package com.davidcrespo.onewallet.presentation.portfolio.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -10,6 +12,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Add
@@ -42,7 +46,11 @@ fun ExpandableFab(
     modifier: Modifier = Modifier
 ) {
     val rotation by animateFloatAsState(
-        targetValue = if (expanded) 135f else 0f, 
+        targetValue = if (expanded) 135f else 0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
         label = "fab_rotation"
     )
 
@@ -96,12 +104,17 @@ fun ExpandableFab(
         
         FloatingActionButton(
             onClick = { onExpandedChange(!expanded) },
+            shape = CircleShape,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.bounceClick()
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Añadir",
-                modifier = Modifier.rotate(rotation)
+                modifier = Modifier
+                    .rotate(rotation)
+                    .size(35.dp)
             )
         }
     }

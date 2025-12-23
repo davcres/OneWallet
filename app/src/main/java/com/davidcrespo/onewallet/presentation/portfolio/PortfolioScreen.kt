@@ -1,12 +1,8 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,14 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,19 +26,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.davidcrespo.onewallet.presentation.designsystem.composables.AnimatedCounter
-import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
-import com.davidcrespo.onewallet.presentation.designsystem.theme.cardGlowBrush
 import com.davidcrespo.onewallet.presentation.portfolio.components.ExpandableFab
 import com.davidcrespo.onewallet.presentation.portfolio.components.PortfolioList
+import com.davidcrespo.onewallet.presentation.portfolio.components.TotalBalance
 import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.BankDepositDialog
 import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.FundDepositDialog
 import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.StockDetailDialog
-import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -65,28 +48,7 @@ fun PortfolioScreen(
         viewModel.handleIntent(PortfolioIntent.UpdateBalance)
     }
 
-    val richPhrases = remember {
-        listOf(
-            "Demasiado dinero para mostrarlo sin gafas de sol.",
-            "A Hacienda le gusta esto.",
-            "Eres rico, ¿para qué quieres saber si has ganado 5€ más?",
-            "Con esto te dejan entrar al Época sin hacer cola.",
-            "Seguro que te puedes permitir hacerle un bizum al humilde desarrollador de la app.",
-            "¿Seguro que no has añadido ceros de más? Te dejo un momento para reflexionar.",
-            "Deja algo para los demás Javito.",
-        )
-    }
-    var currentRichPhrase by remember { mutableStateOf(richPhrases.random()) }
     var fabButtonExpanded by remember { mutableStateOf(false) }
-
-    LaunchedEffect(uiState.totalBalance) {
-        if (uiState.totalBalance > 1_000_000) {
-            while (true) {
-                currentRichPhrase = richPhrases.random()
-                delay(10000)
-            }
-        }
-    }
 
     val blurRadius by animateDpAsState(
         targetValue = if (fabButtonExpanded) 16.dp else 0.dp,
@@ -114,77 +76,16 @@ fun PortfolioScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Header with Total Balance
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .bounceClick(),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.Transparent)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                brush = cardGlowBrush(),
-                                shape = RoundedCornerShape(16.dp)
-                            )
-                            .fillMaxWidth()
-                    ) {
-                        IconButton(
-                            onClick = navigateToHistorical,
-                            modifier = Modifier.align(Alignment.TopEnd)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = "Historial",
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-
-                        Column(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .align(Alignment.Center),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Balance Total",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-
-                            if (uiState.totalBalance > 1_000_000) {
-                                AnimatedContent(
-                                    targetState = currentRichPhrase,
-                                    transitionSpec = { fadeIn() togetherWith fadeOut() },
-                                    label = "RichPhraseTransition"
-                                ) { phrase ->
-                                    Text(
-                                        text = phrase,
-                                        fontSize = 24.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        textAlign = TextAlign.Center,
-                                        lineHeight = 30.sp,
-                                        modifier = Modifier.padding(horizontal = 8.dp)
-                                    )
-                                }
-                            } else {
-                                AnimatedCounter(
-                                    targetValue = uiState.totalBalance,
-                                    suffix = " €",
-                                    fontSize = 45.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                            }
-                        }
-                    }
-                }
+                TotalBalance(
+                    totalBalance = uiState.totalBalance,
+                    navigateToHistorical = navigateToHistorical,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Text(
                     text = "Tu Portafolio",
                     style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.align(Alignment.Start)
                 )
 
