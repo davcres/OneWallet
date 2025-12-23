@@ -176,8 +176,8 @@ private fun AssetTypeCard(
         shadowElevation = 0.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
             .bounceClick()
+            .clickable(onClick = onClick)
     ) {
         Column(
             modifier = Modifier
