@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.data.repository
 
+import com.davidcrespo.onewallet.BuildConfig
 import com.davidcrespo.onewallet.data.local.cache.MarketCache
 import com.davidcrespo.onewallet.data.local.cache.SymbolCache
 import com.davidcrespo.onewallet.data.local.database.market.entities.toCryptoEntity
@@ -36,7 +37,7 @@ class FinancialRepositoryImpl(
 
     private suspend fun getCryptoPrice(symbol: String): Result<Investment> {
         return try {
-            val cachedPrice = symbolCache.getCachedSymbolIfValid(symbol, 1)
+            val cachedPrice = symbolCache.getCachedSymbolIfValid(symbol, if (BuildConfig.DEBUG) 24*7 else 1)
 
             val investment = if (cachedPrice != null) {
                 Investment.fromCache(
@@ -99,7 +100,7 @@ class FinancialRepositoryImpl(
 
     private suspend fun getStockPrice(symbol: String): Result<Investment> {
         return try {
-            val cachedPrice = symbolCache.getCachedSymbolIfValid(symbol, 1)
+            val cachedPrice = symbolCache.getCachedSymbolIfValid(symbol, if (BuildConfig.DEBUG) 24*7 else 1)
 
             val investment = if (cachedPrice != null) {
                 Investment.fromCache(
@@ -136,7 +137,7 @@ class FinancialRepositoryImpl(
 
     override suspend fun getStocksSymbols(exchange: String): Result<List<MarketAsset>> {
         return runCatching {
-            val cachedStocks = marketCache.getCachedStockMarketIfValid(24)
+            val cachedStocks = marketCache.getCachedStockMarketIfValid(if (BuildConfig.DEBUG) 24*7 else 24)
 
             val stocks = if (cachedStocks.isNotEmpty()) {
                 cachedStocks.map { it.toDomain() }
@@ -154,7 +155,7 @@ class FinancialRepositoryImpl(
 
     override suspend fun getCryptosSymbols(exchange: String): Result<List<MarketAsset>> {
         return runCatching {
-            val cachedCryptos = marketCache.getCachedCryptoMarketIfValid(24)
+            val cachedCryptos = marketCache.getCachedCryptoMarketIfValid(if (BuildConfig.DEBUG) 24*7 else 24)
 
             val cryptos = if (cachedCryptos.isNotEmpty()) {
                 cachedCryptos.map { it.toDomain() }
@@ -176,7 +177,7 @@ class FinancialRepositoryImpl(
 
     override suspend fun getUsdEur(): Result<Rate> {
         return runCatching {
-            val cachedRate = symbolCache.getCachedSymbolIfValid(USD_EUR, 24)
+            val cachedRate = symbolCache.getCachedSymbolIfValid(USD_EUR, if (BuildConfig.DEBUG) 24*7 else 24)
             if (cachedRate != null) {
                 Result.success(Rate(USD_EUR, cachedRate))
             } else {

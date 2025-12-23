@@ -28,7 +28,7 @@ class SymbolCacheImpl(
                 (nowMillis - cachedAt) in 0 until cacheDurationMillis
 
         return if (isCacheValid) {
-            telegramApiClient.sendMessage("get $symbol from cache at ${formatUtcMillis(nowMillis)}")
+            //telegramApiClient.sendMessage("get $symbol from cache at ${formatUtcMillis(nowMillis)}")
             cachedRate
         } else {
             null
@@ -38,7 +38,7 @@ class SymbolCacheImpl(
     override suspend fun setCachedSymbol(symbol: String, price: Double) {
         val nowMillis = Clock.systemUTC().millis()
 
-        telegramApiClient.sendMessage("get $symbol from cache at ${formatUtcMillis(nowMillis)}")
+        telegramApiClient.sendMessage("SET $symbol from cache at ${formatUtcMillis(nowMillis)}")
 
         val timestampKey = "$symbol$KEY_CACHED_AT_MILLIS"
 

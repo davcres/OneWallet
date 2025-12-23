@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.core.extensions.presentation.composables
+package com.davidcrespo.onewallet.core.composables
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
