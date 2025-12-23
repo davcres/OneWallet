@@ -11,7 +11,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiClient
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
 import com.davidcrespo.onewallet.widget.portfolio.PortfolioPrefsKeys
@@ -29,10 +28,8 @@ class WidgetsRefreshWorker(
 ) : CoroutineWorker(appContext, params), KoinComponent {
 
     val getPortfolioItemsUseCase : GetPortfolioItemsUseCase by inject()
-    val telegram : TelegramApiClient by inject()
 
     override suspend fun doWork(): Result = runCatching {
-        telegram.sendMessage("Start updating widgets")
 
         // 1) Foto única del portfolio
         val portfolioData = getPortfolioItemsUseCase().first()
@@ -74,7 +71,6 @@ class WidgetsRefreshWorker(
 
         Result.success()
     }.getOrElse { e ->
-        telegram.sendMessage("Failure on updating widgets")
         e.printStackTrace()
         Result.retry() // o failure()
     }
