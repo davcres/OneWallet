@@ -88,6 +88,9 @@ val appModule = module {
                     }
                 }
                 level = LogLevel.ALL
+                filter { request ->
+                    request.url.host != "api.telegram.org"
+                }
             }
 
             expectSuccess = true
