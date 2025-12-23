@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.core.extensions.normalizeDouble
+import com.davidcrespo.onewallet.presentation.designsystem.composables.shakeClickEffect
 
 @Composable
 fun BankDepositDialog(
@@ -58,14 +60,20 @@ fun BankDepositDialog(
             }
         },
         confirmButton = {
+            val amount = amountText.normalizeDouble()
+            val isValid = name.isNotBlank() && amount != null
+
             Button(
                 onClick = {
-                    val amount = amountText.toDoubleOrNull() ?: 0.0
-                    if (name.isNotBlank() && amount > 0) {
+                    if (isValid) {
                         onConfirm(name, amount)
                     }
                 },
-                enabled = name.isNotBlank() && amountText.toDoubleOrNull() != null
+                modifier = if (isValid) {
+                    Modifier
+                } else {
+                    Modifier.shakeClickEffect()
+                }
             ) {
                 Text("Guardar")
             }

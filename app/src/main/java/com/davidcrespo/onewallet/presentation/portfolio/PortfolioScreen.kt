@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.davidcrespo.onewallet.presentation.designsystem.composables.AnimatedCounter
+import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
 import com.davidcrespo.onewallet.presentation.designsystem.theme.cardGlowBrush
 import com.davidcrespo.onewallet.presentation.portfolio.components.ExpandableFab
 import com.davidcrespo.onewallet.presentation.portfolio.components.PortfolioList
@@ -116,7 +117,8 @@ fun PortfolioScreen(
                 // Header with Total Balance
                 Card(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .bounceClick(),
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.Transparent)
                 ) {

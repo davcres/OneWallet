@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.HorizontalDivider
@@ -75,11 +75,16 @@ fun MarketScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            items(uiState.filteredAssets) { marketAsset ->
+            itemsIndexed(
+                items = uiState.filteredAssets,
+                key = { _, item -> item.symbol }
+            ) { index, marketAsset ->
+
                 MarketListItem(
                     marketAsset = marketAsset,
                     onClick = { viewModel.handleIntent(MarketIntent.SelectAsset(marketAsset)) }
                 )
+
                 HorizontalDivider()
             }
         }

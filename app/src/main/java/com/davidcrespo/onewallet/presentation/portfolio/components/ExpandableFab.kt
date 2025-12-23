@@ -6,6 +6,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
 
 @Composable
 fun ExpandableFab(
@@ -93,7 +95,8 @@ fun ExpandableFab(
         }
         
         FloatingActionButton(
-            onClick = { onExpandedChange(!expanded) }
+            onClick = { onExpandedChange(!expanded) },
+            modifier = Modifier.bounceClick()
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
@@ -112,7 +115,10 @@ private fun FabItem(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(bottom = 12.dp)
+        modifier = Modifier
+            .padding(bottom = 12.dp)
+            .bounceClick()
+            .clickable { onClick() }
     ) {
         Surface(
             shape = MaterialTheme.shapes.small,

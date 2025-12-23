@@ -38,6 +38,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.presentation.designsystem.composables.spring
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,7 +87,8 @@ fun PortfolioList(
             AnimatedVisibility(
                 visible = visible,
                 enter = slideInHorizontally(
-                    initialOffsetX = { -it }
+                    initialOffsetX = { -it },
+                    animationSpec = spring()
                 ) + fadeIn()
             ) {
                 SwipeToDismissBox(
