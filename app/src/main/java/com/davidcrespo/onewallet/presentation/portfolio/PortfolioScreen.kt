@@ -103,8 +103,6 @@ fun PortfolioScreen(
 
                 PortfolioList(
                     items = uiState.portfolioItems,
-                    //onMove = { from, to -> viewModel.handleIntent(PortfolioIntent.MoveSymbol(from, to)) },
-                    onMove = { from, to -> },
                     onRemove = { viewModel.handleIntent(PortfolioIntent.RemoveItem(it)) },
                     onEdit = { viewModel.handleIntent(PortfolioIntent.EditQuantity(it)) }
                 )

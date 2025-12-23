@@ -16,7 +16,6 @@ import androidx.compose.material.icons.automirrored.outlined.ShowChart
 import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material.icons.outlined.CurrencyBitcoin
 import androidx.compose.material.icons.outlined.PieChartOutline
-import androidx.compose.material.icons.rounded.DragHandle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -112,14 +111,8 @@ fun PortfolioItemCard(
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.width(8.dp))
-            
-            Icon(
-                imageVector = Icons.Rounded.DragHandle,
-                contentDescription = "Reorder",
-                tint = MaterialTheme.colorScheme.outlineVariant
-            )
         }
     }
 }
