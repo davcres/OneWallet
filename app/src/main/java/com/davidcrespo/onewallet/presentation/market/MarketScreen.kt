@@ -1,13 +1,12 @@
 package com.davidcrespo.onewallet.presentation.market
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.HorizontalDivider
@@ -21,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.core.composables.AnimatedList
 import com.davidcrespo.onewallet.presentation.market.components.MarketListItem
 import com.davidcrespo.onewallet.presentation.market.components.MarketSearchBar
 import org.koin.androidx.compose.koinViewModel
@@ -70,23 +70,23 @@ fun MarketScreen(
         },
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            itemsIndexed(
-                items = uiState.filteredAssets,
-                key = { _, item -> item.symbol }
-            ) { index, marketAsset ->
-
+        AnimatedList(
+            items = uiState.filteredAssets,
+            key = { it.symbol },
+            modifier = modifier.fillMaxSize().padding(paddingValues),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            itemContent = { modifier, marketAsset ->
                 MarketListItem(
                     marketAsset = marketAsset,
-                    onClick = { viewModel.handleIntent(MarketIntent.SelectAsset(marketAsset)) }
+                    onClick = { viewModel.handleIntent(MarketIntent.SelectAsset(marketAsset)) },
+                    modifier = modifier
                 )
 
-                HorizontalDivider()
+                HorizontalDivider(
+                    //modifier = modifier
+                )
             }
-        }
+        )
+
     }
 }

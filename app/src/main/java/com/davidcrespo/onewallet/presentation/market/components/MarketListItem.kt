@@ -19,10 +19,11 @@ import com.davidcrespo.onewallet.domain.model.market.MarketAsset
 @Composable
 fun MarketListItem(
     marketAsset: MarketAsset,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
             .padding(16.dp),

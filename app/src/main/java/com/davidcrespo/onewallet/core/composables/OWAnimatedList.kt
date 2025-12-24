@@ -25,6 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import kotlinx.coroutines.delay
 
+/**
+ * Mandatory to apply modifier to itemContent
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> AnimatedList(
