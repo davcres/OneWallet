@@ -31,6 +31,7 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
+import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -71,14 +72,14 @@ class PortfolioWidget : GlanceAppWidget() {
                 .padding(16.dp)
         ) {
             if (items.isEmpty()) {
-                Row(
+                Column(
                     modifier = GlanceModifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TotalBalance(balance)
 
-                    Spacer(modifier = GlanceModifier.defaultWeight())
+                    Spacer(modifier = GlanceModifier.height(16.dp))
 
                     Reload()
                 }
@@ -163,7 +164,9 @@ class PortfolioWidget : GlanceAppWidget() {
     @Composable
     fun Reload(modifier: GlanceModifier = GlanceModifier) {
         Box(
-            modifier = modifier.clickable(actionRunCallback<GetPortfolioCallback>())
+            modifier = modifier
+                .clickable(actionRunCallback<GetPortfolioCallback>())
+                .size(48.dp)
         ) {
             Image(
                 provider = ImageProvider(R.drawable.ic_reload),

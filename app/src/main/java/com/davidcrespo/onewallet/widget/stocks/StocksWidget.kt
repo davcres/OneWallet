@@ -71,14 +71,14 @@ class StocksWidget : GlanceAppWidget() {
                 .padding(12.dp)
         ) {
             if (stocks.isEmpty()) {
-                Row(
+                Column(
                     modifier = GlanceModifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Title()
 
-                    Spacer(modifier = GlanceModifier.defaultWeight())
+                    Spacer(modifier = GlanceModifier.height(16.dp))
 
                     Reload()
                 }
@@ -147,7 +147,7 @@ class StocksWidget : GlanceAppWidget() {
         Box(
             modifier = modifier
                 .clickable(actionRunCallback<GetPortfolioCallback>())
-                .size(16.dp)
+                .size(48.dp)
         ) {
             Image(
                 provider = ImageProvider(R.drawable.ic_reload),
