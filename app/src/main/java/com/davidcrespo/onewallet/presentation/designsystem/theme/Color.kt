@@ -23,7 +23,7 @@ val TertiaryContainer = Color(0xFF0D3A33)
 val OnTertiaryContainer = Color(0xFFB8FFF2)
 
 // Background & Surfaces
-val BgDark = Color(0xFF07130E)
+val BgDark = Color(0xFF091A12)
 val OnBgDark = Color(0xFFF2F5F3)
 
 val SurfaceDark = Color(0xFF0B1712)
@@ -61,17 +61,6 @@ val CardGlowOuter = Color(0xFF1b2620)
 
 val ChipGlowInner = Color(0xFF1A4A33)
 val ChipGlowOuter = MintContainer
-
-/**
- * Fondo general tipo “pane” con un toque de gradiente muy sutil.
- * Si quieres 100% plano, usa solo BgDark.
- */
-val AppBackgroundBrush = Brush.verticalGradient(
-    colors = listOf(
-        Color(0xFF091A12),
-        BgDark
-    )
-)
 
 /** Glow radial como en la card del balance */
 fun cardGlowBrush(): Brush = Brush.horizontalGradient(

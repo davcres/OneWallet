@@ -1,36 +1,69 @@
 package com.davidcrespo.onewallet.presentation.market.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarketSearchBar(
+    isCrypto: Boolean,
     query: String,
     onQueryChange: (String) -> Unit,
+    onSearch: (String) -> Unit,
+    onClearQuery: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    OutlinedTextField(
+    TextField(
         value = query,
         onValueChange = onQueryChange,
-        label = { Text("Buscar símbolo") },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Rounded.Search,
-                contentDescription = "Buscar"
-            )
-        },
+        modifier = modifier,
         singleLine = true,
-        shape = RoundedCornerShape(12.dp),
-        modifier = modifier.fillMaxWidth()
+        leadingIcon = {
+            Icon(Icons.Outlined.Search, contentDescription = null)
+        },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = onClearQuery) {
+                    Icon(Icons.Outlined.Close, contentDescription = null)
+                }
+            }
+        },
+        placeholder = {
+            Text(if (isCrypto) "Buscar criptomoneda" else "Buscar símbolo, nombre o figi")
+        },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = { onSearch(query) }
+        ),
+        shape = CircleShape,
+        colors = TextFieldDefaults.colors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+        )
+    )
+}
+
+@Preview
+@Composable
+private fun MarketSearchBarPreview() {
+    MarketSearchBar(
+        isCrypto = false,
+        query = "",
+        onQueryChange = {},
+        onSearch = {},
+        onClearQuery = {}
     )
 }

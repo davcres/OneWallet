@@ -30,13 +30,14 @@ import kotlinx.coroutines.delay
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T> AnimatedList(
+fun <T> OWAnimatedList(
     items: List<T>,
     key: (T) -> Any,
     state: LazyListState = rememberLazyListState(),
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     modifier: Modifier = Modifier,
+    animate: Boolean = true,
     itemContent: @Composable (modifier: Modifier, item: T) -> Unit
 ) {
     var initialVisibleIndex by rememberSaveable { mutableStateOf<List<Int>>(emptyList()) }
@@ -63,9 +64,8 @@ fun <T> AnimatedList(
     ) {
         itemsIndexed(items, key = { _, it -> key(it) }) { index, item ->
 
-            val rank =
-                initialVisibleIndex.indexOf(index) // devuelve -1 si el item no está visible al entrar
-            val shouldAnimate = hasInitialVisibleIndex && rank >= 0
+            val rank = initialVisibleIndex.indexOf(index) // devuelve -1 si el item no está visible al entrar
+            val shouldAnimate = animate && hasInitialVisibleIndex && rank >= 0
             AnimatableRow(
                 item = item,
                 key = key,

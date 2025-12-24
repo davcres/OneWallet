@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.core.composables.AnimatedList
+import com.davidcrespo.onewallet.core.composables.OWAnimatedList
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
 
@@ -33,7 +33,7 @@ fun PortfolioList(
     onEdit: (Investment) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    AnimatedList(
+    OWAnimatedList(
         items = items,
         key = { it.symbol },
         modifier = modifier.fillMaxSize(),
