@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -92,56 +93,97 @@ fun PortfolioItemCard(
                 )*/
             }
 
-            Column(horizontalAlignment = Alignment.End) {
-                val totalValue = item.quantity * item.price
-                Spacer(modifier = Modifier.height(4.dp))
+            Box(contentAlignment = Alignment.CenterEnd) {
+                Column(horizontalAlignment = Alignment.End) {
+                    val showPercentage = item.type == InvestmentType.STOCK || item.type == InvestmentType.CRYPTO
+                    val totalValue = item.quantity * item.price
 
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    modifier = Modifier.padding(4.dp)
-                ) {
-                    Text(
-                        text = "%.2f €".format(totalValue),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                if (item.type == InvestmentType.STOCK || item.type == InvestmentType.CRYPTO) {
-                    Row {
-                        val percentage =
-                            if (item.price == 0.0 || item.previousPrice == 0.0) {
-                                0.0
-                            } else {
-                                (item.price - item.previousPrice) / item.previousPrice * 100
-                            }
-                        val (percentageIcon, percentageColor) = when {
-                            percentage > 0 -> Pair(Icons.AutoMirrored.Filled.TrendingUp, MaterialTheme.colorScheme.primary)
-                            percentage < 0 -> Pair(Icons.AutoMirrored.Filled.TrendingDown, MaterialTheme.colorScheme.error)
-                            else -> Pair(Icons.AutoMirrored.Filled.TrendingFlat, MaterialTheme.colorScheme.onSurfaceVariant)
+                    if (showPercentage) {
+                        Column(horizontalAlignment = Alignment.End) {
+                            Spacer(modifier = Modifier.height(4.dp))
+                            PriceDisplay(value = totalValue)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            PercentageDisplay(current = item.price, previous = item.previousPrice)
                         }
-                        Icon(
-                            imageVector = percentageIcon,
-                            contentDescription = "Percentage Icon",
-                            tint = percentageColor
-                        )
-                        Text(
-                            text = "%.2f %%".format(percentage),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = percentageColor,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-                        )
+                    } else {
+                        PriceDisplay(value = totalValue)
                     }
                 }
+
+                GhostContent()
             }
 
             Spacer(modifier = Modifier.width(8.dp))
         }
+    }
+}
+
+@Composable
+private fun PriceDisplay(value: Double) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        modifier = Modifier.padding(4.dp)
+    ) {
+        Text(
+            text = "%.2f €".format(value),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+        )
+    }
+}
+
+@Composable
+private fun PercentageDisplay(current: Double, previous: Double) {
+    Row {
+        val percentage =
+            if (current == 0.0 || previous == 0.0) {
+                0.0
+            } else {
+                (current - previous) / previous * 100
+            }
+        val (percentageIcon, percentageColor) = when {
+            percentage > 0 -> Pair(
+                Icons.AutoMirrored.Filled.TrendingUp,
+                MaterialTheme.colorScheme.primary
+            )
+
+            percentage < 0 -> Pair(
+                Icons.AutoMirrored.Filled.TrendingDown,
+                MaterialTheme.colorScheme.error
+            )
+
+            else -> Pair(
+                Icons.AutoMirrored.Filled.TrendingFlat,
+                MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Icon(
+            imageVector = percentageIcon,
+            contentDescription = "Percentage Icon",
+            tint = percentageColor
+        )
+        Text(
+            text = "%.2f %%".format(percentage),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold,
+            color = percentageColor,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+        )
+    }
+}
+
+@Composable
+fun GhostContent() {
+    // Ghost Column to have same height in all items
+    Column(
+        modifier = Modifier.alpha(0f)
+    ) {
+        Spacer(modifier = Modifier.height(4.dp))
+        PriceDisplay(value = 0.0)
+        Spacer(modifier = Modifier.height(8.dp))
+        PercentageDisplay(current = 1.0, previous = 1.0)
     }
 }
