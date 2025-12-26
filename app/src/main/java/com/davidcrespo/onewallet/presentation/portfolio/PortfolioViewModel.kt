@@ -173,10 +173,14 @@ class PortfolioViewModel(
         val totalBalance = _uiState.value.portfolioItems.sumOf {
             it.quantity * it.price
         }
+        val previousBalance = _uiState.value.portfolioItems.sumOf {
+            it.quantity * it.previousPrice
+        }
 
         _uiState.update {
             it.copy(
-                totalBalance = totalBalance
+                totalBalance = totalBalance,
+                previousBalance = previousBalance
             )
         }
     }

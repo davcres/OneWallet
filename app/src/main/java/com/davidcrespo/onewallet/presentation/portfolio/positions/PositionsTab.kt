@@ -13,12 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.domain.model.investment.Investment
-import com.davidcrespo.onewallet.presentation.portfolio.components.TotalBalance
 import com.davidcrespo.onewallet.presentation.portfolio.positions.components.PortfolioList
+import com.davidcrespo.onewallet.presentation.portfolio.positions.components.TotalBalance
 
 @Composable
 fun PositionsTab(
     totalBalance: Double,
+    previousBalance: Double,
     portfolioItems: List<Investment>,
     onRemoveItem: (Investment) -> Unit,
     onEditQuantity: (Investment) -> Unit
@@ -31,6 +32,7 @@ fun PositionsTab(
     ) {
         TotalBalance(
             totalBalance = totalBalance,
+            previousBalance = previousBalance,
             modifier = Modifier.fillMaxWidth()
         )
 

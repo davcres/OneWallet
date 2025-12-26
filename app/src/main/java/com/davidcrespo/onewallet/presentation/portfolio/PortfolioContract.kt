@@ -7,6 +7,7 @@ data class PortfolioUiState(
     val symbolsWithPrice: List<String> = emptyList(),
     val usdEurRate: Double = 1.0,
     val totalBalance: Double = 0.0,
+    val previousBalance: Double = 0.0,
     val editingItem: Investment? = null,
     val isFundDialogVisible: Boolean = false,
     val isBankDialogVisible: Boolean = false,

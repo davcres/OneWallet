@@ -108,6 +108,7 @@ fun PortfolioScreen(
                     when (tabs[page]) {
                         PortfolioTab.POSITIONS -> PositionsTab(
                             totalBalance = uiState.totalBalance,
+                            previousBalance = uiState.previousBalance,
                             portfolioItems = uiState.portfolioItems,
                             onRemoveItem = { viewModel.handleIntent(PortfolioIntent.RemoveItem(it)) },
                             onEditQuantity = { viewModel.handleIntent(PortfolioIntent.EditQuantity(it)) }
