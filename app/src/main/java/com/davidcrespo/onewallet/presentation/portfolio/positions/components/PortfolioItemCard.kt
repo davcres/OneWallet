@@ -99,7 +99,7 @@ fun PortfolioItemCard(
                 Surface(
                     shape = RoundedCornerShape(8.dp),
                     color = MaterialTheme.colorScheme.primaryContainer,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    modifier = Modifier.padding(4.dp)
                 ) {
                     Text(
                         text = "%.2f €".format(totalValue),

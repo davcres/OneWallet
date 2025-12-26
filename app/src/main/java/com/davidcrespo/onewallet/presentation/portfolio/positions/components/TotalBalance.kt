@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.portfolio.components
+package com.davidcrespo.onewallet.presentation.portfolio.positions.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -6,14 +6,22 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.TrendingDown
+import androidx.compose.material.icons.automirrored.filled.TrendingFlat
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +44,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun TotalBalance(
     totalBalance: Double,
+    previousBalance: Double,
     modifier: Modifier = Modifier
 ) {
     val richPhrases = remember {
@@ -107,6 +116,72 @@ fun TotalBalance(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val percentage =
+                        if (totalBalance == 0.0 || previousBalance == 0.0) {
+                            0.0
+                        } else {
+                            (totalBalance - previousBalance) / previousBalance * 100
+                        }
+                    val (percentageIcon, percentageColor, prefix) = when {
+                        percentage > 0 -> Triple(
+                            Icons.AutoMirrored.Filled.TrendingUp,
+                            MaterialTheme.colorScheme.primary,
+                            "+"
+                        )
+
+                        percentage < 0 -> Triple(
+                            Icons.AutoMirrored.Filled.TrendingDown,
+                            MaterialTheme.colorScheme.error,
+                            ""
+                        )
+
+                        else -> Triple(
+                            Icons.AutoMirrored.Filled.TrendingFlat,
+                            MaterialTheme.colorScheme.onSurfaceVariant,
+                            ""
+                        )
+                    }
+
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(4.dp)
+                        ) {
+                            Icon(
+                                imageVector = percentageIcon,
+                                contentDescription = "Percentage Icon",
+                                tint = percentageColor
+                            )
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            AnimatedCounter(
+                                targetValue = totalBalance - previousBalance,
+                                prefix = prefix,
+                                suffix = " €",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = percentageColor
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = "($prefix%.2f %%)".format(percentage),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }
