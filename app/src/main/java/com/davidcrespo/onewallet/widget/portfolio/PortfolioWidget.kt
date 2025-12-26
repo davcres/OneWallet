@@ -37,9 +37,8 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.davidcrespo.onewallet.MainActivity
 import com.davidcrespo.onewallet.R
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
-import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.toInvestment
 import com.davidcrespo.onewallet.widget.WidgetsRefreshWorker
 import kotlin.math.roundToInt
 
@@ -208,17 +207,7 @@ class PortfolioWidget : GlanceAppWidget() {
 
     private fun stringToPortfolio(items: Set<String>): List<Investment> {
         return items.map { item ->
-            val parts = item.split("|")
-            Investment(
-                symbol = parts[0],
-                quantity = parts[1].toDoubleOrNull() ?: 0.0,
-                price = parts[2].toDoubleOrNull() ?: 0.0,
-                previousPrice = parts[3].toDoubleOrNull() ?: 0.0,
-                currency = Currency.valueOf(parts[4]),
-                type = InvestmentType.valueOf(parts[5]),
-                year = parts[6].toIntOrNull() ?: 0,
-                month = parts[7].toIntOrNull() ?: 0,
-            )
+            item.toInvestment()
         }
     }
 }

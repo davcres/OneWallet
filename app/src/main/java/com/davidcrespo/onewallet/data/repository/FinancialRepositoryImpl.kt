@@ -2,11 +2,14 @@ package com.davidcrespo.onewallet.data.repository
 
 import com.davidcrespo.onewallet.BuildConfig
 import com.davidcrespo.onewallet.data.local.cache.MarketCache
+import com.davidcrespo.onewallet.data.local.cache.RateCache
 import com.davidcrespo.onewallet.data.local.cache.SymbolCache
 import com.davidcrespo.onewallet.data.local.database.market.entities.toCryptoEntity
 import com.davidcrespo.onewallet.data.local.database.market.entities.toDomain
 import com.davidcrespo.onewallet.data.local.database.market.entities.toStockEntity
+import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toDomain
 import com.davidcrespo.onewallet.data.remote.dto.toDomain
+import com.davidcrespo.onewallet.data.remote.dto.toEntity
 import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubDataSource
 import com.davidcrespo.onewallet.data.remote.finnhub.models.toDomain
 import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiConfig.GetRate.USD_EUR
@@ -22,6 +25,7 @@ class FinancialRepositoryImpl(
     private val twelveDataDataSource: TwelveDataDataSource,
     private val finnhubDataSource: FinnhubDataSource,
     private val symbolCache: SymbolCache,
+    private val rateCache: RateCache,
     private val marketCache: MarketCache
 ) : FinancialRepository {
     override suspend fun getInvestmentPrice(
@@ -37,17 +41,13 @@ class FinancialRepositoryImpl(
 
     private suspend fun getCryptoPrice(symbol: String): Result<Investment> {
         return try {
-            val cachedPrice = symbolCache.getCachedSymbolIfValid(symbol, if (BuildConfig.DEBUG) 24*7 else 1)
+            val cachedPrice = symbolCache.getCachedInvestmentIfValid(symbol, if (BuildConfig.DEBUG) 24*7 else 1)
 
             val investment = if (cachedPrice != null) {
-                Investment.fromCache(
-                    symbol = symbol,
-                    price = cachedPrice,
-                    type = InvestmentType.CRYPTO
-                )
+                cachedPrice.toDomain()
             } else {
                 val investmentDto = twelveDataDataSource.getCryptoPrice(symbol)
-                symbolCache.setCachedSymbol(symbol, investmentDto.price)
+                symbolCache.setCachedInvestment(investmentDto.toEntity())
                 investmentDto.toDomain()
             }
 
@@ -100,17 +100,13 @@ class FinancialRepositoryImpl(
 
     private suspend fun getStockPrice(symbol: String): Result<Investment> {
         return try {
-            val cachedPrice = symbolCache.getCachedSymbolIfValid(symbol, if (BuildConfig.DEBUG) 24*7 else 1)
+            val cachedInvestment = symbolCache.getCachedInvestmentIfValid(symbol, if (BuildConfig.DEBUG) 24*7 else 1)
 
-            val investment = if (cachedPrice != null) {
-                Investment.fromCache(
-                    symbol = symbol,
-                    price = cachedPrice,
-                    type = InvestmentType.STOCK
-                )
+            val investment = if (cachedInvestment != null) {
+                cachedInvestment.toDomain()
             } else {
                 val investmentDto = finnhubDataSource.getStockPrice(symbol)
-                symbolCache.setCachedSymbol(symbol, investmentDto.price)
+                symbolCache.setCachedInvestment(investmentDto.toEntity())
                 investmentDto.toDomain()
             }
             //TODO***
@@ -177,12 +173,12 @@ class FinancialRepositoryImpl(
 
     override suspend fun getUsdEur(): Result<Rate> {
         return runCatching {
-            val cachedRate = symbolCache.getCachedSymbolIfValid(USD_EUR, if (BuildConfig.DEBUG) 24*7 else 24)
+            val cachedRate = rateCache.getCachedRateIfValid(USD_EUR, if (BuildConfig.DEBUG) 24*7 else 24)
             if (cachedRate != null) {
                 Result.success(Rate(USD_EUR, cachedRate))
             } else {
                 val rate = twelveDataDataSource.getUsdEur()
-                symbolCache.setCachedSymbol(rate.symbol, rate.rate)
+                rateCache.setCachedRate(rate.symbol, rate.rate)
                 Result.success(rate.toDomain())
             }
         }.getOrElse {

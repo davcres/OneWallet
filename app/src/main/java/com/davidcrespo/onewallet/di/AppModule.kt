@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.room.Room
 import com.davidcrespo.onewallet.data.local.cache.MarketCache
 import com.davidcrespo.onewallet.data.local.cache.MarketCacheImpl
+import com.davidcrespo.onewallet.data.local.cache.RateCache
+import com.davidcrespo.onewallet.data.local.cache.RateCacheImpl
 import com.davidcrespo.onewallet.data.local.cache.SymbolCache
 import com.davidcrespo.onewallet.data.local.cache.SymbolCacheImpl
 import com.davidcrespo.onewallet.data.local.database.AppDatabase
@@ -105,9 +107,10 @@ val appModule = module {
     single { FinnhubDataSource(get()) }
 
     single<SymbolCache> { SymbolCacheImpl(get(), get()) }
+    single<RateCache> { RateCacheImpl(get(), get()) }
     single<MarketCache> { MarketCacheImpl(get(), get(), get(), get()) }
 
-    single<FinancialRepository> { FinancialRepositoryImpl(get(), get(), get(), get()) }
+    single<FinancialRepository> { FinancialRepositoryImpl(get(), get(), get(), get(), get()) }
     single<PortfolioRepository> { PortfolioRepositoryImpl(get()) }
 
     single { GetInvestmentPriceUseCase(get()) }

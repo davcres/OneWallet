@@ -12,10 +12,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ShowChart
+import androidx.compose.material.icons.automirrored.filled.TrendingDown
+import androidx.compose.material.icons.automirrored.filled.TrendingFlat
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material.icons.outlined.CurrencyBitcoin
 import androidx.compose.material.icons.outlined.PieChartOutline
+import androidx.compose.material.icons.outlined.StackedLineChart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -57,7 +60,7 @@ fun PortfolioItemCard(
                 contentAlignment = Alignment.Center
             ) {
                 val icon = when (item.type) {
-                    InvestmentType.STOCK -> Icons.AutoMirrored.Outlined.ShowChart
+                    InvestmentType.STOCK -> Icons.Outlined.StackedLineChart
                     InvestmentType.CRYPTO -> Icons.Outlined.CurrencyBitcoin
                     InvestmentType.FUND -> Icons.Outlined.PieChartOutline
                     InvestmentType.CASH -> Icons.Outlined.AccountBalance
@@ -97,15 +100,47 @@ fun PortfolioItemCard(
                 ) {
                     Text(
                         text = "${String.format("%.2f", totalValue)} €",
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                     )
                 }
+                if (item.type == InvestmentType.STOCK) { //TODO*** Cryptos
+                    Row {
+                        val percentage =
+                            if (item.price == 0.0 || item.previousPrice == 0.0) {
+                                0.0
+                            } else {
+                                (item.price - item.previousPrice) / item.previousPrice * 100
+                            }
+                        val (percentageIcon, percentageColor) = when {
+                            percentage > 0 -> Pair(Icons.AutoMirrored.Filled.TrendingUp, MaterialTheme.colorScheme.primary)
+                            percentage < 0 -> Pair(Icons.AutoMirrored.Filled.TrendingDown, MaterialTheme.colorScheme.error)
+                            else -> Pair(Icons.AutoMirrored.Filled.TrendingFlat, MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        Icon(
+                            imageVector = percentageIcon,
+                            contentDescription = "Percentage Icon",
+                            tint = percentageColor
+                        )
+                        Text(
+                            text = "${String.format("%.2f", percentage)} %",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = percentageColor,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                        )
+                    }
+                }
                 if (item.type != InvestmentType.CASH) {
                     Text(
-                        text = "${String.format("%.2f", item.quantity)} acciones @ ${String.format("%.2f", item.price)} €",
+                        text = "${
+                            String.format(
+                                "%.2f",
+                                item.quantity
+                            )
+                        } acciones @ ${String.format("%.2f", item.price)} €",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

@@ -12,6 +12,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.toPreference
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
 import com.davidcrespo.onewallet.widget.portfolio.PortfolioPrefsKeys
 import com.davidcrespo.onewallet.widget.portfolio.PortfolioWidget
@@ -37,16 +38,18 @@ class WidgetsRefreshWorker(
         // 2) Datos para PortfolioWidget
         val balance = portfolioData.sumOf { it.quantity * it.price }
         val portfolioItemsSet = portfolioData
+            .sortedBy { it.price * it.quantity }
             .map {
-                "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
+                it.toPreference()
             }
             .toSet()
 
         // 3) Datos para StocksWidget
         val stocksSet = portfolioData
             .filter { it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO }
+            .sortedByDescending { it.price }
             .map {
-                "${it.symbol}|${it.quantity}|${it.price}|${it.previousPrice}|${it.currency}|${it.type}|${it.year}|${it.month}"
+                it.toPreference()
             }
             .toSet()
 
