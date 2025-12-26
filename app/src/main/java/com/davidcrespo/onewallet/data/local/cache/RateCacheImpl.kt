@@ -2,9 +2,6 @@ package com.davidcrespo.onewallet.data.local.cache
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.davidcrespo.onewallet.data.local.database.portfolio.entities.InvestmentEntity
-import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toInvestmentEntity
-import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toPreference
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiClient
 import java.time.Clock
 import java.time.Instant
@@ -12,42 +9,42 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
-class SymbolCacheImpl(
+class RateCacheImpl(
     private val sharedPreferences: SharedPreferences,
     private val telegramApiClient: TelegramApiClient
-): SymbolCache {
+): RateCache {
 
-    override suspend fun getCachedInvestmentIfValid(symbol: String, validCacheHours: Long): InvestmentEntity? {
+    override suspend fun getCachedRateIfValid(symbol: String, validCacheHours: Long): Double? {
         val nowMillis = Clock.systemUTC().millis()
 
         val cacheDurationMillis = TimeUnit.HOURS.toMillis(validCacheHours)
 
         val timestampKey = "$symbol$KEY_CACHED_AT_MILLIS"
         val cachedAt = sharedPreferences.getLong(timestampKey, 0L)
-        val investmentPreference = sharedPreferences.getString(symbol, null)
+        val cachedRate = sharedPreferences.getString(symbol, null)?.toDoubleOrNull()
 
-        val isCacheValid = investmentPreference != null &&
+        val isCacheValid = cachedRate != null &&
                 cachedAt > 0L &&
                 (nowMillis - cachedAt) in 0 until cacheDurationMillis
 
         return if (isCacheValid) {
-            investmentPreference.toInvestmentEntity()
+            //telegramApiClient.sendMessage("get $symbol from cache at ${formatUtcMillis(nowMillis)}")
+            cachedRate
         } else {
             null
         }
     }
 
-    override suspend fun setCachedInvestment(investmentEntity: InvestmentEntity) {
+    override suspend fun setCachedRate(symbol: String, price: Double) {
         val nowMillis = Clock.systemUTC().millis()
 
-        telegramApiClient.sendMessage("SET ${investmentEntity.symbol} to cache at ${formatUtcMillis(nowMillis)}")
+        telegramApiClient.sendMessage("SET $symbol from cache at ${formatUtcMillis(nowMillis)}")
 
-        val timestampKey = "${investmentEntity.symbol}$KEY_CACHED_AT_MILLIS"
+        val timestampKey = "$symbol$KEY_CACHED_AT_MILLIS"
 
-        val investmentPreference = investmentEntity.toPreference()
         sharedPreferences.edit {
             putLong(timestampKey, nowMillis)
-            putString(investmentEntity.symbol, investmentPreference)
+            putString(symbol, price.toString())
         }
     }
 

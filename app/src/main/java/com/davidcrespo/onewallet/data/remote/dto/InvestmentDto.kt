@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.data.remote.dto
 
+import com.davidcrespo.onewallet.data.local.database.portfolio.entities.InvestmentEntity
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
@@ -16,6 +17,17 @@ data class InvestmentDto(
 )
 
 fun InvestmentDto.toDomain(): Investment = Investment(
+    symbol = symbol,
+    quantity = quantity,
+    price = price,
+    previousPrice = previousPrice,
+    currency = currency,
+    type = type,
+    year = year,
+    month = month
+)
+
+fun InvestmentDto.toEntity(): InvestmentEntity = InvestmentEntity(
     symbol = symbol,
     quantity = quantity,
     price = price,

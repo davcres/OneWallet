@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.presentation.portfolio.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +12,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DragHandle
+import androidx.compose.material.icons.automirrored.filled.TrendingDown
+import androidx.compose.material.icons.automirrored.filled.TrendingFlat
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.outlined.AccountBalance
+import androidx.compose.material.icons.outlined.CurrencyBitcoin
+import androidx.compose.material.icons.outlined.PieChartOutline
+import androidx.compose.material.icons.outlined.StackedLineChart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -21,10 +28,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
 
 @Composable
 fun PortfolioItemCard(
@@ -33,9 +42,9 @@ fun PortfolioItemCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
+        shape = CircleShape,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+        colors = CardDefaults.cardColors(containerColor = CardGlowOuter)
     ) {
         Row(
             modifier = Modifier
@@ -43,18 +52,24 @@ fun PortfolioItemCard(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Surface(
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.primaryContainer,
-                modifier = Modifier.size(40.dp)
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text(
-                        text = item.symbol.firstOrNull()?.toString() ?: "?",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
+                val icon = when (item.type) {
+                    InvestmentType.STOCK -> Icons.Outlined.StackedLineChart
+                    InvestmentType.CRYPTO -> Icons.Outlined.CurrencyBitcoin
+                    InvestmentType.FUND -> Icons.Outlined.PieChartOutline
+                    InvestmentType.CASH -> Icons.Outlined.AccountBalance
                 }
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -63,6 +78,7 @@ fun PortfolioItemCard(
                 Text(
                     text = item.symbol,
                     style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.Bold
                 )
                 //TODO***
@@ -76,57 +92,62 @@ fun PortfolioItemCard(
             }
 
             Column(horizontalAlignment = Alignment.End) {
-                if (item.price != null) {//TODO***
-                    val totalValue = item.quantity * item.price
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colorScheme.secondaryContainer,
-                        modifier = Modifier.padding(bottom = 4.dp) // Add padding similar to quantity badge
-                    ) {
+                val totalValue = item.quantity * item.price
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                ) {
+                    Text(
+                        text = "${String.format("%.2f", totalValue)} €",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                    )
+                }
+                if (item.type == InvestmentType.STOCK) { //TODO*** Cryptos
+                    Row {
+                        val percentage =
+                            if (item.price == 0.0 || item.previousPrice == 0.0) {
+                                0.0
+                            } else {
+                                (item.price - item.previousPrice) / item.previousPrice * 100
+                            }
+                        val (percentageIcon, percentageColor) = when {
+                            percentage > 0 -> Pair(Icons.AutoMirrored.Filled.TrendingUp, MaterialTheme.colorScheme.primary)
+                            percentage < 0 -> Pair(Icons.AutoMirrored.Filled.TrendingDown, MaterialTheme.colorScheme.error)
+                            else -> Pair(Icons.AutoMirrored.Filled.TrendingFlat, MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        Icon(
+                            imageVector = percentageIcon,
+                            contentDescription = "Percentage Icon",
+                            tint = percentageColor
+                        )
                         Text(
-                            text = "${String.format("%.2f", totalValue)} €",
-                            style = MaterialTheme.typography.titleMedium,
+                            text = "${String.format("%.2f", percentage)} %",
+                            style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp) // Add internal padding
-                        )
-                    }
-                    if (item.type != InvestmentType.CASH) {
-                        Text(
-                            text = "${String.format("%.2f", item.quantity)} acciones @ ${String.format("%.2f", item.price)} €",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                } else {
-                    // Fallback to old quantity display if price not available
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colorScheme.secondaryContainer,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    ) {
-                        Text(
-                            text = "x ${item.quantity}",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            color = percentageColor,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                         )
                     }
+                }
+                if (item.type != InvestmentType.CASH) {
                     Text(
-                        text = item.currency.name, // Currency from stock info, but could be derived from total value.
+                        text = "${
+                            String.format(
+                                "%.2f",
+                                item.quantity
+                            )
+                        } acciones @ ${String.format("%.2f", item.price)} €",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.outline
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.width(8.dp))
-            
-            Icon(
-                imageVector = Icons.Rounded.DragHandle,
-                contentDescription = "Reorder",
-                tint = MaterialTheme.colorScheme.outlineVariant
-            )
         }
     }
 }

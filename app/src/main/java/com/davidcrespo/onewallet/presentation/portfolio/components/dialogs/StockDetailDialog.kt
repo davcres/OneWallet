@@ -24,7 +24,9 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.core.extensions.normalizeDouble
 import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.presentation.designsystem.composables.shakeClickEffect
 
 @Composable
 fun StockDetailDialog(
@@ -89,13 +91,22 @@ fun QuantityTab(
                 }
         )
         Spacer(modifier = Modifier.height(16.dp))
+
+        val quantity = text.normalizeDouble()
+        val isValid = quantity != null
         Button(
             onClick = {
-                val quantity = text.toDoubleOrNull() ?: 0.0
-                onConfirm(quantity)
+                if (isValid) {
+                    onConfirm(quantity)
+                }
             },
-            enabled = text.toDoubleOrNull() != null && text.isNotBlank(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().then(
+                if (isValid) {
+                    Modifier
+                } else {
+                    Modifier.shakeClickEffect()
+                }
+            )
         ) {
             Text("Actualizar Cantidad")
         }

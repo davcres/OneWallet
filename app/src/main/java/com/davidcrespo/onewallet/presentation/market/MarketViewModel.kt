@@ -22,7 +22,9 @@ class MarketViewModel(
         when (intent) {
             is MarketIntent.LoadInitialData -> getSymbols(intent.isCrypto)
             is MarketIntent.SearchQueryChanged -> updateSearchQuery(intent.query)
-            is MarketIntent.SelectAsset -> selectAsset(intent.symbol)
+            is MarketIntent.AddOneAsset -> addOneAsset(intent.marketAsset)
+            is MarketIntent.SelectAsset -> selectAsset(intent.marketAsset)
+            is MarketIntent.SaveAssetsSelected -> saveAssetsSelected()
         }
     }
 
@@ -40,7 +42,13 @@ class MarketViewModel(
                     )
                 }
             }.onFailure {
-                _uiState.update { it.copy(marketAssets = emptyList(), filteredAssets = emptyList(), isLoading = false) }
+                _uiState.update {
+                    it.copy(
+                        marketAssets = emptyList(),
+                        filteredAssets = emptyList(),
+                        isLoading = false
+                    )
+                }
             }
         }
     }
@@ -54,7 +62,7 @@ class MarketViewModel(
         }
     }
 
-    private fun selectAsset(asset: MarketAsset) {
+    private fun addOneAsset(asset: MarketAsset) {
         viewModelScope.launch {
             addMarketAssetToPortfolioUseCase(asset, _uiState.value.isCrypto)
 
@@ -67,16 +75,52 @@ class MarketViewModel(
         }
     }
 
-    private fun filterAssets(allAssets: List<MarketAsset>, query: String): List<MarketAsset> {
-        val filtered = if (query.isBlank()) {
-            allAssets
-        } else {
-            allAssets.filter {
-                it.symbol.contains(query, ignoreCase = true) ||
-                it.description?.contains(query, ignoreCase = true) == true ||
-                it.figi?.contains(query, ignoreCase = true) == true
+    private fun selectAsset(asset: MarketAsset) {
+        _uiState.update { state ->
+            val current = state.assetsToSaveToPortfolio
+
+            val newList = if (current.contains(asset)) {
+                current.filterNot { it == asset }
+            } else {
+                current + asset
+            }
+
+            state.copy(assetsToSaveToPortfolio = newList)
+        }
+    }
+
+    private fun saveAssetsSelected() {
+        viewModelScope.launch {
+            val list = _uiState.value.assetsToSaveToPortfolio
+            list.forEach {
+                addMarketAssetToPortfolioUseCase(it, _uiState.value.isCrypto)
+            }
+            _uiState.update {
+                it.copy(
+                    searchQuery = "",
+                    assetsToSaveToPortfolio = mutableListOf(),
+                    navigateBack = true
+                )
             }
         }
+    }
+
+    private fun filterAssets(
+        allAssets: List<Pair<Char, List<MarketAsset>>>,
+        query: String
+    ): List<Pair<Char, List<MarketAsset>>> {
+        val filtered: List<Pair<Char, List<MarketAsset>>> =
+            if (query.isBlank()) {
+                allAssets
+            } else {
+                allAssets.map { (letter, assets) ->
+                    letter to assets.filter { asset ->
+                        asset.symbol.contains(query, ignoreCase = true) ||
+                        asset.description?.contains(query, ignoreCase = true) == true ||
+                        asset.figi?.contains(query, ignoreCase = true) == true
+                    }
+                }.filter { (_, assets) -> assets.isNotEmpty() }
+            }
 
         return filtered
     }

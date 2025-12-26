@@ -18,6 +18,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.core.extensions.normalizeDouble
+import com.davidcrespo.onewallet.presentation.designsystem.composables.shakeClickEffect
 
 @Composable
 fun FundDepositDialog(
@@ -61,13 +63,21 @@ fun FundDepositDialog(
             }
         },
         confirmButton = {
+            val quantity = quantityText.normalizeDouble()
+            val price = priceText.normalizeDouble()
+
+            val isValid = name.isNotBlank() && quantity != null && price != null
+
             Button(
                 onClick = {
-                    val quantity = quantityText.replace(",", ".").toDoubleOrNull()
-                    val price = priceText.replace(",", ".").toDoubleOrNull()
-                    if (name.isNotBlank() && quantity != null && price != null) {
+                    if (isValid) {
                         onConfirm(name, quantity, price)
                     }
+                },
+                modifier = if (isValid) {
+                    Modifier
+                } else {
+                    Modifier.shakeClickEffect()
                 }
             ) {
                 Text("Añadir")

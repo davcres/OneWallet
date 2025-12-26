@@ -33,7 +33,7 @@ class MarketCacheImpl(
                 (nowMillis - cachedAt) in 0 until cacheDurationMillis
 
         return if (isCacheValid) {
-            telegramApiClient.sendMessage("get stock market from cache at ${formatUtcMillis(nowMillis)}")
+            //telegramApiClient.sendMessage("get stock market from cache at ${formatUtcMillis(nowMillis)}")
             cachedStockMarket
         } else {
             emptyList()
@@ -53,7 +53,7 @@ class MarketCacheImpl(
                 (nowMillis - cachedAt) in 0 until cacheDurationMillis
 
         return if (isCacheValid) {
-            telegramApiClient.sendMessage("get crypto market from cache at ${formatUtcMillis(nowMillis)}")
+            //telegramApiClient.sendMessage("get crypto market from cache at ${formatUtcMillis(nowMillis)}")
             cachedCryptoMarket
         } else {
             emptyList()
@@ -63,7 +63,7 @@ class MarketCacheImpl(
     override suspend fun setCachedStockMarket(market: List<StockMarketEntity>) {
         val nowMillis = Clock.systemUTC().millis()
 
-        telegramApiClient.sendMessage("set stock market to cache at ${formatUtcMillis(nowMillis)}")
+        telegramApiClient.sendMessage("SET stock market to cache at ${formatUtcMillis(nowMillis)}")
 
         stockMarketDao.replaceAll(market)
 
@@ -75,7 +75,7 @@ class MarketCacheImpl(
     override suspend fun setCachedCryptoMarket(market: List<CryptoMarketEntity>) {
         val nowMillis = Clock.systemUTC().millis()
 
-        telegramApiClient.sendMessage("set crypto market to cache at ${formatUtcMillis(nowMillis)}")
+        telegramApiClient.sendMessage("SET crypto market to cache at ${formatUtcMillis(nowMillis)}")
 
         cryptoMarketDao.replaceAll(market)
 
