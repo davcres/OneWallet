@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.portfolio.components
+package com.davidcrespo.onewallet.presentation.portfolio.prices.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -6,11 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
 import androidx.compose.material.icons.automirrored.filled.TrendingFlat
@@ -23,7 +23,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,7 +35,7 @@ import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
 
 @Composable
-fun PortfolioItemCard(
+fun PriceItemCard(
     item: Investment,
     modifier: Modifier = Modifier
 ) {
@@ -91,23 +90,24 @@ fun PortfolioItemCard(
                 )*/
             }
 
-            Column(horizontalAlignment = Alignment.End) {
-                val totalValue = item.quantity * item.price
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                ) {
-                    Text(
-                        text = "%.2f €".format(totalValue),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-                    )
-                }
+            Column(
+                horizontalAlignment = Alignment.End
+            ) {
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "%.2f €".format(item.price),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 if (item.type == InvestmentType.STOCK || item.type == InvestmentType.CRYPTO) {
-                    Row {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         val percentage =
                             if (item.price == 0.0 || item.previousPrice == 0.0) {
                                 0.0
@@ -124,21 +124,16 @@ fun PortfolioItemCard(
                             contentDescription = "Percentage Icon",
                             tint = percentageColor
                         )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
                         Text(
                             text = "%.2f %%".format(percentage),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
-                            color = percentageColor,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+                            color = percentageColor
                         )
                     }
-                }
-                if (item.type != InvestmentType.CASH) {
-                    Text(
-                        text = "${"%.2f".format(item.quantity)} acciones @ ${"%.2f".format(item.price)} €",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                 }
             }
 

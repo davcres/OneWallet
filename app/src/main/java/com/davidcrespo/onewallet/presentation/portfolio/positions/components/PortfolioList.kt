@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.portfolio.components
+package com.davidcrespo.onewallet.presentation.portfolio.positions.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -11,18 +11,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,13 +31,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.OWFloatingActionButton
 import com.davidcrespo.onewallet.presentation.portfolio.components.Header
-import com.davidcrespo.onewallet.presentation.portfolio.components.PortfolioList
-import com.davidcrespo.onewallet.presentation.portfolio.components.TotalBalance
+import com.davidcrespo.onewallet.presentation.portfolio.components.SegmentedTabs
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AssetType
 import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.BankDepositDialog
 import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.FundDepositDialog
 import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.StockDetailDialog
+import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTab
+import com.davidcrespo.onewallet.presentation.portfolio.positions.PositionsTab
+import com.davidcrespo.onewallet.presentation.portfolio.prices.PricesTab
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -48,6 +51,10 @@ fun PortfolioScreen(
     viewModel: PortfolioViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    val tabs = remember { PortfolioTab.entries }
+    val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(uiState.portfolioItems) {
         viewModel.handleIntent(PortfolioIntent.UpdateBalance)
@@ -87,25 +94,31 @@ fun PortfolioScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                TotalBalance(
-                    totalBalance = uiState.totalBalance,
-                    modifier = Modifier.fillMaxWidth()
+                SegmentedTabs(
+                    selectedIndex = pagerState.currentPage,
+                    titles = tabs.toList(),
+                    onSelected = { scope.launch { pagerState.animateScrollToPage(it) } }
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "Tus inversiones",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.align(Alignment.Start)
-                )
-
-                PortfolioList(
-                    items = uiState.portfolioItems,
-                    onRemove = { viewModel.handleIntent(PortfolioIntent.RemoveItem(it)) },
-                    onEdit = { viewModel.handleIntent(PortfolioIntent.EditQuantity(it)) }
-                )
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) { page ->
+                    when (tabs[page]) {
+                        PortfolioTab.POSITIONS -> PositionsTab(
+                            totalBalance = uiState.totalBalance,
+                            portfolioItems = uiState.portfolioItems,
+                            onRemoveItem = { viewModel.handleIntent(PortfolioIntent.RemoveItem(it)) },
+                            onEditQuantity = { viewModel.handleIntent(PortfolioIntent.EditQuantity(it)) }
+                        )
+                        PortfolioTab.PRICES -> PricesTab(
+                            portfolioItems = uiState.portfolioItems,
+                            usdEurRate = uiState.usdEurRate,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
             }
         }
 
