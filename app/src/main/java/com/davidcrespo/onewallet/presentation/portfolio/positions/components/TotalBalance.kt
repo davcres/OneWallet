@@ -1,8 +1,13 @@
 package com.davidcrespo.onewallet.presentation.portfolio.positions.components
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -45,7 +50,8 @@ import kotlinx.coroutines.delay
 fun TotalBalance(
     totalBalance: Double,
     previousBalance: Double,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isExpanded: Boolean = true
 ) {
     val richPhrases = remember {
         listOf(
@@ -69,6 +75,9 @@ fun TotalBalance(
         }
     }
 
+    val verticalPadding by animateDpAsState(targetValue = if (isExpanded) 32.dp else 16.dp, label = "padding")
+    val fontSize by animateFloatAsState(targetValue = if (isExpanded) 45f else 32f, label = "fontSize")
+
     Card(
         modifier = modifier.bounceClick(),
         shape = RoundedCornerShape(16.dp),
@@ -81,18 +90,25 @@ fun TotalBalance(
                     shape = RoundedCornerShape(32.dp)
                 )
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 32.dp),
+                .padding(horizontal = 16.dp, vertical = verticalPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Balance Total",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "Balance Total",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            if (totalBalance > 1_000_000) {
+            if (totalBalance > 1_000_000 && isExpanded) {
                 AnimatedContent(
                     targetState = currentRichPhrase,
                     transitionSpec = { fadeIn() togetherWith fadeOut() },
@@ -112,75 +128,83 @@ fun TotalBalance(
                 AnimatedCounter(
                     targetValue = totalBalance,
                     suffix = " €",
-                    fontSize = 45.sp,
+                    fontSize = fontSize.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
                 ) {
-                    val percentage =
-                        if (totalBalance == 0.0 || previousBalance == 0.0) {
-                            0.0
-                        } else {
-                            (totalBalance - previousBalance) / previousBalance * 100
-                        }
-                    val (percentageIcon, percentageColor, prefix) = when {
-                        percentage > 0 -> Triple(
-                            Icons.AutoMirrored.Filled.TrendingUp,
-                            MaterialTheme.colorScheme.primary,
-                            "+"
-                        )
-
-                        percentage < 0 -> Triple(
-                            Icons.AutoMirrored.Filled.TrendingDown,
-                            MaterialTheme.colorScheme.error,
-                            ""
-                        )
-
-                        else -> Triple(
-                            Icons.AutoMirrored.Filled.TrendingFlat,
-                            MaterialTheme.colorScheme.onSurfaceVariant,
-                            ""
-                        )
-                    }
-
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer
-                    ) {
+                    Column {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(4.dp)
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                imageVector = percentageIcon,
-                                contentDescription = "Percentage Icon",
-                                tint = percentageColor
-                            )
+                            val percentage =
+                                if (totalBalance == 0.0 || previousBalance == 0.0) {
+                                    0.0
+                                } else {
+                                    (totalBalance - previousBalance) / previousBalance * 100
+                                }
+                            val (percentageIcon, percentageColor, prefix) = when {
+                                percentage > 0 -> Triple(
+                                    Icons.AutoMirrored.Filled.TrendingUp,
+                                    MaterialTheme.colorScheme.primary,
+                                    "+"
+                                )
+
+                                percentage < 0 -> Triple(
+                                    Icons.AutoMirrored.Filled.TrendingDown,
+                                    MaterialTheme.colorScheme.error,
+                                    ""
+                                )
+
+                                else -> Triple(
+                                    Icons.AutoMirrored.Filled.TrendingFlat,
+                                    MaterialTheme.colorScheme.onSurfaceVariant,
+                                    ""
+                                )
+                            }
+
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = MaterialTheme.colorScheme.primaryContainer
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(4.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = percentageIcon,
+                                        contentDescription = "Percentage Icon",
+                                        tint = percentageColor
+                                    )
+
+                                    Spacer(modifier = Modifier.width(8.dp))
+
+                                    AnimatedCounter(
+                                        targetValue = totalBalance - previousBalance,
+                                        prefix = prefix,
+                                        suffix = " €",
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = percentageColor
+                                    )
+                                }
+                            }
 
                             Spacer(modifier = Modifier.width(8.dp))
 
-                            AnimatedCounter(
-                                targetValue = totalBalance - previousBalance,
-                                prefix = prefix,
-                                suffix = " €",
-                                fontSize = 18.sp,
+                            Text(
+                                text = "($prefix%.2f %%)".format(percentage),
+                                style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
-                                color = percentageColor
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Text(
-                        text = "($prefix%.2f %%)".format(percentage),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                 }
             }
         }

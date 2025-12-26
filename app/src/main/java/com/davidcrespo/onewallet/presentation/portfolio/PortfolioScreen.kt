@@ -9,9 +9,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -91,8 +89,6 @@ fun PortfolioScreen(
                 Header(
                     navigateToHistorical = navigateToHistorical
                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
 
                 SegmentedTabs(
                     selectedIndex = pagerState.currentPage,

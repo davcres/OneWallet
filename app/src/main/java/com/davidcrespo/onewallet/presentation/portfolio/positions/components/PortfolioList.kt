@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,11 +33,13 @@ fun PortfolioList(
     items: List<Investment>,
     onRemove: (Investment) -> Unit,
     onEdit: (Investment) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    state: LazyListState = rememberLazyListState()
 ) {
     OWAnimatedList(
         items = items,
         key = { it.symbol },
+        state = state,
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         itemContent = { modifier, portfolioItem ->
