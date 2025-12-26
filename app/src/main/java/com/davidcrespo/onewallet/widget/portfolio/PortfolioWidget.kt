@@ -123,7 +123,7 @@ class PortfolioWidget : GlanceAppWidget() {
                 text = if (balance >= 100000)
                     "${balance.roundToInt()}€"
                 else
-                    "${String.format("%.2f", balance)} €",
+                    "%.2f €".format(balance),
                 style = TextStyle(
                     color = GlanceTheme.colors.primary,
                     fontSize = 26.sp,
@@ -194,7 +194,7 @@ class PortfolioWidget : GlanceAppWidget() {
                 maxLines = 1
             )
             Text(
-                text = "${String.format("%.2f", item.quantity * item.price)} €",
+                text = "${"%.2f €".format(item.quantity * item.price)}",
                 style = TextStyle(
                     color = GlanceTheme.colors.onSurface,
                     fontSize = 14.sp

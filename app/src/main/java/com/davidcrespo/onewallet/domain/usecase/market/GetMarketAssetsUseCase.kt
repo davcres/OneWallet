@@ -7,7 +7,7 @@ import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 class GetMarketAssetsUseCase(private val repository: FinancialRepository) {
     suspend operator fun invoke(isCrypto: Boolean = false): Result<List<Pair<Char, List<MarketAsset>>>> {
         val marketAssets = if (isCrypto) {
-            repository.getCryptosSymbols("BINANCE")
+            repository.getCryptosSymbols()
         } else {
             repository.getStocksSymbols("US")
         }

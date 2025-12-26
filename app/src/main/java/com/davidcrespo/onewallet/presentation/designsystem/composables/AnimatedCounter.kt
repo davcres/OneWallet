@@ -1,7 +1,6 @@
 package com.davidcrespo.onewallet.presentation.designsystem.composables
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.material3.LocalTextStyle
@@ -36,7 +35,7 @@ fun AnimatedCounter(
     }
 
     Text(
-        text = "$prefix${String.format("%.2f", animatedValue.value)}$suffix",
+        text = "$prefix${"%.2f".format(animatedValue.value)}$suffix",
         modifier = modifier,
         color = color,
         fontSize = fontSize,

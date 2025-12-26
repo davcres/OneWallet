@@ -176,7 +176,7 @@ class StocksWidget : GlanceAppWidget() {
                 maxLines = 1
             )
             Text(
-                text = "${String.format("%.2f", item.price)} €",
+                text = "%.2f €".format(item.price),
                 style = TextStyle(
                     color = GlanceTheme.colors.surface,
                     fontSize = 14.sp

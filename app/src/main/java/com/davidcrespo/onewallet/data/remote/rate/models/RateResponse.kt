@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.data.remote.twelveData.models
+package com.davidcrespo.onewallet.data.remote.rate.models
 
 import com.davidcrespo.onewallet.domain.model.rate.Rate
 import kotlinx.serialization.Serializable

@@ -99,14 +99,14 @@ fun PortfolioItemCard(
                     modifier = Modifier.padding(bottom = 4.dp)
                 ) {
                     Text(
-                        text = "${String.format("%.2f", totalValue)} €",
+                        text = "%.2f €".format(totalValue),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
                     )
                 }
-                if (item.type == InvestmentType.STOCK) { //TODO*** Cryptos
+                if (item.type == InvestmentType.STOCK || item.type == InvestmentType.CRYPTO) {
                     Row {
                         val percentage =
                             if (item.price == 0.0 || item.previousPrice == 0.0) {
@@ -125,7 +125,7 @@ fun PortfolioItemCard(
                             tint = percentageColor
                         )
                         Text(
-                            text = "${String.format("%.2f", percentage)} %",
+                            text = "%.2f %%".format(percentage),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             color = percentageColor,
@@ -135,12 +135,7 @@ fun PortfolioItemCard(
                 }
                 if (item.type != InvestmentType.CASH) {
                     Text(
-                        text = "${
-                            String.format(
-                                "%.2f",
-                                item.quantity
-                            )
-                        } acciones @ ${String.format("%.2f", item.price)} €",
+                        text = "${"%.2f".format(item.quantity)} acciones @ ${"%.2f".format(item.price)} €",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

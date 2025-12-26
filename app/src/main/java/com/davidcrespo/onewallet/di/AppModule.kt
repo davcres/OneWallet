@@ -10,11 +10,13 @@ import com.davidcrespo.onewallet.data.local.cache.RateCacheImpl
 import com.davidcrespo.onewallet.data.local.cache.SymbolCache
 import com.davidcrespo.onewallet.data.local.cache.SymbolCacheImpl
 import com.davidcrespo.onewallet.data.local.database.AppDatabase
-import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubApiClient
-import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubDataSource
+import com.davidcrespo.onewallet.data.remote.crypto.BinanceApiClient
+import com.davidcrespo.onewallet.data.remote.crypto.BinanceDataSource
+import com.davidcrespo.onewallet.data.remote.stock.FinnhubApiClient
+import com.davidcrespo.onewallet.data.remote.stock.FinnhubDataSource
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiClient
-import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiClient
-import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataDataSource
+import com.davidcrespo.onewallet.data.remote.rate.TwelveDataApiClient
+import com.davidcrespo.onewallet.data.remote.rate.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.repository.FinancialRepositoryImpl
 import com.davidcrespo.onewallet.data.repository.PortfolioRepositoryImpl
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
@@ -101,16 +103,18 @@ val appModule = module {
 
     single { TwelveDataApiClient(get()) }
     single { FinnhubApiClient(get()) }
+    single { BinanceApiClient(get()) }
     single { TelegramApiClient(get()) }
 
     single { TwelveDataDataSource(get()) }
     single { FinnhubDataSource(get()) }
+    single { BinanceDataSource(get()) }
 
     single<SymbolCache> { SymbolCacheImpl(get(), get()) }
     single<RateCache> { RateCacheImpl(get(), get()) }
     single<MarketCache> { MarketCacheImpl(get(), get(), get(), get()) }
 
-    single<FinancialRepository> { FinancialRepositoryImpl(get(), get(), get(), get(), get()) }
+    single<FinancialRepository> { FinancialRepositoryImpl(get(), get(), get(), get(), get(), get()) }
     single<PortfolioRepository> { PortfolioRepositoryImpl(get()) }
 
     single { GetInvestmentPriceUseCase(get()) }
