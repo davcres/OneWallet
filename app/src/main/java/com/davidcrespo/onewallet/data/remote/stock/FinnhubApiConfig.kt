@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.data.remote.finnhub
+package com.davidcrespo.onewallet.data.remote.stock
 
 object FinnhubApiConfig {
     const val BASE_URL = "https://finnhub.io/api/v1"

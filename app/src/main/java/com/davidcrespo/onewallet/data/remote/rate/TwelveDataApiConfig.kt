@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.data.remote.twelveData
+package com.davidcrespo.onewallet.data.remote.rate
 
 object TwelveDataApiConfig {
     const val BASE_URL = "https://api.twelvedata.com"

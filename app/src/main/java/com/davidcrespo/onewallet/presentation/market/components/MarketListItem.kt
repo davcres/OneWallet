@@ -48,9 +48,17 @@ fun MarketListItem(
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 fontWeight = FontWeight.Bold
             )
-            if (!marketAsset.description.isNullOrEmpty()) {
+            if (marketAsset.type == InvestmentType.STOCK) {
+                if (!marketAsset.description.isNullOrEmpty()) {
+                    Text(
+                        text = marketAsset.description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            } else if (marketAsset.type == InvestmentType.CRYPTO) {
                 Text(
-                    text = marketAsset.description,
+                    text = if (marketAsset.currency == Currency.USD) "$${marketAsset.price}" else "${marketAsset.price} €",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -80,6 +88,7 @@ private fun MarketListItemPreview() {
     MarketListItem(
         marketAsset = MarketAsset(
             symbol = "AAPL",
+            price = 0.0,
             description = "Apple Inc.",
             type = InvestmentType.STOCK,
             currency = Currency.USD,

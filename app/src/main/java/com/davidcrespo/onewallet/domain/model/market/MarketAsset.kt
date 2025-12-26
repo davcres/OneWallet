@@ -6,6 +6,7 @@ import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 
 data class MarketAsset(
     val symbol: String,
+    val price: Double,
     val currency: Currency,
     val type: InvestmentType,
     val description: String?,
@@ -16,7 +17,7 @@ data class MarketAsset(
 fun MarketAsset.toInvestment(type: InvestmentType, year: Int, month: Int) = Investment(
     symbol = symbol,
     quantity = 0.0,
-    price = 0.0,
+    price = price,
     previousPrice = 0.0,
     currency = currency,
     type = type,

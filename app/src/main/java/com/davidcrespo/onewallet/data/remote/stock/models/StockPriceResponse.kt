@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.data.remote.finnhub.models
+package com.davidcrespo.onewallet.data.remote.stock.models
 
 import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
 import com.davidcrespo.onewallet.domain.model.investment.Currency
