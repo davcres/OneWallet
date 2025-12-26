@@ -131,7 +131,7 @@ fun MarketScreen(
 
                     items(
                         items = assets,
-                        key = { asset -> asset.symbol }
+                        key = { asset -> letter + asset.symbol }
                     ) { asset ->
                         MarketListItem(
                             marketAsset = asset,
