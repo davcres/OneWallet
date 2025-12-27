@@ -38,7 +38,7 @@ fun <T> OWAnimatedList(
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     modifier: Modifier = Modifier,
     animate: Boolean = true,
-    itemContent: @Composable (modifier: Modifier, item: T) -> Unit
+    itemContent: @Composable (modifier: Modifier, item: T, index: Int) -> Unit
 ) {
     var initialVisibleIndex by rememberSaveable { mutableStateOf<List<Int>>(emptyList()) }
     val hasInitialVisibleIndex by remember {
@@ -68,6 +68,7 @@ fun <T> OWAnimatedList(
             val shouldAnimate = animate && hasInitialVisibleIndex && rank >= 0
             AnimatableRow(
                 item = item,
+                index = index,
                 key = key,
                 shouldAnimate = shouldAnimate,
                 staggerMs = if (shouldAnimate) (rank * 100L) else 0L,
@@ -80,15 +81,16 @@ fun <T> OWAnimatedList(
 @Composable
 private fun <T> AnimatableRow(
     item: T,
+    index: Int,
     key: (T) -> Any,
     shouldAnimate: Boolean,
     staggerMs: Long,
-    itemContent: @Composable (modifier: Modifier, item: T) -> Unit
+    itemContent: @Composable (modifier: Modifier, item: T, index: Int) -> Unit
 ) {
     var played by rememberSaveable(key(item)) { mutableStateOf(false) }
 
     if (!shouldAnimate || played) {
-        itemContent(Modifier, item)
+        itemContent(Modifier, item, index)
         return
     }
 
@@ -140,6 +142,7 @@ private fun <T> AnimatableRow(
             this.alpha = alpha
             this.translationX = size.width * slideFactor
         },
-        item
+        item,
+        index
     )
 }

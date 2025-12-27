@@ -1,10 +1,8 @@
 package com.davidcrespo.onewallet.presentation.historical
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,10 +36,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalList
 import org.koin.androidx.compose.koinViewModel
-import java.time.Month
-import java.time.format.TextStyle
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,51 +76,13 @@ fun HistoricalScreen(
                 CircularProgressIndicator()
             }
         } else {
-            LazyColumn(
+            HistoricalList(
+                items = uiState.history,
+                onClick = { viewModel.handleIntent(HistoricalIntent.SelectMonth(it.first().year, it.first().month)) },
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(uiState.history) { item ->
-                    if (item.isNotEmpty()) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    viewModel.handleIntent(HistoricalIntent.SelectMonth(item.first().year, item.first().month))
-                                },
-                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                val monthName = Month.of(item.first().month)
-                                    .getDisplayName(TextStyle.FULL, Locale.getDefault())
-                                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-
-                                Text(
-                                    text = "$monthName ${item.first().year}",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold
-                                )
-
-                                val balance = item.sumOf { it.quantity * it.price }
-                                Text(
-                                    text = "%.2f €".format(balance),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+                    .padding(padding)
+                    .padding(16.dp)
+            )
         }
     }
 

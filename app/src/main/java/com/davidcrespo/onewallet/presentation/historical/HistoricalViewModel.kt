@@ -32,6 +32,7 @@ class HistoricalViewModel(
                     historyList.groupBy { it.year to it.month }
                         .values
                         .toList()
+
                 _uiState.update {
                     it.copy(
                         history = grouped,
