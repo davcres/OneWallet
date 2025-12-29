@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
+import androidx.compose.material.icons.automirrored.filled.TrendingFlat
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Card
@@ -138,9 +139,14 @@ private fun PercentageDisplay(current: Double, previous: Double) {
                 MaterialTheme.colorScheme.primary
             )
 
-            else -> Pair(
+            percentage < 0 -> Pair(
                 Icons.AutoMirrored.Filled.TrendingDown,
                 MaterialTheme.colorScheme.error
+            )
+
+            else -> Pair(
+                Icons.AutoMirrored.Filled.TrendingFlat,
+                MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         Icon(
