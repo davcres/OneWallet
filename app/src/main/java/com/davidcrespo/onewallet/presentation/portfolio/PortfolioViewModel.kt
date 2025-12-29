@@ -174,7 +174,11 @@ class PortfolioViewModel(
             it.quantity * it.price
         }
         val previousBalance = _uiState.value.portfolioItems.sumOf {
-            it.quantity * it.previousPrice
+            if (it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO) {
+                it.quantity * it.previousPrice
+            } else {
+                it.quantity * it.price
+            }
         }
 
         _uiState.update {
