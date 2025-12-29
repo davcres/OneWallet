@@ -1,5 +1,11 @@
 package com.davidcrespo.onewallet.presentation.historical.composables
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +30,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -33,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
 import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
+import kotlinx.coroutines.delay
 import java.time.Month
 import java.time.format.TextStyle
 import java.util.Locale
@@ -44,6 +56,15 @@ fun HistoricalMonthCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showPercentageState by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(5000)
+            showPercentageState = !showPercentageState
+        }
+    }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -93,11 +114,24 @@ fun HistoricalMonthCard(
                     val marketValue = item.sumOf { it.price }
                     val previousMarketValue = previousItem?.sumOf { it.price } ?: 0.0
 
-                    Column(horizontalAlignment = Alignment.End) {
-                        PriceDisplay(value = balance)
-                        if (marketValue != 0.0 && previousMarketValue != 0.0) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            PercentageDisplay(current = marketValue, previous = previousMarketValue)
+                    PriceDisplay(value = balance)
+                    if (marketValue != 0.0 && previousMarketValue != 0.0) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        AnimatedContent(
+                            targetState = showPercentageState,
+                            transitionSpec = {
+                                (slideInVertically { height -> height } + fadeIn())
+                                    .togetherWith(slideOutVertically { height -> -height } + fadeOut())
+                            },
+                            label = "PercentageVarianceAnimation"
+                        ) { show ->
+                            if (show) {
+                                val percentage = (marketValue - previousMarketValue) / previousMarketValue * 100
+                                TrendDisplay(value = percentage, text = "%.2f %%".format(percentage))
+                            } else {
+                                val variance = marketValue - previousMarketValue
+                                TrendDisplay(value = variance, text = "%.2f €".format(variance))
+                            }
                         }
                     }
                 }
@@ -128,19 +162,15 @@ private fun PriceDisplay(value: Double) {
 }
 
 @Composable
-private fun PercentageDisplay(current: Double, previous: Double) {
+private fun TrendDisplay(value: Double, text: String) {
     Row {
-        if (current == 0.0 || previous == 0.0) return@Row
-
-        val percentage = (current - previous) / previous * 100
-
-        val (percentageIcon, percentageColor) = when {
-            percentage > 0 -> Pair(
+        val (icon, color) = when {
+            value > 0 -> Pair(
                 Icons.AutoMirrored.Filled.TrendingUp,
                 MaterialTheme.colorScheme.primary
             )
 
-            percentage < 0 -> Pair(
+            value < 0 -> Pair(
                 Icons.AutoMirrored.Filled.TrendingDown,
                 MaterialTheme.colorScheme.error
             )
@@ -151,15 +181,15 @@ private fun PercentageDisplay(current: Double, previous: Double) {
             )
         }
         Icon(
-            imageVector = percentageIcon,
-            contentDescription = "Percentage Icon",
-            tint = percentageColor
+            imageVector = icon,
+            contentDescription = null,
+            tint = color
         )
         Text(
-            text = "%.2f %%".format(percentage),
+            text = text,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
-            color = percentageColor,
+            color = color,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
         )
     }
@@ -173,6 +203,6 @@ private fun GhostContent() {
     ) {
         PriceDisplay(value = 0.0)
         Spacer(modifier = Modifier.height(8.dp))
-        PercentageDisplay(current = 1.0, previous = 1.0)
+        TrendDisplay(value = 1.0, text = "0.00 %")
     }
 }
