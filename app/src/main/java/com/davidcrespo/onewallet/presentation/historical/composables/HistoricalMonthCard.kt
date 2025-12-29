@@ -90,13 +90,14 @@ fun HistoricalMonthCard(
                 Column(horizontalAlignment = Alignment.End) {
 
                     val balance = item.sumOf { it.quantity * it.price }
-                    val previousBalance = previousItem?.sumOf { it.quantity * it.price } ?: 0.0
+                    val marketValue = item.sumOf { it.price }
+                    val previousMarketValue = previousItem?.sumOf { it.price } ?: 0.0
 
                     Column(horizontalAlignment = Alignment.End) {
                         PriceDisplay(value = balance)
-                        if (balance != 0.0 && previousBalance != 0.0) {
+                        if (marketValue != 0.0 && previousMarketValue != 0.0) {
                             Spacer(modifier = Modifier.height(8.dp))
-                            PercentageDisplay(current = balance, previous = previousBalance)
+                            PercentageDisplay(current = marketValue, previous = previousMarketValue)
                         }
                     }
                 }
