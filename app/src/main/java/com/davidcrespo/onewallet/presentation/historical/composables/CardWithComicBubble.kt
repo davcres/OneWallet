@@ -22,7 +22,7 @@ fun CardWithComicBubble(
     item: Investment,
     section: SectionType,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: (Investment) -> Unit
 ) {
     var show by remember { mutableStateOf(false) }
     var anchor by remember { mutableStateOf<LayoutCoordinates?>(null) }
@@ -33,7 +33,7 @@ fun CardWithComicBubble(
             section = section,
             onClick = {
                 show = !show
-                onClick()
+                onClick(item)
             },
             onGloballyPositioned = { anchor = it }
         )

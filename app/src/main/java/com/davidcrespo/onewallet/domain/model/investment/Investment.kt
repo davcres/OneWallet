@@ -11,10 +11,6 @@ data class Investment(
     val month: Int
 ) {
 
-    fun setNewPrice(newPrice: Double): Investment {
-        return this.copy(price = newPrice)
-    }
-
     fun setDate(month: Int, year: Int): Investment {
         return this.copy(month = month, year = year)
     }

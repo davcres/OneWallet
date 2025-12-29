@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.OWAnimatedList
+import com.davidcrespo.onewallet.core.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.core.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import kotlinx.coroutines.launch
@@ -41,7 +42,9 @@ import java.util.Locale
 @Composable
 fun HistoricalDetailBottomSheet(
     investments: List<Investment>,
+    previousInvestments: List<Investment>,
     visible: Boolean,
+    onClickInvestment: (Investment) -> Unit,
     onDismiss: () -> Unit
 ) {
     if (!visible) return
@@ -60,6 +63,8 @@ fun HistoricalDetailBottomSheet(
     ) {
         SheetContent(
             investments = investments,
+            previousInvestments = previousInvestments,
+            onClickInvestment = onClickInvestment,
             onClose = {
                 scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
             }
@@ -73,6 +78,8 @@ fun HistoricalDetailBottomSheet(
 @Composable
 private fun SheetContent(
     investments: List<Investment>,
+    previousInvestments: List<Investment>,
+    onClickInvestment: (Investment) -> Unit,
     onClose: () -> Unit
 ) {
     Column(
@@ -93,10 +100,12 @@ private fun SheetContent(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             itemContent = { modifier, historicalItem, index ->
-                CardWithComicBubble(
+                val previousMonthItem = previousInvestments.find { it.symbol == historicalItem.symbol }
+                OWInvestmentItem(
                     item = historicalItem,
+                    previousMonthItem = previousMonthItem,
                     section = SectionType.HISTORICAL,
-                    onClick = {},
+                    onClick = { onClickInvestment(it) },
                     modifier = modifier
                 )
             }

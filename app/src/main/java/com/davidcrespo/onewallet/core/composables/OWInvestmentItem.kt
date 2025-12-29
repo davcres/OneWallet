@@ -40,13 +40,13 @@ import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
 import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
-import com.davidcrespo.onewallet.presentation.historical.composables.GhostContent
 
 @Composable
 fun OWInvestmentItem(
     item: Investment,
+    previousMonthItem: Investment? = null,
     section: SectionType,
-    onClick: () -> Unit,
+    onClick: (Investment) -> Unit,
     onGloballyPositioned: (LayoutCoordinates) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -58,7 +58,7 @@ fun OWInvestmentItem(
         shape = CircleShape,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = CardGlowOuter),
-        onClick = onClick
+        onClick = { onClick(item) }
     ) {
         Row(
             modifier = Modifier
@@ -118,7 +118,12 @@ fun OWInvestmentItem(
                             Spacer(modifier = Modifier.height(4.dp))
                             PriceDisplay(value = totalValue)
                             Spacer(modifier = Modifier.height(8.dp))
-                            PercentageDisplay(current = item.price, previous = item.previousPrice)
+                            PercentageDisplay(
+                                current = item.price,
+                                previous = if (section == SectionType.HISTORICAL)
+                                            previousMonthItem?.price ?: 0.0
+                                            else item.previousPrice
+                            )
                         }
                     } else {
                         PriceDisplay(value = totalValue)
@@ -153,12 +158,10 @@ private fun PriceDisplay(value: Double) {
 @Composable
 private fun PercentageDisplay(current: Double, previous: Double) {
     Row {
-        val percentage =
-            if (current == 0.0 || previous == 0.0) {
-                0.0
-            } else {
-                (current - previous) / previous * 100
-            }
+        if (current == 0.0 || previous == 0.0) return@Row
+
+        val percentage = (current - previous) / previous * 100
+
         val (percentageIcon, percentageColor) = when {
             percentage > 0 -> Pair(
                 Icons.AutoMirrored.Filled.TrendingUp,
@@ -191,7 +194,7 @@ private fun PercentageDisplay(current: Double, previous: Double) {
 }
 
 @Composable
-fun GhostContent() {
+private fun GhostContent() {
     // Ghost Column to have same height in all items
     Column(
         modifier = Modifier.alpha(0f)

@@ -159,7 +159,7 @@ private fun PercentageDisplay(current: Double, previous: Double) {
 }
 
 @Composable
-fun GhostContent() {
+private fun GhostContent() {
     // Ghost Column to have same height in all items
     Column(
         modifier = Modifier.alpha(0f)
