@@ -20,7 +20,9 @@ class HistoricalViewModel(
         when (intent) {
             is HistoricalIntent.LoadInitialData -> loadInitialData()
             is HistoricalIntent.SelectMonth -> selectMonth(intent.year, intent.month)
-            is HistoricalIntent.DismissDetail -> dismissDetail()
+            is HistoricalIntent.SelectInvestment -> selectInvestment(intent.investment)
+            is HistoricalIntent.DismissBottomSheet -> dismissBottomSheet()
+            is HistoricalIntent.DismissInvestmentDetail -> dismissInvestmentDetail()
         }
     }
 
@@ -32,6 +34,7 @@ class HistoricalViewModel(
                     historyList.groupBy { it.year to it.month }
                         .values
                         .toList()
+
                 _uiState.update {
                     it.copy(
                         history = grouped,
@@ -48,15 +51,41 @@ class HistoricalViewModel(
                 monthlyEntries.firstOrNull()?.let { it.year == year && it.month == month } == true
             }.orEmpty()
 
+            val index = _uiState.value.history.indexOf(details)
+
             _uiState.update {
                 it.copy(
-                    selectedMonthDetail = details.sortedByDescending { it.quantity * it.price }
+                    selectedMonthDetail = details.sortedByDescending { it.quantity * it.price },
+                    selectedPreviousMonth = _uiState.value.history.getOrNull(index + 1)
                 )
             }
         }
     }
 
-    private fun dismissDetail() {
-        _uiState.update { it.copy(selectedMonthDetail = null) }
+    private fun selectInvestment(investment: Investment) {
+        _uiState.update {
+            it.copy(
+                selectedInvestment = investment,
+                selectedPreviousInvestment = it.selectedPreviousMonth?.find { it.symbol == investment.symbol }
+            )
+        }
+    }
+
+    private fun dismissBottomSheet() {
+        _uiState.update {
+            it.copy(
+                selectedMonthDetail = null,
+                selectedPreviousMonth = null
+            )
+        }
+    }
+
+    private fun dismissInvestmentDetail() {
+        _uiState.update {
+            it.copy(
+                selectedInvestment = null,
+                selectedPreviousInvestment = null
+            )
+        }
     }
 }
