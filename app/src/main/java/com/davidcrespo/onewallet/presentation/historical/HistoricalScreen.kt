@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalDetailBottomSheet
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalList
 import org.koin.androidx.compose.koinViewModel
 
@@ -86,7 +87,13 @@ fun HistoricalScreen(
         }
     }
 
-    if (uiState.selectedMonthDetail != null) {
+    HistoricalDetailBottomSheet(
+        investments = uiState.selectedMonthDetail.orEmpty(),
+        visible = uiState.selectedMonthDetail != null,
+        onDismiss = { viewModel.handleIntent(HistoricalIntent.DismissDetail) }
+    )
+
+    if (false && uiState.selectedMonthDetail != null) {
         Dialog(onDismissRequest = { viewModel.handleIntent(HistoricalIntent.DismissDetail) }) {
             Card(
                 modifier = Modifier

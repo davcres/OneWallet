@@ -1,7 +1,6 @@
 package com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -176,8 +175,8 @@ private fun AssetTypeCard(
         shadowElevation = 0.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .bounceClick()
-            .clickable(onClick = onClick)
+            .bounceClick(),
+        onClick = onClick
     ) {
         Column(
             modifier = Modifier

@@ -1,7 +1,6 @@
 package com.davidcrespo.onewallet.presentation.portfolio.positions.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +23,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.OWAnimatedList
+import com.davidcrespo.onewallet.core.composables.OWInvestmentItem
+import com.davidcrespo.onewallet.core.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
 
@@ -83,10 +84,10 @@ fun PortfolioList(
                     }
                 },
                 content = {
-                    PortfolioItemCard(
+                    OWInvestmentItem(
                         item = portfolioItem,
-                        modifier = Modifier
-                            .clickable { onEdit(portfolioItem) }
+                        section = SectionType.PORTFOLIO,
+                        onClick = { onEdit(portfolioItem) },
                     )
                 },
                 modifier = modifier.bounceClick()

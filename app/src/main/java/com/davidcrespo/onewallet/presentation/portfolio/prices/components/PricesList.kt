@@ -7,9 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.OWAnimatedList
+import com.davidcrespo.onewallet.core.composables.OWInvestmentItem
+import com.davidcrespo.onewallet.core.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
-import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,10 +24,11 @@ fun PricesList(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         itemContent = { modifier, priceItem, index ->
-            PriceItemCard(
+            OWInvestmentItem(
                 item = priceItem,
+                section = SectionType.PRICES,
+                onClick = {},
                 modifier = modifier
-                    .bounceClick()
             )
         }
     )

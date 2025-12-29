@@ -102,7 +102,7 @@ fun PortfolioScreen(
                         .fillMaxSize()
                 ) { page ->
                     when (tabs[page]) {
-                        PortfolioTab.POSITIONS -> PositionsTab(
+                        PortfolioTab.PORTFOLIO -> PositionsTab(
                             totalBalance = uiState.totalBalance,
                             previousBalance = uiState.previousBalance,
                             portfolioItems = uiState.portfolioItems,

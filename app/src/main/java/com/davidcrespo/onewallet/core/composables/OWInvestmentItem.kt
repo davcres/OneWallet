@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.historical.composables
+package com.davidcrespo.onewallet.core.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,8 +14,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
+import androidx.compose.material.icons.automirrored.filled.TrendingFlat
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.outlined.AccountBalance
+import androidx.compose.material.icons.outlined.CurrencyBitcoin
+import androidx.compose.material.icons.outlined.PieChartOutline
+import androidx.compose.material.icons.outlined.StackedLineChart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -27,25 +31,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.core.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
 import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
-import java.time.Month
-import java.time.format.TextStyle
-import java.util.Locale
+import com.davidcrespo.onewallet.presentation.historical.composables.GhostContent
 
 @Composable
-fun HistoricalItemCard(
-    item: List<Investment>,
-    previousItem: List<Investment>? = null,
+fun OWInvestmentItem(
+    item: Investment,
+    section: SectionType,
+    onClick: () -> Unit,
+    onGloballyPositioned: (LayoutCoordinates) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .onGloballyPositioned { onGloballyPositioned(it) }
+            .fillMaxWidth()
+            .bounceClick(),
         shape = CircleShape,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = CardGlowOuter)
+        colors = CardDefaults.cardColors(containerColor = CardGlowOuter),
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier
@@ -60,8 +73,14 @@ fun HistoricalItemCard(
                     .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center
             ) {
+                val icon = when (item.type) {
+                    InvestmentType.STOCK -> Icons.Outlined.StackedLineChart
+                    InvestmentType.CRYPTO -> Icons.Outlined.CurrencyBitcoin
+                    InvestmentType.FUND -> Icons.Outlined.PieChartOutline
+                    InvestmentType.CASH -> Icons.Outlined.AccountBalance
+                }
                 Icon(
-                    imageVector = Icons.Default.CalendarMonth,
+                    imageVector = icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -69,33 +88,44 @@ fun HistoricalItemCard(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            val monthName = Month.of(item.first().month)
-                .getDisplayName(TextStyle.FULL, Locale.getDefault())
-                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-
-            Text(
-                text = "$monthName ${item.first().year}",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f)
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = item.symbol,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontWeight = FontWeight.Bold
+                )
+                //TODO***
+                /*Text(
+                    text = item.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )*/
+            }
 
             Box(contentAlignment = Alignment.CenterEnd) {
                 Column(horizontalAlignment = Alignment.End) {
+                    val showPercentage = item.type == InvestmentType.STOCK || item.type == InvestmentType.CRYPTO
+                    val totalValue = when (section) {
+                        SectionType.PORTFOLIO, SectionType.HISTORICAL -> item.quantity * item.price
+                        SectionType.PRICES -> item.price
+                    }
 
-                    val balance = item.sumOf { it.quantity * it.price }
-                    val previousBalance = previousItem?.sumOf { it.quantity * it.price } ?: 0.0
-
-                    Column(horizontalAlignment = Alignment.End) {
-                        PriceDisplay(value = balance)
-                        if (balance != 0.0 && previousBalance != 0.0) {
+                    if (showPercentage) {
+                        Column(horizontalAlignment = Alignment.End) {
+                            Spacer(modifier = Modifier.height(4.dp))
+                            PriceDisplay(value = totalValue)
                             Spacer(modifier = Modifier.height(8.dp))
-                            PercentageDisplay(current = balance, previous = previousBalance)
+                            PercentageDisplay(current = item.price, previous = item.previousPrice)
                         }
+                    } else {
+                        PriceDisplay(value = totalValue)
                     }
                 }
 
-                //GhostContent()
+                GhostContent()
             }
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -123,19 +153,26 @@ private fun PriceDisplay(value: Double) {
 @Composable
 private fun PercentageDisplay(current: Double, previous: Double) {
     Row {
-        if (current == 0.0 || previous == 0.0) return@Row
-
-        val percentage = (current - previous) / previous * 100
-
+        val percentage =
+            if (current == 0.0 || previous == 0.0) {
+                0.0
+            } else {
+                (current - previous) / previous * 100
+            }
         val (percentageIcon, percentageColor) = when {
             percentage > 0 -> Pair(
                 Icons.AutoMirrored.Filled.TrendingUp,
                 MaterialTheme.colorScheme.primary
             )
 
-            else -> Pair(
+            percentage < 0 -> Pair(
                 Icons.AutoMirrored.Filled.TrendingDown,
                 MaterialTheme.colorScheme.error
+            )
+
+            else -> Pair(
+                Icons.AutoMirrored.Filled.TrendingFlat,
+                MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         Icon(
@@ -162,6 +199,6 @@ fun GhostContent() {
         Spacer(modifier = Modifier.height(4.dp))
         PriceDisplay(value = 0.0)
         Spacer(modifier = Modifier.height(8.dp))
-        PercentageDisplay(current = 0.0, previous = 0.0)
+        PercentageDisplay(current = 1.0, previous = 1.0)
     }
 }
