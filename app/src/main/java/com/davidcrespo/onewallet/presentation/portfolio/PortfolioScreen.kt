@@ -33,10 +33,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.davidcrespo.onewallet.domain.model.investment.Currency
-import com.davidcrespo.onewallet.domain.model.investment.Investment
-import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.core.composables.applyIf
+import com.davidcrespo.onewallet.core.composables.pulse
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWFloatingActionButton
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.portfolio.components.EmptyInvestments
 import com.davidcrespo.onewallet.presentation.portfolio.components.Header
 import com.davidcrespo.onewallet.presentation.portfolio.components.SegmentedTabs
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddInvestmentBottomSheet
@@ -105,7 +106,9 @@ private fun PortfolioScreen(
         floatingActionButton = {
             OWFloatingActionButton(
                 expanded = fabButtonExpanded,
-                onExpandedChange = { fabButtonExpanded = it }
+                onExpandedChange = { fabButtonExpanded = it },
+                modifier = Modifier
+                    .applyIf(uiState.portfolioItems.isEmpty()) { pulse() }
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -132,6 +135,11 @@ private fun PortfolioScreen(
                                 .fillMaxWidth()
                                 .wrapContentSize(),
                             color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    uiState.portfolioItems.isEmpty() -> {
+                        EmptyInvestments(
+                            modifier = Modifier.fillMaxSize().padding(16.dp)
                         )
                     }
                     else -> {
@@ -235,30 +243,21 @@ private fun PortfolioScreen(
 @Preview
 @Composable
 private fun PortfolioScreenPreview() {
-    PortfolioScreen(
-        uiState = PortfolioUiState(
-            portfolioItems = listOf(
-                Investment(
-                    symbol = "AAPL",
-                    quantity = 10.0,
-                    price = 150.0,
-                    previousPrice = 140.0,
-                    currency = Currency.EUR,
-                    type = InvestmentType.STOCK,
-                    year = 2023,
-                    month = 1
-                )
+    OneWalletTheme {
+        PortfolioScreen(
+            uiState = PortfolioUiState(
+                portfolioItems = emptyList(),
+                symbolsWithPrice = listOf("AAPL"),
+                usdEurRate = 1.0,
+                totalBalance = 10.0,
+                previousBalance = 9.0,
+                editingItem = null,
+                isFundDialogVisible = false,
+                isBankDialogVisible = false,
+                isLoading = false,
+                error = null
             ),
-            symbolsWithPrice = listOf("AAPL"),
-            usdEurRate = 1.0,
-            totalBalance = 10.0,
-            previousBalance = 9.0,
-            editingItem = null,
-            isFundDialogVisible = false,
-            isBankDialogVisible = false,
-            isLoading = false,
-            error = null
-        ),
-        onAction = {}
-    )
+            onAction = {}
+        )
+    }
 }
