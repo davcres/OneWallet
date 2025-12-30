@@ -14,7 +14,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.davidcrespo.onewallet.presentation.historical.HistoricalScreen
 import com.davidcrespo.onewallet.presentation.market.MarketScreen
-import com.davidcrespo.onewallet.presentation.portfolio.PortfolioScreen
+import com.davidcrespo.onewallet.presentation.portfolio.PortfolioRoot
 
 @Composable
 fun MainNavigation(
@@ -42,7 +42,7 @@ fun MainNavigation(
         },
         entryProvider = entryProvider {
             entry<Route.Portfolio> {
-                PortfolioScreen(
+                PortfolioRoot(
                     navigateToHistorical = {
                         backStack.add(Route.Historical)
                     },

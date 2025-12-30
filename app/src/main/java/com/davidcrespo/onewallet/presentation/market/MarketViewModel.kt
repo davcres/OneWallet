@@ -29,27 +29,27 @@ class MarketViewModel(
     }
 
     private fun getSymbols(isCrypto: Boolean) {
-        _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            val result = getMarketAssetsUseCase(isCrypto)
-            result.onSuccess { marketAssets ->
-                _uiState.update {
-                    it.copy(
-                        marketAssets = marketAssets,
-                        filteredAssets = marketAssets,
-                        isCrypto = isCrypto,
-                        isLoading = false
-                    )
+            _uiState.update { it.copy(isLoading = true) }
+            getMarketAssetsUseCase(isCrypto)
+                .onSuccess { marketAssets ->
+                    _uiState.update {
+                        it.copy(
+                            marketAssets = marketAssets,
+                            filteredAssets = marketAssets,
+                            isCrypto = isCrypto,
+                            isLoading = false
+                        )
+                    }
+                }.onFailure {
+                    _uiState.update {
+                        it.copy(
+                            marketAssets = emptyList(),
+                            filteredAssets = emptyList(),
+                            isLoading = false
+                        )
+                    }
                 }
-            }.onFailure {
-                _uiState.update {
-                    it.copy(
-                        marketAssets = emptyList(),
-                        filteredAssets = emptyList(),
-                        isLoading = false
-                    )
-                }
-            }
         }
     }
 
@@ -98,7 +98,7 @@ class MarketViewModel(
             _uiState.update {
                 it.copy(
                     searchQuery = "",
-                    assetsToSaveToPortfolio = mutableListOf(),
+                    assetsToSaveToPortfolio = listOf(),
                     navigateBack = true
                 )
             }

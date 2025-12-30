@@ -10,15 +10,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +30,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWFloatingActionButton
 import com.davidcrespo.onewallet.presentation.portfolio.components.Header
 import com.davidcrespo.onewallet.presentation.portfolio.components.SegmentedTabs
@@ -44,20 +51,39 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun PortfolioScreen(
+fun PortfolioRoot(
     navigateToHistorical: () -> Unit,
     navigateToMarket: (isCrypto: Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PortfolioViewModel = koinViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    PortfolioScreen(
+        uiState = uiState,
+        onAction = { action ->
+            when(action) {
+                is PortfolioIntent.NavigateToHistorical -> navigateToHistorical()
+                is PortfolioIntent.NavigateToMarket -> navigateToMarket(action.isCrypto)
+                else -> viewModel.handleIntent(action)
+            }
+        },
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun PortfolioScreen(
+    uiState: PortfolioUiState,
+    onAction: (PortfolioIntent) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val tabs = remember { PortfolioTab.entries }
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(uiState.portfolioItems) {
-        viewModel.handleIntent(PortfolioIntent.UpdateBalance)
+        onAction(PortfolioIntent.UpdateBalance)
     }
 
     var fabButtonExpanded by remember { mutableStateOf(false) }
@@ -98,50 +124,50 @@ fun PortfolioScreen(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Header(
-                    navigateToHistorical = navigateToHistorical,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-
-                SegmentedTabs(
-                    selectedIndex = pagerState.currentPage,
-                    titles = tabs.toList(),
-                    onSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier
-                        .fillMaxSize()
-                ) { page ->
-                    when (tabs[page]) {
-                        PortfolioTab.PORTFOLIO -> PositionsTab(
-                            totalBalance = uiState.totalBalance,
-                            previousBalance = uiState.previousBalance,
-                            portfolioItems = uiState.portfolioItems,
-                            onRemoveItem = { viewModel.handleIntent(PortfolioIntent.RemoveItem(it)) },
-                            onEditQuantity = { viewModel.handleIntent(PortfolioIntent.EditQuantity(it)) }
-                        )
-                        PortfolioTab.PRICES -> PricesTab(
-                            portfolioItems = uiState.portfolioItems,
-                            usdEurRate = uiState.usdEurRate,
-                            modifier = Modifier.fillMaxSize()
+                when {
+                    uiState.isLoading -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .wrapContentSize(),
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
-                }
-            }
-        }
+                    else -> {
+                        Header(
+                            navigateToHistorical = { onAction(PortfolioIntent.NavigateToHistorical) },
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
 
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f))
-                    .clickable(enabled = false) {}, // Block clicks
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
+                        SegmentedTabs(
+                            selectedIndex = pagerState.currentPage,
+                            titles = tabs.toList(),
+                            onSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ) { page ->
+                            when (tabs[page]) {
+                                PortfolioTab.PORTFOLIO -> PositionsTab(
+                                    totalBalance = uiState.totalBalance,
+                                    previousBalance = uiState.previousBalance,
+                                    portfolioItems = uiState.portfolioItems,
+                                    onRemoveItem = { onAction(PortfolioIntent.RemoveItem(it)) },
+                                    onEditQuantity = { onAction(PortfolioIntent.EditQuantity(it)) }
+                                )
+                                PortfolioTab.PRICES -> PricesTab(
+                                    portfolioItems = uiState.portfolioItems,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -163,10 +189,10 @@ fun PortfolioScreen(
                 onDismiss = { fabButtonExpanded = false },
                 onAssetTypeClick = { asset ->
                     when (asset) {
-                        AssetType.Stock -> navigateToMarket(false)
-                        AssetType.Crypto -> navigateToMarket(true)
-                        AssetType.Fund -> viewModel.handleIntent(PortfolioIntent.ShowFundDialog)
-                        AssetType.Bank -> viewModel.handleIntent(PortfolioIntent.ShowBankDialog)
+                        AssetType.Stock -> onAction(PortfolioIntent.NavigateToMarket(false))
+                        AssetType.Crypto -> onAction(PortfolioIntent.NavigateToMarket(true))
+                        AssetType.Fund -> onAction(PortfolioIntent.ShowFundDialog)
+                        AssetType.Bank -> onAction(PortfolioIntent.ShowBankDialog)
                     }
                     fabButtonExpanded = false
                 }
@@ -177,9 +203,9 @@ fun PortfolioScreen(
         uiState.editingItem?.let { item ->
             StockDetailDialog(
                 item = item,
-                onDismiss = { viewModel.handleIntent(PortfolioIntent.EditQuantity(null)) },
+                onDismiss = { onAction(PortfolioIntent.EditQuantity(null)) },
                 onConfirmQuantity = { quantity ->
-                    viewModel.handleIntent(PortfolioIntent.UpdateQuantity(item, quantity))
+                    onAction(PortfolioIntent.UpdateQuantity(item, quantity))
                 }
             )
         }
@@ -187,9 +213,9 @@ fun PortfolioScreen(
         // Add Bank/Deposit Dialog
         if (uiState.isBankDialogVisible) {
             BankDepositDialog(
-                onDismiss = { viewModel.handleIntent(PortfolioIntent.DismissBankDialog) },
+                onDismiss = { onAction(PortfolioIntent.DismissBankDialog) },
                 onConfirm = { name, amount ->
-                    viewModel.handleIntent(PortfolioIntent.AddBankItem(name, amount))
+                    onAction(PortfolioIntent.AddBankItem(name, amount))
                 }
             )
         }
@@ -197,11 +223,42 @@ fun PortfolioScreen(
         // Add Fund/ETF Dialog
         if (uiState.isFundDialogVisible) {
             FundDepositDialog(
-                onDismiss = { viewModel.handleIntent(PortfolioIntent.DismissFundDialog) },
+                onDismiss = { onAction(PortfolioIntent.DismissFundDialog) },
                 onConfirm = { name, quantity, price ->
-                    viewModel.handleIntent(PortfolioIntent.AddFundItem(name, quantity, price))
+                    onAction(PortfolioIntent.AddFundItem(name, quantity, price))
                 }
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun PortfolioScreenPreview() {
+    PortfolioScreen(
+        uiState = PortfolioUiState(
+            portfolioItems = listOf(
+                Investment(
+                    symbol = "AAPL",
+                    quantity = 10.0,
+                    price = 150.0,
+                    previousPrice = 140.0,
+                    currency = Currency.EUR,
+                    type = InvestmentType.STOCK,
+                    year = 2023,
+                    month = 1
+                )
+            ),
+            symbolsWithPrice = listOf("AAPL"),
+            usdEurRate = 1.0,
+            totalBalance = 10.0,
+            previousBalance = 9.0,
+            editingItem = null,
+            isFundDialogVisible = false,
+            isBankDialogVisible = false,
+            isLoading = false,
+            error = null
+        ),
+        onAction = {}
+    )
 }

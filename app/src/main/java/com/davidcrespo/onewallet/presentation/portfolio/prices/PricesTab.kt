@@ -8,7 +8,6 @@ import com.davidcrespo.onewallet.presentation.portfolio.prices.components.Prices
 @Composable
 fun PricesTab(
     portfolioItems: List<Investment>,
-    usdEurRate: Double,
     modifier: Modifier = Modifier
 ) {
     PricesList(

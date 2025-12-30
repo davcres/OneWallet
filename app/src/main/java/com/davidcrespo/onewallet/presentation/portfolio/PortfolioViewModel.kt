@@ -51,6 +51,9 @@ class PortfolioViewModel(
             is PortfolioIntent.AddBankItem -> addBankItem(intent.name, intent.quantity)
             is PortfolioIntent.ShowBankDialog -> _uiState.update { it.copy(isBankDialogVisible = true) }
             is PortfolioIntent.DismissBankDialog -> _uiState.update { it.copy(isBankDialogVisible = false) }
+
+            is PortfolioIntent.NavigateToHistorical -> {}
+            is PortfolioIntent.NavigateToMarket -> {}
         }
     }
 
@@ -59,12 +62,12 @@ class PortfolioViewModel(
     }
 
     private fun loadInitialData() {
-        _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
             getUsdEurRate()
             getPortfolioItems()
+            _uiState.update { it.copy(isLoading = false) }
         }
-        _uiState.update { it.copy(isLoading = false) }
     }
 
     private suspend fun getUsdEurRate() {
@@ -82,7 +85,7 @@ class PortfolioViewModel(
                 _uiState.update { it.copy(isLoading = false, error = e.message) }
             }
             .collect { items ->
-                _uiState.update { it.copy(portfolioItems = items.toMutableList()) }
+                _uiState.update { it.copy(portfolioItems = items) }
                 
                 fetchPricesForItems(items)
                 sortPortfolioItems()
@@ -147,7 +150,7 @@ class PortfolioViewModel(
 
             _uiState.update {
                 it.copy(
-                    portfolioItems = symbolsToSave.toMutableList(),
+                    portfolioItems = symbolsToSave,
                     symbolsWithPrice = newSymbolsWithPrice
                 )
             }
@@ -164,7 +167,7 @@ class PortfolioViewModel(
             it.copy(
                 portfolioItems = _uiState.value.portfolioItems.sortedByDescending {
                     it.quantity * it.price
-                }.toMutableList()
+                }
             )
         }
     }

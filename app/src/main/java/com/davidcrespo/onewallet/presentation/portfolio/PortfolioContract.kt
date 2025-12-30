@@ -3,7 +3,7 @@ package com.davidcrespo.onewallet.presentation.portfolio
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 
 data class PortfolioUiState(
-    val portfolioItems: MutableList<Investment> = mutableListOf(),
+    val portfolioItems: List<Investment> = listOf(),
     val symbolsWithPrice: List<String> = emptyList(),
     val usdEurRate: Double = 1.0,
     val totalBalance: Double = 0.0,
@@ -29,5 +29,8 @@ sealed interface PortfolioIntent {
     data class AddBankItem(val name: String, val quantity: Double) : PortfolioIntent
     data object ShowBankDialog : PortfolioIntent
     data object DismissBankDialog : PortfolioIntent
+
+    data object NavigateToHistorical : PortfolioIntent
+    data class NavigateToMarket(val isCrypto: Boolean) : PortfolioIntent
 
 }
