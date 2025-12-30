@@ -12,7 +12,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.davidcrespo.onewallet.presentation.historical.HistoricalScreen
+import com.davidcrespo.onewallet.presentation.historical.HistoricalRoot
 import com.davidcrespo.onewallet.presentation.market.MarketScreen
 import com.davidcrespo.onewallet.presentation.portfolio.PortfolioRoot
 
@@ -64,7 +64,7 @@ fun MainNavigation(
             }
 
             entry<Route.Historical> {
-                HistoricalScreen(
+                HistoricalRoot(
                     onBack = {
                         if (backStack.size > 1) backStack.removeLastOrNull()
                     },

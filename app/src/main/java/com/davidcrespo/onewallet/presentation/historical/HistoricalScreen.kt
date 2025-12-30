@@ -14,26 +14,41 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalDetailBottomSheet
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalInvestmentDetail
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalList
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoricalScreen(
+fun HistoricalRoot(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HistoricalViewModel = koinViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    HistoricalScreen(
+        uiState = uiState,
+        onAction = viewModel::handleIntent,
+        onBack = onBack,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HistoricalScreen(
+    uiState: HistoricalUiState,
+    onAction: (HistoricalIntent) -> Unit,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     LaunchedEffect(Unit) {
-        viewModel.handleIntent(HistoricalIntent.LoadInitialData)
+        onAction(HistoricalIntent.LoadInitialData)
     }
 
     Scaffold(
@@ -62,7 +77,7 @@ fun HistoricalScreen(
         } else {
             HistoricalList(
                 items = uiState.history,
-                onClick = { viewModel.handleIntent(HistoricalIntent.SelectMonth(it.first().year, it.first().month)) },
+                onClick = { onAction(HistoricalIntent.SelectMonth(it.first().year, it.first().month)) },
                 modifier = Modifier
                     .padding(padding)
             )
@@ -73,15 +88,15 @@ fun HistoricalScreen(
         investments = uiState.selectedMonthDetail.orEmpty(),
         previousInvestments = uiState.selectedPreviousMonth.orEmpty(),
         visible = uiState.selectedMonthDetail != null,
-        onClickInvestment = { viewModel.handleIntent(HistoricalIntent.SelectInvestment(it)) },
-        onDismiss = { viewModel.handleIntent(HistoricalIntent.DismissBottomSheet) }
+        onClickInvestment = { onAction(HistoricalIntent.SelectInvestment(it)) },
+        onDismiss = { onAction(HistoricalIntent.DismissBottomSheet) }
     )
 
     uiState.selectedInvestment?.let {
         HistoricalInvestmentDetail(
             investment = it,
             previousMonthInvestment = uiState.selectedPreviousInvestment,
-            onDismiss = { viewModel.handleIntent(HistoricalIntent.DismissInvestmentDetail) }
+            onDismiss = { onAction(HistoricalIntent.DismissInvestmentDetail) }
         )
     }
 }
