@@ -24,12 +24,13 @@ import java.time.LocalTime
 
 @Composable
 fun Header(
-    navigateToHistorical: () -> Unit
+    navigateToHistorical: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Column {
             Text(
@@ -54,7 +55,8 @@ fun Header(
             contentAlignment = Alignment.Center
         ) {
             IconButton(
-                onClick = navigateToHistorical
+                onClick = navigateToHistorical,
+                modifier = Modifier.bounceClick()
             ) {
                 Icon(
                     imageVector = Icons.Filled.AutoGraph,

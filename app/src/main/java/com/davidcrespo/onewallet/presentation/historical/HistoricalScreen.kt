@@ -18,7 +18,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalDetailBottomSheet
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalInvestmentDetail
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalList
@@ -66,7 +65,6 @@ fun HistoricalScreen(
                 onClick = { viewModel.handleIntent(HistoricalIntent.SelectMonth(it.first().year, it.first().month)) },
                 modifier = Modifier
                     .padding(padding)
-                    .padding(16.dp)
             )
         }
     }

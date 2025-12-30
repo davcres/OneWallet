@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -73,27 +75,39 @@ fun PortfolioScreen(
         label = "overlay"
     )
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Scaffold(
+        floatingActionButton = {
+            OWFloatingActionButton(
+                expanded = fabButtonExpanded,
+                onExpandedChange = { fabButtonExpanded = it }
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End,
+        modifier = Modifier.fillMaxSize()
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .blur(blurRadius)
+                .padding(paddingValues)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(vertical = 16.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Header(
-                    navigateToHistorical = navigateToHistorical
+                    navigateToHistorical = navigateToHistorical,
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
 
                 SegmentedTabs(
                     selectedIndex = pagerState.currentPage,
                     titles = tabs.toList(),
-                    onSelected = { scope.launch { pagerState.animateScrollToPage(it) } }
+                    onSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
 
                 HorizontalPager(
@@ -158,14 +172,6 @@ fun PortfolioScreen(
                 }
             )
         }
-
-        OWFloatingActionButton(
-            expanded = fabButtonExpanded,
-            onExpandedChange = { fabButtonExpanded = it },
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.BottomEnd)
-        )
 
         // Edit Quantity Dialog
         uiState.editingItem?.let { item ->
