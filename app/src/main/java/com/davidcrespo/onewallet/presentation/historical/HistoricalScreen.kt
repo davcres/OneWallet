@@ -41,7 +41,7 @@ fun HistoricalRoot(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoricalScreen(
+private fun HistoricalScreen(
     uiState: HistoricalUiState,
     onAction: (HistoricalIntent) -> Unit,
     onBack: () -> Unit,

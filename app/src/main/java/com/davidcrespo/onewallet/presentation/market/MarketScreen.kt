@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,22 +24,40 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davidcrespo.onewallet.presentation.market.components.MarketListItem
 import com.davidcrespo.onewallet.presentation.market.components.MarketSearchBar
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MarketScreen(
+fun MarketRoot(
     isCrypto: Boolean,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MarketViewModel = koinViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    MarketScreen(
+        uiState = uiState,
+        onAction = viewModel::handleIntent,
+        isCrypto = isCrypto,
+        onBack = onBack,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MarketScreen(
+    uiState: MarketState,
+    onAction: (MarketIntent) -> Unit,
+    isCrypto: Boolean,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     LaunchedEffect(Unit) {
-        viewModel.handleIntent(MarketIntent.LoadInitialData(isCrypto))
+        onAction(MarketIntent.LoadInitialData(isCrypto))
     }
 
     if (uiState.navigateBack) {
@@ -70,7 +87,7 @@ fun MarketScreen(
                 if (uiState.assetsToSaveToPortfolio.isNotEmpty()) {
                     TextButton(
                         onClick = {
-                            viewModel.handleIntent(MarketIntent.SaveAssetsSelected)
+                            onAction(MarketIntent.SaveAssetsSelected)
                         },
                         modifier = Modifier.align(Alignment.CenterEnd)
                     ) {
@@ -100,14 +117,14 @@ fun MarketScreen(
             MarketSearchBar(
                 isCrypto = isCrypto,
                 query = uiState.searchQuery,
-                onQueryChange = { viewModel.handleIntent(MarketIntent.SearchQueryChanged(it)) },
+                onQueryChange = { onAction(MarketIntent.SearchQueryChanged(it)) },
                 onSearch = {
                     focusManager.clearFocus(force = true)
                     keyboardController?.hide()
-                    viewModel.handleIntent(MarketIntent.SearchQueryChanged(it))
+                    onAction(MarketIntent.SearchQueryChanged(it))
                 },
                 onClearQuery = {
-                    viewModel.handleIntent(MarketIntent.SearchQueryChanged(""))
+                    onAction(MarketIntent.SearchQueryChanged(""))
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -139,12 +156,12 @@ fun MarketScreen(
                             addOneAsset = {
                                 focusManager.clearFocus(force = true)
                                 keyboardController?.hide()
-                                viewModel.handleIntent(MarketIntent.AddOneAsset(asset))
+                                onAction(MarketIntent.AddOneAsset(asset))
                             },
                             selectAsset = {
                                 focusManager.clearFocus(force = true)
                                 keyboardController?.hide()
-                                viewModel.handleIntent(MarketIntent.SelectAsset(asset))
+                                onAction(MarketIntent.SelectAsset(asset))
                             },
                             modifier = Modifier.fillMaxWidth()
                         )
