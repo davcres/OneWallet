@@ -47,9 +47,9 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.bounceClick
-import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
 import kotlinx.coroutines.delay
 
@@ -140,11 +140,15 @@ fun OWInvestmentItem(
                             PriceDisplay(value = totalValue)
                             Spacer(modifier = Modifier.height(8.dp))
                             
-                            val currentPrice = item.price
-                            val previousPrice = if (section == SectionType.HISTORICAL)
-                                previousMonthItem?.price ?: 0.0 
-                            else 
-                                item.previousPrice
+                            val currentPrice = when (section) {
+                                SectionType.PORTFOLIO -> item.price * item.quantity
+                                else -> item.price
+                            }
+                            val previousPrice = when (section) {
+                                SectionType.PORTFOLIO -> item.previousPrice * item.quantity
+                                SectionType.HISTORICAL -> previousMonthItem?.price ?: 0.0
+                                else -> item.previousPrice
+                            }
 
                             AnimatedContent(
                                 targetState = showPercentageState,
