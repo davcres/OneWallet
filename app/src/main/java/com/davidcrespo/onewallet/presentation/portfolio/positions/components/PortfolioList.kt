@@ -22,11 +22,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.core.composables.OWAnimatedList
-import com.davidcrespo.onewallet.core.composables.OWInvestmentItem
-import com.davidcrespo.onewallet.core.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
+import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.domain.model.investment.Investment
-import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
+import com.davidcrespo.onewallet.core.composables.bounceClick
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

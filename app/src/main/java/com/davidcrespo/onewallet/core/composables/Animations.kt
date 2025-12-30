@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.designsystem.composables
+package com.davidcrespo.onewallet.core.composables
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode

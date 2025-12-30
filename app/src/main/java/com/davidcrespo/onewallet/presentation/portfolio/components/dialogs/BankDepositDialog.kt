@@ -21,7 +21,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
-import com.davidcrespo.onewallet.presentation.designsystem.composables.shakeClickEffect
+import com.davidcrespo.onewallet.core.composables.shakeClickEffect
 
 @Composable
 fun BankDepositDialog(

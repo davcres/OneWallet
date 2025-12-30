@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.core.composables
+package com.davidcrespo.onewallet.presentation.designsystem.composables
 
 import android.content.Context
 import android.hardware.Sensor

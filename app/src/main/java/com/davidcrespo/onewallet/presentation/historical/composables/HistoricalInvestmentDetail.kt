@@ -42,7 +42,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
-import com.davidcrespo.onewallet.presentation.designsystem.composables.DashedDivider
+import com.davidcrespo.onewallet.core.composables.DashedDivider
 
 @Composable
 fun HistoricalInvestmentDetail(

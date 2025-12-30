@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.market.MarketAsset
-import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
+import com.davidcrespo.onewallet.core.composables.bounceClick
 
 @Composable
 fun MarketListItem(

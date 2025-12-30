@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.core.composables.OWInvestmentItem
-import com.davidcrespo.onewallet.core.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
+import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 
 @Composable

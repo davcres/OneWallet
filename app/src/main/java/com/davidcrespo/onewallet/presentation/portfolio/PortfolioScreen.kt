@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.core.composables.OWFloatingActionButton
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWFloatingActionButton
 import com.davidcrespo.onewallet.presentation.portfolio.components.Header
 import com.davidcrespo.onewallet.presentation.portfolio.components.SegmentedTabs
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddInvestmentBottomSheet

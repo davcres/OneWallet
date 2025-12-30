@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.core.composables
+package com.davidcrespo.onewallet.presentation.designsystem.composables
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
+import com.davidcrespo.onewallet.core.composables.bounceClick
 
 @Composable
 fun OWFloatingActionButton(

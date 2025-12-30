@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.core.composables
+package com.davidcrespo.onewallet.presentation.designsystem.composables
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -46,10 +46,10 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.core.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.core.composables.bounceClick
+import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
-import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
 import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
 import kotlinx.coroutines.delay
 
@@ -141,7 +141,7 @@ fun OWInvestmentItem(
                             Spacer(modifier = Modifier.height(8.dp))
                             
                             val currentPrice = item.price
-                            val previousPrice = if (section == SectionType.HISTORICAL) 
+                            val previousPrice = if (section == SectionType.HISTORICAL)
                                 previousMonthItem?.price ?: 0.0 
                             else 
                                 item.previousPrice

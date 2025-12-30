@@ -48,9 +48,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.davidcrespo.onewallet.core.composables.OWShakeListener
-import com.davidcrespo.onewallet.presentation.designsystem.composables.AnimatedCounter
-import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWShakeListener
+import com.davidcrespo.onewallet.core.composables.AnimatedCounter
+import com.davidcrespo.onewallet.core.composables.bounceClick
 import com.davidcrespo.onewallet.presentation.designsystem.theme.cardGlowBrush
 import kotlinx.coroutines.delay
 

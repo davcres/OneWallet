@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.designsystem.composables
+package com.davidcrespo.onewallet.core.composables
 
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.InlineTextContent

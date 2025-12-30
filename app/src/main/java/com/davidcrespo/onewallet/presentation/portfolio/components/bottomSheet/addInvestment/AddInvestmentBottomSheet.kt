@@ -36,7 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.presentation.designsystem.composables.bounceClick
+import com.davidcrespo.onewallet.core.composables.bounceClick
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

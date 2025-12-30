@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.designsystem.composables
+package com.davidcrespo.onewallet.core.composables
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
