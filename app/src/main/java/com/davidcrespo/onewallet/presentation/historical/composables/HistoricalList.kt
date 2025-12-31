@@ -9,6 +9,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 
@@ -16,6 +17,7 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimate
 @Composable
 fun HistoricalList(
     items: List<List<Investment>>,
+    currency: Currency,
     onClick: (List<Investment>) -> Unit,
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState()
@@ -31,6 +33,7 @@ fun HistoricalList(
             HistoricalMonthCard(
                 item = historicalItem,
                 previousItem = items.getOrNull(index + 1),
+                currency = currency,
                 onClick = { onClick(historicalItem) },
                 modifier = modifier
             )

@@ -144,6 +144,8 @@ private fun PortfolioScreen(
                     }
                     else -> {
                         Header(
+                            currency = uiState.selectedCurrency,
+                            onCurrencyChange = { onAction(PortfolioIntent.ChangeCurrency) },
                             navigateToHistorical = { onAction(PortfolioIntent.NavigateToHistorical) },
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
@@ -162,6 +164,7 @@ private fun PortfolioScreen(
                         ) { page ->
                             when (tabs[page]) {
                                 PortfolioTab.PORTFOLIO -> PositionsTab(
+                                    currency = uiState.selectedCurrency,
                                     totalBalance = uiState.totalBalance,
                                     previousBalance = uiState.previousBalance,
                                     portfolioItems = uiState.portfolioItems,
@@ -169,6 +172,7 @@ private fun PortfolioScreen(
                                     onEditQuantity = { onAction(PortfolioIntent.EditQuantity(it)) }
                                 )
                                 PortfolioTab.PRICES -> PricesTab(
+                                    currency = uiState.selectedCurrency,
                                     portfolioItems = uiState.portfolioItems,
                                     modifier = Modifier.fillMaxSize()
                                 )

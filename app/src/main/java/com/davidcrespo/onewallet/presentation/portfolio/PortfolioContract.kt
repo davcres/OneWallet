@@ -1,10 +1,12 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
+import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 
 data class PortfolioUiState(
     val portfolioItems: List<Investment> = listOf(),
     val symbolsWithPrice: List<String> = emptyList(),
+    val selectedCurrency: Currency = Currency.EUR,
     val usdEurRate: Double = 1.0,
     val totalBalance: Double = 0.0,
     val previousBalance: Double = 0.0,
@@ -17,6 +19,7 @@ data class PortfolioUiState(
 
 sealed interface PortfolioIntent {
     data object UpdateBalance : PortfolioIntent
+    data object ChangeCurrency : PortfolioIntent
 
     data class EditQuantity(val item: Investment?) : PortfolioIntent
     data class UpdateQuantity(val item: Investment, val quantity: Double) : PortfolioIntent

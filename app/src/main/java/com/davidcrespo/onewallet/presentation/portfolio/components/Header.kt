@@ -1,30 +1,44 @@
 package com.davidcrespo.onewallet.presentation.portfolio.components
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.AutoGraph
+import androidx.compose.material.icons.filled.Euro
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import java.time.LocalTime
 
 @Composable
 fun Header(
+    currency: Currency,
+    onCurrencyChange: () -> Unit,
     navigateToHistorical: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier.fillMaxWidth()
     ) {
-        Column {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
             Text(
                 text = greetingByTime(),
                 style = MaterialTheme.typography.titleSmall,
@@ -37,6 +51,23 @@ fun Header(
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
+
+        AnimatedContent(
+            targetState = currency == Currency.USD,
+            transitionSpec = {
+                (slideInVertically { height -> height } + fadeIn())
+                    .togetherWith(slideOutVertically { height -> -height } + fadeOut())
+            },
+            label = "currency"
+        ) { showUSD ->
+            OWIconButton(
+                imageVector = if (showUSD) Icons.Filled.AttachMoney else Icons.Filled.Euro,
+                onClick = onCurrencyChange,
+                contentDescription = "Selector de moneda"
+            )
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
 
         OWIconButton(
             imageVector = Icons.Filled.AutoGraph,

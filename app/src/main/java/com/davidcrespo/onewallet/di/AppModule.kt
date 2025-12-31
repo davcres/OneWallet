@@ -3,20 +3,20 @@ package com.davidcrespo.onewallet.di
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
+import com.davidcrespo.onewallet.data.local.cache.CurrencyCache
+import com.davidcrespo.onewallet.data.local.cache.CurrencyCacheImpl
 import com.davidcrespo.onewallet.data.local.cache.MarketCache
 import com.davidcrespo.onewallet.data.local.cache.MarketCacheImpl
-import com.davidcrespo.onewallet.data.local.cache.RateCache
-import com.davidcrespo.onewallet.data.local.cache.RateCacheImpl
 import com.davidcrespo.onewallet.data.local.cache.SymbolCache
 import com.davidcrespo.onewallet.data.local.cache.SymbolCacheImpl
 import com.davidcrespo.onewallet.data.local.database.AppDatabase
 import com.davidcrespo.onewallet.data.remote.crypto.BinanceApiClient
 import com.davidcrespo.onewallet.data.remote.crypto.BinanceDataSource
+import com.davidcrespo.onewallet.data.remote.rate.TwelveDataApiClient
+import com.davidcrespo.onewallet.data.remote.rate.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.stock.FinnhubApiClient
 import com.davidcrespo.onewallet.data.remote.stock.FinnhubDataSource
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiClient
-import com.davidcrespo.onewallet.data.remote.rate.TwelveDataApiClient
-import com.davidcrespo.onewallet.data.remote.rate.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.repository.FinancialRepositoryImpl
 import com.davidcrespo.onewallet.data.repository.PortfolioRepositoryImpl
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
@@ -111,7 +111,7 @@ val appModule = module {
     single { BinanceDataSource(get()) }
 
     single<SymbolCache> { SymbolCacheImpl(get(), get()) }
-    single<RateCache> { RateCacheImpl(get(), get()) }
+    single<CurrencyCache> { CurrencyCacheImpl(get(), get()) }
     single<MarketCache> { MarketCacheImpl(get(), get(), get(), get()) }
 
     single<FinancialRepository> { FinancialRepositoryImpl(get(), get(), get(), get(), get(), get()) }

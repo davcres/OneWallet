@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
@@ -41,6 +42,7 @@ import java.util.Locale
 fun HistoricalDetailBottomSheet(
     investments: List<Investment>,
     previousInvestments: List<Investment>,
+    currency: Currency,
     visible: Boolean,
     onClickInvestment: (Investment) -> Unit,
     onDismiss: () -> Unit
@@ -62,6 +64,7 @@ fun HistoricalDetailBottomSheet(
         SheetContent(
             investments = investments,
             previousInvestments = previousInvestments,
+            currency = currency,
             onClickInvestment = onClickInvestment,
             onClose = {
                 scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
@@ -77,6 +80,7 @@ fun HistoricalDetailBottomSheet(
 private fun SheetContent(
     investments: List<Investment>,
     previousInvestments: List<Investment>,
+    currency: Currency,
     onClickInvestment: (Investment) -> Unit,
     onClose: () -> Unit
 ) {
@@ -101,6 +105,7 @@ private fun SheetContent(
                 val previousMonthItem = previousInvestments.find { it.symbol == historicalItem.symbol }
                 OWInvestmentItem(
                     item = historicalItem,
+                    currency = currency,
                     previousMonthItem = previousMonthItem,
                     section = SectionType.HISTORICAL,
                     onClick = { onClickInvestment(it) },

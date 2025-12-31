@@ -48,14 +48,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.davidcrespo.onewallet.presentation.designsystem.composables.OWShakeListener
-import com.davidcrespo.onewallet.core.composables.AnimatedCounter
 import com.davidcrespo.onewallet.core.composables.bounceClick
+import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWCurrencyPrice
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWShakeListener
 import com.davidcrespo.onewallet.presentation.designsystem.theme.cardGlowBrush
 import kotlinx.coroutines.delay
 
 @Composable
 fun TotalBalance(
+    currency: Currency,
     totalBalance: Double,
     previousBalance: Double,
     modifier: Modifier = Modifier,
@@ -152,12 +154,10 @@ fun TotalBalance(
                             )
                         }
                     } else {
-                        AnimatedCounter(
-                            targetValue = totalBalance,
-                            suffix = " €",
-                            fontSize = fontSize.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        OWCurrencyPrice(
+                            price = totalBalance,
+                            currency = currency,
+                            fontSize = fontSize.sp
                         )
 
                         AnimatedVisibility(
@@ -211,13 +211,11 @@ fun TotalBalance(
 
                                             Spacer(modifier = Modifier.width(8.dp))
 
-                                            AnimatedCounter(
-                                                targetValue = totalBalance - previousBalance,
-                                                prefix = prefix,
-                                                suffix = " €",
+                                            OWCurrencyPrice(
+                                                price = totalBalance - previousBalance,
+                                                currency = currency,
                                                 fontSize = 18.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = percentageColor
+                                                textColor = percentageColor
                                             )
                                         }
                                     }

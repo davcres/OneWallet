@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.presentation.historical
 
+import android.R.attr.onClick
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -77,6 +78,7 @@ private fun HistoricalScreen(
         } else {
             HistoricalList(
                 items = uiState.history,
+                currency = uiState.selectedCurrency,
                 onClick = { onAction(HistoricalIntent.SelectMonth(it.first().year, it.first().month)) },
                 modifier = Modifier
                     .padding(padding)
@@ -87,6 +89,7 @@ private fun HistoricalScreen(
     HistoricalDetailBottomSheet(
         investments = uiState.selectedMonthDetail.orEmpty(),
         previousInvestments = uiState.selectedPreviousMonth.orEmpty(),
+        currency = uiState.selectedCurrency,
         visible = uiState.selectedMonthDetail != null,
         onClickInvestment = { onAction(HistoricalIntent.SelectInvestment(it)) },
         onDismiss = { onAction(HistoricalIntent.DismissBottomSheet) }

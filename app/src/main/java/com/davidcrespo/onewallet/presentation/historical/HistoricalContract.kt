@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.presentation.historical
 
+import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 
 data class HistoricalUiState(
@@ -8,6 +9,7 @@ data class HistoricalUiState(
     val selectedPreviousMonth: List<Investment>? = null,
     val selectedInvestment: Investment? = null,
     val selectedPreviousInvestment: Investment? = null,
+    val selectedCurrency: Currency = Currency.EUR,
     val isLoading: Boolean = false
 )
 

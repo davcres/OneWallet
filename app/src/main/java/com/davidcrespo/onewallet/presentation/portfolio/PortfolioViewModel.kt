@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.usecase.portfolio.AddInvestmentToPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetInvestmentPriceUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
@@ -30,6 +31,7 @@ class PortfolioViewModel(
     private val saveMonthlyPortfolioUseCase: SaveMonthlyPortfolioUseCase,
     private val addInvestmentToPortfolioUseCase: AddInvestmentToPortfolioUseCase,
     private val removePortfolioItemUseCase: RemovePortfolioItemUseCase,
+    private val financialRepository: FinancialRepository,
     private val context: Context
 ) : ViewModel() {
 
@@ -39,6 +41,7 @@ class PortfolioViewModel(
     fun handleIntent(intent: PortfolioIntent) {
         when (intent) {
             is PortfolioIntent.UpdateBalance -> setTotalBalance()
+            is PortfolioIntent.ChangeCurrency -> changeCurrency()
 
             is PortfolioIntent.EditQuantity -> _uiState.update { it.copy(editingItem = intent.item) }
             is PortfolioIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity)
@@ -64,6 +67,7 @@ class PortfolioViewModel(
     private fun loadInitialData() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
+            getSelectedCurrency()
             getUsdEurRate()
             getPortfolioItems()
             _uiState.update { it.copy(isLoading = false) }
@@ -98,6 +102,7 @@ class PortfolioViewModel(
     private fun fetchPricesForItems(items: List<Investment>) {
         viewModelScope.launch {
             // Stable shot of initial state (avoid read _uiState in concurrent coroutines)
+            val selectedCurrency = _uiState.value.selectedCurrency
             val currentUsdEurRate = _uiState.value.usdEurRate
             val alreadyPricedSymbols = _uiState.value.symbolsWithPrice.toSet()
 
@@ -123,7 +128,7 @@ class PortfolioViewModel(
                             .fold(
                                 onSuccess = { investmentFromApi ->
                                     val (newPrice, newPreviousPrice) =
-                                        if (investmentFromApi.currency == Currency.EUR) {
+                                        if (investmentFromApi.currency == selectedCurrency) {
                                             Pair(investmentFromApi.price, investmentFromApi.previousPrice)
                                         } else {
                                             Pair(investmentFromApi.price * currentUsdEurRate, investmentFromApi.previousPrice * currentUsdEurRate)
@@ -265,6 +270,31 @@ class PortfolioViewModel(
             addInvestmentToPortfolioUseCase(itemUpdated)
 
             _uiState.update { it.copy(editingItem = null) }
+        }
+    }
+
+    private fun getSelectedCurrency() {
+        val selectedCurrency = financialRepository.getSelectedCurrency()
+        _uiState.update {
+            it.copy(
+                selectedCurrency = selectedCurrency
+            )
+        }
+    }
+
+    private fun changeCurrency() {
+        val selectedCurrency = _uiState.value.selectedCurrency
+        val newSelectedCurrency  = if (selectedCurrency == Currency.EUR)
+            Currency.USD
+        else
+            Currency.EUR
+
+        financialRepository.setSelectedCurrency(newSelectedCurrency)
+
+        _uiState.update {
+            it.copy(
+                selectedCurrency = newSelectedCurrency
+            )
         }
     }
 }
