@@ -26,7 +26,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -40,9 +39,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.davidcrespo.onewallet.core.composables.DashedDivider
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
-import com.davidcrespo.onewallet.core.composables.DashedDivider
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 
 @Composable
 fun HistoricalInvestmentDetail(
@@ -92,21 +92,14 @@ fun HistoricalInvestmentDetail(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                IconButton(
+                OWIconButton(
+                    imageVector = Icons.Outlined.Close,
                     onClick = onDismiss,
+                    contentDescription = "Close",
                     modifier = Modifier
                         .padding(16.dp)
                         .align(Alignment.TopEnd)
-                        .size(44.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.onTertiary)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Close,
-                        contentDescription = "Close",
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
+                )
 
                 Column(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
