@@ -8,20 +8,30 @@ class CurrencyConverter(
     private val getUsdEurUseCase: GetUsdEurUseCase
 ) {
 
-    suspend fun convert(investment: InvestmentView, from: Currency, to: Currency): InvestmentView {
-        val rate = getUsdEurUseCase().getOrDefault(1.0)
+    suspend fun convert(
+        investment: InvestmentView,
+        to: Currency
+    ): InvestmentView {
+        val from = investment.originalCurrency
+        if (from == to) {
+            return investment.copy(
+                displayPrice = investment.originalPrice,
+                displayPreviousPrice = investment.originalPreviousPrice
+            )
+        }
 
-        val (convertedPrice, convertedPreviousPrice) = if (from == Currency.EUR && to == Currency.USD) {
-            Pair(investment.originalPrice / rate, investment.displayPreviousPrice / rate)
-        } else if (from == Currency.USD && to == Currency.EUR) {
-            Pair(investment.originalPrice * rate, investment.displayPreviousPrice * rate)
-        } else {
-            Pair(investment.originalPrice, investment.displayPreviousPrice)
+        val rateEurPerUsd = getUsdEurUseCase().getOrNull() ?: return investment
+
+        val factor = when {
+            from == Currency.USD && to == Currency.EUR -> rateEurPerUsd
+            from == Currency.EUR && to == Currency.USD -> 1.0 / rateEurPerUsd
+            else -> 1.0
         }
 
         return investment.copy(
-            displayPrice = convertedPrice,
-            displayPreviousPrice = convertedPreviousPrice
+            displayPrice = investment.originalPrice * factor,
+            displayPreviousPrice = investment.originalPreviousPrice * factor
         )
     }
+
 }

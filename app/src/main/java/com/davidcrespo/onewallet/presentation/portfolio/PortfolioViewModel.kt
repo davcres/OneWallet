@@ -19,12 +19,13 @@ import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.widget.WidgetsRefreshWorker
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import java.time.LocalDate
 
 class PortfolioViewModel(
@@ -88,96 +89,86 @@ class PortfolioViewModel(
     }
 
     private suspend fun getPortfolioItems() {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+
         getPortfolioItemsUseCase()
             .catch { e ->
                 _uiState.update { it.copy(isLoading = false, error = e.message) }
             }
-            .collect { items ->
-                val itemsView = items.map { investment -> investment.toUI() }
-                //_uiState.update { it.copy(portfolioItems = itemsView) }
+            .collectLatest { domainItems ->
+                val baseItems = domainItems
+                    .map { it.toUI() }
+                    .distinctBy { it.symbol }
 
-                fetchPricesForItems(itemsView)
-                sortPortfolioItems()
+                val priced = fetchPricesForItems(baseItems)
+
+                // Sort once, based on the freshly-priced list
+                val sorted = priced.sortedByDescending { it.quantity * it.displayPrice }
+
                 updateWidgets()
-                
-                _uiState.update { it.copy(isLoading = false) }
+
+                _uiState.update {
+                    it.copy(
+                        portfolioItems = sorted,
+                        isLoading = false
+                    )
+                }
             }
     }
 
-    private fun fetchPricesForItems(items: List<InvestmentView>) {
-        viewModelScope.launch {
-            // Stable shot of initial state (avoid read _uiState in concurrent coroutines)
-            val portfolioItems = _uiState.value.portfolioItems
-            val selectedCurrency = _uiState.value.selectedCurrency
-            val alreadyPricedSymbols = _uiState.value.symbolsWithPrice.toSet()
+    private suspend fun fetchPricesForItems(items: List<InvestmentView>): List<InvestmentView> {
+        // Take a stable snapshot
+        val state = _uiState.value
+        val selectedCurrency = state.selectedCurrency
+        val alreadyPriced = state.symbolsWithPrice.toSet()
+        val existingBySymbol = state.portfolioItems.associateBy { it.symbol }
 
-            // Keep Funds/Cash
-            val fixedItems = items
-                .filter { it.type == InvestmentType.FUND || it.type == InvestmentType.CASH }
-                .distinctBy { it.symbol }
+        val (fixedItems, marketItems) = items
+            .distinctBy { it.symbol }
+            .partition { it.type == InvestmentType.FUND || it.type == InvestmentType.CASH }
 
-            // Stocks/Crypto to update
-            val marketItems = items
-                .filter { it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO }
-                .distinctBy { it.symbol }
+        val updatedMarketItems = supervisorScope {
+            marketItems.map { item ->
+                async {
+                    val symbol = item.symbol
 
-            // Concurrent fetch
-            val updatedMarketItems: List<InvestmentView> = coroutineScope {
-                marketItems.map { item ->
-                    async {
-                        val symbol = item.symbol
-
-                        if (symbol in alreadyPricedSymbols) {
-                            return@async portfolioItems.find { it.symbol == symbol } ?: item
-                        }
-
-                        getInvestmentPriceUseCase(symbol, item.type)
-                            .fold(
-                                onSuccess = { investmentFromApi ->
-                                    val itemWithPrice = item.copy(
-                                        displayPrice = investmentFromApi.price,
-                                        displayPreviousPrice = investmentFromApi.previousPrice,
-                                        originalPrice = investmentFromApi.price,
-                                        originalPreviousPrice = investmentFromApi.previousPrice
-                                    )
-                                    currencyConverter.convert(itemWithPrice, investmentFromApi.currency, selectedCurrency)
-                                },
-                                onFailure = {
-                                    item
-                                }
-                            )
+                    // Reuse if already priced
+                    if (symbol in alreadyPriced) {
+                        return@async existingBySymbol[symbol] ?: item
                     }
-                }.awaitAll()
-            }
 
-            // Final list to save
-            val symbolsToSave: List<InvestmentView> = (fixedItems + updatedMarketItems).distinctBy { it.symbol }
-
-            // Update symbolsWithPrice
-            val newSymbolsWithPrice = (alreadyPricedSymbols + updatedMarketItems.map { it.symbol }).toList()
-
-            _uiState.update {
-                it.copy(
-                    portfolioItems = symbolsToSave,
-                    symbolsWithPrice = newSymbolsWithPrice
-                )
-            }
-
-            if (updatedMarketItems.any { it.symbol !in alreadyPricedSymbols }) {
-                savePortfolio(symbolsToSave)
-            }
+                    getInvestmentPriceUseCase(symbol, item.type)
+                        .map { api ->
+                            val withPrice = item.copy(
+                                displayPrice = api.price,
+                                displayPreviousPrice = api.previousPrice,
+                                originalPrice = api.price,
+                                originalPreviousPrice = api.previousPrice
+                            )
+                            currencyConverter.convert(withPrice, selectedCurrency)
+                        }
+                        .getOrElse { item }
+                }
+            }.awaitAll()
         }
-    }
 
+        val finalList = (fixedItems + updatedMarketItems).distinctBy { it.symbol }
+        val newlyPricedSymbols = updatedMarketItems.map { it.symbol }.toSet()
+        val newSymbolsWithPrice = (alreadyPriced + newlyPricedSymbols).toList()
 
-    private fun sortPortfolioItems() {
         _uiState.update {
             it.copy(
-                portfolioItems = _uiState.value.portfolioItems.sortedByDescending {
-                    it.quantity * it.displayPrice
-                }
+                portfolioItems = finalList,
+                symbolsWithPrice = newSymbolsWithPrice
             )
         }
+
+        // Save only if we priced something new
+        if (newlyPricedSymbols.any { it !in alreadyPriced }) {
+            savePortfolio(finalList)
+        }
+
+        return finalList
     }
 
     private fun setTotalBalance() {
@@ -299,7 +290,7 @@ class PortfolioViewModel(
             _uiState.update {
                 it.copy(
                     selectedCurrency = newSelectedCurrency,
-                    portfolioItems = it.portfolioItems.map { currencyConverter.convert(it, selectedCurrency, newSelectedCurrency) }
+                    portfolioItems = it.portfolioItems.map { currencyConverter.convert(it, newSelectedCurrency) }
                 )
             }
         }
