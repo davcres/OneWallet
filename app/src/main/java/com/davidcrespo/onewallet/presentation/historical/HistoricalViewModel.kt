@@ -7,6 +7,7 @@ import com.davidcrespo.onewallet.domain.usecase.historical.GetMonthlyHistoryUseC
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetUsdEurUseCase
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toUI
+import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 class HistoricalViewModel(
     private val getMonthlyHistoryUseCase: GetMonthlyHistoryUseCase,
     private val financialRepository: FinancialRepository,
-    private val getUsdEurUseCase: GetUsdEurUseCase
+    private val getUsdEurUseCase: GetUsdEurUseCase,
+    private val currencyConverter: CurrencyConverter
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HistoricalUiState())
@@ -42,11 +44,15 @@ class HistoricalViewModel(
     }
 
     private suspend fun getMonthlyHistory() {
+        val state = _uiState.value
+        val selectedCurrency = state.selectedCurrency
+        val usdEurRate = state.usdEurRate
         getMonthlyHistoryUseCase()
             .onSuccess { historyList ->
                 val grouped: List<List<InvestmentView>> =
                     historyList
                         .map { it.toUI() }
+                        .map { currencyConverter.convert(it, selectedCurrency, usdEurRate) }
                         .groupBy { it.year to it.month }
                         .values
                         .toList()

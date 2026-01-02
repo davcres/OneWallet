@@ -110,6 +110,7 @@ fun HistoricalMonthCard(
                 Column(horizontalAlignment = Alignment.End) {
 
                     val balance = item.sumOf { it.quantity * it.displayPrice }
+                    val previousBalance = previousItem?.sumOf { it.quantity * it.displayPrice } ?: 0.0
                     val marketValue = item.sumOf { it.displayPrice }
                     val previousMarketValue = previousItem?.sumOf { it.displayPrice } ?: 0.0
 
@@ -128,7 +129,7 @@ fun HistoricalMonthCard(
                                 val percentage = (marketValue - previousMarketValue) / previousMarketValue * 100
                                 TrendDisplay(value = percentage, text = "%.2f %%".format(percentage), show, currency)
                             } else {
-                                val variance = marketValue - previousMarketValue
+                                val variance = balance - previousBalance
                                 TrendDisplay(value = variance, text = "%.2f €".format(variance), show, currency)
                             }
                         }

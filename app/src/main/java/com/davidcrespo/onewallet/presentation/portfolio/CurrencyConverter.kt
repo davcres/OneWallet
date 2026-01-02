@@ -1,16 +1,14 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
 import com.davidcrespo.onewallet.domain.model.investment.Currency
-import com.davidcrespo.onewallet.domain.usecase.portfolio.GetUsdEurUseCase
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 
-class CurrencyConverter(
-    private val getUsdEurUseCase: GetUsdEurUseCase
-) {
+class CurrencyConverter {
 
-    suspend fun convert(
+    fun convert(
         investment: InvestmentView,
-        to: Currency
+        to: Currency,
+        rateEurPerUsd: Double
     ): InvestmentView {
         val from = investment.originalCurrency
         if (from == to) {
@@ -19,8 +17,6 @@ class CurrencyConverter(
                 displayPreviousPrice = investment.originalPreviousPrice
             )
         }
-
-        val rateEurPerUsd = getUsdEurUseCase().getOrNull() ?: return investment
 
         val factor = when {
             from == Currency.USD && to == Currency.EUR -> rateEurPerUsd

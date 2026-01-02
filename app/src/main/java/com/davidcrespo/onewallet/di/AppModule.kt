@@ -19,7 +19,6 @@ import com.davidcrespo.onewallet.data.remote.stock.FinnhubDataSource
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiClient
 import com.davidcrespo.onewallet.data.repository.FinancialRepositoryImpl
 import com.davidcrespo.onewallet.data.repository.PortfolioRepositoryImpl
-import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.repository.PortfolioRepository
 import com.davidcrespo.onewallet.domain.usecase.historical.GetMonthlyHistoryUseCase
@@ -33,6 +32,7 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUse
 import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUseCase
 import com.davidcrespo.onewallet.presentation.historical.HistoricalViewModel
 import com.davidcrespo.onewallet.presentation.market.MarketViewModel
+import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
 import com.davidcrespo.onewallet.presentation.portfolio.PortfolioViewModel
 import com.davidcrespo.onewallet.widget.WidgetsRefreshWorker
 import io.ktor.client.HttpClient
@@ -130,7 +130,7 @@ val appModule = module {
     single { SaveMonthlyPortfolioUseCase(get()) }
     single { GetMonthlyHistoryUseCase(get()) }
 
-    single { CurrencyConverter(get()) }
+    single { CurrencyConverter() }
 
     viewModelOf(::PortfolioViewModel)
     viewModelOf(::MarketViewModel)

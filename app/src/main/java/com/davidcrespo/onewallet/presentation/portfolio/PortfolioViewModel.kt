@@ -120,6 +120,7 @@ class PortfolioViewModel(
         // Take a stable snapshot
         val state = _uiState.value
         val selectedCurrency = state.selectedCurrency
+        val usdEurRate = state.usdEurRate
         val alreadyPriced = state.symbolsWithPrice.toSet()
         val existingBySymbol = state.portfolioItems.associateBy { it.symbol }
 
@@ -145,7 +146,7 @@ class PortfolioViewModel(
                                 originalPrice = api.price,
                                 originalPreviousPrice = api.previousPrice
                             )
-                            currencyConverter.convert(withPrice, selectedCurrency)
+                            currencyConverter.convert(withPrice, selectedCurrency, usdEurRate)
                         }
                         .getOrElse { item }
                 }
@@ -279,7 +280,9 @@ class PortfolioViewModel(
 
     private fun changeCurrency() {
         viewModelScope.launch {
-            val selectedCurrency = _uiState.value.selectedCurrency
+            val state = _uiState.value
+            val selectedCurrency = state.selectedCurrency
+            val usdEurRate = state.usdEurRate
             val newSelectedCurrency  = if (selectedCurrency == Currency.EUR)
                 Currency.USD
             else
@@ -290,7 +293,7 @@ class PortfolioViewModel(
             _uiState.update {
                 it.copy(
                     selectedCurrency = newSelectedCurrency,
-                    portfolioItems = it.portfolioItems.map { currencyConverter.convert(it, newSelectedCurrency) }
+                    portfolioItems = it.portfolioItems.map { currencyConverter.convert(it, newSelectedCurrency, usdEurRate) }
                 )
             }
         }
