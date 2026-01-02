@@ -2,9 +2,11 @@ package com.davidcrespo.onewallet.presentation.historical
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.usecase.historical.GetMonthlyHistoryUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.GetUsdEurUseCase
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import com.davidcrespo.onewallet.presentation.models.toUI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -12,7 +14,8 @@ import kotlinx.coroutines.launch
 
 class HistoricalViewModel(
     private val getMonthlyHistoryUseCase: GetMonthlyHistoryUseCase,
-    private val financialRepository: FinancialRepository
+    private val financialRepository: FinancialRepository,
+    private val getUsdEurUseCase: GetUsdEurUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HistoricalUiState())
@@ -32,6 +35,7 @@ class HistoricalViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             getSelectedCurrency()
+            getUsdEurRate()
             getMonthlyHistory()
             _uiState.update { it.copy(isLoading = false) }
         }
@@ -40,8 +44,10 @@ class HistoricalViewModel(
     private suspend fun getMonthlyHistory() {
         getMonthlyHistoryUseCase()
             .onSuccess { historyList ->
-                val grouped: List<List<Investment>> =
-                    historyList.groupBy { it.year to it.month }
+                val grouped: List<List<InvestmentView>> =
+                    historyList
+                        .map { it.toUI() }
+                        .groupBy { it.year to it.month }
                         .values
                         .toList()
 
@@ -70,14 +76,14 @@ class HistoricalViewModel(
 
             _uiState.update {
                 it.copy(
-                    selectedMonthDetail = details.sortedByDescending { it.quantity * it.price },
+                    selectedMonthDetail = details.sortedByDescending { it.quantity * it.displayPrice },
                     selectedPreviousMonth = _uiState.value.history.getOrNull(index + 1)
                 )
             }
         }
     }
 
-    private fun selectInvestment(investment: Investment) {
+    private fun selectInvestment(investment: InvestmentView) {
         _uiState.update {
             it.copy(
                 selectedInvestment = investment,
@@ -111,5 +117,14 @@ class HistoricalViewModel(
                 selectedCurrency = selectedCurrency
             )
         }
+    }
+
+    private suspend fun getUsdEurRate() {
+        getUsdEurUseCase()
+            .onSuccess { rate ->
+                _uiState.update { it.copy(usdEurRate = rate) }
+            }.onFailure {
+                _uiState.update { it.copy(usdEurRate = 1.0) }
+            }
     }
 }

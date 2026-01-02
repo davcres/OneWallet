@@ -13,6 +13,9 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCa
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetUsdEurUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUseCase
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import com.davidcrespo.onewallet.presentation.models.toDomain
+import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.widget.WidgetsRefreshWorker
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -32,6 +35,7 @@ class PortfolioViewModel(
     private val addInvestmentToPortfolioUseCase: AddInvestmentToPortfolioUseCase,
     private val removePortfolioItemUseCase: RemovePortfolioItemUseCase,
     private val financialRepository: FinancialRepository,
+    private val currencyConverter: CurrencyConverter,
     private val context: Context
 ) : ViewModel() {
 
@@ -89,9 +93,10 @@ class PortfolioViewModel(
                 _uiState.update { it.copy(isLoading = false, error = e.message) }
             }
             .collect { items ->
-                _uiState.update { it.copy(portfolioItems = items) }
-                
-                fetchPricesForItems(items)
+                val itemsView = items.map { investment -> investment.toUI() }
+                //_uiState.update { it.copy(portfolioItems = itemsView) }
+
+                fetchPricesForItems(itemsView)
                 sortPortfolioItems()
                 updateWidgets()
                 
@@ -99,11 +104,11 @@ class PortfolioViewModel(
             }
     }
 
-    private fun fetchPricesForItems(items: List<Investment>) {
+    private fun fetchPricesForItems(items: List<InvestmentView>) {
         viewModelScope.launch {
             // Stable shot of initial state (avoid read _uiState in concurrent coroutines)
+            val portfolioItems = _uiState.value.portfolioItems
             val selectedCurrency = _uiState.value.selectedCurrency
-            val currentUsdEurRate = _uiState.value.usdEurRate
             val alreadyPricedSymbols = _uiState.value.symbolsWithPrice.toSet()
 
             // Keep Funds/Cash
@@ -117,27 +122,25 @@ class PortfolioViewModel(
                 .distinctBy { it.symbol }
 
             // Concurrent fetch
-            val updatedMarketItems: List<Investment> = coroutineScope {
+            val updatedMarketItems: List<InvestmentView> = coroutineScope {
                 marketItems.map { item ->
                     async {
                         val symbol = item.symbol
 
-                        if (symbol in alreadyPricedSymbols) return@async item
+                        if (symbol in alreadyPricedSymbols) {
+                            return@async portfolioItems.find { it.symbol == symbol } ?: item
+                        }
 
                         getInvestmentPriceUseCase(symbol, item.type)
                             .fold(
                                 onSuccess = { investmentFromApi ->
-                                    val (newPrice, newPreviousPrice) =
-                                        if (investmentFromApi.currency == selectedCurrency) {
-                                            Pair(investmentFromApi.price, investmentFromApi.previousPrice)
-                                        } else {
-                                            Pair(investmentFromApi.price * currentUsdEurRate, investmentFromApi.previousPrice * currentUsdEurRate)
-                                        }
-
-                                    item.copy(
-                                        price = newPrice,
-                                        previousPrice = newPreviousPrice
+                                    val itemWithPrice = item.copy(
+                                        displayPrice = investmentFromApi.price,
+                                        displayPreviousPrice = investmentFromApi.previousPrice,
+                                        originalPrice = investmentFromApi.price,
+                                        originalPreviousPrice = investmentFromApi.previousPrice
                                     )
+                                    currencyConverter.convert(itemWithPrice, investmentFromApi.currency, selectedCurrency)
                                 },
                                 onFailure = {
                                     item
@@ -148,7 +151,7 @@ class PortfolioViewModel(
             }
 
             // Final list to save
-            val symbolsToSave: List<Investment> = (fixedItems + updatedMarketItems).distinctBy { it.symbol }
+            val symbolsToSave: List<InvestmentView> = (fixedItems + updatedMarketItems).distinctBy { it.symbol }
 
             // Update symbolsWithPrice
             val newSymbolsWithPrice = (alreadyPricedSymbols + updatedMarketItems.map { it.symbol }).toList()
@@ -171,7 +174,7 @@ class PortfolioViewModel(
         _uiState.update {
             it.copy(
                 portfolioItems = _uiState.value.portfolioItems.sortedByDescending {
-                    it.quantity * it.price
+                    it.quantity * it.displayPrice
                 }
             )
         }
@@ -179,13 +182,13 @@ class PortfolioViewModel(
 
     private fun setTotalBalance() {
         val totalBalance = _uiState.value.portfolioItems.sumOf {
-            it.quantity * it.price
+            it.quantity * it.displayPrice
         }
         val previousBalance = _uiState.value.portfolioItems.sumOf {
             if (it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO) {
-                it.quantity * it.previousPrice
+                it.quantity * it.displayPreviousPrice
             } else {
-                it.quantity * it.price
+                it.quantity * it.displayPrice
             }
         }
 
@@ -197,7 +200,8 @@ class PortfolioViewModel(
         }
     }
 
-    private suspend fun savePortfolio(items: List<Investment>) {
+    private suspend fun savePortfolio(itemsView: List<InvestmentView>) {
+        val items = itemsView.map { it.toDomain() }
         saveMonthlyPortfolioUseCase(items)
     }
 
@@ -250,13 +254,13 @@ class PortfolioViewModel(
         }
     }
 
-    private fun removeItem(item: Investment) {
+    private fun removeItem(item: InvestmentView) {
         viewModelScope.launch {
-            removePortfolioItemUseCase(item)
+            removePortfolioItemUseCase(item.toDomain())
         }
     }
 
-    private fun updateQuantity(item: Investment, quantity: Double) {
+    private fun updateQuantity(item: InvestmentView, quantity: Double) {
         viewModelScope.launch {
             val now = LocalDate.now()
             val year = now.year
@@ -267,7 +271,7 @@ class PortfolioViewModel(
                 year = year,
                 month = month
             )
-            addInvestmentToPortfolioUseCase(itemUpdated)
+            addInvestmentToPortfolioUseCase(itemUpdated.toDomain())
 
             _uiState.update { it.copy(editingItem = null) }
         }
@@ -283,18 +287,21 @@ class PortfolioViewModel(
     }
 
     private fun changeCurrency() {
-        val selectedCurrency = _uiState.value.selectedCurrency
-        val newSelectedCurrency  = if (selectedCurrency == Currency.EUR)
-            Currency.USD
-        else
-            Currency.EUR
+        viewModelScope.launch {
+            val selectedCurrency = _uiState.value.selectedCurrency
+            val newSelectedCurrency  = if (selectedCurrency == Currency.EUR)
+                Currency.USD
+            else
+                Currency.EUR
 
-        financialRepository.setSelectedCurrency(newSelectedCurrency)
+            financialRepository.setSelectedCurrency(newSelectedCurrency)
 
-        _uiState.update {
-            it.copy(
-                selectedCurrency = newSelectedCurrency
-            )
+            _uiState.update {
+                it.copy(
+                    selectedCurrency = newSelectedCurrency,
+                    portfolioItems = it.portfolioItems.map { currencyConverter.convert(it, selectedCurrency, newSelectedCurrency) }
+                )
+            }
         }
     }
 }

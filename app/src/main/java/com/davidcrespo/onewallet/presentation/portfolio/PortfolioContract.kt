@@ -1,16 +1,16 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
 import com.davidcrespo.onewallet.domain.model.investment.Currency
-import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
 
 data class PortfolioUiState(
-    val portfolioItems: List<Investment> = listOf(),
+    val portfolioItems: List<InvestmentView> = listOf(),
     val symbolsWithPrice: List<String> = emptyList(),
     val selectedCurrency: Currency = Currency.EUR,
     val usdEurRate: Double = 1.0,
     val totalBalance: Double = 0.0,
     val previousBalance: Double = 0.0,
-    val editingItem: Investment? = null,
+    val editingItem: InvestmentView? = null,
     val isFundDialogVisible: Boolean = false,
     val isBankDialogVisible: Boolean = false,
     val isLoading: Boolean = true,
@@ -21,9 +21,9 @@ sealed interface PortfolioIntent {
     data object UpdateBalance : PortfolioIntent
     data object ChangeCurrency : PortfolioIntent
 
-    data class EditQuantity(val item: Investment?) : PortfolioIntent
-    data class UpdateQuantity(val item: Investment, val quantity: Double) : PortfolioIntent
-    data class RemoveItem(val item: Investment) : PortfolioIntent
+    data class EditQuantity(val item: InvestmentView?) : PortfolioIntent
+    data class UpdateQuantity(val item: InvestmentView, val quantity: Double) : PortfolioIntent
+    data class RemoveItem(val item: InvestmentView) : PortfolioIntent
 
     data class AddFundItem(val name: String, val quantity: Double, val price: Double) : PortfolioIntent
     data object ShowFundDialog : PortfolioIntent

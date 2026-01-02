@@ -40,22 +40,22 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.davidcrespo.onewallet.core.composables.DashedDivider
-import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
 
 @Composable
 fun HistoricalInvestmentDetail(
-    investment: Investment,
-    previousMonthInvestment: Investment?,
+    investment: InvestmentView,
+    previousMonthInvestment: InvestmentView?,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val percentage =
-        if (previousMonthInvestment?.price == null || investment.price == 0.0 || previousMonthInvestment.price == 0.0) {
+        if (previousMonthInvestment?.displayPrice == null || investment.displayPrice == 0.0 || previousMonthInvestment.displayPrice == 0.0) {
             0.0
         } else {
-            (investment.price - previousMonthInvestment.price) / previousMonthInvestment.price * 100
+            (investment.displayPrice - previousMonthInvestment.displayPrice) / previousMonthInvestment.displayPrice * 100
         }
     val (percentageIcon, percentageColor, prefix) = when {
         percentage > 0 -> Triple(
@@ -166,7 +166,7 @@ fun HistoricalInvestmentDetail(
                         )
 
                         Text(
-                            text = "%.2f €".format(investment.price),
+                            text = "%.2f €".format(investment.displayPrice),
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center
@@ -200,7 +200,7 @@ fun HistoricalInvestmentDetail(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "%.2f €".format(investment.quantity * investment.price),
+                            text = "%.2f €".format(investment.quantity * investment.displayPrice),
                             style = MaterialTheme.typography.titleLarge,
                             modifier = Modifier.weight(1f),
                             textAlign = TextAlign.Center
@@ -210,7 +210,7 @@ fun HistoricalInvestmentDetail(
                             modifier = Modifier.weight(1f),
                             contentAlignment = Alignment.Center
                         ) {
-                            if ((investment.type == InvestmentType.STOCK || investment.type == InvestmentType.CRYPTO) && (previousMonthInvestment != null && previousMonthInvestment.price != 0.0)) {
+                            if ((investment.type == InvestmentType.STOCK || investment.type == InvestmentType.CRYPTO) && (previousMonthInvestment != null && previousMonthInvestment.displayPrice != 0.0)) {
                                 Surface(
                                     shape = RoundedCornerShape(8.dp),
                                     color = MaterialTheme.colorScheme.primaryContainer
@@ -239,7 +239,7 @@ fun HistoricalInvestmentDetail(
                         }
                     }
 
-                    if ((investment.type == InvestmentType.STOCK || investment.type == InvestmentType.CRYPTO) && (previousMonthInvestment != null && previousMonthInvestment.price != 0.0)) {
+                    if ((investment.type == InvestmentType.STOCK || investment.type == InvestmentType.CRYPTO) && (previousMonthInvestment != null && previousMonthInvestment.displayPrice != 0.0)) {
                         DashedDivider()
 
                         Row(
@@ -256,7 +256,7 @@ fun HistoricalInvestmentDetail(
                             )
 
                             Text(
-                                text = "$prefix%.2f €".format(investment.price - previousMonthInvestment.price),
+                                text = "$prefix%.2f €".format(investment.displayPrice - previousMonthInvestment.displayPrice),
                                 style = MaterialTheme.typography.titleLarge,
                                 color = percentageColor,
                                 modifier = Modifier.weight(1f),

@@ -23,4 +23,20 @@ class PortfolioRepositoryImpl(
     override suspend fun removeItem(investment: Investment, year: Int, month: Int) {
         dao.deleteInvestment(investment.symbol, year, month)
     }
+
+    override suspend fun updateMonthPortfolio(
+        year: Int,
+        month: Int,
+        investments: List<Investment>
+    ) {
+        dao.updateMonthPortfolio(year, month, investments.map { it.toEntity() })
+    }
+
+    override suspend fun deleteMonthPortfolio(year: Int, month: Int) {
+        dao.deleteMonthPortfolio(year, month)
+    }
+
+    override suspend fun getMonthsPortfolio(): List<Investment> {
+        return dao.getMonthsPortfolio().map { it.toDomain() }
+    }
 }

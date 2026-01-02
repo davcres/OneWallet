@@ -25,18 +25,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.bounceClick
 import com.davidcrespo.onewallet.domain.model.investment.Currency
-import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PortfolioList(
-    items: List<Investment>,
+    items: List<InvestmentView>,
     currency: Currency,
-    onRemove: (Investment) -> Unit,
-    onEdit: (Investment) -> Unit,
+    onRemove: (InvestmentView) -> Unit,
+    onEdit: (InvestmentView) -> Unit,
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState()
 ) {

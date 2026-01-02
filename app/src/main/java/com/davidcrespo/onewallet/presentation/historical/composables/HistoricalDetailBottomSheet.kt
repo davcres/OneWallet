@@ -27,11 +27,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.domain.model.investment.Currency
-import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.coroutines.launch
 import java.time.Month
 import java.time.format.TextStyle
@@ -40,11 +40,11 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoricalDetailBottomSheet(
-    investments: List<Investment>,
-    previousInvestments: List<Investment>,
+    investments: List<InvestmentView>,
+    previousInvestments: List<InvestmentView>,
     currency: Currency,
     visible: Boolean,
-    onClickInvestment: (Investment) -> Unit,
+    onClickInvestment: (InvestmentView) -> Unit,
     onDismiss: () -> Unit
 ) {
     if (!visible) return
@@ -78,10 +78,10 @@ fun HistoricalDetailBottomSheet(
 // ---------- UI ----------
 @Composable
 private fun SheetContent(
-    investments: List<Investment>,
-    previousInvestments: List<Investment>,
+    investments: List<InvestmentView>,
+    previousInvestments: List<InvestmentView>,
     currency: Currency,
-    onClickInvestment: (Investment) -> Unit,
+    onClickInvestment: (InvestmentView) -> Unit,
     onClose: () -> Unit
 ) {
     Column(
@@ -119,7 +119,7 @@ private fun SheetContent(
 
 @Composable
 private fun Header(
-    investment: Investment,
+    investment: InvestmentView,
     onClose: () -> Unit
 ) {
     Box(Modifier.fillMaxWidth()) {

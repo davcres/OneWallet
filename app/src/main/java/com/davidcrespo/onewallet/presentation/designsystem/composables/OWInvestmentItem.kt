@@ -43,21 +43,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.bounceClick
 import com.davidcrespo.onewallet.domain.model.investment.Currency
-import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.coroutines.delay
 
 @Composable
 fun OWInvestmentItem(
-    item: Investment,
+    item: InvestmentView,
     currency: Currency,
-    previousMonthItem: Investment? = null,
+    previousMonthItem: InvestmentView? = null,
     section: SectionType,
-    onClick: (Investment) -> Unit,
+    onClick: (InvestmentView) -> Unit,
     onGloballyPositioned: (LayoutCoordinates) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -129,8 +129,8 @@ fun OWInvestmentItem(
                 Column(horizontalAlignment = Alignment.End) {
                     val showPercentage = item.type == InvestmentType.STOCK || item.type == InvestmentType.CRYPTO
                     val totalValue = when (section) {
-                        SectionType.PORTFOLIO, SectionType.HISTORICAL -> item.quantity * item.price
-                        SectionType.PRICES -> item.price
+                        SectionType.PORTFOLIO, SectionType.HISTORICAL -> item.quantity * item.displayPrice
+                        SectionType.PRICES -> item.displayPrice
                     }
 
                     if (showPercentage) {
@@ -140,13 +140,13 @@ fun OWInvestmentItem(
                             Spacer(modifier = Modifier.height(8.dp))
                             
                             val currentPrice = when (section) {
-                                SectionType.PORTFOLIO -> item.price * item.quantity
-                                else -> item.price
+                                SectionType.PORTFOLIO -> item.displayPrice * item.quantity
+                                else -> item.displayPrice
                             }
                             val previousPrice = when (section) {
-                                SectionType.PORTFOLIO -> item.previousPrice * item.quantity
-                                SectionType.HISTORICAL -> previousMonthItem?.price ?: 0.0
-                                else -> item.previousPrice
+                                SectionType.PORTFOLIO -> item.displayPreviousPrice * item.quantity
+                                SectionType.HISTORICAL -> previousMonthItem?.displayPrice ?: 0.0
+                                else -> item.displayPreviousPrice
                             }
 
                             AnimatedContent(

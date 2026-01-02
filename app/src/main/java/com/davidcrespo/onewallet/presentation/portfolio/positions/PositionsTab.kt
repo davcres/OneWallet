@@ -23,7 +23,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.domain.model.investment.Currency
-import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.positions.components.PortfolioList
 import com.davidcrespo.onewallet.presentation.portfolio.positions.components.TotalBalance
 
@@ -32,9 +32,9 @@ fun PositionsTab(
     currency: Currency,
     totalBalance: Double,
     previousBalance: Double,
-    portfolioItems: List<Investment>,
-    onRemoveItem: (Investment) -> Unit,
-    onEditQuantity: (Investment) -> Unit
+    portfolioItems: List<InvestmentView>,
+    onRemoveItem: (InvestmentView) -> Unit,
+    onEditQuantity: (InvestmentView) -> Unit
 ) {
     val listState = rememberLazyListState()
     val isExpanded by remember {

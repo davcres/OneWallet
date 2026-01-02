@@ -19,6 +19,7 @@ import com.davidcrespo.onewallet.data.remote.stock.FinnhubDataSource
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiClient
 import com.davidcrespo.onewallet.data.repository.FinancialRepositoryImpl
 import com.davidcrespo.onewallet.data.repository.PortfolioRepositoryImpl
+import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.repository.PortfolioRepository
 import com.davidcrespo.onewallet.domain.usecase.historical.GetMonthlyHistoryUseCase
@@ -128,6 +129,8 @@ val appModule = module {
     
     single { SaveMonthlyPortfolioUseCase(get()) }
     single { GetMonthlyHistoryUseCase(get()) }
+
+    single { CurrencyConverter(get()) }
 
     viewModelOf(::PortfolioViewModel)
     viewModelOf(::MarketViewModel)

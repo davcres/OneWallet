@@ -38,10 +38,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.bounceClick
 import com.davidcrespo.onewallet.domain.model.investment.Currency
-import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.coroutines.delay
 import java.time.Month
 import java.time.format.TextStyle
@@ -49,8 +49,8 @@ import java.util.Locale
 
 @Composable
 fun HistoricalMonthCard(
-    item: List<Investment>,
-    previousItem: List<Investment>? = null,
+    item: List<InvestmentView>,
+    previousItem: List<InvestmentView>? = null,
     currency: Currency,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -109,9 +109,9 @@ fun HistoricalMonthCard(
             Box(contentAlignment = Alignment.CenterEnd) {
                 Column(horizontalAlignment = Alignment.End) {
 
-                    val balance = item.sumOf { it.quantity * it.price }
-                    val marketValue = item.sumOf { it.price }
-                    val previousMarketValue = previousItem?.sumOf { it.price } ?: 0.0
+                    val balance = item.sumOf { it.quantity * it.displayPrice }
+                    val marketValue = item.sumOf { it.displayPrice }
+                    val previousMarketValue = previousItem?.sumOf { it.displayPrice } ?: 0.0
 
                     PriceDisplay(value = balance, currency = currency)
                     if (marketValue != 0.0 && previousMarketValue != 0.0) {

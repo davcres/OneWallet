@@ -1,16 +1,15 @@
 package com.davidcrespo.onewallet.domain.usecase.historical
 
-import com.davidcrespo.onewallet.data.local.database.portfolio.dao.PortfolioDao
-import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toDomain
 import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.domain.repository.PortfolioRepository
 
 class GetMonthlyHistoryUseCase(
-    private val portfolioDao: PortfolioDao
+    private val portfolioRepository: PortfolioRepository
 ) {
     suspend operator fun invoke(): Result<List<Investment>> {
         return runCatching {
             Result.success(
-            portfolioDao.getMonthsPortfolio().map { it.toDomain() }
+            portfolioRepository.getMonthsPortfolio()
             )
         }.getOrElse {
             Result.failure(it)
