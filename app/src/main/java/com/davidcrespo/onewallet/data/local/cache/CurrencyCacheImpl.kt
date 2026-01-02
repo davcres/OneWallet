@@ -3,16 +3,17 @@ package com.davidcrespo.onewallet.data.local.cache
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiClient
+import com.davidcrespo.onewallet.domain.model.investment.Currency
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
-class RateCacheImpl(
+class CurrencyCacheImpl(
     private val sharedPreferences: SharedPreferences,
     private val telegramApiClient: TelegramApiClient
-): RateCache {
+): CurrencyCache {
 
     override suspend fun getCachedRateIfValid(symbol: String, validCacheHours: Long): Double? {
         val nowMillis = Clock.systemUTC().millis()
@@ -48,8 +49,21 @@ class RateCacheImpl(
         }
     }
 
+    override fun getSelectedCurrency(): Currency {
+        val currencyName = sharedPreferences.getString(CURRENCY, null)
+
+        return currencyName?.let { Currency.valueOf(it) } ?: Currency.EUR
+    }
+
+    override fun setSelectedCurrency(currency: Currency) {
+        sharedPreferences.edit {
+            putString(CURRENCY, currency.name)
+        }
+    }
+
     companion object {
         private const val KEY_CACHED_AT_MILLIS = "_cached_at_millis"
+        private const val CURRENCY = "currency"
     }
 
     fun formatUtcMillis(millis: Long): String {

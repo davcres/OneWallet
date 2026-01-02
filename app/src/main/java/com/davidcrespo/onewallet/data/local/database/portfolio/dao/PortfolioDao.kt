@@ -20,7 +20,7 @@ abstract class PortfolioDao {
     abstract fun getItem(symbol: String, year: Int, month: Int): Flow<InvestmentEntity?>
 
     @Query("SELECT * FROM monthly_portfolio_table ORDER BY year DESC, month DESC")
-    abstract fun getMonthsPortfolio(): Flow<List<InvestmentEntity>>
+    abstract suspend fun getMonthsPortfolio(): List<InvestmentEntity>
 
     @Query("SELECT * FROM monthly_portfolio_table WHERE year = :year AND month = :month")
     abstract fun getPortfolio(year: Int, month: Int): Flow<List<InvestmentEntity>>

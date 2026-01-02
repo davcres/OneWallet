@@ -24,13 +24,13 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.core.extensions.normalizeDouble
-import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.core.composables.shakeClickEffect
+import com.davidcrespo.onewallet.core.extensions.normalizeDouble
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
 
 @Composable
 fun StockDetailDialog(
-    item: Investment,
+    item: InvestmentView,
     onDismiss: () -> Unit,
     onConfirmQuantity: (Double) -> Unit
 ) {
@@ -51,7 +51,7 @@ fun StockDetailDialog(
 
 @Composable
 fun QuantityTab(
-    item: Investment,
+    item: InvestmentView,
     onConfirm: (Double) -> Unit
 ) {
     var text by remember { mutableStateOf(item.quantity.toString()) }

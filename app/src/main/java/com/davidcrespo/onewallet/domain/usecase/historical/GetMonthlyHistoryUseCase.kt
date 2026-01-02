@@ -1,15 +1,18 @@
 package com.davidcrespo.onewallet.domain.usecase.historical
 
-import com.davidcrespo.onewallet.data.local.database.portfolio.dao.PortfolioDao
-import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toDomain
 import com.davidcrespo.onewallet.domain.model.investment.Investment
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import com.davidcrespo.onewallet.domain.repository.PortfolioRepository
 
 class GetMonthlyHistoryUseCase(
-    private val portfolioDao: PortfolioDao
+    private val portfolioRepository: PortfolioRepository
 ) {
-    operator fun invoke(): Flow<List<Investment>> {
-        return portfolioDao.getMonthsPortfolio().map { it.map { it.toDomain() } }
+    suspend operator fun invoke(): Result<List<Investment>> {
+        return runCatching {
+            Result.success(
+            portfolioRepository.getMonthsPortfolio()
+            )
+        }.getOrElse {
+            Result.failure(it)
+        }
     }
 }

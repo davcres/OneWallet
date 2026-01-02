@@ -13,16 +13,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
-import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
 
 @Composable
 fun CardWithComicBubble(
-    item: Investment,
+    item: InvestmentView,
+    currency: Currency,
     section: SectionType,
     modifier: Modifier = Modifier,
-    onClick: (Investment) -> Unit
+    onClick: (InvestmentView) -> Unit
 ) {
     var show by remember { mutableStateOf(false) }
     var anchor by remember { mutableStateOf<LayoutCoordinates?>(null) }
@@ -30,6 +32,7 @@ fun CardWithComicBubble(
     Box(modifier) {
         OWInvestmentItem(
             item = item,
+            currency = currency,
             section = section,
             onClick = {
                 show = !show
@@ -44,7 +47,7 @@ fun CardWithComicBubble(
                 onDismiss = { show = false }
             ) {
                 Text(
-                    text = "Unidades en cartera: ${item.quantity}\n" + "Precio por unidad: %.2f €".format(item.price),
+                    text = "Unidades en cartera: ${item.quantity}\n" + "Precio por unidad: %.2f €".format(item.displayPrice),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,

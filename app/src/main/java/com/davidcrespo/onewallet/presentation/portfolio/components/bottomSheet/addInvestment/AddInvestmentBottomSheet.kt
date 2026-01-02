@@ -22,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
@@ -37,6 +36,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.bounceClick
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -124,20 +124,13 @@ private fun Header(onClose: () -> Unit) {
             )
         }
 
-        IconButton(
+        OWIconButton(
+            imageVector = Icons.Outlined.Close,
             onClick = onClose,
+            contentDescription = "Close",
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .size(44.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.onTertiary)
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Close,
-                contentDescription = "Close",
-                tint = MaterialTheme.colorScheme.primary,
-            )
-        }
+        )
     }
 }
 

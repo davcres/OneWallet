@@ -1,8 +1,8 @@
 package com.davidcrespo.onewallet.data.repository
 
 import com.davidcrespo.onewallet.BuildConfig
+import com.davidcrespo.onewallet.data.local.cache.CurrencyCache
 import com.davidcrespo.onewallet.data.local.cache.MarketCache
-import com.davidcrespo.onewallet.data.local.cache.RateCache
 import com.davidcrespo.onewallet.data.local.cache.SymbolCache
 import com.davidcrespo.onewallet.data.local.database.market.entities.toCryptoEntity
 import com.davidcrespo.onewallet.data.local.database.market.entities.toDomain
@@ -17,6 +17,7 @@ import com.davidcrespo.onewallet.data.remote.rate.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.rate.models.toDomain
 import com.davidcrespo.onewallet.data.remote.stock.FinnhubDataSource
 import com.davidcrespo.onewallet.data.remote.stock.models.toDomain
+import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.market.MarketAsset
@@ -28,7 +29,7 @@ class FinancialRepositoryImpl(
     private val finnhubDataSource: FinnhubDataSource,
     private val binanceDataSource: BinanceDataSource,
     private val symbolCache: SymbolCache,
-    private val rateCache: RateCache,
+    private val currencyCache: CurrencyCache,
     private val marketCache: MarketCache
 ) : FinancialRepository {
     override suspend fun getInvestmentPrice(
@@ -122,16 +123,28 @@ class FinancialRepositoryImpl(
 
     override suspend fun getUsdEur(): Result<Rate> {
         return runCatching {
-            val cachedRate = rateCache.getCachedRateIfValid(USD_EUR, if (BuildConfig.DEBUG) 24*7 else 24)
+            val cachedRate = currencyCache.getCachedRateIfValid(USD_EUR, if (BuildConfig.DEBUG) 24*7 else 24)
             if (cachedRate != null) {
                 Result.success(Rate(USD_EUR, cachedRate))
             } else {
                 val rate = twelveDataDataSource.getUsdEur()
-                rateCache.setCachedRate(rate.symbol, rate.rate)
+                currencyCache.setCachedRate(rate.symbol, rate.rate)
                 Result.success(rate.toDomain())
             }
         }.getOrElse {
             Result.failure(it)
         }
+    }
+
+    override fun getSelectedCurrency(): Currency {
+        return runCatching {
+            currencyCache.getSelectedCurrency()
+        }.getOrElse {
+            Currency.EUR
+        }
+    }
+
+    override fun setSelectedCurrency(currency: Currency) {
+        currencyCache.setSelectedCurrency(currency)
     }
 }

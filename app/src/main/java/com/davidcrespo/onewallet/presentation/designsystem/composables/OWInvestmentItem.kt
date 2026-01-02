@@ -17,11 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.TrendingDown
-import androidx.compose.material.icons.automirrored.filled.TrendingFlat
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material.icons.outlined.CurrencyBitcoin
 import androidx.compose.material.icons.outlined.PieChartOutline
@@ -30,7 +26,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,18 +42,22 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.bounceClick
-import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.coroutines.delay
 
 @Composable
 fun OWInvestmentItem(
-    item: Investment,
-    previousMonthItem: Investment? = null,
+    item: InvestmentView,
+    currency: Currency,
+    previousMonthItem: InvestmentView? = null,
     section: SectionType,
-    onClick: (Investment) -> Unit,
+    onClick: (InvestmentView) -> Unit,
     onGloballyPositioned: (LayoutCoordinates) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -130,24 +129,24 @@ fun OWInvestmentItem(
                 Column(horizontalAlignment = Alignment.End) {
                     val showPercentage = item.type == InvestmentType.STOCK || item.type == InvestmentType.CRYPTO
                     val totalValue = when (section) {
-                        SectionType.PORTFOLIO, SectionType.HISTORICAL -> item.quantity * item.price
-                        SectionType.PRICES -> item.price
+                        SectionType.PORTFOLIO, SectionType.HISTORICAL -> item.quantity * item.displayPrice
+                        SectionType.PRICES -> item.displayPrice
                     }
 
                     if (showPercentage) {
                         Column(horizontalAlignment = Alignment.End) {
                             Spacer(modifier = Modifier.height(4.dp))
-                            PriceDisplay(value = totalValue)
+                            PriceDisplay(value = totalValue, currency = currency)
                             Spacer(modifier = Modifier.height(8.dp))
                             
                             val currentPrice = when (section) {
-                                SectionType.PORTFOLIO -> item.price * item.quantity
-                                else -> item.price
+                                SectionType.PORTFOLIO -> item.displayPrice * item.quantity
+                                else -> item.displayPrice
                             }
                             val previousPrice = when (section) {
-                                SectionType.PORTFOLIO -> item.previousPrice * item.quantity
-                                SectionType.HISTORICAL -> previousMonthItem?.price ?: 0.0
-                                else -> item.previousPrice
+                                SectionType.PORTFOLIO -> item.displayPreviousPrice * item.quantity
+                                SectionType.HISTORICAL -> previousMonthItem?.displayPrice ?: 0.0
+                                else -> item.displayPreviousPrice
                             }
 
                             AnimatedContent(
@@ -162,15 +161,15 @@ fun OWInvestmentItem(
 
                                 if (showPercentage) {
                                     val percentage = (currentPrice - previousPrice) / previousPrice * 100
-                                    TrendDisplay(value = percentage, text = "%.2f %%".format(percentage))
+                                    TrendDisplay(value = percentage, text = "%.2f %%".format(percentage), showPercentage, currency)
                                 } else {
                                     val variance = currentPrice - previousPrice
-                                    TrendDisplay(value = variance, text = "%.2f €".format(variance))
+                                    TrendDisplay(value = variance, text = "$ %.2f".format(variance), showPercentage, currency)
                                 }
                             }
                         }
                     } else {
-                        PriceDisplay(value = totalValue)
+                        PriceDisplay(value = totalValue, currency = currency)
                     }
                 }
 
@@ -183,63 +182,14 @@ fun OWInvestmentItem(
 }
 
 @Composable
-private fun PriceDisplay(value: Double) {
-    Surface(
-        shape = RoundedCornerShape(8.dp),
-        color = MaterialTheme.colorScheme.primaryContainer,
-        modifier = Modifier.padding(4.dp)
-    ) {
-        Text(
-            text = "%.2f €".format(value),
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-        )
-    }
-}
-
-@Composable
-private fun TrendDisplay(value: Double, text: String) {
-    Row {
-        val (icon, color) = when {
-            value > 0 -> Pair(
-                Icons.AutoMirrored.Filled.TrendingUp,
-                MaterialTheme.colorScheme.primary
-            )
-            value < 0 -> Pair(
-                Icons.AutoMirrored.Filled.TrendingDown,
-                MaterialTheme.colorScheme.error
-            )
-            else -> Pair(
-                Icons.AutoMirrored.Filled.TrendingFlat,
-                MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = color
-        )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold,
-            color = color,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-        )
-    }
-}
-
-@Composable
 private fun GhostContent() {
     // Ghost Column to have same height in all items
     Column(
         modifier = Modifier.alpha(0f)
     ) {
         Spacer(modifier = Modifier.height(4.dp))
-        PriceDisplay(value = 0.0)
+        PriceDisplay(value = 0.0, currency = Currency.EUR)
         Spacer(modifier = Modifier.height(8.dp))
-        TrendDisplay(value = 1.0, text = "0.00 %")
+        TrendDisplay(value = 1.0, text = "0.00 %", false, Currency.EUR)
     }
 }

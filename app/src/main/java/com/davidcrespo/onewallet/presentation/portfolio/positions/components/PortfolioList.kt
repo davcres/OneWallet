@@ -24,17 +24,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.bounceClick
-import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PortfolioList(
-    items: List<Investment>,
-    onRemove: (Investment) -> Unit,
-    onEdit: (Investment) -> Unit,
+    items: List<InvestmentView>,
+    currency: Currency,
+    onRemove: (InvestmentView) -> Unit,
+    onEdit: (InvestmentView) -> Unit,
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState()
 ) {
@@ -42,7 +44,7 @@ fun PortfolioList(
         items = items,
         key = { it.symbol },
         state = state,
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         itemContent = { modifier, portfolioItem, index ->
@@ -88,6 +90,7 @@ fun PortfolioList(
                 content = {
                     OWInvestmentItem(
                         item = portfolioItem,
+                        currency = currency,
                         section = SectionType.PORTFOLIO,
                         onClick = { onEdit(portfolioItem) },
                     )
