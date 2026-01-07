@@ -135,7 +135,9 @@ class PortfolioViewModel(
 
                     // Reuse if already priced
                     if (symbol in alreadyPriced) {
-                        return@async existingBySymbol[symbol] ?: item
+                        return@async existingBySymbol[symbol]?.copy(
+                            quantity = item.quantity
+                        ) ?: item
                     }
 
                     getInvestmentPriceUseCase(symbol, item.type)
