@@ -2,4 +2,66 @@
     <string name="app_name">OneWallet Portafolio</string>
     <string name="widget_portfolio_description">Consulta los valores de tu cartera</string>
     <string name="widget_stocks_description">Sigue la cotización de tus activos en tiempo real</string>
+
+    <!-- Portfolio -->
+    <string name="empty_investments_title">Aún no has añadido ninguna inversión</string>
+    <string name="empty_investments_description">Haz click en el botón + para llevar el control de tus inversiones.</string>
+    <string name="greeting_morning">Buenos días</string>
+    <string name="greeting_afternoon">Buenas tardes</string>
+    <string name="greeting_evening">Buenas noches</string>
+    <string name="portfolio_summary">Resumen de tu Portafolio</string>
+    <string name="currency_selector_cd">Selector de moneda</string>
+    <string name="history_cd">Historial</string>
+    <string name="tab_portfolio">Mi cartera</string>
+    <string name="tab_prices">Cotización</string>
+    <string name="add_new_fund_title">Añadir nuevo fondo</string>
+    <string name="close_cd">Cerrar</string>
+    <string name="isin_label">ISIN</string>
+    <string name="isin_helper_text">Número de identificación de valores internacionales</string>
+    <string name="quantity_shares_label">Número de Participaciones</string>
+    <string name="cancel_action">Cancelar</string>
+    <string name="cancel_add_fund_cd">Pulsa para no añadir ningún fondo</string>
+    <string name="add_action">Añadir</string>
+    <string name="add_fund_cd">Añade un nuevo fondo a tu cartera</string>
+    <string name="error_isin_empty">Introduce un ISIN para añadirlo a tu cartera.</string>
+    <string name="error_isin_invalid">Introduce un ISIN válido para añadirlo a tu cartera.</string>
+    <string name="add_investment_title">Añadir Inversión</string>
+    <string name="add_investment_subtitle">Selecciona el tipo de activo a seguir</string>
+    <string name="asset_stock">Acciones</string>
+    <string name="asset_stock_subtitle">Acciones y Renta Variable</string>
+    <string name="asset_crypto">Criptomonedas</string>
+    <string name="asset_crypto_subtitle">Monedas y Tokens</string>
+    <string name="asset_fund">Fondo / ETF</string>
+    <string name="asset_fund_subtitle">Índices y Fondos Mutuos</string>
+    <string name="asset_bank">Banco</string>
+    <string name="asset_bank_subtitle">Depósitos y Efectivo</string>
+    <string name="add_bank_title">Añadir Banco / Depósito</string>
+    <string name="bank_name_label">Nombre (ej. Banco Santander):</string>
+    <string name="total_money_label">Total dinero (€):</string>
+    <string name="save_action">Guardar</string>
+    <string name="total_shares_label">Cantidad total de acciones:</string>
+    <string name="update_quantity_action">Actualizar Cantidad</string>
+    <string name="fund_fetch_error">Desafortunadamente no hemos podido obtener el fondo.\nPrueba con otro ISIN.</string>
+
+    <!-- Market -->
+    <string name="add_crypto_title">Añadir Criptomoneda</string>
+    <string name="add_stocks_title">Añadir Acciones</string>
+    <string name="add_count_action">Añadir (%d)</string>
+    <string name="search_crypto_placeholder">Buscar criptomoneda</string>
+    <string name="search_stock_placeholder">Buscar símbolo, nombre o figi</string>
+    <string name="unselect_asset_cd">Deseleccionar activo</string>
+    <string name="select_asset_cd">Seleccionar activo</string>
+
+    <!-- Historical -->
+    <string name="historical_monthly_title">Historial Mensual</string>
+    <string name="back_cd">Atrás</string>
+    <string name="investments_of_month_fmt">Inversiones de %1$s %2$d</string>
+    <string name="shares_in_portfolio_label">Unidades en cartera</string>
+    <string name="price_per_share_label">Precio por unidad</string>
+    <string name="total_value_label">Valor total</string>
+    <string name="pl_month_label">P/L (Mes)</string>
+    <string name="percentage_icon_cd">Icono de porcentaje</string>
+
+    <!-- Core -->
+    <string name="clear_text_cd">Borrar texto</string>
 </resources>

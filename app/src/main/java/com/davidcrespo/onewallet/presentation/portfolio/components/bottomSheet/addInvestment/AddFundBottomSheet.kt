@@ -37,10 +37,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.Button
 import com.davidcrespo.onewallet.core.composables.TextField
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.shakeClickEffect
@@ -131,7 +133,7 @@ private fun Header(onClose: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "Add New Fund",
+                    text = stringResource(R.string.add_new_fund_title),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -141,7 +143,7 @@ private fun Header(onClose: () -> Unit) {
         OWIconButton(
             imageVector = Icons.Outlined.Close,
             onClick = onClose,
-            contentDescription = "Close",
+            contentDescription = stringResource(R.string.close_cd),
             modifier = Modifier
                 .align(Alignment.CenterEnd)
         )
@@ -159,7 +161,7 @@ private fun Form(
 
     Column {
         Text(
-            text = "ISIN",
+            text = stringResource(R.string.isin_label),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(horizontal = 8.dp)
@@ -192,7 +194,7 @@ private fun Form(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = "International Securities Identification Number",
+                text = stringResource(R.string.isin_helper_text),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
@@ -201,7 +203,7 @@ private fun Form(
         Spacer(Modifier.height(18.dp))
 
         Text(
-            text = "Número de Participaciones",
+            text = stringResource(R.string.quantity_shares_label),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(horizontal = 8.dp)
@@ -226,8 +228,8 @@ private fun Form(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Button(
-                text = "Cancelar",
-                contentDescription = "Pulsa para no añadir ningún fondo",
+                text = stringResource(R.string.cancel_action),
+                contentDescription = stringResource(R.string.cancel_add_fund_cd),
                 style = ButtonStyle.SECONDARY,
                 onClick = onClose,
                 modifier = Modifier.weight(1f)
@@ -236,18 +238,20 @@ private fun Form(
             Spacer(modifier = Modifier.width(16.dp))
 
             val quantity = quantity.normalizeDouble()
+            val errorIsinEmpty = stringResource(R.string.error_isin_empty)
+            val errorIsinInvalid = stringResource(R.string.error_isin_invalid)
 
             Button(
-                text = "Añadir",
-                contentDescription = "Añade un nuevo fondo a tu cartera",
+                text = stringResource(R.string.add_action),
+                contentDescription = stringResource(R.string.add_fund_cd),
                 style = ButtonStyle.PRIMARY,
                 onClick = {
                     if (isin.isValidIsin()) {
                         onAddFund(isin, quantity)
                     } else if (isin.isEmpty()) {
-                        onIsinError("Introduce un ISIN para añadirlo a tu cartera.")
+                        onIsinError(errorIsinEmpty)
                     } else {
-                        onIsinError("Introduce un ISIN válido para añadirlo a tu cartera.")
+                        onIsinError(errorIsinInvalid)
                     }
                 },
                 modifier = Modifier

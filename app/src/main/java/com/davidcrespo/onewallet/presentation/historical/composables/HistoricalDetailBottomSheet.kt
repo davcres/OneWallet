@@ -24,8 +24,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
@@ -131,7 +133,7 @@ private fun Header(
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
             Text(
-                text = "Inversiones de $monthName ${investment.year}",
+                text = stringResource(R.string.investments_of_month_fmt, monthName, investment.year),
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
@@ -140,7 +142,7 @@ private fun Header(
         OWIconButton(
             imageVector =  Icons.Outlined.Close,
             onClick = onClose,
-            contentDescription = "Close",
+            contentDescription = stringResource(R.string.close_cd),
             modifier = Modifier
                 .align(Alignment.CenterEnd)
         )

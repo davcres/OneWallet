@@ -23,8 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.presentation.market.components.MarketListItem
 import com.davidcrespo.onewallet.presentation.market.components.MarketSearchBar
 import org.koin.androidx.compose.koinViewModel
@@ -75,11 +77,11 @@ private fun MarketScreen(
                     onClick = onBack,
                     modifier = Modifier.align(Alignment.CenterStart)
                 ) {
-                    Text("Cancelar")
+                    Text(stringResource(R.string.cancel_action))
                 }
 
                 Text(
-                    text = if (isCrypto) "Añadir Criptomoneda" else "Añadir Acciones",
+                    text = if (isCrypto) stringResource(R.string.add_crypto_title) else stringResource(R.string.add_stocks_title),
                     modifier = Modifier.align(Alignment.Center),
                     style = MaterialTheme.typography.titleMedium
                 )
@@ -91,7 +93,7 @@ private fun MarketScreen(
                         },
                         modifier = Modifier.align(Alignment.CenterEnd)
                     ) {
-                        Text("Añadir (${uiState.assetsToSaveToPortfolio.size})")
+                        Text(stringResource(R.string.add_count_action, uiState.assetsToSaveToPortfolio.size))
                     }
                 }
             }

@@ -28,9 +28,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.ErrorBanner
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.pulse
 import com.davidcrespo.onewallet.core.extensions.applyIf
@@ -227,6 +229,8 @@ private fun PortfolioScreen(
             )
         }
 
+        val defaultFundError = stringResource(R.string.fund_fetch_error)
+
         // Add Fund/ETF Dialog
         AddFundBottomSheet(
             visible = uiState.isFundDialogVisible,
@@ -235,7 +239,7 @@ private fun PortfolioScreen(
                 onAction(PortfolioIntent.AddFundItem(isin, quantity))
             },
             onIsinError = { isinError ->
-                onAction(PortfolioIntent.SetError(isinError ?: "Desafortunadamente no hemos podido obtener el fondo.\nPrueba con otro ISIN."))
+                onAction(PortfolioIntent.SetError(isinError ?: defaultFundError))
             }
         )
 

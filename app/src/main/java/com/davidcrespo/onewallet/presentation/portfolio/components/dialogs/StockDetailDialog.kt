@@ -22,8 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.shakeClickEffect
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
@@ -43,7 +45,7 @@ fun StockDetailDialog(
         confirmButton = {},
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cerrar")
+                Text(stringResource(R.string.close_cd))
             }
         }
     )
@@ -67,7 +69,7 @@ fun QuantityTab(
     }
 
     Column {
-        Text(text = "Cantidad total de acciones:")
+        Text(text = stringResource(R.string.total_shares_label))
         OutlinedTextField(
             value = text,
             onValueChange = { newValue ->
@@ -108,7 +110,7 @@ fun QuantityTab(
                 }
             )
         ) {
-            Text("Actualizar Cantidad")
+            Text(stringResource(R.string.update_quantity_action))
         }
     }
 }

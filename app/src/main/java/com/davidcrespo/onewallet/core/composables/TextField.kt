@@ -38,9 +38,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.animatedBorder
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 
@@ -151,7 +153,7 @@ fun TextField(
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Close,
-                            contentDescription = "Clear text",
+                            contentDescription = stringResource(R.string.clear_text_cd),
                             tint = animatedIconTint
                         )
                     }

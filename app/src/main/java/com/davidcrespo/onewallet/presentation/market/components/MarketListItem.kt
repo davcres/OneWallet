@@ -17,9 +17,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.market.MarketAsset
@@ -75,7 +77,7 @@ fun MarketListItem(
                 } else {
                     Icons.Default.AddCircleOutline
                 },
-                contentDescription = if (isSelected) "Unselect Asset" else "Select Asset",
+                contentDescription = if (isSelected) stringResource(R.string.unselect_asset_cd) else stringResource(R.string.select_asset_cd),
                 tint = MaterialTheme.colorScheme.primary
             )
         }
