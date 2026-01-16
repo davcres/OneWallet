@@ -48,7 +48,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.davidcrespo.onewallet.core.composables.animations.bounceClick
+import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
+import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWCurrencyPrice
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWShakeListener
@@ -114,7 +115,9 @@ fun TotalBalance(
                 .fillMaxWidth()
         ) {
             Box(
-                modifier = Modifier.blur(blurRadius)
+                modifier = Modifier
+                    .blur(blurRadius)
+                    .privacySensitive()
             ) {
                 Column(
                     modifier = Modifier

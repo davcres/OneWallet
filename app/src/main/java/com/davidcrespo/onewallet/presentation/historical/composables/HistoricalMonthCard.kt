@@ -36,7 +36,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.core.composables.animations.bounceClick
+import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
+import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
@@ -106,9 +107,14 @@ fun HistoricalMonthCard(
                 modifier = Modifier.weight(1f)
             )
 
-            Box(contentAlignment = Alignment.CenterEnd) {
-                Column(horizontalAlignment = Alignment.End) {
-
+            Box(contentAlignment = Alignment.CenterEnd,
+                modifier = Modifier
+                    .privacySensitive()
+                    .padding(horizontal = 4.dp)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.End,
+                ) {
                     val balance = item.sumOf { it.quantity * it.displayPrice }
                     val previousBalance = previousItem?.sumOf { it.quantity * it.displayPrice } ?: 0.0
                     val marketValue = item.sumOf { it.displayPrice }

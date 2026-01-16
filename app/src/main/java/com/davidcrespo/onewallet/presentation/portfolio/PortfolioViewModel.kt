@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.isManual
+import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.usecase.portfolio.AddInvestmentToPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetInvestmentPriceUseCase
@@ -129,7 +131,7 @@ class PortfolioViewModel(
 
         val (fixedItems, marketItems) = items
             .distinctBy { it.symbol }
-            .partition { it.type == InvestmentType.CASH }
+            .partition { it.type.isManual() }
 
         val updatedMarketItems = supervisorScope {
             marketItems.map { item ->
@@ -182,7 +184,7 @@ class PortfolioViewModel(
             it.quantity * it.displayPrice
         }
         val previousBalance = _uiState.value.portfolioItems.sumOf {
-            if (it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO) {
+            if (it.type.isMarket()) {
                 it.quantity * it.displayPreviousPrice
             } else {
                 it.quantity * it.displayPrice

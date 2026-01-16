@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.domain.model.investment.Currency
-import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
@@ -22,7 +22,7 @@ fun PricesList(
     modifier: Modifier = Modifier
 ) {
     OWAnimatedList(
-        items = items.filter { it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO || it.type == InvestmentType.FUND },
+        items = items.filter { it.type.isMarket() },
         key = { it.symbol },
         contentPadding = PaddingValues(16.dp),
         modifier = modifier.fillMaxSize(),

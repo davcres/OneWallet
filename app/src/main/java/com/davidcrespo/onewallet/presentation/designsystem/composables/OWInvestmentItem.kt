@@ -43,9 +43,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.AutoScrollingText
-import com.davidcrespo.onewallet.core.composables.animations.bounceClick
+import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
+import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
@@ -84,10 +86,11 @@ fun OWInvestmentItem(
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Spacer(modifier = Modifier.width(16.dp))
+
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -131,51 +134,57 @@ fun OWInvestmentItem(
                 }
             }
 
-            Box(contentAlignment = Alignment.CenterEnd) {
+            Box(
+                contentAlignment = Alignment.CenterEnd,
+                modifier = Modifier
+                    .privacySensitive()
+                    .padding(all = 16.dp)
+            ) {
                 Column(horizontalAlignment = Alignment.End) {
-                    val showPercentage = item.type == InvestmentType.STOCK || item.type == InvestmentType.CRYPTO || item.type == InvestmentType.FUND
+                    val showPercentage = item.type.isMarket()
                     val totalValue = when (section) {
                         SectionType.PORTFOLIO, SectionType.HISTORICAL -> item.quantity * item.displayPrice
                         SectionType.PRICES -> item.displayPrice
                     }
 
                     if (showPercentage) {
-                        Column(horizontalAlignment = Alignment.End) {
-                            Spacer(modifier = Modifier.height(4.dp))
-                            PriceDisplay(value = totalValue, currency = currency)
-                            Spacer(modifier = Modifier.height(8.dp))
-                            
-                            val currentPrice = when (section) {
-                                SectionType.PORTFOLIO -> item.displayPrice * item.quantity
-                                else -> item.displayPrice
-                            }
-                            val previousPrice = when (section) {
-                                SectionType.PORTFOLIO -> item.displayPreviousPrice * item.quantity
-                                SectionType.HISTORICAL -> previousMonthItem?.displayPrice ?: 0.0
-                                else -> item.displayPreviousPrice
-                            }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        PriceDisplay(value = totalValue, currency = currency)
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                            AnimatedContent(
-                                targetState = showPercentageState,
-                                transitionSpec = {
-                                    (slideInVertically { height -> height } + fadeIn())
-                                        .togetherWith(slideOutVertically { height -> -height } + fadeOut())
-                                },
-                                label = "PercentageVarianceAnimation"
-                            ) { showPercentage ->
-                                if (currentPrice == 0.0 || previousPrice == 0.0) return@AnimatedContent
+                        val currentPrice = when (section) {
+                            SectionType.PORTFOLIO -> item.displayPrice * item.quantity
+                            else -> item.displayPrice
+                        }
+                        val previousPrice = when (section) {
+                            SectionType.PORTFOLIO -> item.displayPreviousPrice * item.quantity
+                            SectionType.HISTORICAL -> previousMonthItem?.displayPrice ?: 0.0
+                            else -> item.displayPreviousPrice
+                        }
 
-                                if (showPercentage) {
-                                    val percentage = (currentPrice - previousPrice) / previousPrice * 100
-                                    TrendDisplay(value = percentage, text = "%.2f %%".format(percentage), showPercentage, currency)
-                                } else {
-                                    val variance = currentPrice - previousPrice
-                                    TrendDisplay(value = variance, text = "$ %.2f".format(variance), showPercentage, currency)
-                                }
+                        AnimatedContent(
+                            targetState = showPercentageState,
+                            transitionSpec = {
+                                (slideInVertically { height -> height } + fadeIn())
+                                    .togetherWith(slideOutVertically { height -> -height } + fadeOut())
+                            },
+                            label = "PercentageVarianceAnimation"
+                        ) { showPercentage ->
+                            if (currentPrice == 0.0 || previousPrice == 0.0) return@AnimatedContent
+
+                            if (showPercentage) {
+                                val percentage = (currentPrice - previousPrice) / previousPrice * 100
+                                TrendDisplay(value = percentage, text = "%.2f %%".format(percentage), showPercentage, currency)
+                            } else {
+                                val variance = currentPrice - previousPrice
+                                TrendDisplay(value = variance, text = "$ %.2f".format(variance), showPercentage, currency)
                             }
                         }
                     } else {
-                        PriceDisplay(value = totalValue, currency = currency)
+                        PriceDisplay(
+                            value = totalValue,
+                            currency = currency
+                        )
                     }
                 }
 

@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.core.composables.animations
+package com.davidcrespo.onewallet.core.composables.modifiers.animations
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
