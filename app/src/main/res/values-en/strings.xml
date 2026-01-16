@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name">OneWallet Portfolio</string>
+    <string name="widget_portfolio_description">Check your portfolio values</string>
+    <string name="widget_stocks_description">Track your assets in real time</string>
+
+    <!-- Portfolio -->
+    <string name="empty_investments_title">You haven\'t added any investment yet</string>
+    <string name="empty_investments_description">Click the + button to track your investments.</string>
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="portfolio_summary">Portfolio Summary</string>
+    <string name="currency_selector_cd">Currency selector</string>
+    <string name="history_cd">History</string>
+    <string name="tab_portfolio">My Portfolio</string>
+    <string name="tab_prices">Prices</string>
+    <string name="add_new_fund_title">Add New Fund</string>
+    <string name="close_cd">Close</string>
+    <string name="isin_label">ISIN</string>
+    <string name="isin_helper_text">International Securities Identification Number</string>
+    <string name="quantity_shares_label">Number of Shares</string>
+    <string name="cancel_action">Cancel</string>
+    <string name="cancel_add_fund_cd">Tap to not add any fund</string>
+    <string name="add_action">Add</string>
+    <string name="add_fund_cd">Add a new fund to your portfolio</string>
+    <string name="error_isin_empty">Enter an ISIN to add it to your portfolio.</string>
+    <string name="error_isin_invalid">Enter a valid ISIN to add it to your portfolio.</string>
+    <string name="add_investment_title">Add Investment</string>
+    <string name="add_investment_subtitle">Select the asset type to track</string>
+    <string name="asset_stock">Stocks</string>
+    <string name="asset_stock_subtitle">Stocks &amp; Equity</string>
+    <string name="asset_crypto">Crypto</string>
+    <string name="asset_crypto_subtitle">Coins &amp; Tokens</string>
+    <string name="asset_fund">Fund / ETF</string>
+    <string name="asset_fund_subtitle">Index &amp; Mutuals</string>
+    <string name="asset_bank">Bank</string>
+    <string name="asset_bank_subtitle">Deposits &amp; Cash</string>
+    <string name="add_bank_title">Add Bank / Deposit</string>
+    <string name="bank_name_label">Name (e.g., Bank of America):</string>
+    <string name="total_money_label">Total money (€):</string>
+    <string name="save_action">Save</string>
+    <string name="total_shares_label">Total number of shares:</string>
+    <string name="update_quantity_action">Update Quantity</string>
+    <string name="fund_fetch_error">Unfortunately we couldn\'t fetch the fund.\nTry another ISIN.</string>
+
+    <!-- Market -->
+    <string name="add_crypto_title">Add Crypto</string>
+    <string name="add_stocks_title">Add Stocks</string>
+    <string name="add_count_action">Add (%d)</string>
+    <string name="search_crypto_placeholder">Search crypto</string>
+    <string name="search_stock_placeholder">Search symbol, name or figi</string>
+    <string name="unselect_asset_cd">Unselect Asset</string>
+    <string name="select_asset_cd">Select Asset</string>
+
+    <!-- Historical -->
+    <string name="historical_monthly_title">Monthly History</string>
+    <string name="back_cd">Back</string>
+    <string name="investments_of_month_fmt">Investments of %1$s %2$d</string>
+    <string name="shares_in_portfolio_label">Shares in portfolio</string>
+    <string name="price_per_share_label">Price per share</string>
+    <string name="total_value_label">Total value</string>
+    <string name="pl_month_label">P/L (Month)</string>
+    <string name="percentage_icon_cd">Percentage Icon</string>
+
+    <!-- Core -->
+    <string name="clear_text_cd">Clear text</string>
+</resources>

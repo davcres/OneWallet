@@ -32,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.bottomSheet.SheetHandle
@@ -95,8 +97,8 @@ private fun SheetContent(
         ) {
             items(AssetType.entries) { item ->
                 AssetTypeCard(
-                    title = item.title,
-                    subtitle = item.subtitle,
+                    title = stringResource(item.title),
+                    subtitle = stringResource(item.subtitle),
                     icon = item.icon,
                     onClick = { onAssetTypeClick(item) }
                 )
@@ -112,13 +114,13 @@ private fun Header(onClose: () -> Unit) {
     Box(Modifier.fillMaxWidth()) {
         Column(Modifier.align(Alignment.CenterStart)) {
             Text(
-                text = "Add Investment",
+                text = stringResource(R.string.add_investment_title),
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = "Select the asset type to track",
+                text = stringResource(R.string.add_investment_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
@@ -127,7 +129,7 @@ private fun Header(onClose: () -> Unit) {
         OWIconButton(
             imageVector = Icons.Outlined.Close,
             onClick = onClose,
-            contentDescription = "Close",
+            contentDescription = stringResource(R.string.close_cd),
             modifier = Modifier
                 .align(Alignment.CenterEnd)
         )

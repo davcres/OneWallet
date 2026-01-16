@@ -20,7 +20,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import java.time.LocalTime
@@ -40,13 +42,13 @@ fun Header(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = greetingByTime(),
+                text = stringResource(greetingByTime()),
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Text(
-                text = "Resumen de tu Portafolio",
+                text = stringResource(R.string.portfolio_summary),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
@@ -63,7 +65,7 @@ fun Header(
             OWIconButton(
                 imageVector = if (showUSD) Icons.Filled.AttachMoney else Icons.Filled.Euro,
                 onClick = onCurrencyChange,
-                contentDescription = "Selector de moneda"
+                contentDescription = stringResource(R.string.currency_selector_cd)
             )
         }
 
@@ -72,17 +74,17 @@ fun Header(
         OWIconButton(
             imageVector = Icons.Filled.AutoGraph,
             onClick = navigateToHistorical,
-            contentDescription = "Historial"
+            contentDescription = stringResource(R.string.history_cd)
         )
     }
 }
 
-fun greetingByTime(): String {
+fun greetingByTime(): Int {
     val hour = LocalTime.now().hour
 
     return when (hour) {
-        in 6..11 -> "Buenos días"
-        in 12..19 -> "Buenas tardes"
-        else -> "Buenas noches"
+        in 6..11 -> R.string.greeting_morning
+        in 12..19 -> R.string.greeting_afternoon
+        else -> R.string.greeting_evening
     }
 }

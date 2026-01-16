@@ -17,9 +17,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.shakeClickEffect
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
 
@@ -33,10 +35,10 @@ fun BankDepositDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "Añadir Banco / Depósito") },
+        title = { Text(text = stringResource(R.string.add_bank_title)) },
         text = {
             Column {
-                Text(text = "Nombre (ej. Banco Santander):")
+                Text(text = stringResource(R.string.bank_name_label))
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -48,7 +50,7 @@ fun BankDepositDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Text(text = "Total dinero (€):")
+                Text(text = stringResource(R.string.total_money_label))
                 OutlinedTextField(
                     value = amountText,
                     onValueChange = { amountText = it },
@@ -75,12 +77,12 @@ fun BankDepositDialog(
                     Modifier.shakeClickEffect()
                 }
             ) {
-                Text("Guardar")
+                Text(stringResource(R.string.save_action))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(stringResource(R.string.cancel_action))
             }
         }
     )

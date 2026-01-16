@@ -29,10 +29,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.presentation.designsystem.theme.Error
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OnError
 import kotlinx.coroutines.delay
@@ -116,7 +118,7 @@ fun ErrorBanner(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Close,
-                            contentDescription = "Cerrar"
+                            contentDescription = stringResource(R.string.close_cd)
                         )
                     }
                 }

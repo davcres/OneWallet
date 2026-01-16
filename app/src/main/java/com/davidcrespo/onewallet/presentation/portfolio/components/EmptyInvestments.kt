@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,19 +29,19 @@ fun EmptyInvestments(
     ) {
         Image(
             imageVector = ImageVector.vectorResource(R.drawable.ic_empty_investments),
-            contentDescription = "Aún no has añadido ninguna inversión",
+            contentDescription = stringResource(R.string.empty_investments_title),
             modifier = Modifier.fillMaxHeight(0.3f)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Aún no has añadido ninguna inversión",
+            text = stringResource(R.string.empty_investments_title),
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Haz click en el botón + para llevar el control de tus inversiones.",
+            text = stringResource(R.string.empty_investments_description),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )

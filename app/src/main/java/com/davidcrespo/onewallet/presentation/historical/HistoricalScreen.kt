@@ -23,8 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalDetailBottomSheet
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalInvestmentDetail
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalList
@@ -79,12 +81,12 @@ private fun HistoricalScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Historial Mensual") },
+                    title = { Text(stringResource(R.string.historical_monthly_title)) },
                     navigationIcon = {
                         IconButton(onClick = {
                             onBack()
                         }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_cd))
                         }
                     }
                 )

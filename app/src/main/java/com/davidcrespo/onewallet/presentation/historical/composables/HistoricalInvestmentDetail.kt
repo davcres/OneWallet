@@ -33,12 +33,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.DashedDivider
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
@@ -96,7 +98,7 @@ fun HistoricalInvestmentDetail(
                 OWIconButton(
                     imageVector = Icons.Outlined.Close,
                     onClick = onDismiss,
-                    contentDescription = "Close",
+                    contentDescription = stringResource(R.string.close_cd),
                     modifier = Modifier
                         .padding(16.dp)
                         .align(Alignment.TopEnd)
@@ -138,7 +140,7 @@ fun HistoricalInvestmentDetail(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Unidades en cartera",
+                            text = stringResource(R.string.shares_in_portfolio_label),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -147,7 +149,7 @@ fun HistoricalInvestmentDetail(
                         )
 
                         Text(
-                            text = "Precio por unidad",
+                            text = stringResource(R.string.price_per_share_label),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -180,7 +182,7 @@ fun HistoricalInvestmentDetail(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Valor total",
+                            text = stringResource(R.string.total_value_label),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -222,7 +224,7 @@ fun HistoricalInvestmentDetail(
                                     ) {
                                         Icon(
                                             imageVector = percentageIcon,
-                                            contentDescription = "Percentage Icon",
+                                            contentDescription = stringResource(R.string.percentage_icon_cd),
                                             tint = percentageColor
                                         )
 
@@ -248,7 +250,7 @@ fun HistoricalInvestmentDetail(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "P/L (Mes)",
+                                text = stringResource(R.string.pl_month_label),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
