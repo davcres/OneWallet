@@ -49,7 +49,7 @@ class InvestingApiClient(private val client: HttpClient) {
         ).find(html) ?: throw IllegalStateException("No se encontró el valor actual (pid-*-last)")
 
         val pid = lastMatch.groupValues[1]
-        val value = lastMatch.groupValues[2].trim().normalizeDouble() ?: 0.0
+        val value = lastMatch.groupValues[2].trim().normalizeDouble()
 
         // 3) Diferencia día anterior: pid-1210266-pc" ... -0,038
         val diff = Regex(

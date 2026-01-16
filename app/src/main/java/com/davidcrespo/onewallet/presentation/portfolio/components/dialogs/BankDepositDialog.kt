@@ -61,7 +61,7 @@ fun BankDepositDialog(
         },
         confirmButton = {
             val amount = amountText.normalizeDouble()
-            val isValid = name.isNotBlank() && amount != null
+            val isValid = name.isNotBlank()
 
             Button(
                 onClick = {

@@ -235,7 +235,7 @@ private fun Form(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            val quantity = quantity.normalizeDouble() ?: 0.0
+            val quantity = quantity.normalizeDouble()
 
             Button(
                 text = "Añadir",

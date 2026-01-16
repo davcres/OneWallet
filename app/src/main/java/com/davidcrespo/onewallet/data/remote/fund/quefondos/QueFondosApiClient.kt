@@ -50,7 +50,7 @@ class QueFondosApiClient(private val client: HttpClient) {
         )?.substringBefore(" ")
             ?: throw IllegalStateException("No se encontró el valor liquidativo")
 
-        val value = valueText.normalizeDouble() ?: 0.0
+        val value = valueText.normalizeDouble()
 
         // 3) Variación 1 día (%)
         val diffPercentText = extractPercent(html, "1 d(?:&iacute;|í)a:")

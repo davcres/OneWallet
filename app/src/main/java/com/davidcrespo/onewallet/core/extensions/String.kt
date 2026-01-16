@@ -4,6 +4,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 fun String.normalizeDouble(): Double {
+    if (this.isEmpty() || this.isBlank()) return 0.0
     val numberText = this
         .replace(".", "")
         .replace(",", ".")
