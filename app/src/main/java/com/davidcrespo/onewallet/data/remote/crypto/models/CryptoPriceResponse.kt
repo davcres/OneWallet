@@ -14,6 +14,7 @@ data class CryptoPriceResponse(
 
 fun CryptoPriceResponse.toInvestDto() = InvestmentDto(
     symbol = symbol,
+    name = "",
     quantity = 0.0,
     price = lastPrice.toDoubleOrNull() ?: 0.0,
     previousPrice = prevClosePrice.toDoubleOrNull() ?: 0.0,

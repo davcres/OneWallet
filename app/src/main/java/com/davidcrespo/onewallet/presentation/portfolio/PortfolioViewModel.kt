@@ -52,13 +52,16 @@ class PortfolioViewModel(
             is PortfolioIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity)
             is PortfolioIntent.RemoveItem -> removeItem(intent.item)
 
-            is PortfolioIntent.AddFundItem -> addFundItem(intent.name, intent.quantity, intent.price)
+            is PortfolioIntent.AddFundItem -> addFundItem(intent.name, intent.quantity)
             is PortfolioIntent.ShowFundDialog -> _uiState.update { it.copy(isFundDialogVisible = true) }
             is PortfolioIntent.DismissFundDialog -> _uiState.update { it.copy(isFundDialogVisible = false) }
 
             is PortfolioIntent.AddBankItem -> addBankItem(intent.name, intent.quantity)
             is PortfolioIntent.ShowBankDialog -> _uiState.update { it.copy(isBankDialogVisible = true) }
             is PortfolioIntent.DismissBankDialog -> _uiState.update { it.copy(isBankDialogVisible = false) }
+
+            is PortfolioIntent.SetError -> _uiState.update { it.copy(error = intent.error) }
+            is PortfolioIntent.ClearError -> _uiState.update { it.copy(error = null) }
 
             is PortfolioIntent.NavigateToHistorical -> {}
             is PortfolioIntent.NavigateToMarket -> {}
@@ -126,7 +129,7 @@ class PortfolioViewModel(
 
         val (fixedItems, marketItems) = items
             .distinctBy { it.symbol }
-            .partition { it.type == InvestmentType.FUND || it.type == InvestmentType.CASH }
+            .partition { it.type == InvestmentType.CASH }
 
         val updatedMarketItems = supervisorScope {
             marketItems.map { item ->
@@ -140,7 +143,7 @@ class PortfolioViewModel(
                         ) ?: item
                     }
 
-                    getInvestmentPriceUseCase(symbol, item.type)
+                    getInvestmentPriceUseCase(symbol, item.type, item.name)
                         .map { api ->
                             val withPrice = item.copy(
                                 displayPrice = api.price,
@@ -205,25 +208,26 @@ class PortfolioViewModel(
         }
     }
 
-    private fun addFundItem(name: String, quantity: Double, price: Double) {
+    private fun addFundItem(isin: String, quantity: Double) {
         viewModelScope.launch {
-            val now = LocalDate.now()
-            val year = now.year
-            val month = now.monthValue
+            getInvestmentPriceUseCase(isin, InvestmentType.FUND)
+                .onSuccess { investment ->
+                    val now = LocalDate.now()
+                    val year = now.year
+                    val month = now.monthValue
 
-            val fund = Investment(
-                symbol = name,
-                quantity = quantity,
-                price = price,
-                previousPrice = 0.0,
-                currency = Currency.EUR,
-                type = InvestmentType.FUND,
-                year = year,
-                month = month
-            )
+                    val fund = investment.copy(
+                        quantity = quantity,
+                        year = year,
+                        month = month
+                    )
 
-            addInvestmentToPortfolioUseCase(fund)
-            _uiState.update { it.copy(isFundDialogVisible = false) }
+                    addInvestmentToPortfolioUseCase(fund)
+                    _uiState.update { it.copy(isFundDialogVisible = false) }
+                }
+                .onFailure {
+                    _uiState.update { it.copy(error = "Desafortunadamente no hemos podido obtener el fondo.\nPrueba con otro ISIN.") }
+                }
         }
     }
     private fun addBankItem(name: String, quantity: Double) {
@@ -234,6 +238,7 @@ class PortfolioViewModel(
 
             val cash = Investment(
                 symbol = name,
+                name = name,
                 quantity = quantity,
                 price = 1.0,
                 previousPrice = 0.0,

@@ -17,8 +17,9 @@ data class StockPriceResponse(
     val t: Long? = null // timestamp Unix
 )
 
-fun StockPriceResponse.toInvestDto(symbol: String) = InvestmentDto(
+fun StockPriceResponse.toInvestDto(symbol: String, name: String) = InvestmentDto(
     symbol = symbol,
+    name = name,
     quantity = 0.0,
     price = c,
     previousPrice = pc ?: 0.0,

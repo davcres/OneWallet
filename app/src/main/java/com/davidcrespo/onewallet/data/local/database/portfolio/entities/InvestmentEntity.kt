@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 @Entity(tableName = "monthly_portfolio_table", primaryKeys = ["year", "month", "symbol"])
 data class InvestmentEntity(
     val symbol: String,
+    val name: String,
     val quantity: Double,
     val price: Double,
     val previousPrice: Double? = null,
@@ -21,6 +22,7 @@ data class InvestmentEntity(
 
 fun Investment.toEntity(): InvestmentEntity = InvestmentEntity(
     symbol = symbol,
+    name = name,
     quantity = quantity,
     price = price,
     previousPrice = previousPrice,
@@ -32,6 +34,7 @@ fun Investment.toEntity(): InvestmentEntity = InvestmentEntity(
 
 fun InvestmentEntity.toDomain(): Investment = Investment(
     symbol = symbol,
+    name = name.orEmpty(),
     quantity = quantity,
     price = price,
     previousPrice = previousPrice ?: 0.0,
@@ -45,16 +48,17 @@ fun String.toInvestmentEntity(): InvestmentEntity {
     val parts = this.split("|")
     return InvestmentEntity(
         symbol = parts[0],
-        quantity = parts[1].toDoubleOrNull() ?: 0.0,
-        price = parts[2].toDoubleOrNull() ?: 0.0,
-        previousPrice = parts[3].toDoubleOrNull() ?: 0.0,
-        currency = Currency.valueOf(parts[4]),
-        type = InvestmentType.valueOf(parts[5]),
-        year = parts[6].toIntOrNull() ?: 0,
-        month = parts[7].toIntOrNull() ?: 0,
+        name = parts[1],
+        quantity = parts[2].toDoubleOrNull() ?: 0.0,
+        price = parts[3].toDoubleOrNull() ?: 0.0,
+        previousPrice = parts[4].toDoubleOrNull() ?: 0.0,
+        currency = Currency.valueOf(parts[5]),
+        type = InvestmentType.valueOf(parts[6]),
+        year = parts[7].toIntOrNull() ?: 0,
+        month = parts[8].toIntOrNull() ?: 0,
     )
 }
 
 fun InvestmentEntity.toPreference(): String {
-    return "$symbol|$quantity|$price|$previousPrice|$currency|$type|$year|$month"
+    return "$symbol|$name|$quantity|$price|$previousPrice|$currency|$type|$year|$month"
 }

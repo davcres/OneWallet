@@ -16,6 +16,7 @@ data class MarketAsset(
 
 fun MarketAsset.toInvestment(type: InvestmentType, year: Int, month: Int) = Investment(
     symbol = symbol,
+    name = description.orEmpty(),
     quantity = 0.0,
     price = price,
     previousPrice = 0.0,

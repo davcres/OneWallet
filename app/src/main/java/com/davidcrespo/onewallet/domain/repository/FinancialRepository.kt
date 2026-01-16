@@ -7,7 +7,7 @@ import com.davidcrespo.onewallet.domain.model.market.MarketAsset
 import com.davidcrespo.onewallet.domain.model.rate.Rate
 
 interface FinancialRepository {
-    suspend fun getInvestmentPrice(symbol: String, type: InvestmentType): Result<Investment>
+    suspend fun getInvestmentPrice(symbol: String, type: InvestmentType, name: String = ""): Result<Investment>
     suspend fun getStocksSymbols(exchange: String): Result<List<MarketAsset>>
     suspend fun getCryptosSymbols(): Result<List<MarketAsset>>
     suspend fun getUsdEur(): Result<Rate>
