@@ -1,10 +1,6 @@
-package com.davidcrespo.onewallet.core.composables.animations
+package com.davidcrespo.onewallet.core.composables.modifiers.animations
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.repeatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
@@ -17,27 +13,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import com.davidcrespo.onewallet.core.composables.animations.auxiliar.ButtonState
+import com.davidcrespo.onewallet.core.composables.modifiers.animations.auxiliar.ButtonState
 
-fun Modifier.shakeClickEffect() = composed {
+fun Modifier.bounceClick() = composed {
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
+    val scale by animateFloatAsState(if (buttonState == ButtonState.Pressed) 0.97f else 1f)
 
-    val tx by animateFloatAsState(
-        targetValue = if (buttonState == ButtonState.Pressed) 50f else 0f,
-        animationSpec = repeatable(
-            iterations = 2,
-            animation = tween(durationMillis = 50, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
     this
         .graphicsLayer {
-            translationX = tx
+            scaleX = scale
+            scaleY = scale
         }
         .clickable(
             interactionSource = remember { MutableInteractionSource() },
             indication = null,
-            onClick = { }
+            onClick = {  }
         )
         .pointerInput(buttonState) {
             awaitPointerEventScope {

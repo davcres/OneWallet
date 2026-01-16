@@ -41,7 +41,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.core.composables.animations.animatedBorder
+import com.davidcrespo.onewallet.core.composables.modifiers.animations.animatedBorder
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 
 @Composable

@@ -11,7 +11,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.domain.model.investment.toPreference
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
 import com.davidcrespo.onewallet.widget.portfolio.PortfolioPrefsKeys
@@ -46,7 +46,7 @@ class WidgetsRefreshWorker(
 
         // 3) Datos para StocksWidget
         val stocksSet = portfolioData
-            .filter { it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO }
+            .filter { it.type.isMarket() }
             .sortedByDescending { it.price }
             .map {
                 it.toPreference()

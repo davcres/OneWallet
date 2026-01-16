@@ -41,6 +41,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.davidcrespo.onewallet.core.composables.DashedDivider
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 
@@ -210,7 +211,7 @@ fun HistoricalInvestmentDetail(
                             modifier = Modifier.weight(1f),
                             contentAlignment = Alignment.Center
                         ) {
-                            if ((investment.type == InvestmentType.STOCK || investment.type == InvestmentType.CRYPTO) && (previousMonthInvestment != null && previousMonthInvestment.displayPrice != 0.0)) {
+                            if ((investment.type.isMarket()) && (previousMonthInvestment != null && previousMonthInvestment.displayPrice != 0.0)) {
                                 Surface(
                                     shape = RoundedCornerShape(8.dp),
                                     color = MaterialTheme.colorScheme.primaryContainer
@@ -239,7 +240,7 @@ fun HistoricalInvestmentDetail(
                         }
                     }
 
-                    if ((investment.type == InvestmentType.STOCK || investment.type == InvestmentType.CRYPTO) && (previousMonthInvestment != null && previousMonthInvestment.displayPrice != 0.0)) {
+                    if ((investment.type.isMarket()) && (previousMonthInvestment != null && previousMonthInvestment.displayPrice != 0.0)) {
                         DashedDivider()
 
                         Row(

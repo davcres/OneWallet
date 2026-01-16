@@ -11,11 +11,11 @@ import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWCurrencyPrice
 
 @Composable
-fun PriceDisplay(value: Double, currency: Currency) {
+fun PriceDisplay(value: Double, currency: Currency, modifier: Modifier = Modifier) {
     Surface(
         shape = RoundedCornerShape(8.dp),
         color = MaterialTheme.colorScheme.primaryContainer,
-        modifier = Modifier.padding(4.dp)
+        modifier = modifier.padding(4.dp)
     ) {
         OWCurrencyPrice(
             price = value,
