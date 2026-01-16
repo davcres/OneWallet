@@ -22,7 +22,7 @@ fun PricesList(
     modifier: Modifier = Modifier
 ) {
     OWAnimatedList(
-        items = items.filter { it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO },
+        items = items.filter { it.type == InvestmentType.STOCK || it.type == InvestmentType.CRYPTO || it.type == InvestmentType.FUND },
         key = { it.symbol },
         contentPadding = PaddingValues(16.dp),
         modifier = modifier.fillMaxSize(),

@@ -123,9 +123,6 @@ private fun MarketScreen(
                     keyboardController?.hide()
                     onAction(MarketIntent.SearchQueryChanged(it))
                 },
-                onClearQuery = {
-                    onAction(MarketIntent.SearchQueryChanged(""))
-                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)

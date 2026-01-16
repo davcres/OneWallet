@@ -10,8 +10,11 @@ import com.davidcrespo.onewallet.data.local.database.market.entities.toStockEnti
 import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toDomain
 import com.davidcrespo.onewallet.data.remote.crypto.BinanceDataSource
 import com.davidcrespo.onewallet.data.remote.crypto.models.toDomain
+import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
 import com.davidcrespo.onewallet.data.remote.dto.toDomain
 import com.davidcrespo.onewallet.data.remote.dto.toEntity
+import com.davidcrespo.onewallet.data.remote.fund.investing.InvestingDataSource
+import com.davidcrespo.onewallet.data.remote.fund.quefondos.QueFondosDataSource
 import com.davidcrespo.onewallet.data.remote.rate.TwelveDataApiConfig.GetRate.USD_EUR
 import com.davidcrespo.onewallet.data.remote.rate.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.rate.models.toDomain
@@ -28,17 +31,21 @@ class FinancialRepositoryImpl(
     private val twelveDataDataSource: TwelveDataDataSource,
     private val finnhubDataSource: FinnhubDataSource,
     private val binanceDataSource: BinanceDataSource,
+    private val investingDataSource: InvestingDataSource,
+    private val queFondosDataSource: QueFondosDataSource,
     private val symbolCache: SymbolCache,
     private val currencyCache: CurrencyCache,
     private val marketCache: MarketCache
 ) : FinancialRepository {
     override suspend fun getInvestmentPrice(
         symbol: String,
-        type: InvestmentType
+        type: InvestmentType,
+        name: String
     ): Result<Investment> {
         return when (type) {
-            InvestmentType.STOCK -> getStockPrice(symbol)
+            InvestmentType.STOCK -> getStockPrice(symbol, name)
             InvestmentType.CRYPTO -> getCryptoPrice(symbol)
+            InvestmentType.FUND -> getFundPrice(symbol)
             else -> throw IllegalArgumentException("Invalid investment type")
         }
     }
@@ -61,19 +68,46 @@ class FinancialRepositoryImpl(
         }
     }
 
-    private suspend fun getStockPrice(symbol: String): Result<Investment> {
+    private suspend fun getStockPrice(symbol: String, name: String): Result<Investment> {
         return try {
             val cachedInvestment = symbolCache.getCachedInvestmentIfValid(symbol, if (BuildConfig.DEBUG) 24*7 else 1)
 
             val investment = if (cachedInvestment != null) {
                 cachedInvestment.toDomain()
             } else {
-                val investmentDto = finnhubDataSource.getStockPrice(symbol)
+                val investmentDto = finnhubDataSource.getStockPrice(symbol, name)
                 symbolCache.setCachedInvestment(investmentDto.toEntity())
                 investmentDto.toDomain()
             }
 
             return Result.success(investment)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    private suspend fun getFundPrice(isin: String): Result<Investment> {
+        return try {
+            val cachedInvestment = symbolCache.getCachedInvestmentIfValid(isin, if (BuildConfig.DEBUG) 24*7 else 1)
+
+            val investment = if (cachedInvestment != null) {
+                cachedInvestment.toDomain()
+            } else {
+                var investmentDto: InvestmentDto?
+                investmentDto = investingDataSource.getFundPrice(isin)
+                if (investmentDto == null || investmentDto.name.isEmpty() || investmentDto.price == 0.0) {
+                    investmentDto = queFondosDataSource.getFundPrice(isin)
+                }
+                if (investmentDto != null && investmentDto.name.isNotEmpty() && investmentDto.price == 0.0) {
+                    symbolCache.setCachedInvestment(investmentDto.toEntity())
+                }
+                investmentDto?.toDomain()
+            }
+            if (investment != null) {
+                Result.success(investment)
+            } else {
+                Result.failure(Exception("No se pudo obtener el precio del fondo"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }

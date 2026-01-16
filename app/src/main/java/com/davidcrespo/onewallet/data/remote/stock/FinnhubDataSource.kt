@@ -10,7 +10,7 @@ class FinnhubDataSource(private val finnhubApiClient: FinnhubApiClient) {
         return finnhubApiClient.getStocksSymbols(exchange)
     }
 
-    suspend fun getStockPrice(symbol: String): InvestmentDto {
-        return finnhubApiClient.getStockPrice(symbol).toInvestDto(symbol)
+    suspend fun getStockPrice(symbol: String, name: String): InvestmentDto {
+        return finnhubApiClient.getStockPrice(symbol).toInvestDto(symbol, name)
     }
 }

@@ -40,8 +40,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.core.composables.bounceClick
+import com.davidcrespo.onewallet.core.composables.AutoScrollingText
+import com.davidcrespo.onewallet.core.composables.animations.bounceClick
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
@@ -109,25 +111,29 @@ fun OWInvestmentItem(
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = item.symbol,
+                AutoScrollingText(
+                    text = item.name.takeIf { it.isNotEmpty() } ?: item.symbol,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.Bold
                 )
-                //TODO***
-                /*Text(
-                    text = item.description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )*/
+
+                if (item.name.isNotEmpty() && item.symbol != item.name) {
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = item.symbol,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
 
             Box(contentAlignment = Alignment.CenterEnd) {
                 Column(horizontalAlignment = Alignment.End) {
-                    val showPercentage = item.type == InvestmentType.STOCK || item.type == InvestmentType.CRYPTO
+                    val showPercentage = item.type == InvestmentType.STOCK || item.type == InvestmentType.CRYPTO || item.type == InvestmentType.FUND
                     val totalValue = when (section) {
                         SectionType.PORTFOLIO, SectionType.HISTORICAL -> item.quantity * item.displayPrice
                         SectionType.PRICES -> item.displayPrice

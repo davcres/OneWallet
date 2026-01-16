@@ -25,13 +25,16 @@ sealed interface PortfolioIntent {
     data class UpdateQuantity(val item: InvestmentView, val quantity: Double) : PortfolioIntent
     data class RemoveItem(val item: InvestmentView) : PortfolioIntent
 
-    data class AddFundItem(val name: String, val quantity: Double, val price: Double) : PortfolioIntent
+    data class AddFundItem(val name: String, val quantity: Double) : PortfolioIntent
     data object ShowFundDialog : PortfolioIntent
     data object DismissFundDialog : PortfolioIntent
 
     data class AddBankItem(val name: String, val quantity: Double) : PortfolioIntent
     data object ShowBankDialog : PortfolioIntent
     data object DismissBankDialog : PortfolioIntent
+
+    data class SetError(val error: String) : PortfolioIntent
+    data object ClearError : PortfolioIntent
 
     data object NavigateToHistorical : PortfolioIntent
     data class NavigateToMarket(val isCrypto: Boolean) : PortfolioIntent

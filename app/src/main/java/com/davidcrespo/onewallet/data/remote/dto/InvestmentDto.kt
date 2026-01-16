@@ -7,6 +7,7 @@ import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 
 data class InvestmentDto(
     val symbol: String,
+    val name: String,
     val quantity: Double,
     val price: Double,
     val previousPrice: Double,
@@ -18,6 +19,7 @@ data class InvestmentDto(
 
 fun InvestmentDto.toDomain(): Investment = Investment(
     symbol = symbol,
+    name = name,
     quantity = quantity,
     price = price,
     previousPrice = previousPrice,
@@ -29,6 +31,7 @@ fun InvestmentDto.toDomain(): Investment = Investment(
 
 fun InvestmentDto.toEntity(): InvestmentEntity = InvestmentEntity(
     symbol = symbol,
+    name = name,
     quantity = quantity,
     price = price,
     previousPrice = previousPrice,

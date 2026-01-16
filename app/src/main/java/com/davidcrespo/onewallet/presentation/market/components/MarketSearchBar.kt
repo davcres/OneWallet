@@ -1,21 +1,15 @@
 package com.davidcrespo.onewallet.presentation.market.components
 
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.core.composables.TextField
 
 @Composable
 fun MarketSearchBar(
@@ -23,36 +17,19 @@ fun MarketSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit,
-    onClearQuery: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TextField(
         value = query,
         onValueChange = onQueryChange,
-        modifier = modifier,
-        singleLine = true,
-        leadingIcon = {
-            Icon(Icons.Outlined.Search, contentDescription = null)
-        },
-        trailingIcon = {
-            if (query.isNotEmpty()) {
-                IconButton(onClick = onClearQuery) {
-                    Icon(Icons.Outlined.Close, contentDescription = null)
-                }
-            }
-        },
-        placeholder = {
-            Text(if (isCrypto) "Buscar criptomoneda" else "Buscar símbolo, nombre o figi")
-        },
+        icon = Icons.Outlined.Search,
+        placeholder = if (isCrypto) "Buscar criptomoneda" else "Buscar símbolo, nombre o figi",
+        cornerRadius = 999.dp,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(
             onSearch = { onSearch(query) }
         ),
-        shape = CircleShape,
-        colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-        )
+        modifier = modifier
     )
 }
 
@@ -63,7 +40,6 @@ private fun MarketSearchBarPreview() {
         isCrypto = false,
         query = "",
         onQueryChange = {},
-        onSearch = {},
-        onClearQuery = {}
+        onSearch = {}
     )
 }

@@ -6,6 +6,7 @@ import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 
 data class InvestmentView(
     val symbol: String,
+    val name: String,
     val quantity: Double,
     val displayPrice: Double,
     val displayPreviousPrice: Double,
@@ -25,6 +26,7 @@ fun Investment.toUI(): InvestmentView {
 
     return InvestmentView(
         symbol = symbol,
+        name = name,
         quantity = quantity,
         displayPrice = price,
         displayPreviousPrice = previousPrice,
@@ -41,6 +43,7 @@ fun Investment.toUI(): InvestmentView {
 fun InvestmentView.toDomain(): Investment {
     return Investment(
         symbol = symbol,
+        name = name,
         quantity = quantity,
         price = originalPrice,
         previousPrice = originalPreviousPrice,

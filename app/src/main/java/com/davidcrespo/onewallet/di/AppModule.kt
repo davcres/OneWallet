@@ -12,6 +12,10 @@ import com.davidcrespo.onewallet.data.local.cache.SymbolCacheImpl
 import com.davidcrespo.onewallet.data.local.database.AppDatabase
 import com.davidcrespo.onewallet.data.remote.crypto.BinanceApiClient
 import com.davidcrespo.onewallet.data.remote.crypto.BinanceDataSource
+import com.davidcrespo.onewallet.data.remote.fund.investing.InvestingApiClient
+import com.davidcrespo.onewallet.data.remote.fund.investing.InvestingDataSource
+import com.davidcrespo.onewallet.data.remote.fund.quefondos.QueFondosApiClient
+import com.davidcrespo.onewallet.data.remote.fund.quefondos.QueFondosDataSource
 import com.davidcrespo.onewallet.data.remote.rate.TwelveDataApiClient
 import com.davidcrespo.onewallet.data.remote.rate.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.stock.FinnhubApiClient
@@ -105,17 +109,21 @@ val appModule = module {
     single { TwelveDataApiClient(get()) }
     single { FinnhubApiClient(get()) }
     single { BinanceApiClient(get()) }
+    single { InvestingApiClient(get()) }
+    single { QueFondosApiClient(get()) }
     single { TelegramApiClient(get()) }
 
     single { TwelveDataDataSource(get()) }
     single { FinnhubDataSource(get()) }
     single { BinanceDataSource(get()) }
+    single { InvestingDataSource(get()) }
+    single { QueFondosDataSource(get()) }
 
     single<SymbolCache> { SymbolCacheImpl(get(), get()) }
     single<CurrencyCache> { CurrencyCacheImpl(get(), get()) }
     single<MarketCache> { MarketCacheImpl(get(), get(), get(), get()) }
 
-    single<FinancialRepository> { FinancialRepositoryImpl(get(), get(), get(), get(), get(), get()) }
+    single<FinancialRepository> { FinancialRepositoryImpl(get(), get(), get(), get(), get(), get(), get(), get()) }
     single<PortfolioRepository> { PortfolioRepositoryImpl(get()) }
 
     single { GetInvestmentPriceUseCase(get()) }

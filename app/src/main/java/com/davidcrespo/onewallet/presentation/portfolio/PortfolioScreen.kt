@@ -33,17 +33,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.davidcrespo.onewallet.core.composables.applyIf
-import com.davidcrespo.onewallet.core.composables.pulse
+import com.davidcrespo.onewallet.core.composables.ErrorBanner
+import com.davidcrespo.onewallet.core.composables.animations.pulse
+import com.davidcrespo.onewallet.core.extensions.applyIf
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWFloatingActionButton
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.portfolio.components.EmptyInvestments
 import com.davidcrespo.onewallet.presentation.portfolio.components.Header
 import com.davidcrespo.onewallet.presentation.portfolio.components.SegmentedTabs
+import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddFundBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AssetType
 import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.BankDepositDialog
-import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.FundDepositDialog
 import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.StockDetailDialog
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTab
 import com.davidcrespo.onewallet.presentation.portfolio.positions.PositionsTab
@@ -90,7 +91,7 @@ private fun PortfolioScreen(
     var fabButtonExpanded by remember { mutableStateOf(false) }
 
     val blurRadius by animateDpAsState(
-        targetValue = if (fabButtonExpanded) 16.dp else 0.dp,
+        targetValue = if (fabButtonExpanded || uiState.isFundDialogVisible) 16.dp else 0.dp,
         animationSpec = tween(
             durationMillis = 1000
         ),
@@ -98,7 +99,7 @@ private fun PortfolioScreen(
     )
 
     val overlayAlpha by animateFloatAsState(
-        targetValue = if (fabButtonExpanded) 0.2f else 0f,
+        targetValue = if (fabButtonExpanded || uiState.isFundDialogVisible) 0.32f else 0f,
         label = "overlay"
     )
 
@@ -183,7 +184,7 @@ private fun PortfolioScreen(
             }
         }
 
-        if (fabButtonExpanded) {
+        if (fabButtonExpanded || uiState.isFundDialogVisible) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -195,7 +196,9 @@ private fun PortfolioScreen(
                         fabButtonExpanded = false
                     }
             )
+        }
 
+        if (fabButtonExpanded) {
             AddInvestmentBottomSheet(
                 visible = fabButtonExpanded,
                 onDismiss = { fabButtonExpanded = false },
@@ -233,14 +236,23 @@ private fun PortfolioScreen(
         }
 
         // Add Fund/ETF Dialog
-        if (uiState.isFundDialogVisible) {
-            FundDepositDialog(
-                onDismiss = { onAction(PortfolioIntent.DismissFundDialog) },
-                onConfirm = { name, quantity, price ->
-                    onAction(PortfolioIntent.AddFundItem(name, quantity, price))
-                }
-            )
-        }
+        AddFundBottomSheet(
+            visible = uiState.isFundDialogVisible,
+            onDismiss = { onAction(PortfolioIntent.DismissFundDialog) },
+            onAddFund = { isin, quantity ->
+                onAction(PortfolioIntent.AddFundItem(isin, quantity))
+            },
+            onIsinError = { isinError ->
+                onAction(PortfolioIntent.SetError(isinError ?: "Desafortunadamente no hemos podido obtener el fondo.\nPrueba con otro ISIN."))
+            }
+        )
+
+        ErrorBanner(
+            message = uiState.error,
+            autoCloseable = true,
+            showCloseIcon = false,
+            onErrorDismiss = { onAction(PortfolioIntent.ClearError) },
+        )
     }
 }
 
