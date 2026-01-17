@@ -18,7 +18,7 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUs
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toDomain
 import com.davidcrespo.onewallet.presentation.models.toUI
-import com.davidcrespo.onewallet.widget.WidgetsRefreshWorker
+import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow

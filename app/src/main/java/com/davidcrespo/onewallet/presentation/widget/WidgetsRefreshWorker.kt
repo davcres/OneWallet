@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.widget
+package com.davidcrespo.onewallet.presentation.widget
 
 import android.content.Context
 import androidx.datastore.preferences.core.MutablePreferences
@@ -14,10 +14,10 @@ import androidx.work.WorkerParameters
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.domain.model.investment.toPreference
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
-import com.davidcrespo.onewallet.widget.portfolio.PortfolioPrefsKeys
-import com.davidcrespo.onewallet.widget.portfolio.PortfolioWidget
-import com.davidcrespo.onewallet.widget.stocks.StocksPrefsKeys
-import com.davidcrespo.onewallet.widget.stocks.StocksWidget
+import com.davidcrespo.onewallet.presentation.widget.portfolio.PortfolioPrefsKeys
+import com.davidcrespo.onewallet.presentation.widget.portfolio.PortfolioWidget
+import com.davidcrespo.onewallet.presentation.widget.stocks.StocksPrefsKeys
+import com.davidcrespo.onewallet.presentation.widget.stocks.StocksWidget
 import kotlinx.coroutines.flow.first
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

@@ -1,12 +1,13 @@
-package com.davidcrespo.onewallet.widget.portfolio
+package com.davidcrespo.onewallet.presentation.widget.stocks
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -18,6 +19,7 @@ import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
@@ -39,44 +41,41 @@ import com.davidcrespo.onewallet.MainActivity
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.toInvestment
-import com.davidcrespo.onewallet.widget.WidgetsRefreshWorker
-import kotlin.math.roundToInt
+import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 
-class PortfolioWidget : GlanceAppWidget() {
+class StocksWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val state = currentState<Preferences>()
-            val balance = state[PortfolioPrefsKeys.balance] ?: 0.0
-            val items = stringToPortfolio(state[PortfolioPrefsKeys.items].orEmpty())
+            val stocks = stringToPortfolio(state[StocksPrefsKeys.stocks].orEmpty())
 
-            PortfolioWidgetContent(
-                balance = balance,
-                items = items.sortedByDescending { it.quantity * it.price }
+            StocksWidgetContent(
+                stocks = stocks
             )
         }
     }
 
     @Composable
-    fun PortfolioWidgetContent(
-        balance: Double,
-        items: List<Investment>
+    fun StocksWidgetContent(
+        stocks: List<Investment>
     ) {
 
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
-                .background(GlanceTheme.colors.surface)
+                .background(Color(0xCC1C1C1E))
                 .clickable(actionStartActivity<MainActivity>())
-                .padding(16.dp)
+                .cornerRadius(20.dp)
+                .padding(12.dp)
         ) {
-            if (items.isEmpty()) {
+            if (stocks.isEmpty()) {
                 Column(
                     modifier = GlanceModifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TotalBalance(balance)
+                    Title()
 
                     Spacer(modifier = GlanceModifier.height(16.dp))
 
@@ -91,14 +90,14 @@ class PortfolioWidget : GlanceAppWidget() {
                         horizontalAlignment = Alignment.Start,
                         verticalAlignment = Alignment.Top
                     ) {
-                        TotalBalance(balance)
+                        Title()
 
                         Spacer(modifier = GlanceModifier.defaultWeight())
 
                         Reload()
                     }
-                    if (items.isNotEmpty()) {
-                        ItemsList(items)
+                    if (stocks.isNotEmpty()) {
+                        StockList(stocks)
                     }
                 }
             }
@@ -106,36 +105,18 @@ class PortfolioWidget : GlanceAppWidget() {
     }
 
     @Composable
-    fun TotalBalance(balance: Double) {
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Balance Total",
-                style = TextStyle(
-                    color = GlanceTheme.colors.onSurfaceVariant,
-                    fontSize = 12.sp
-                )
+    fun Title() {
+        Text(
+            text = "Precios de Activos",
+            style = TextStyle(
+                color = GlanceTheme.colors.surface,
+                fontSize = 14.sp
             )
-
-            Text(
-                text = if (balance >= 100000)
-                    "${balance.roundToInt()}€"
-                else
-                    "%.2f €".format(balance),
-                style = TextStyle(
-                    color = GlanceTheme.colors.primary,
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                maxLines = 1
-            )
-        }
+        )
     }
 
     @Composable
-    fun ItemsList(items: List<Investment>) {
+    fun StockList(items: List<Investment>) {
         LazyColumn(
             modifier = GlanceModifier.fillMaxSize(),
             horizontalAlignment = Alignment.Start
@@ -155,7 +136,7 @@ class PortfolioWidget : GlanceAppWidget() {
             }
 
             items(items.size) {
-                ItemRow(items[it])
+                StockRow(items[it])
             }
         }
     }
@@ -169,13 +150,14 @@ class PortfolioWidget : GlanceAppWidget() {
         ) {
             Image(
                 provider = ImageProvider(R.drawable.ic_reload),
-                contentDescription = "Reload"
+                contentDescription = "Reload",
+                colorFilter = ColorFilter.tint(GlanceTheme.colors.surface)
             )
         }
     }
 
     @Composable
-    fun ItemRow(item: Investment) {
+    fun StockRow(item: Investment) {
         Row(
             modifier = GlanceModifier
                 .clickable(actionStartActivity<MainActivity>())
@@ -186,7 +168,7 @@ class PortfolioWidget : GlanceAppWidget() {
             Text(
                 text = item.symbol,
                 style = TextStyle(
-                    color = GlanceTheme.colors.onSurface,
+                    color = GlanceTheme.colors.surface,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp
                 ),
@@ -194,9 +176,9 @@ class PortfolioWidget : GlanceAppWidget() {
                 maxLines = 1
             )
             Text(
-                text = "${"%.2f €".format(item.quantity * item.price)}",
+                text = "%.2f €".format(item.price),
                 style = TextStyle(
-                    color = GlanceTheme.colors.onSurface,
+                    color = GlanceTheme.colors.surface,
                     fontSize = 14.sp
                 ),
                 maxLines = 1
@@ -223,7 +205,6 @@ class GetPortfolioCallback() : ActionCallback {
     }
 }
 
-object PortfolioPrefsKeys {
-    val balance = doublePreferencesKey("balance")
-    val items = stringSetPreferencesKey("items")
+object StocksPrefsKeys {
+    val stocks = stringSetPreferencesKey("stocks")
 }

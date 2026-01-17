@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.widget.stocks
+package com.davidcrespo.onewallet.presentation.widget.stocks
 
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver

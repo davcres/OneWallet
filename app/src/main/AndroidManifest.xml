@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".widget.portfolio.PortfolioWidgetReceiver"
+        <receiver android:name=".presentation.widget.portfolio.PortfolioWidgetReceiver"
             android:exported="true"
             android:label="Portfolio Widget">
             <intent-filter>
@@ -45,7 +45,7 @@
                 android:resource="@xml/widget_portfolio_info" />
         </receiver>
 
-        <receiver android:name=".widget.stocks.StocksWidgetReceiver"
+        <receiver android:name=".presentation.widget.stocks.StocksWidgetReceiver"
             android:exported="true"
             android:label="Stocks Widget">
             <intent-filter>

@@ -38,7 +38,7 @@ import com.davidcrespo.onewallet.presentation.historical.HistoricalViewModel
 import com.davidcrespo.onewallet.presentation.market.MarketViewModel
 import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
 import com.davidcrespo.onewallet.presentation.portfolio.PortfolioViewModel
-import com.davidcrespo.onewallet.widget.WidgetsRefreshWorker
+import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
