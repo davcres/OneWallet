@@ -10,7 +10,6 @@ import com.davidcrespo.onewallet.data.local.database.market.entities.toStockEnti
 import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toDomain
 import com.davidcrespo.onewallet.data.remote.crypto.BinanceDataSource
 import com.davidcrespo.onewallet.data.remote.crypto.models.toDomain
-import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
 import com.davidcrespo.onewallet.data.remote.dto.toDomain
 import com.davidcrespo.onewallet.data.remote.dto.toEntity
 import com.davidcrespo.onewallet.data.remote.fund.investing.InvestingDataSource
@@ -20,12 +19,14 @@ import com.davidcrespo.onewallet.data.remote.rate.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.rate.models.toDomain
 import com.davidcrespo.onewallet.data.remote.stock.FinnhubDataSource
 import com.davidcrespo.onewallet.data.remote.stock.models.toDomain
+import com.davidcrespo.onewallet.domain.di.DispatcherProvider
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.market.MarketAsset
 import com.davidcrespo.onewallet.domain.model.rate.Rate
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
+import kotlinx.coroutines.withContext
 
 class FinancialRepositoryImpl(
     private val twelveDataDataSource: TwelveDataDataSource,
@@ -35,148 +36,124 @@ class FinancialRepositoryImpl(
     private val queFondosDataSource: QueFondosDataSource,
     private val symbolCache: SymbolCache,
     private val currencyCache: CurrencyCache,
-    private val marketCache: MarketCache
+    private val marketCache: MarketCache,
+    private val dispatcher: DispatcherProvider
 ) : FinancialRepository {
+    val validCacheHours: Long = if (BuildConfig.DEBUG) 24 * 7 else 1
+
     override suspend fun getInvestmentPrice(
         symbol: String,
         type: InvestmentType,
         name: String
     ): Result<Investment> {
-        return when (type) {
-            InvestmentType.STOCK -> getStockPrice(symbol, name)
-            InvestmentType.CRYPTO -> getCryptoPrice(symbol)
-            InvestmentType.FUND -> getFundPrice(symbol)
-            else -> throw IllegalArgumentException("Invalid investment type")
-        }
-    }
-
-    private suspend fun getCryptoPrice(symbol: String): Result<Investment> {
-        return try {
-            val cachedInvestment = symbolCache.getCachedInvestmentIfValid(symbol, if (BuildConfig.DEBUG) 24*7 else 1)
-
-            val investment = if (cachedInvestment != null) {
-                cachedInvestment.toDomain()
-            } else {
-                val investmentDto = binanceDataSource.getCryptoPrice(symbol)
-                symbolCache.setCachedInvestment(investmentDto.toEntity())
-                investmentDto.toDomain()
+        return withContext(dispatcher.io) {
+            when (type) {
+                InvestmentType.STOCK -> getStockPrice(symbol, name)
+                InvestmentType.CRYPTO -> getCryptoPrice(symbol)
+                InvestmentType.FUND -> getFundPrice(symbol)
+                else -> throw IllegalArgumentException("Invalid investment type")
             }
-
-            Result.success(investment)
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 
-    private suspend fun getStockPrice(symbol: String, name: String): Result<Investment> {
-        return try {
-            val cachedInvestment = symbolCache.getCachedInvestmentIfValid(symbol, if (BuildConfig.DEBUG) 24*7 else 1)
-
-            val investment = if (cachedInvestment != null) {
-                cachedInvestment.toDomain()
+    private suspend fun getCryptoPrice(symbol: String): Result<Investment> =
+        runCatching {
+            val cached = symbolCache.getCachedInvestmentIfValid(symbol, validCacheHours)
+            if (cached != null) {
+                cached.toDomain()
             } else {
-                val investmentDto = finnhubDataSource.getStockPrice(symbol, name)
-                symbolCache.setCachedInvestment(investmentDto.toEntity())
-                investmentDto.toDomain()
+                val dto = binanceDataSource.getCryptoPrice(symbol)
+                symbolCache.setCachedInvestment(dto.toEntity())
+                dto.toDomain()
             }
-
-            return Result.success(investment)
-        } catch (e: Exception) {
-            Result.failure(e)
         }
+
+    private suspend fun getStockPrice(symbol: String, name: String): Result<Investment> =
+        runCatching {
+            val cached = symbolCache.getCachedInvestmentIfValid(symbol, validCacheHours)
+            if (cached != null) {
+                cached.toDomain()
+            } else {
+                val dto = finnhubDataSource.getStockPrice(symbol, name)
+                symbolCache.setCachedInvestment(dto.toEntity())
+                dto.toDomain()
+            }
+        }
+
+    private suspend fun getFundPrice(isin: String): Result<Investment> = runCatching {
+        val cached = symbolCache.getCachedInvestmentIfValid(isin, validCacheHours)
+        if (cached != null) return@runCatching cached.toDomain()
+
+        // Try primary source (investing.com), fallback to secondary (quefondos.com) if invalid
+        val dto = investingDataSource.getFundPrice(isin)
+            ?.takeUnless { it.name.isEmpty() || it.price == 0.0 }
+            ?: queFondosDataSource.getFundPrice(isin)
+
+        // If still null or invalid, fail
+        val validDto = dto?.takeIf { it.name.isNotEmpty() && it.price != 0.0 }
+            ?: throw Exception("No se pudo obtener el precio del fondo")
+
+        // Cache only if it looks valid
+        symbolCache.setCachedInvestment(validDto.toEntity())
+
+        validDto.toDomain()
     }
 
-    private suspend fun getFundPrice(isin: String): Result<Investment> {
-        return try {
-            val cachedInvestment = symbolCache.getCachedInvestmentIfValid(isin, if (BuildConfig.DEBUG) 24*7 else 1)
+    override suspend fun getStocksSymbols(exchange: String): Result<List<MarketAsset>> =
+        withContext(dispatcher.io) {
+            runCatching {
+                val cached = marketCache.getCachedStockMarketIfValid(validCacheHours)
 
-            val investment = if (cachedInvestment != null) {
-                cachedInvestment.toDomain()
-            } else {
-                var investmentDto: InvestmentDto?
-                investmentDto = investingDataSource.getFundPrice(isin)
-                if (investmentDto == null || investmentDto.name.isEmpty() || investmentDto.price == 0.0) {
-                    investmentDto = queFondosDataSource.getFundPrice(isin)
+                if (cached.isNotEmpty()) {
+                    cached.map { it.toDomain() }
+                } else {
+                    val response = finnhubDataSource.getStocksSymbols(exchange)
+                    val entities = response.mapNotNull { it.toStockEntity() }
+                    marketCache.setCachedStockMarket(entities)
+                    response.mapNotNull { it.toDomain() }
                 }
-                if (investmentDto != null && investmentDto.name.isNotEmpty() && investmentDto.price == 0.0) {
-                    symbolCache.setCachedInvestment(investmentDto.toEntity())
+            }
+        }
+
+    override suspend fun getCryptosSymbols(allowedCurrencies: Set<String>): Result<List<MarketAsset>> =
+        withContext(dispatcher.io) {
+            runCatching {
+                val cached = marketCache.getCachedCryptoMarketIfValid(validCacheHours)
+
+                if (cached.isNotEmpty()) {
+                    cached.map { it.toDomain() }
+                } else {
+                    val response = binanceDataSource.getCryptoSymbols()
+
+                    val filtered = response.filter { crypto ->
+                        allowedCurrencies.any { currencies ->
+                            crypto.symbol.endsWith(currencies, ignoreCase = true)
+                        }
+                    }
+
+                    marketCache.setCachedCryptoMarket(filtered.map { it.toCryptoEntity() })
+                    filtered.map { it.toDomain() }
                 }
-                investmentDto?.toDomain()
             }
-            if (investment != null) {
-                Result.success(investment)
-            } else {
-                Result.failure(Exception("No se pudo obtener el precio del fondo"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
         }
-    }
 
-    override suspend fun getStocksSymbols(exchange: String): Result<List<MarketAsset>> {
-        return runCatching {
-            val cachedStocks = marketCache.getCachedStockMarketIfValid(if (BuildConfig.DEBUG) 24*7 else 24)
-
-            val stocks = if (cachedStocks.isNotEmpty()) {
-                cachedStocks.map { it.toDomain() }
-            } else {
-                val stocksResponse = finnhubDataSource.getStocksSymbols(exchange)
-                marketCache.setCachedStockMarket(stocksResponse.mapNotNull { it.toStockEntity() })
-                stocksResponse.mapNotNull { it.toDomain() }
-            }
-
-            Result.success(stocks)
-        }.getOrElse {
-            Result.failure(it)
-        }
-    }
-
-    override suspend fun getCryptosSymbols(): Result<List<MarketAsset>> {
-        return runCatching {
-            val cachedCryptos = marketCache.getCachedCryptoMarketIfValid(if (BuildConfig.DEBUG) 24*7 else 24)
-
-            val cryptos = if (cachedCryptos.isNotEmpty()) {
-                cachedCryptos.map { it.toDomain() }
-            } else {
-                val cryptosResponse = binanceDataSource.getCryptoSymbols()
-                val filteredCryptos = cryptosResponse.filter {
-                    it.symbol.endsWith("EUR", ignoreCase = true) ||
-                    it.symbol.endsWith("USD", ignoreCase = true) ||
-                    it.symbol.endsWith("USDC", ignoreCase = true) ||
-                    it.symbol.endsWith("USDT", ignoreCase = true)
+    override suspend fun getUsdEur(): Result<Rate> =
+        withContext(dispatcher.io) {
+            runCatching {
+                val cached = currencyCache.getCachedRateIfValid(USD_EUR, validCacheHours)
+                if (cached != null) {
+                    Rate(USD_EUR, cached)
+                } else {
+                    val rate = twelveDataDataSource.getUsdEur()
+                    currencyCache.setCachedRate(rate.symbol, rate.rate)
+                    rate.toDomain()
                 }
-                marketCache.setCachedCryptoMarket(filteredCryptos.map { it.toCryptoEntity() })
-                filteredCryptos.map { it.toDomain() }
             }
-
-            Result.success(cryptos)
-        }.getOrElse {
-            Result.failure(it)
         }
-    }
 
-    override suspend fun getUsdEur(): Result<Rate> {
-        return runCatching {
-            val cachedRate = currencyCache.getCachedRateIfValid(USD_EUR, if (BuildConfig.DEBUG) 24*7 else 24)
-            if (cachedRate != null) {
-                Result.success(Rate(USD_EUR, cachedRate))
-            } else {
-                val rate = twelveDataDataSource.getUsdEur()
-                currencyCache.setCachedRate(rate.symbol, rate.rate)
-                Result.success(rate.toDomain())
-            }
-        }.getOrElse {
-            Result.failure(it)
-        }
-    }
-
-    override fun getSelectedCurrency(): Currency {
-        return runCatching {
-            currencyCache.getSelectedCurrency()
-        }.getOrElse {
-            Currency.EUR
-        }
-    }
+    override fun getSelectedCurrency(): Currency =
+        runCatching { currencyCache.getSelectedCurrency() }
+            .getOrDefault(Currency.EUR)
 
     override fun setSelectedCurrency(currency: Currency) {
         currencyCache.setSelectedCurrency(currency)
