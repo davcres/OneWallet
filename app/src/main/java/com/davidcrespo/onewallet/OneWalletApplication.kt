@@ -1,7 +1,7 @@
 package com.davidcrespo.onewallet
 
 import android.app.Application
-import com.davidcrespo.onewallet.di.appModule
+import com.davidcrespo.onewallet.di.appModules
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
@@ -15,7 +15,7 @@ class OneWalletApplication : Application() {
         startKoin {
             androidContext(this@OneWalletApplication)
             workManagerFactory()
-            modules(appModule)
+            modules(appModules)
         }
 
         WidgetsRefreshWorker.enqueuePeriodic(this)
