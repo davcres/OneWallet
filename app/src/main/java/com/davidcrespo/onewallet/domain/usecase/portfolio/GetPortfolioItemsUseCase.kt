@@ -5,5 +5,5 @@ import com.davidcrespo.onewallet.domain.repository.PortfolioRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetPortfolioItemsUseCase(private val repository: PortfolioRepository) {
-    suspend operator fun invoke(): Flow<List<Investment>> = repository.getPortfolioItems()
+    operator fun invoke(): Flow<List<Investment>> = repository.getPortfolioItems()
 }

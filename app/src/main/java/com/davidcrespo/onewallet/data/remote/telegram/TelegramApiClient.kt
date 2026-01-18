@@ -1,16 +1,23 @@
 package com.davidcrespo.onewallet.data.remote.telegram
 
+import com.davidcrespo.onewallet.data.remote.telegram.models.SendMessageRequest
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
-class TelegramApiClient(private val client: HttpClient) {
+class TelegramApiClient(
+    private val client: HttpClient,
+    private val botToken: String,
+    private val chatId: String
+) {
 
     suspend fun sendMessage(message: String) {
-        val token = "8575995942:AAF06D97HUQVwFL34mFARH_agGBrVid7LM0"
-        val chatId = "425833641"
-        val url = "https://api.telegram.org/bot$token/sendMessage?chat_id=$chatId&text=$message"
-
-        return client.get(url).body()
+        client.post("/bot$botToken/sendMessage") {
+            contentType(ContentType.Application.Json)
+            setBody(SendMessageRequest(chat_id = chatId, text = message))
+        }
     }
+
 }
