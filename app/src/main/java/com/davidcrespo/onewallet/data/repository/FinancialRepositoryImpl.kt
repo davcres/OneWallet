@@ -19,6 +19,7 @@ import com.davidcrespo.onewallet.data.remote.rate.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.rate.models.toDomain
 import com.davidcrespo.onewallet.data.remote.stock.FinnhubDataSource
 import com.davidcrespo.onewallet.data.remote.stock.models.toDomain
+import com.davidcrespo.onewallet.data.remote.telegram.TelegramDataSource
 import com.davidcrespo.onewallet.domain.di.DispatcherProvider
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
@@ -34,6 +35,7 @@ class FinancialRepositoryImpl(
     private val binanceDataSource: BinanceDataSource,
     private val investingDataSource: InvestingDataSource,
     private val queFondosDataSource: QueFondosDataSource,
+    private val telegramDataSource: TelegramDataSource,
     private val symbolCache: SymbolCache,
     private val currencyCache: CurrencyCache,
     private val marketCache: MarketCache,
@@ -63,6 +65,7 @@ class FinancialRepositoryImpl(
                 cached.toDomain()
             } else {
                 val dto = binanceDataSource.getCryptoPrice(symbol)
+                telegramDataSource.sendMessage("(Binance) get $symbol from remote")
                 symbolCache.setCachedInvestment(dto.toEntity())
                 dto.toDomain()
             }
@@ -75,6 +78,7 @@ class FinancialRepositoryImpl(
                 cached.toDomain()
             } else {
                 val dto = finnhubDataSource.getStockPrice(symbol, name)
+                telegramDataSource.sendMessage("(Finnhub) get $symbol from remote")
                 symbolCache.setCachedInvestment(dto.toEntity())
                 dto.toDomain()
             }
@@ -86,12 +90,17 @@ class FinancialRepositoryImpl(
 
         // Try primary source (investing.com), fallback to secondary (quefondos.com) if invalid
         val dto = investingDataSource.getFundPrice(isin)
+            .also { telegramDataSource.sendMessage("(Investing.com) get $isin from remote") }
             ?.takeUnless { it.name.isEmpty() || it.price == 0.0 }
             ?: queFondosDataSource.getFundPrice(isin)
+            .also { telegramDataSource.sendMessage("(QueFondos.com) get $isin from remote") }
 
         // If still null or invalid, fail
         val validDto = dto?.takeIf { it.name.isNotEmpty() && it.price != 0.0 }
             ?: throw Exception("No se pudo obtener el precio del fondo")
+                .also { telegramDataSource.sendMessage("(Investing.com) and (QueFondos.com) get $isin failed") }
+
+        telegramDataSource.sendMessage("$isin succeed")
 
         // Cache only if it looks valid
         symbolCache.setCachedInvestment(validDto.toEntity())
@@ -108,6 +117,7 @@ class FinancialRepositoryImpl(
                     cached.map { it.toDomain() }
                 } else {
                     val response = finnhubDataSource.getStocksSymbols(exchange)
+                    telegramDataSource.sendMessage("(Finnhub) get stock market from remote")
                     val entities = response.mapNotNull { it.toStockEntity() }
                     marketCache.setCachedStockMarket(entities)
                     response.mapNotNull { it.toDomain() }
@@ -124,6 +134,7 @@ class FinancialRepositoryImpl(
                     cached.map { it.toDomain() }
                 } else {
                     val response = binanceDataSource.getCryptoSymbols()
+                    telegramDataSource.sendMessage("(Binance) get crypto market from remote")
 
                     val filtered = response.filter { crypto ->
                         allowedCurrencies.any { currencies ->
@@ -145,6 +156,7 @@ class FinancialRepositoryImpl(
                     Rate(USD_EUR, cached)
                 } else {
                     val rate = twelveDataDataSource.getUsdEur()
+                    telegramDataSource.sendMessage("(TwelveData) get USD/EUR from remote")
                     currencyCache.setCachedRate(rate.symbol, rate.rate)
                     rate.toDomain()
                 }

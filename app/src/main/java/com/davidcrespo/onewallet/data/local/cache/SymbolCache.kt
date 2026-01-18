@@ -4,6 +4,6 @@ import com.davidcrespo.onewallet.data.local.database.portfolio.entities.Investme
 
 interface SymbolCache {
 
-    suspend fun getCachedInvestmentIfValid(symbol: String, validCacheHours: Long): InvestmentEntity?
-    suspend fun setCachedInvestment(investmentEntity: InvestmentEntity)
+    fun getCachedInvestmentIfValid(symbol: String, validCacheHours: Long): InvestmentEntity?
+    fun setCachedInvestment(investmentEntity: InvestmentEntity)
 }

@@ -5,60 +5,39 @@ import androidx.core.content.edit
 import com.davidcrespo.onewallet.data.local.database.portfolio.entities.InvestmentEntity
 import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toInvestmentEntity
 import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toPreference
-import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiClient
 import java.time.Clock
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
 class SymbolCacheImpl(
     private val sharedPreferences: SharedPreferences,
-    private val telegramApiClient: TelegramApiClient
-): SymbolCache {
+    private val clock: Clock
+) : SymbolCache {
 
-    override suspend fun getCachedInvestmentIfValid(symbol: String, validCacheHours: Long): InvestmentEntity? {
-        val nowMillis = Clock.systemUTC().millis()
+    override fun getCachedInvestmentIfValid(symbol: String, validCacheHours: Long): InvestmentEntity? {
+        if (!isValid(symbol, validCacheHours)) return null
 
-        val cacheDurationMillis = TimeUnit.HOURS.toMillis(validCacheHours)
-
-        val timestampKey = "$symbol$KEY_CACHED_AT_MILLIS"
-        val cachedAt = sharedPreferences.getLong(timestampKey, 0L)
-        val investmentPreference = sharedPreferences.getString(symbol, null)
-
-        val isCacheValid = investmentPreference != null &&
-                cachedAt > 0L &&
-                (nowMillis - cachedAt) in 0 until cacheDurationMillis
-
-        return if (isCacheValid) {
-            investmentPreference.toInvestmentEntity()
-        } else {
-            null
-        }
+        val raw = sharedPreferences.getString(valueKey(symbol), null) ?: return null
+        return runCatching { raw.toInvestmentEntity() }.getOrNull()
     }
 
-    override suspend fun setCachedInvestment(investmentEntity: InvestmentEntity) {
-        val nowMillis = Clock.systemUTC().millis()
+    override fun setCachedInvestment(investmentEntity: InvestmentEntity) {
+        val symbol = investmentEntity.symbol
+        val nowMillis = clock.millis()
 
-        telegramApiClient.sendMessage("SET ${investmentEntity.symbol} to cache at ${formatUtcMillis(nowMillis)}")
-
-        val timestampKey = "${investmentEntity.symbol}$KEY_CACHED_AT_MILLIS"
-
-        val investmentPreference = investmentEntity.toPreference()
         sharedPreferences.edit {
-            putLong(timestampKey, nowMillis)
-            putString(investmentEntity.symbol, investmentPreference)
+            putLong(cachedAtKey(symbol), nowMillis)
+            putString(valueKey(symbol), investmentEntity.toPreference())
         }
     }
 
-    companion object {
-        private const val KEY_CACHED_AT_MILLIS = "_cached_at_millis"
+    private fun isValid(symbol: String, validCacheHours: Long): Boolean {
+        val nowMillis = clock.millis()
+        val cachedAt = sharedPreferences.getLong(cachedAtKey(symbol), 0L)
+        val cacheDurationMillis = TimeUnit.HOURS.toMillis(validCacheHours)
+        val age = nowMillis - cachedAt
+        return cachedAt > 0L && age in 0 until cacheDurationMillis
     }
 
-    fun formatUtcMillis(millis: Long): String {
-        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")
-            .withZone(ZoneOffset.UTC)
-
-        return formatter.format(Instant.ofEpochMilli(millis))
-    }
+    private fun valueKey(symbol: String) = "inv_$symbol"
+    private fun cachedAtKey(symbol: String) = "inv_${symbol}_cached_at"
 }

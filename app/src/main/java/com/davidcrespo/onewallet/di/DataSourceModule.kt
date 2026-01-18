@@ -11,6 +11,7 @@ import com.davidcrespo.onewallet.data.remote.rate.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.stock.FinnhubApiClient
 import com.davidcrespo.onewallet.data.remote.stock.FinnhubDataSource
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiClient
+import com.davidcrespo.onewallet.data.remote.telegram.TelegramDataSource
 import org.koin.dsl.module
 
 val dataSourceModule = module {
@@ -27,4 +28,5 @@ val dataSourceModule = module {
     single { BinanceDataSource(get()) }
     single { InvestingDataSource(get()) }
     single { QueFondosDataSource(get()) }
+    single { TelegramDataSource(get()) }
 }

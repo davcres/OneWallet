@@ -7,8 +7,11 @@ import com.davidcrespo.onewallet.data.local.cache.MarketCacheImpl
 import com.davidcrespo.onewallet.data.local.cache.SymbolCache
 import com.davidcrespo.onewallet.data.local.cache.SymbolCacheImpl
 import org.koin.dsl.module
+import java.time.Clock
 
 val cacheModule = module {
+    single { Clock.systemUTC() }
+
     single<SymbolCache> { SymbolCacheImpl(get(), get()) }
     single<CurrencyCache> { CurrencyCacheImpl(get(), get()) }
     single<MarketCache> { MarketCacheImpl(get(), get(), get(), get()) }
