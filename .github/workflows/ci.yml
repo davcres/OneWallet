@@ -41,6 +41,8 @@ jobs:
         run: |
           echo "FINNHUB_API_KEY=${{ secrets.FINNHUB_API_KEY }}" >> $GITHUB_WORKSPACE/secrets.properties
           echo "TWELVE_DATA_API_KEY=${{ secrets.TWELVE_DATA_API_KEY }}" >> $GITHUB_WORKSPACE/secrets.properties
+          echo "TELEGRAM_API_KEY=${{ secrets.TELEGRAM_API_KEY }}" >> $GITHUB_WORKSPACE/secrets.properties
+          echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> $GITHUB_WORKSPACE/secrets.properties
 
       - name: Build app
         run: ./gradlew assemble

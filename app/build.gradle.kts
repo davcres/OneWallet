@@ -7,17 +7,29 @@ plugins {
 }
 
 // Intentamos leer primero de secrets.properties (root extra), luego de env var (para CI)
+val finnhubApiKey: String = (rootProject.extra["FINNHUB_API_KEY"] as? String)
+    ?: System.getenv("FINNHUB_API_KEY")
+    ?: throw GradleException(
+        "FINNHUB_API_KEY not set. " +
+                "Add it to secrets.properties (root) or as env var FINNHUB_API_KEY"
+    )
 val twelveDataApiKey: String = (rootProject.extra["TWELVE_DATA_API_KEY"] as? String)
     ?: System.getenv("TWELVE_DATA_API_KEY")
     ?: throw GradleException(
         "TWELVE_DATA_API_KEY not set. " +
                 "Add it to secrets.properties (root) or as env var TWELVE_DATA_API_KEY"
     )
-val finnhubApiKey: String = (rootProject.extra["FINNHUB_API_KEY"] as? String)
-    ?: System.getenv("FINNHUB_API_KEY")
+val telegramApiKey: String = (rootProject.extra["TELEGRAM_API_KEY"] as? String)
+    ?: System.getenv("TELEGRAM_API_KEY")
     ?: throw GradleException(
-        "FINNHUB_API_KEY not set. " +
-                "Add it to secrets.properties (root) or as env var FINNHUB_API_KEY"
+        "TELEGRAM_API_KEY not set. " +
+                "Add it to secrets.properties (root) or as env var TELEGRAM_API_KEY"
+    )
+val telegramChatId: String = (rootProject.extra["TELEGRAM_CHAT_ID"] as? String)
+    ?: System.getenv("TELEGRAM_CHAT_ID")
+    ?: throw GradleException(
+        "TELEGRAM_CHAT_ID not set. " +
+                "Add it to secrets.properties (root) or as env var TELEGRAM_CHAT_ID"
     )
 
 android {
@@ -35,10 +47,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "TWELVE_DATA_API_KEY", "\"$twelveDataApiKey\"")
         buildConfigField("String", "FINNHUB_API_KEY", "\"$finnhubApiKey\"")
-        buildConfigField("String", "TWELVE_DATA_BASE_URL", "\"api.twelvedata.com\"")
-        buildConfigField("String", "FINNHUB_BASE_URL", "\"finnhub.io/api/v1\"")
+        buildConfigField("String", "TWELVE_DATA_API_KEY", "\"$twelveDataApiKey\"")
+        buildConfigField("String", "TELEGRAM_API_KEY", "\"$telegramApiKey\"")
+        buildConfigField("String", "TELEGRAM_CHAT_ID", "\"$telegramChatId\"")
     }
 
     buildTypes {

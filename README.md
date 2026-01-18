@@ -63,3 +63,7 @@ Ejemplo (GitHub Actions):
  - Value: la misma clave que usarías en secrets.properties.
 
 En los workflows, Gradle leerá esa variable de entorno automáticamente.
+
+### 4. Configuración de los workflows
+
+Hay que añadir las nuevas variables creadas a los workflows yml

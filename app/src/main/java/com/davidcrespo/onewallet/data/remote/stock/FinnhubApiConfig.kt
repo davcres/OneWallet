@@ -1,23 +1,16 @@
 package com.davidcrespo.onewallet.data.remote.stock
 
 object FinnhubApiConfig {
-    const val BASE_URL = "https://finnhub.io/api/v1"
+    const val BASE_URL = "https://finnhub.io"
 
     object GetSymbols {
-        const val PATH = "stock/symbol"
-        const val EXCHANGE = "exchange"
-        const val TOKEN = "token"
-    }
-
-    object GetCryptoSymbols {
-        const val PATH = "crypto/symbol"
+        const val PATH = "api/v1/stock/symbol"
         const val EXCHANGE = "exchange"
         const val TOKEN = "token"
     }
 
     object GetQuote {
-        const val PATH = "quote"
+        const val PATH = "api/v1/quote"
         const val SYMBOL = "symbol"
-        const val TOKEN = "token"
     }
 }
