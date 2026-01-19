@@ -10,4 +10,5 @@ val appModules = listOf(
     useCaseModule,
     presentationModule,
     workerModule,
+    policyModule,
 )
