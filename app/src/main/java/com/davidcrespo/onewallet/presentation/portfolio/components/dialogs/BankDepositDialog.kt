@@ -53,8 +53,13 @@ fun BankDepositDialog(
                 Text(text = stringResource(R.string.total_money_label))
                 OutlinedTextField(
                     value = amountText,
-                    onValueChange = { amountText = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    onValueChange = { input ->
+                        val normalized = input.replace('.', ',')
+                        if (normalized.all { it.isDigit() || it == ',' } && normalized.count { it == ',' } <= 1) {
+                            amountText = normalized
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     singleLine = true,
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.fillMaxWidth()

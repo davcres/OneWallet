@@ -45,8 +45,8 @@ import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.Button
 import com.davidcrespo.onewallet.core.composables.TextField
-import com.davidcrespo.onewallet.core.composables.modifiers.animations.shakeClickEffect
 import com.davidcrespo.onewallet.core.composables.auxiliar.ButtonStyle
+import com.davidcrespo.onewallet.core.composables.modifiers.animations.shakeClickEffect
 import com.davidcrespo.onewallet.core.extensions.applyIf
 import com.davidcrespo.onewallet.core.extensions.isValidIsin
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
@@ -171,7 +171,11 @@ private fun Form(
 
         TextField(
             value = isin,
-            onValueChange = { isin = it },
+            onValueChange = { input ->
+                isin = input
+                    .filter { it.isLetterOrDigit() }
+                    .take(12)
+            },
             icon = Icons.Outlined.QrCode2,
             placeholder = "US0000000000",
             cornerRadius = 16.dp
@@ -213,13 +217,16 @@ private fun Form(
 
         TextField(
             value = quantity,
-            onValueChange = {
-                if (it.all { char -> char.isDigit() }) { quantity = it }
+            onValueChange = { input ->
+                val normalized = input.replace('.', ',')
+                if (normalized.all { it.isDigit() || it == ',' } && normalized.count { it == ',' } <= 1) {
+                    quantity = normalized
+                }
             },
             icon = Icons.Outlined.PieChartOutline,
             placeholder = "0.0",
             cornerRadius = 16.dp,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
         Spacer(Modifier.height(32.dp))

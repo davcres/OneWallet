@@ -23,7 +23,10 @@ fun MarketSearchBar(
 ) {
     TextField(
         value = query,
-        onValueChange = onQueryChange,
+        onValueChange = { input ->
+            val query = input.filter { it.isLetterOrDigit() }
+            onQueryChange(query)
+        },
         icon = Icons.Outlined.Search,
         placeholder = if (isCrypto) stringResource(R.string.search_crypto_placeholder) else stringResource(R.string.search_stock_placeholder),
         cornerRadius = 999.dp,

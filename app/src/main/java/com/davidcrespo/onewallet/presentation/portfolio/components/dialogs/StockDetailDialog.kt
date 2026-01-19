@@ -73,12 +73,15 @@ fun QuantityTab(
         OutlinedTextField(
             value = text,
             onValueChange = { newValue ->
-                text = newValue
-                if (item.quantity == 0.0 && newValue.isEmpty()) {
-                    hasClearedZero = true
+                val normalized = newValue.replace('.', ',')
+                if (normalized.all { it.isDigit() || it == ',' } && normalized.count { it == ',' } <= 1) {
+                    text = newValue
+                    if (item.quantity == 0.0 && newValue.isEmpty()) {
+                        hasClearedZero = true
+                    }
                 }
             },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
