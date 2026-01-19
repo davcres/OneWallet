@@ -1,7 +1,6 @@
 package com.davidcrespo.onewallet.core.extensions
 
 import java.math.BigDecimal
-import java.math.RoundingMode
 
 fun String.normalizeDouble(): Double {
     if (this.isEmpty() || this.isBlank()) return 0.0
@@ -9,8 +8,7 @@ fun String.normalizeDouble(): Double {
         .replace(".", "")
         .replace(",", ".")
     val bigDecimal = runCatching { BigDecimal(numberText) }.getOrDefault(BigDecimal(0.0))
-    val rounded = bigDecimal.setScale(2, RoundingMode.HALF_UP)
-    return rounded.toDouble()
+    return bigDecimal.toDouble()
 }
 
 fun String.isValidIsin(): Boolean {

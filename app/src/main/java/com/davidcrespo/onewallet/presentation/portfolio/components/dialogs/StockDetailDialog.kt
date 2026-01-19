@@ -75,8 +75,8 @@ fun QuantityTab(
             onValueChange = { newValue ->
                 val normalized = newValue.replace('.', ',')
                 if (normalized.all { it.isDigit() || it == ',' } && normalized.count { it == ',' } <= 1) {
-                    text = newValue
-                    if (item.quantity == 0.0 && newValue.isEmpty()) {
+                    text = normalized
+                    if (item.quantity == 0.0 && normalized.isEmpty()) {
                         hasClearedZero = true
                     }
                 }

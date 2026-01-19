@@ -14,14 +14,16 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import com.davidcrespo.onewallet.domain.model.investment.Currency
@@ -48,16 +50,22 @@ fun PortfolioList(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         itemContent = { modifier, portfolioItem, index ->
-            val dismissState = rememberSwipeToDismissBoxState(
-                confirmValueChange = {
-                    if (it == SwipeToDismissBoxValue.EndToStart) {
-                        onRemove(portfolioItem)
-                        true
-                    } else {
-                        false
-                    }
-                }
-            )
+            val density = LocalDensity.current
+            val dismissState = remember(portfolioItem.symbol) {
+                SwipeToDismissBoxState(
+                    initialValue = SwipeToDismissBoxValue.Settled,
+                    density = density,
+                    confirmValueChange = {
+                        if (it == SwipeToDismissBoxValue.EndToStart) {
+                            onRemove(portfolioItem)
+                            true
+                        } else {
+                            false
+                        }
+                    },
+                    positionalThreshold = { with(density) { 56.dp.toPx() } }
+                )
+            }
 
             SwipeToDismissBox(
                 state = dismissState,
