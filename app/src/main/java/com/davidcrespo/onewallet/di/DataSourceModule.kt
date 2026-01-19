@@ -2,6 +2,8 @@ package com.davidcrespo.onewallet.di
 
 import com.davidcrespo.onewallet.data.remote.crypto.BinanceApiClient
 import com.davidcrespo.onewallet.data.remote.crypto.BinanceDataSource
+import com.davidcrespo.onewallet.data.remote.etf.extraEtf.ExtraEtfApiClient
+import com.davidcrespo.onewallet.data.remote.etf.extraEtf.ExtraEtfDataSource
 import com.davidcrespo.onewallet.data.remote.fund.investing.InvestingApiClient
 import com.davidcrespo.onewallet.data.remote.fund.investing.InvestingDataSource
 import com.davidcrespo.onewallet.data.remote.fund.quefondos.QueFondosApiClient
@@ -21,6 +23,7 @@ val dataSourceModule = module {
     single { BinanceApiClient(get(BINANCE)) }
     single { InvestingApiClient(get(INVESTING)) }
     single { QueFondosApiClient(get(QUE_FONDOS)) }
+    single { ExtraEtfApiClient(get(EXTRA_ETF)) }
     single { TelegramApiClient(get(TELEGRAM), get(TELEGRAM_API_KEY), get(TELEGRAM_CHAT_ID)) }
 
     single { FinnhubDataSource(get()) }
@@ -28,5 +31,6 @@ val dataSourceModule = module {
     single { BinanceDataSource(get()) }
     single { InvestingDataSource(get()) }
     single { QueFondosDataSource(get()) }
+    single { ExtraEtfDataSource(get()) }
     single { TelegramDataSource(get()) }
 }

@@ -201,6 +201,7 @@ private fun PortfolioScreen(
                         AssetType.Stock -> onAction(PortfolioIntent.NavigateToMarket(false))
                         AssetType.Crypto -> onAction(PortfolioIntent.NavigateToMarket(true))
                         AssetType.Fund -> onAction(PortfolioIntent.ShowFundDialog)
+                        AssetType.ETF -> onAction(PortfolioIntent.ShowEtfDialog)
                         AssetType.Bank -> onAction(PortfolioIntent.ShowBankDialog)
                     }
                     fabButtonExpanded = false
@@ -230,8 +231,10 @@ private fun PortfolioScreen(
         }
 
         val defaultFundError = stringResource(R.string.fund_fetch_error)
+        val defaultEtfError = stringResource(R.string.etf_fetch_error)
 
-        // Add Fund/ETF Dialog
+
+        // Add Fund Dialog
         AddFundBottomSheet(
             visible = uiState.isFundDialogVisible,
             onDismiss = { onAction(PortfolioIntent.DismissFundDialog) },
@@ -240,6 +243,17 @@ private fun PortfolioScreen(
             },
             onIsinError = { isinError ->
                 onAction(PortfolioIntent.SetError(isinError ?: defaultFundError))
+            }
+        )
+
+        AddFundBottomSheet(
+            visible = uiState.isEtfDialogVisible,
+            onDismiss = { onAction(PortfolioIntent.DismissEtfDialog) },
+            onAddFund = { isin, quantity ->
+                onAction(PortfolioIntent.AddEtfItem(isin, quantity))
+            },
+            onIsinError = { isinError ->
+                onAction(PortfolioIntent.SetError(isinError ?: defaultEtfError))
             }
         )
 

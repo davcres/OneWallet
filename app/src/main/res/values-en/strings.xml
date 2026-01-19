@@ -24,17 +24,19 @@
     <string name="add_action">Add</string>
     <string name="add_fund_cd">Add a new fund to your portfolio</string>
     <string name="error_isin_empty">Enter an ISIN to add it to your portfolio.</string>
-    <string name="error_isin_invalid">Enter a valid ISIN to add it to your portfolio.</string>
+    <string name="error_isin_invalid">Enter a valid ISIN to add it to your wallet.\n12 characters and uppercase letters: ES12345ABCD0</string>
     <string name="add_investment_title">Add Investment</string>
     <string name="add_investment_subtitle">Select the asset type to track</string>
     <string name="asset_stock">Stocks</string>
     <string name="asset_stock_subtitle">Stocks &amp; Equity</string>
     <string name="asset_crypto">Crypto</string>
-    <string name="asset_crypto_subtitle">Coins &amp; Tokens</string>
-    <string name="asset_fund">Fund / ETF</string>
-    <string name="asset_fund_subtitle">Index &amp; Mutuals</string>
+    <string name="asset_crypto_subtitle">Bitcoin, Ethereum, and other crypto assets</string>
+    <string name="asset_fund">Funds</string>
+    <string name="asset_fund_subtitle">Managed and index funds</string>
+    <string name="asset_etf">ETF</string>
+    <string name="asset_etf_subtitle">Exchange-traded funds and indices</string>
     <string name="asset_bank">Bank</string>
-    <string name="asset_bank_subtitle">Deposits &amp; Cash</string>
+    <string name="asset_bank_subtitle">Cash, savings, &amp; deposits</string>
     <string name="add_bank_title">Add Bank / Deposit</string>
     <string name="bank_name_label">Name (e.g., Bank of America):</string>
     <string name="total_money_label">Total money (€):</string>
@@ -42,6 +44,7 @@
     <string name="total_shares_label">Total number of shares:</string>
     <string name="update_quantity_action">Update Quantity</string>
     <string name="fund_fetch_error">Unfortunately we couldn\'t fetch the fund.\nTry another ISIN.</string>
+    <string name="etf_fetch_error">Unfortunately we couldn\'t fetch the ETF.\nTry another ISIN.</string>
 
     <!-- Market -->
     <string name="add_crypto_title">Add Crypto</string>

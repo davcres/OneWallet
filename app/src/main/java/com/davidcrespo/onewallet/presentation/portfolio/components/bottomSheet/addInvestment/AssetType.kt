@@ -17,5 +17,6 @@ enum class AssetType(
     Stock(R.string.asset_stock, R.string.asset_stock_subtitle, Icons.Outlined.StackedLineChart),
     Crypto(R.string.asset_crypto, R.string.asset_crypto_subtitle, Icons.Outlined.CurrencyBitcoin),
     Fund(R.string.asset_fund, R.string.asset_fund_subtitle, Icons.Outlined.PieChartOutline),
+    ETF(R.string.asset_etf, R.string.asset_etf_subtitle, Icons.Outlined.PieChartOutline),
     Bank(R.string.asset_bank, R.string.asset_bank_subtitle, Icons.Outlined.AccountBalance),
 }

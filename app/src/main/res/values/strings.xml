@@ -24,17 +24,19 @@
     <string name="add_action">Añadir</string>
     <string name="add_fund_cd">Añade un nuevo fondo a tu cartera</string>
     <string name="error_isin_empty">Introduce un ISIN para añadirlo a tu cartera.</string>
-    <string name="error_isin_invalid">Introduce un ISIN válido para añadirlo a tu cartera.</string>
+    <string name="error_isin_invalid">Introduce un ISIN válido para añadirlo a tu cartera.\n12 caracteres y letras mayúsculas: ES12345ABCD0</string>
     <string name="add_investment_title">Añadir Inversión</string>
     <string name="add_investment_subtitle">Selecciona el tipo de activo a seguir</string>
     <string name="asset_stock">Acciones</string>
-    <string name="asset_stock_subtitle">Acciones y Renta Variable</string>
+    <string name="asset_stock_subtitle">Inversión en empresas</string>
     <string name="asset_crypto">Criptomonedas</string>
-    <string name="asset_crypto_subtitle">Monedas y Tokens</string>
-    <string name="asset_fund">Fondo / ETF</string>
-    <string name="asset_fund_subtitle">Índices y Fondos Mutuos</string>
-    <string name="asset_bank">Banco</string>
-    <string name="asset_bank_subtitle">Depósitos y Efectivo</string>
+    <string name="asset_crypto_subtitle">Bitcoin, Ethereum y otros criptoactivos</string>
+    <string name="asset_fund">Fondos</string>
+    <string name="asset_fund_subtitle">Fondos gestionados e indexados</string>
+    <string name="asset_etf">ETF</string>
+    <string name="asset_etf_subtitle">Fondos cotizados e índices</string>
+    <string name="asset_bank">Cuenta bancaria</string>
+    <string name="asset_bank_subtitle">Efectivo, ahorros y depósitos</string>
     <string name="add_bank_title">Añadir Banco / Depósito</string>
     <string name="bank_name_label">Nombre (ej. Banco Santander):</string>
     <string name="total_money_label">Total dinero (€):</string>
@@ -42,6 +44,7 @@
     <string name="total_shares_label">Cantidad total de acciones:</string>
     <string name="update_quantity_action">Actualizar Cantidad</string>
     <string name="fund_fetch_error">Desafortunadamente no hemos podido obtener el fondo.\nPrueba con otro ISIN.</string>
+    <string name="etf_fetch_error">Desafortunadamente no hemos podido obtener el ETF.\nPrueba con otro ISIN.</string>
 
     <!-- Market -->
     <string name="add_crypto_title">Añadir Criptomoneda</string>

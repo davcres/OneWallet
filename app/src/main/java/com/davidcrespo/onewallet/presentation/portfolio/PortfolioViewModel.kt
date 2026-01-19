@@ -58,6 +58,10 @@ class PortfolioViewModel(
             is PortfolioIntent.ShowFundDialog -> _uiState.update { it.copy(isFundDialogVisible = true) }
             is PortfolioIntent.DismissFundDialog -> _uiState.update { it.copy(isFundDialogVisible = false) }
 
+            is PortfolioIntent.AddEtfItem -> addEtfItem(intent.name, intent.quantity)
+            is PortfolioIntent.ShowEtfDialog -> _uiState.update { it.copy(isEtfDialogVisible = true) }
+            is PortfolioIntent.DismissEtfDialog -> _uiState.update { it.copy(isEtfDialogVisible = false) }
+
             is PortfolioIntent.AddBankItem -> addBankItem(intent.name, intent.quantity)
             is PortfolioIntent.ShowBankDialog -> _uiState.update { it.copy(isBankDialogVisible = true) }
             is PortfolioIntent.DismissBankDialog -> _uiState.update { it.copy(isBankDialogVisible = false) }
@@ -232,6 +236,30 @@ class PortfolioViewModel(
                 }
         }
     }
+
+    private fun addEtfItem(isin: String, quantity: Double) {
+        viewModelScope.launch {
+            getInvestmentPriceUseCase(isin, InvestmentType.ETF)
+                .onSuccess { investment ->
+                    val now = LocalDate.now()
+                    val year = now.year
+                    val month = now.monthValue
+
+                    val etf = investment.copy(
+                        quantity = quantity,
+                        year = year,
+                        month = month
+                    )
+
+                    addInvestmentToPortfolioUseCase(etf)
+                    _uiState.update { it.copy(isEtfDialogVisible = false) }
+                }
+                .onFailure {
+                    _uiState.update { it.copy(error = "Desafortunadamente no hemos podido obtener el ETF.\nPrueba con otro ISIN.") }
+                }
+        }
+    }
+
     private fun addBankItem(name: String, quantity: Double) {
         viewModelScope.launch {
             val now = LocalDate.now()

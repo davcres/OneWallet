@@ -12,7 +12,7 @@ class InvestingApiClient(private val client: HttpClient) {
 
     suspend fun getFundPrice(isin: String): InvestmentDto? {
         runCatching {
-            val html = client.get("${InvestingApiConfig.BASE_URL}/${isin.lowercase()}") {
+            val html = client.get("${InvestingApiConfig.GetFunds.PATH}/${isin.lowercase()}") {
                 /*header("User-Agent", "Mozilla/5.0 (Android) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36")
                 header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,* / *;q=0.8")
                 header("Accept-Language", "es-ES,es;q=0.9,en;q=0.8")
