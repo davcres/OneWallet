@@ -11,12 +11,12 @@ class BinanceApiClient(private val client: HttpClient) {
 
     suspend fun getCryptoSymbols(): List<MarketCryptoResponse> {
         return client
-            .get("${BinanceApiConfig.BASE_URL}/${BinanceApiConfig.GetCryptoSymbols.PATH}")
+            .get(BinanceApiConfig.GetCryptoSymbols.PATH)
             .body()
     }
 
     suspend fun getCryptoPrice(symbol: String): CryptoPriceResponse {
-        return client.get("${BinanceApiConfig.BASE_URL}/${BinanceApiConfig.GetCryptoPrice.PATH}") {
+        return client.get(BinanceApiConfig.GetCryptoPrice.PATH) {
             parameter(BinanceApiConfig.GetCryptoPrice.SYMBOL, symbol)
         }.body()
     }

@@ -12,9 +12,9 @@ import io.ktor.client.statement.bodyAsText
 
 class QueFondosApiClient(private val client: HttpClient) {
 
-    suspend fun getFundPrice(isin: String): InvestmentDto? {
+    suspend fun getFundPrice(isin: String, type: InvestmentType): InvestmentDto? {
         runCatching {
-            val html = client.get(QueFondosApiConfig.BASE_URL) {
+            val html = client.get {
                 /*header("User-Agent", "Mozilla/5.0 (Android) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36")
                 header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,* / *;q=0.8")
                 header("Accept-Language", "es-ES,es;q=0.9,en;q=0.8")
@@ -24,9 +24,9 @@ class QueFondosApiClient(private val client: HttpClient) {
                 header("Sec-Fetch-Dest", "document")
                 header("Sec-Fetch-Mode", "navigate")
                 header("Sec-Fetch-Site", "same-origin")*/
-                parameter(QueFondosApiConfig.ISIN, isin)
+                parameter(QueFondosApiConfig.GetAsset.ISIN, isin)
             }.bodyAsText()
-            return parseQueFondosHtmlFund(isin, html)
+            return parseQueFondosHtmlFund(isin, type, html)
         }.getOrElse {
             return null
         }
@@ -34,6 +34,7 @@ class QueFondosApiClient(private val client: HttpClient) {
 
     private fun parseQueFondosHtmlFund(
         isin: String,
+        type: InvestmentType,
         html: String
     ): InvestmentDto {
 
@@ -44,13 +45,12 @@ class QueFondosApiClient(private val client: HttpClient) {
             ?: throw IllegalStateException("No se encontró el nombre del fondo")
 
         // 2) Valor liquidativo
-        val valueText = extractFloatRight(
+        val priceAndCurrencyText = extractFloatRight(
             html,
             "Valor\\s+liquidativo:"
-        )?.substringBefore(" ")
-            ?: throw IllegalStateException("No se encontró el valor liquidativo")
+        )?.split(" ") ?: throw IllegalStateException("No se encontró el valor liquidativo")
 
-        val value = valueText.normalizeDouble()
+        val value = priceAndCurrencyText.firstOrNull()?.normalizeDouble() ?: 0.0
 
         // 3) Variación 1 día (%)
         val diffPercentText = extractPercent(html, "1 d(?:&iacute;|í)a:")
@@ -62,15 +62,12 @@ class QueFondosApiClient(private val client: HttpClient) {
             ?.round(2)
 
         // 4) Divisa
-        val currencyText = extractFloatRight(
-            html,
-            "Divisa:"
-        )
+        val currencyText = priceAndCurrencyText.lastOrNull()
 
         val currency = if (!currencyText.isNullOrEmpty())
             Currency.valueOf(currencyText)
         else
-            Currency.USD
+            Currency.EUR
 
         return InvestmentDto(
             symbol = isin,
@@ -78,7 +75,7 @@ class QueFondosApiClient(private val client: HttpClient) {
             price = value,
             previousPrice = if (diff != null) value - diff else 0.0,
             currency = currency,
-            type = InvestmentType.FUND,
+            type = type,
             quantity = 0.0,
             year = 0,
             month = 0

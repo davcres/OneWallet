@@ -4,13 +4,15 @@ enum class InvestmentType {
     STOCK,
     CRYPTO,
     FUND,
+    ETF,
     CASH
 }
 
 private val MARKET_TYPES = setOf(
     InvestmentType.STOCK,
     InvestmentType.CRYPTO,
-    InvestmentType.FUND
+    InvestmentType.FUND,
+    InvestmentType.ETF,
 )
 
 private val MANUAL_TYPES = setOf(

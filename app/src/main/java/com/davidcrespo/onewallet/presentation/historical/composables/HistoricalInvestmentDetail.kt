@@ -119,7 +119,8 @@ fun HistoricalInvestmentDetail(
                         val icon = when (investment.type) {
                             InvestmentType.STOCK -> Icons.Outlined.StackedLineChart
                             InvestmentType.CRYPTO -> Icons.Outlined.CurrencyBitcoin
-                            InvestmentType.FUND -> Icons.Outlined.PieChartOutline
+                            InvestmentType.FUND,
+                            InvestmentType.ETF -> Icons.Outlined.PieChartOutline
                             InvestmentType.CASH -> Icons.Outlined.AccountBalance
                         }
                         Icon(
