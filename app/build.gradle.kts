@@ -6,6 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
 }
 
+// Generate in /app/build/compose_metrics/*-composables.txt → list of all @Composable functions, marking if they are restartable/skippable/readonly and their params stability.
 composeCompiler {
     reportsDestination.set(layout.buildDirectory.dir("compose_metrics"))
     metricsDestination.set(layout.buildDirectory.dir("compose_metrics"))
