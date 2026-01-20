@@ -13,16 +13,18 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimate
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PricesList(
-    items: List<InvestmentView>,
+    items: ImmutableList<InvestmentView>,
     currency: Currency,
     modifier: Modifier = Modifier
 ) {
     OWAnimatedList(
-        items = items.filter { it.type.isMarket() },
+        items = items.filter { it.type.isMarket() }.toPersistentList(),
         key = { it.symbol },
         contentPadding = PaddingValues(16.dp),
         modifier = modifier.fillMaxSize(),

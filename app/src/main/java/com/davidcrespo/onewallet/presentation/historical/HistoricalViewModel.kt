@@ -2,12 +2,16 @@ package com.davidcrespo.onewallet.presentation.historical
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.davidcrespo.onewallet.core.extensions.orEmpty
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.usecase.historical.GetMonthlyHistoryUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetUsdEurUseCase
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -49,13 +53,15 @@ class HistoricalViewModel(
         val usdEurRate = state.usdEurRate
         getMonthlyHistoryUseCase()
             .onSuccess { historyList ->
-                val grouped: List<List<InvestmentView>> =
+                val grouped: ImmutableList<ImmutableList<InvestmentView>> =
                     historyList
                         .map { it.toUI() }
                         .map { currencyConverter.convert(it, selectedCurrency, usdEurRate) }
                         .groupBy { it.year to it.month }
                         .values
-                        .toList()
+                        .map { it.toPersistentList() }
+                        .toPersistentList()
+
 
                 _uiState.update {
                     it.copy(
@@ -66,7 +72,7 @@ class HistoricalViewModel(
             .onFailure {
                 _uiState.update {
                     it.copy(
-                        history = emptyList(),
+                        history = persistentListOf(),
                     )
                 }
             }
@@ -82,7 +88,7 @@ class HistoricalViewModel(
 
             _uiState.update {
                 it.copy(
-                    selectedMonthDetail = details.sortedByDescending { it.quantity * it.displayPrice },
+                    selectedMonthDetail = details.sortedByDescending { it.quantity * it.displayPrice }.toPersistentList(),
                     selectedPreviousMonth = _uiState.value.history.getOrNull(index + 1)
                 )
             }

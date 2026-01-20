@@ -26,13 +26,14 @@ import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.positions.components.PortfolioList
 import com.davidcrespo.onewallet.presentation.portfolio.positions.components.TotalBalance
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun PositionsTab(
     currency: Currency,
     totalBalance: Double,
     previousBalance: Double,
-    portfolioItems: List<InvestmentView>,
+    portfolioItems: ImmutableList<InvestmentView>,
     onRemoveItem: (InvestmentView) -> Unit,
     onEditQuantity: (InvestmentView) -> Unit
 ) {

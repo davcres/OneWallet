@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davidcrespo.onewallet.R
+import com.davidcrespo.onewallet.core.extensions.orEmpty
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalDetailBottomSheet
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalInvestmentDetail
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalList

@@ -42,13 +42,15 @@ import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.toInvestment
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 class StocksWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val state = currentState<Preferences>()
-            val stocks = stringToPortfolio(state[StocksPrefsKeys.stocks].orEmpty())
+            val stocks = stringToPortfolio(state[StocksPrefsKeys.stocks].orEmpty()).toImmutableList()
 
             StocksWidgetContent(
                 stocks = stocks
@@ -58,7 +60,7 @@ class StocksWidget : GlanceAppWidget() {
 
     @Composable
     fun StocksWidgetContent(
-        stocks: List<Investment>
+        stocks: ImmutableList<Investment>
     ) {
 
         Column(

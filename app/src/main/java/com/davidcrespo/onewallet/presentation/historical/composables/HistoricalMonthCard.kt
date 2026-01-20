@@ -43,6 +43,7 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.delay
 import java.time.Month
 import java.time.format.TextStyle
@@ -50,8 +51,8 @@ import java.util.Locale
 
 @Composable
 fun HistoricalMonthCard(
-    item: List<InvestmentView>,
-    previousItem: List<InvestmentView>? = null,
+    item: ImmutableList<InvestmentView>,
+    previousItem: ImmutableList<InvestmentView>? = null,
     currency: Currency,
     onClick: () -> Unit,
     modifier: Modifier = Modifier

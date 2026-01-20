@@ -6,6 +6,12 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
 }
 
+// Generate in /app/build/compose_metrics/*-composables.txt → list of all @Composable functions, marking if they are restartable/skippable/readonly and their params stability.
+composeCompiler {
+    reportsDestination.set(layout.buildDirectory.dir("compose_metrics"))
+    metricsDestination.set(layout.buildDirectory.dir("compose_metrics"))
+}
+
 // Intentamos leer primero de secrets.properties (root extra), luego de env var (para CI)
 val finnhubApiKey: String = (rootProject.extra["FINNHUB_API_KEY"] as? String)
     ?: System.getenv("FINNHUB_API_KEY")
@@ -118,6 +124,9 @@ dependencies {
     implementation(libs.bundles.navigation)
 
     // Work Manager
-    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.work.runtime.ktx)
     implementation(libs.koin.androidx.workmanager)
+
+    // Immutable List
+    implementation(libs.colletions.immutable)
 }

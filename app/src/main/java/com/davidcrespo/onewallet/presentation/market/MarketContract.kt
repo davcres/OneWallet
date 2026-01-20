@@ -2,12 +2,14 @@ package com.davidcrespo.onewallet.presentation.market
 
 import androidx.compose.runtime.Immutable
 import com.davidcrespo.onewallet.presentation.models.MarketAssetView
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Immutable
 data class MarketUiState(
-    val marketAssets: List<Pair<Char, List<MarketAssetView>>> = emptyList(),
-    val filteredAssets: List<Pair<Char, List<MarketAssetView>>> = emptyList(),
-    val assetsToSaveToPortfolio: List<MarketAssetView> = emptyList(),
+    val marketAssets: ImmutableList<Pair<Char, ImmutableList<MarketAssetView>>> = persistentListOf(),
+    val filteredAssets: ImmutableList<Pair<Char, ImmutableList<MarketAssetView>>> = persistentListOf(),
+    val assetsToSaveToPortfolio: ImmutableList<MarketAssetView> = persistentListOf(),
     val searchQuery: String = "",
     val isCrypto: Boolean = false,
     val navigateBack: Boolean = false,

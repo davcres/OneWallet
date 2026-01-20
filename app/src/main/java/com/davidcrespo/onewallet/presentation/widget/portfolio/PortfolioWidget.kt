@@ -40,6 +40,8 @@ import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.toInvestment
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlin.math.roundToInt
 
 class PortfolioWidget : GlanceAppWidget() {
@@ -52,7 +54,7 @@ class PortfolioWidget : GlanceAppWidget() {
 
             PortfolioWidgetContent(
                 balance = balance,
-                items = items.sortedByDescending { it.quantity * it.price }
+                items = items.sortedByDescending { it.quantity * it.price }.toImmutableList()
             )
         }
     }
@@ -60,7 +62,7 @@ class PortfolioWidget : GlanceAppWidget() {
     @Composable
     fun PortfolioWidgetContent(
         balance: Double,
-        items: List<Investment>
+        items: ImmutableList<Investment>
     ) {
 
         Column(
@@ -135,7 +137,7 @@ class PortfolioWidget : GlanceAppWidget() {
     }
 
     @Composable
-    fun ItemsList(items: List<Investment>) {
+    fun ItemsList(items: ImmutableList<Investment>) {
         LazyColumn(
             modifier = GlanceModifier.fillMaxSize(),
             horizontalAlignment = Alignment.Start
