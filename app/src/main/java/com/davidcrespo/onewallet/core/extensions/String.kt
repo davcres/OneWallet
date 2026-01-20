@@ -3,13 +3,37 @@ package com.davidcrespo.onewallet.core.extensions
 import java.math.BigDecimal
 
 fun String.normalizeDouble(): Double {
-    if (this.isEmpty() || this.isBlank()) return 0.0
-    val numberText = this
-        .replace(".", "")
-        .replace(",", ".")
-    val bigDecimal = runCatching { BigDecimal(numberText) }.getOrDefault(BigDecimal(0.0))
-    return bigDecimal.toDouble()
+    val raw = trim()
+        .replace("\u00A0", "")
+        .replace(" ", "")
+
+    if (raw.isEmpty()) return 0.0
+
+    val lastDot = raw.lastIndexOf('.')
+    val lastComma = raw.lastIndexOf(',')
+
+    val normalized = when {
+        // Tiene ambos: el último suele ser el separador decimal
+        lastDot >= 0 && lastComma >= 0 -> {
+            if (lastComma > lastDot) {
+                // ES: 1.933,23 -> 1933.23
+                raw.replace(".", "").replace(",", ".")
+            } else {
+                // US: 1,933.23 -> 1933.23
+                raw.replace(",", "")
+            }
+        }
+
+        // Solo coma: 1933,23 -> 1933.23
+        lastComma >= 0 -> raw.replace(",", ".")
+
+        // Solo punto: 1933.23 -> 1933.23 (ya OK)
+        else -> raw
+    }
+
+    return runCatching { BigDecimal(normalized).toDouble() }.getOrDefault(0.0)
 }
+
 
 fun String.isValidIsin(): Boolean {
     // 1. Length
