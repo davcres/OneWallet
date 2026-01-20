@@ -34,6 +34,7 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconBut
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 import java.time.Month
 import java.time.format.TextStyle
@@ -42,8 +43,8 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoricalDetailBottomSheet(
-    investments: List<InvestmentView>,
-    previousInvestments: List<InvestmentView>,
+    investments: ImmutableList<InvestmentView>,
+    previousInvestments: ImmutableList<InvestmentView>,
     currency: Currency,
     visible: Boolean,
     onClickInvestment: (InvestmentView) -> Unit,
@@ -80,8 +81,8 @@ fun HistoricalDetailBottomSheet(
 // ---------- UI ----------
 @Composable
 private fun SheetContent(
-    investments: List<InvestmentView>,
-    previousInvestments: List<InvestmentView>,
+    investments: ImmutableList<InvestmentView>,
+    previousInvestments: ImmutableList<InvestmentView>,
     currency: Currency,
     onClickInvestment: (InvestmentView) -> Unit,
     onClose: () -> Unit

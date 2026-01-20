@@ -31,11 +31,12 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimate
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PortfolioList(
-    items: List<InvestmentView>,
+    items: ImmutableList<InvestmentView>,
     currency: Currency,
     onRemove: (InvestmentView) -> Unit,
     onEdit: (InvestmentView) -> Unit,

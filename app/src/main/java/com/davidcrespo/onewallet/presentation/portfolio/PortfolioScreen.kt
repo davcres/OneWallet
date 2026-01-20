@@ -49,6 +49,8 @@ import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.Stock
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTab
 import com.davidcrespo.onewallet.presentation.portfolio.positions.PositionsTab
 import com.davidcrespo.onewallet.presentation.portfolio.prices.PricesTab
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -153,7 +155,7 @@ private fun PortfolioScreen(
 
                         SegmentedTabs(
                             selectedIndex = pagerState.currentPage,
-                            titles = tabs.toList(),
+                            titles = tabs.toPersistentList(),
                             onSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
@@ -272,8 +274,8 @@ private fun PortfolioScreenPreview() {
     OneWalletTheme {
         PortfolioScreen(
             uiState = PortfolioUiState(
-                portfolioItems = emptyList(),
-                symbolsWithPrice = listOf("AAPL"),
+                portfolioItems = persistentListOf(),
+                symbolsWithPrice = persistentListOf("AAPL"),
                 usdEurRate = 1.0,
                 totalBalance = 10.0,
                 previousBalance = 9.0,

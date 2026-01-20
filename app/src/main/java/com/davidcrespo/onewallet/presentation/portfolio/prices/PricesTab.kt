@@ -5,11 +5,12 @@ import androidx.compose.ui.Modifier
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.prices.components.PricesList
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun PricesTab(
     currency: Currency,
-    portfolioItems: List<InvestmentView>,
+    portfolioItems: ImmutableList<InvestmentView>,
     modifier: Modifier = Modifier
 ) {
     PricesList(

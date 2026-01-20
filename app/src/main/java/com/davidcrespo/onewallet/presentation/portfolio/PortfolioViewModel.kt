@@ -19,6 +19,8 @@ import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toDomain
 import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -108,11 +110,12 @@ class PortfolioViewModel(
                 val baseItems = domainItems
                     .map { it.toUI() }
                     .distinctBy { it.symbol }
+                    .toPersistentList()
 
                 val priced = fetchPricesForItems(baseItems)
 
                 // Sort once, based on the freshly-priced list
-                val sorted = priced.sortedByDescending { it.quantity * it.displayPrice }
+                val sorted = priced.sortedByDescending { it.quantity * it.displayPrice }.toPersistentList()
 
                 updateWidgets()
 
@@ -125,7 +128,7 @@ class PortfolioViewModel(
             }
     }
 
-    private suspend fun fetchPricesForItems(items: List<InvestmentView>): List<InvestmentView> {
+    private suspend fun fetchPricesForItems(items: ImmutableList<InvestmentView>): List<InvestmentView> {
         // Take a stable snapshot
         val state = _uiState.value
         val selectedCurrency = state.selectedCurrency
@@ -136,6 +139,7 @@ class PortfolioViewModel(
         val (fixedItems, marketItems) = items
             .distinctBy { it.symbol }
             .partition { it.type.isManual() }
+            .let { (a, b) -> a.toPersistentList() to b.toPersistentList() }
 
         val updatedMarketItems = supervisorScope {
             marketItems.map { item ->
@@ -164,9 +168,9 @@ class PortfolioViewModel(
             }.awaitAll()
         }
 
-        val finalList = (fixedItems + updatedMarketItems).distinctBy { it.symbol }
+        val finalList = (fixedItems + updatedMarketItems).distinctBy { it.symbol }.toPersistentList()
         val newlyPricedSymbols = updatedMarketItems.map { it.symbol }.toSet()
-        val newSymbolsWithPrice = (alreadyPriced + newlyPricedSymbols).toList()
+        val newSymbolsWithPrice = (alreadyPriced + newlyPricedSymbols).toPersistentList()
 
         _uiState.update {
             it.copy(
@@ -330,7 +334,7 @@ class PortfolioViewModel(
             _uiState.update {
                 it.copy(
                     selectedCurrency = newSelectedCurrency,
-                    portfolioItems = it.portfolioItems.map { currencyConverter.convert(it, newSelectedCurrency, usdEurRate) }
+                    portfolioItems = it.portfolioItems.map { currencyConverter.convert(it, newSelectedCurrency, usdEurRate) }.toPersistentList()
                 )
             }
         }

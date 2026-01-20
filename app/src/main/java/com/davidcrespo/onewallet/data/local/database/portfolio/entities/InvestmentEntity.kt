@@ -34,7 +34,7 @@ fun Investment.toEntity(): InvestmentEntity = InvestmentEntity(
 
 fun InvestmentEntity.toDomain(): Investment = Investment(
     symbol = symbol,
-    name = name.orEmpty(),
+    name = name,
     quantity = quantity,
     price = price,
     previousPrice = previousPrice ?: 0.0,

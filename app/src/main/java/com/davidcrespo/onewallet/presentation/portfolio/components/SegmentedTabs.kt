@@ -28,11 +28,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTab
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun SegmentedTabs(
     selectedIndex: Int,
-    titles: List<PortfolioTab>,
+    titles: ImmutableList<PortfolioTab>,
     onSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
     height: Dp = 72.dp
@@ -90,7 +92,7 @@ fun SegmentedTabs(
 private fun PortfolioSegmentedTabsPreview() {
     SegmentedTabs(
         selectedIndex = 0,
-        titles = PortfolioTab.entries.toList(),
+        titles = PortfolioTab.entries.toPersistentList(),
         onSelected = {},
         modifier = Modifier.padding(16.dp)
     )

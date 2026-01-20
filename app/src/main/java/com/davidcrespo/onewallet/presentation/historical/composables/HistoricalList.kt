@@ -12,13 +12,14 @@ import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoricalList(
-    items: List<List<InvestmentView>>,
+    items: ImmutableList<ImmutableList<InvestmentView>>,
     currency: Currency,
-    onClick: (List<InvestmentView>) -> Unit,
+    onClick: (ImmutableList<InvestmentView>) -> Unit,
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState()
 ) {

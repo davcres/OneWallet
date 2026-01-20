@@ -7,6 +7,9 @@ import com.davidcrespo.onewallet.domain.usecase.market.GetMarketAssetsUseCase
 import com.davidcrespo.onewallet.presentation.models.MarketAssetView
 import com.davidcrespo.onewallet.presentation.models.toDomain
 import com.davidcrespo.onewallet.presentation.models.toUI
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -35,9 +38,12 @@ class MarketViewModel(
             _uiState.update { it.copy(isLoading = true) }
             getMarketAssetsUseCase(isCrypto)
                 .onSuccess { marketAssets ->
-                    val marketAssetsView = marketAssets.map { (letter, assets) ->
-                        letter to assets.map { it.toUI() }
-                    }
+                    val marketAssetsView =
+                        marketAssets
+                            .map { (letter, assets) ->
+                                letter to assets.map { it.toUI() }.toPersistentList()
+                            }
+                            .toPersistentList()
                     _uiState.update {
                         it.copy(
                             marketAssets = marketAssetsView,
@@ -49,8 +55,8 @@ class MarketViewModel(
                 }.onFailure {
                     _uiState.update {
                         it.copy(
-                            marketAssets = emptyList(),
-                            filteredAssets = emptyList(),
+                            marketAssets = persistentListOf(),
+                            filteredAssets = persistentListOf(),
                             isLoading = false
                         )
                     }
@@ -88,7 +94,7 @@ class MarketViewModel(
                 current.filterNot { it == asset }
             } else {
                 current + asset
-            }
+            }.toPersistentList()
 
             state.copy(assetsToSaveToPortfolio = newList)
         }
@@ -103,7 +109,7 @@ class MarketViewModel(
             _uiState.update {
                 it.copy(
                     searchQuery = "",
-                    assetsToSaveToPortfolio = listOf(),
+                    assetsToSaveToPortfolio = persistentListOf(),
                     navigateBack = true
                 )
             }
@@ -111,10 +117,10 @@ class MarketViewModel(
     }
 
     private fun filterAssets(
-        allAssets: List<Pair<Char, List<MarketAssetView>>>,
+        allAssets: ImmutableList<Pair<Char, ImmutableList<MarketAssetView>>>,
         query: String
-    ): List<Pair<Char, List<MarketAssetView>>> {
-        val filtered: List<Pair<Char, List<MarketAssetView>>> =
+    ): ImmutableList<Pair<Char, ImmutableList<MarketAssetView>>> {
+        val filtered: ImmutableList<Pair<Char, ImmutableList<MarketAssetView>>> =
             if (query.isBlank()) {
                 allAssets
             } else {
@@ -123,9 +129,9 @@ class MarketViewModel(
                         asset.symbol.contains(query, ignoreCase = true) ||
                         asset.description?.contains(query, ignoreCase = true) == true ||
                         asset.figi?.contains(query, ignoreCase = true) == true
-                    }
+                    }.toPersistentList()
                 }.filter { (_, assets) -> assets.isNotEmpty() }
-            }
+            }.toPersistentList()
 
         return filtered
     }
