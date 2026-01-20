@@ -1,8 +1,10 @@
 package com.davidcrespo.onewallet.presentation.historical
 
+import androidx.compose.runtime.Immutable
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 
+@Immutable
 data class HistoricalUiState(
     val history: List<List<InvestmentView>> = emptyList(),
     val selectedMonthDetail: List<InvestmentView>? = null,

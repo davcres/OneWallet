@@ -22,14 +22,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
+import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
-import com.davidcrespo.onewallet.domain.model.market.MarketAsset
-import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
+import com.davidcrespo.onewallet.presentation.models.MarketAssetView
 
 @Composable
 fun MarketListItem(
-    marketAsset: MarketAsset,
+    marketAsset: MarketAssetView,
     isSelected: Boolean,
     addOneAsset: () -> Unit,
     selectAsset: () -> Unit,
@@ -88,7 +88,7 @@ fun MarketListItem(
 @Composable
 private fun MarketListItemPreview() {
     MarketListItem(
-        marketAsset = MarketAsset(
+        marketAsset = MarketAssetView(
             symbol = "AAPL",
             price = 0.0,
             description = "Apple Inc.",
