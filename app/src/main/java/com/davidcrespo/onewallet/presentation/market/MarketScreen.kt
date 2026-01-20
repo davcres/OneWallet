@@ -52,7 +52,7 @@ fun MarketRoot(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MarketScreen(
-    uiState: MarketState,
+    uiState: MarketUiState,
     onAction: (MarketIntent) -> Unit,
     isCrypto: Boolean,
     onBack: () -> Unit,

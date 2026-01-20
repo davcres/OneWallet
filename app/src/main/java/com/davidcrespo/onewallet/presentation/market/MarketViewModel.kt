@@ -2,9 +2,11 @@ package com.davidcrespo.onewallet.presentation.market
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.davidcrespo.onewallet.domain.model.market.MarketAsset
 import com.davidcrespo.onewallet.domain.usecase.market.AddMarketAssetToPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.market.GetMarketAssetsUseCase
+import com.davidcrespo.onewallet.presentation.models.MarketAssetView
+import com.davidcrespo.onewallet.presentation.models.toDomain
+import com.davidcrespo.onewallet.presentation.models.toUI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -15,7 +17,7 @@ class MarketViewModel(
     private val addMarketAssetToPortfolioUseCase: AddMarketAssetToPortfolioUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(MarketState())
+    private val _uiState = MutableStateFlow(MarketUiState())
     val uiState = _uiState.asStateFlow()
 
     fun handleIntent(intent: MarketIntent) {
@@ -33,10 +35,13 @@ class MarketViewModel(
             _uiState.update { it.copy(isLoading = true) }
             getMarketAssetsUseCase(isCrypto)
                 .onSuccess { marketAssets ->
+                    val marketAssetsView = marketAssets.map { (letter, assets) ->
+                        letter to assets.map { it.toUI() }
+                    }
                     _uiState.update {
                         it.copy(
-                            marketAssets = marketAssets,
-                            filteredAssets = marketAssets,
+                            marketAssets = marketAssetsView,
+                            filteredAssets = marketAssetsView,
                             isCrypto = isCrypto,
                             isLoading = false
                         )
@@ -62,9 +67,9 @@ class MarketViewModel(
         }
     }
 
-    private fun addOneAsset(asset: MarketAsset) {
+    private fun addOneAsset(asset: MarketAssetView) {
         viewModelScope.launch {
-            addMarketAssetToPortfolioUseCase(asset, _uiState.value.isCrypto)
+            addMarketAssetToPortfolioUseCase(asset.toDomain(), _uiState.value.isCrypto)
 
             _uiState.update {
                 it.copy(
@@ -75,7 +80,7 @@ class MarketViewModel(
         }
     }
 
-    private fun selectAsset(asset: MarketAsset) {
+    private fun selectAsset(asset: MarketAssetView) {
         _uiState.update { state ->
             val current = state.assetsToSaveToPortfolio
 
@@ -93,7 +98,7 @@ class MarketViewModel(
         viewModelScope.launch {
             val list = _uiState.value.assetsToSaveToPortfolio
             list.forEach {
-                addMarketAssetToPortfolioUseCase(it, _uiState.value.isCrypto)
+                addMarketAssetToPortfolioUseCase(it.toDomain(), _uiState.value.isCrypto)
             }
             _uiState.update {
                 it.copy(
@@ -106,10 +111,10 @@ class MarketViewModel(
     }
 
     private fun filterAssets(
-        allAssets: List<Pair<Char, List<MarketAsset>>>,
+        allAssets: List<Pair<Char, List<MarketAssetView>>>,
         query: String
-    ): List<Pair<Char, List<MarketAsset>>> {
-        val filtered: List<Pair<Char, List<MarketAsset>>> =
+    ): List<Pair<Char, List<MarketAssetView>>> {
+        val filtered: List<Pair<Char, List<MarketAssetView>>> =
             if (query.isBlank()) {
                 allAssets
             } else {

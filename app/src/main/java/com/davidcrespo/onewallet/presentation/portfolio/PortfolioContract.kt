@@ -1,8 +1,10 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
+import androidx.compose.runtime.Immutable
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 
+@Immutable
 data class PortfolioUiState(
     val portfolioItems: List<InvestmentView> = listOf(),
     val symbolsWithPrice: List<String> = emptyList(),

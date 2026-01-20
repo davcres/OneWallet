@@ -1,11 +1,13 @@
 package com.davidcrespo.onewallet.presentation.market
 
-import com.davidcrespo.onewallet.domain.model.market.MarketAsset
+import androidx.compose.runtime.Immutable
+import com.davidcrespo.onewallet.presentation.models.MarketAssetView
 
-data class MarketState(
-    val marketAssets: List<Pair<Char, List<MarketAsset>>> = emptyList(),
-    val filteredAssets: List<Pair<Char, List<MarketAsset>>> = emptyList(),
-    val assetsToSaveToPortfolio: List<MarketAsset> = emptyList(),
+@Immutable
+data class MarketUiState(
+    val marketAssets: List<Pair<Char, List<MarketAssetView>>> = emptyList(),
+    val filteredAssets: List<Pair<Char, List<MarketAssetView>>> = emptyList(),
+    val assetsToSaveToPortfolio: List<MarketAssetView> = emptyList(),
     val searchQuery: String = "",
     val isCrypto: Boolean = false,
     val navigateBack: Boolean = false,
@@ -16,7 +18,7 @@ data class MarketState(
 sealed interface MarketIntent {
     data class LoadInitialData(val isCrypto: Boolean) : MarketIntent
     data class SearchQueryChanged(val query: String) : MarketIntent
-    data class AddOneAsset(val marketAsset: MarketAsset) : MarketIntent
-    data class SelectAsset(val marketAsset: MarketAsset) : MarketIntent
+    data class AddOneAsset(val marketAsset: MarketAssetView) : MarketIntent
+    data class SelectAsset(val marketAsset: MarketAssetView) : MarketIntent
     data object SaveAssetsSelected : MarketIntent
 }

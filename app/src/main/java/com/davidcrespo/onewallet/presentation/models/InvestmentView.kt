@@ -1,9 +1,11 @@
 package com.davidcrespo.onewallet.presentation.models
 
+import androidx.compose.runtime.Immutable
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 
+@Immutable
 data class InvestmentView(
     val symbol: String,
     val name: String,
