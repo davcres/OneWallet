@@ -3,6 +3,7 @@ package com.davidcrespo.onewallet.di
 import android.util.Log
 import com.davidcrespo.onewallet.data.remote.crypto.BinanceApiConfig
 import com.davidcrespo.onewallet.data.remote.etf.extraEtf.ExtraEtfApiConfig
+import com.davidcrespo.onewallet.data.remote.etf.justEtf.JustEtfApiConfig
 import com.davidcrespo.onewallet.data.remote.fund.investing.InvestingApiConfig
 import com.davidcrespo.onewallet.data.remote.fund.quefondos.QueFondosApiConfig
 import com.davidcrespo.onewallet.data.remote.rate.TwelveDataApiConfig
@@ -97,6 +98,13 @@ val networkModule = module {
     single(QUE_FONDOS) {
         get<HttpClient>().config {
             defaultRequest { url(QueFondosApiConfig.BASE_URL) }
+        }
+    }
+
+    // ExtraETF client
+    single(JUST_ETF) {
+        get<HttpClient>().config {
+            defaultRequest { url(JustEtfApiConfig.BASE_URL) }
         }
     }
 

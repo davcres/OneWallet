@@ -12,6 +12,7 @@ import com.davidcrespo.onewallet.data.remote.crypto.models.toDomain
 import com.davidcrespo.onewallet.data.remote.dto.toDomain
 import com.davidcrespo.onewallet.data.remote.dto.toEntity
 import com.davidcrespo.onewallet.data.remote.etf.extraEtf.ExtraEtfDataSource
+import com.davidcrespo.onewallet.data.remote.etf.justEtf.JustEtfDataSource
 import com.davidcrespo.onewallet.data.remote.fund.investing.InvestingDataSource
 import com.davidcrespo.onewallet.data.remote.fund.quefondos.QueFondosDataSource
 import com.davidcrespo.onewallet.data.remote.rate.TwelveDataApiConfig.GetRate.USD_EUR
@@ -36,6 +37,7 @@ class FinancialRepositoryImpl(
     private val binanceDataSource: BinanceDataSource,
     private val investingDataSource: InvestingDataSource,
     private val queFondosDataSource: QueFondosDataSource,
+    private val justEtfDataSource: JustEtfDataSource,
     private val extraEtfDataSource: ExtraEtfDataSource,
     private val symbolCache: SymbolCache,
     private val currencyCache: CurrencyCache,
@@ -48,14 +50,15 @@ class FinancialRepositoryImpl(
     override suspend fun getInvestmentPrice(
         symbol: String,
         type: InvestmentType,
-        name: String
+        name: String,
+        selectedCurrency: Currency?
     ): Result<Investment> {
         return withContext(dispatcher.io) {
             when (type) {
                 InvestmentType.STOCK -> getStockPrice(symbol, name)
                 InvestmentType.CRYPTO -> getCryptoPrice(symbol)
                 InvestmentType.FUND -> getFundPrice(symbol)
-                InvestmentType.ETF -> getEtfPrice(symbol)
+                InvestmentType.ETF -> getEtfPrice(symbol, selectedCurrency)
                 else -> Result.failure(IllegalArgumentException("Invalid investment type: $type"))
             }
         }
@@ -111,27 +114,45 @@ class FinancialRepositoryImpl(
         throw IllegalStateException("No se pudo obtener el precio del fondo")
     }
 
-    private suspend fun getEtfPrice(isin: String): Result<Investment> = runCatching {
+    private suspend fun getEtfPrice(isin: String, selectedCurrency: Currency?): Result<Investment> = runCatching {
         val cached = symbolCache.getCachedInvestmentIfValid(isin, cachePolicy.etfHours)
         if (cached != null) return@runCatching cached.toDomain()
 
-        val primary = extraEtfDataSource.getEtfPrice(isin)
-        val validPrimary = primary?.takeIf { it.name.isNotBlank() && it.price != 0.0 }
+        val currency = selectedCurrency ?: Currency.EUR
+
+        val primary = justEtfDataSource.getEtfDetail(isin, currency)
+        val validPrimary = primary.takeIf { it.name.isNotBlank() && it.price != 0.0 }
         if (validPrimary != null) {
-            telemetry.log("(ExtraETF.com) get $isin from remote succeed ${primary.price} ${primary.currency}")
+            telemetry.log("(JustETF.com (1)) get $isin from remote succeed ${primary.price} ${primary.currency}")
             symbolCache.setCachedInvestment(validPrimary.toEntity())
             return@runCatching validPrimary.toDomain()
         }
 
-        val secondary = queFondosDataSource.getFundPrice(isin, InvestmentType.ETF)
+        val secondary = extraEtfDataSource.getEtfPrice(isin)
         val validSecondary = secondary?.takeIf { it.name.isNotBlank() && it.price != 0.0 }
         if (validSecondary != null) {
-            telemetry.log("(QueFondos.com) get $isin from remote succeed ${secondary.price} ${secondary.currency}")
+            telemetry.log("(ExtraETF.com) get $isin from remote succeed ${secondary.price} ${secondary.currency}")
             symbolCache.setCachedInvestment(validSecondary.toEntity())
             return@runCatching validSecondary.toDomain()
         }
 
-        telemetry.log("(ExtraETF.com) and (QueFondos.com) get $isin failed")
+        val tertiary = queFondosDataSource.getFundPrice(isin, InvestmentType.ETF)
+        val validTertiary = tertiary?.takeIf { it.name.isNotBlank() && it.price != 0.0 }
+        if (validTertiary != null) {
+            telemetry.log("(QueFondos.com) get $isin from remote succeed ${tertiary.price} ${tertiary.currency}")
+            symbolCache.setCachedInvestment(validTertiary.toEntity())
+            return@runCatching validTertiary.toDomain()
+        }
+
+        val quaternary = justEtfDataSource.getEtfPrice(isin, currency)
+        val validQuaternary = quaternary.takeIf { it.price != 0.0 }
+        if (validQuaternary != null) {
+            telemetry.log("(JustETF.com (2)) get $isin from remote succeed ${quaternary.price} ${quaternary.currency}")
+            symbolCache.setCachedInvestment(validQuaternary.toEntity())
+            return@runCatching validQuaternary.toDomain()
+        }
+
+        telemetry.log("(JustETF.com), (ExtraETF.com) and (QueFondos.com) get $isin failed")
         throw IllegalStateException("No se pudo obtener el precio del ETF")
     }
 

@@ -7,6 +7,7 @@ val TWELVE_DATA = named("TWELVE_DATA")
 val BINANCE = named("BINANCE")
 val INVESTING = named("INVESTING")
 val QUE_FONDOS = named("QUE_FONDOS")
+val JUST_ETF = named("JUST_ETF")
 val EXTRA_ETF = named("EXTRA_ETF")
 val TELEGRAM = named("TELEGRAM")
 
