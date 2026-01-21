@@ -1,6 +1,8 @@
 package com.davidcrespo.onewallet.core.extensions
 
 import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 fun String.normalizeDouble(): Double {
     val raw = trim()
@@ -66,5 +68,11 @@ fun String.isValidIsin(): Boolean {
     val checkDigit = (10 - (sum % 10)) % 10
 
     return true
-    return checkDigit == last().digitToInt() // IE00NNFR7C63 fails
+    return checkDigit == last().digitToInt() //TODO*** IE00NNFR7C63 fails
 }
+
+fun String.toLocalDate(pattern: String): LocalDate? =
+    runCatching {
+        val apiDateFormatter = DateTimeFormatter.ofPattern(pattern)
+        LocalDate.parse(this, apiDateFormatter)
+    }.getOrNull()
