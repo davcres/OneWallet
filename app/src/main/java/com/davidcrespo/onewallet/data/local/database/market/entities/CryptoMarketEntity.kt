@@ -2,7 +2,7 @@ package com.davidcrespo.onewallet.data.local.database.market.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.davidcrespo.onewallet.data.remote.crypto.models.MarketCryptoResponse
+import com.davidcrespo.onewallet.data.remote.binance.models.MarketCryptoResponse
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.market.MarketAsset

@@ -1,13 +1,13 @@
 package com.davidcrespo.onewallet.di
 
 import android.util.Log
-import com.davidcrespo.onewallet.data.remote.crypto.BinanceApiConfig
-import com.davidcrespo.onewallet.data.remote.etf.extraEtf.ExtraEtfApiConfig
-import com.davidcrespo.onewallet.data.remote.etf.justEtf.JustEtfApiConfig
-import com.davidcrespo.onewallet.data.remote.fund.investing.InvestingApiConfig
-import com.davidcrespo.onewallet.data.remote.fund.quefondos.QueFondosApiConfig
-import com.davidcrespo.onewallet.data.remote.rate.TwelveDataApiConfig
-import com.davidcrespo.onewallet.data.remote.stock.FinnhubApiConfig
+import com.davidcrespo.onewallet.data.remote.binance.BinanceApiConfig
+import com.davidcrespo.onewallet.data.remote.extraEtf.ExtraEtfApiConfig
+import com.davidcrespo.onewallet.data.remote.justEtf.JustEtfApiConfig
+import com.davidcrespo.onewallet.data.remote.investing.InvestingApiConfig
+import com.davidcrespo.onewallet.data.remote.quefondos.QueFondosApiConfig
+import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiConfig
+import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubApiConfig
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
