@@ -15,7 +15,13 @@ data class InvestmentDto(
     val type: InvestmentType,
     val year: Int,
     val month: Int
-)
+) {
+    fun isValidName(): Boolean =
+        name.isNotBlank()
+
+    fun isValidPrice(): Boolean =
+        price > 0.0
+}
 
 fun InvestmentDto.toDomain(): Investment = Investment(
     symbol = symbol,

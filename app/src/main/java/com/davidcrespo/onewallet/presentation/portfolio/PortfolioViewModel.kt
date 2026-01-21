@@ -153,7 +153,12 @@ class PortfolioViewModel(
                         ) ?: item
                     }
 
-                    getInvestmentPriceUseCase(symbol, item.type, item.name)
+                    getInvestmentPriceUseCase.invoke(
+                        symbol = symbol,
+                        type = item.type,
+                        name = item.name,
+                        selectedCurrency = state.selectedCurrency
+                    )
                         .map { api ->
                             val withPrice = item.copy(
                                 displayPrice = api.price,
@@ -243,7 +248,11 @@ class PortfolioViewModel(
 
     private fun addEtfItem(isin: String, quantity: Double) {
         viewModelScope.launch {
-            getInvestmentPriceUseCase(isin, InvestmentType.ETF)
+            getInvestmentPriceUseCase(
+                symbol = isin,
+                type = InvestmentType.ETF,
+                selectedCurrency = uiState.value.selectedCurrency
+            )
                 .onSuccess { investment ->
                     val now = LocalDate.now()
                     val year = now.year

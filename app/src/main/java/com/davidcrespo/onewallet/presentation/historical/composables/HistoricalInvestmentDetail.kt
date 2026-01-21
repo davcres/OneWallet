@@ -214,7 +214,7 @@ fun HistoricalInvestmentDetail(
                             modifier = Modifier.weight(1f),
                             contentAlignment = Alignment.Center
                         ) {
-                            if ((investment.type.isMarket()) && (previousMonthInvestment != null && previousMonthInvestment.displayPrice != 0.0)) {
+                            if ((investment.type.isMarket()) && (previousMonthInvestment != null && previousMonthInvestment.displayPrice > 0.0)) {
                                 Surface(
                                     shape = RoundedCornerShape(8.dp),
                                     color = MaterialTheme.colorScheme.primaryContainer
@@ -243,7 +243,7 @@ fun HistoricalInvestmentDetail(
                         }
                     }
 
-                    if ((investment.type.isMarket()) && (previousMonthInvestment != null && previousMonthInvestment.displayPrice != 0.0)) {
+                    if ((investment.type.isMarket()) && (previousMonthInvestment != null && previousMonthInvestment.displayPrice > 0.0)) {
                         DashedDivider()
 
                         Row(
