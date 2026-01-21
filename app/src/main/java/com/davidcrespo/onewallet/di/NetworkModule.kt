@@ -3,12 +3,12 @@ package com.davidcrespo.onewallet.di
 import android.util.Log
 import com.davidcrespo.onewallet.data.remote.binance.BinanceApiConfig
 import com.davidcrespo.onewallet.data.remote.extraEtf.ExtraEtfApiConfig
-import com.davidcrespo.onewallet.data.remote.justEtf.JustEtfApiConfig
-import com.davidcrespo.onewallet.data.remote.investing.InvestingApiConfig
-import com.davidcrespo.onewallet.data.remote.quefondos.QueFondosApiConfig
-import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiConfig
 import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubApiConfig
+import com.davidcrespo.onewallet.data.remote.investing.InvestingApiConfig
+import com.davidcrespo.onewallet.data.remote.justEtf.JustEtfApiConfig
+import com.davidcrespo.onewallet.data.remote.quefondos.QueFondosApiConfig
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiConfig
+import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
@@ -104,14 +104,20 @@ val networkModule = module {
     // ExtraETF client
     single(JUST_ETF) {
         get<HttpClient>().config {
-            defaultRequest { url(JustEtfApiConfig.BASE_URL) }
+            defaultRequest {
+                url(JustEtfApiConfig.BASE_URL)
+                headers.append("User-Agent", "Mozilla/5.0") // To make it appear as if it's a request from a browser
+            }
         }
     }
 
     // ExtraETF client
     single(EXTRA_ETF) {
         get<HttpClient>().config {
-            defaultRequest { url(ExtraEtfApiConfig.BASE_URL) }
+            defaultRequest {
+                url(ExtraEtfApiConfig.BASE_URL)
+                headers.append("User-Agent", "Mozilla/5.0") // To make it appear as if it's a request from a browser
+            }
         }
     }
 
