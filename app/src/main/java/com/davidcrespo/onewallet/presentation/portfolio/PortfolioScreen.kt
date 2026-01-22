@@ -93,7 +93,7 @@ private fun PortfolioScreen(
     var fabButtonExpanded by remember { mutableStateOf(false) }
 
     val blurRadius by animateDpAsState(
-        targetValue = if (fabButtonExpanded || uiState.isFundDialogVisible) 16.dp else 0.dp,
+        targetValue = if (fabButtonExpanded || uiState.isFundDialogVisible || uiState.isEtfDialogVisible) 16.dp else 0.dp,
         animationSpec = tween(
             durationMillis = 1000
         ),
@@ -101,7 +101,7 @@ private fun PortfolioScreen(
     )
 
     val overlayAlpha by animateFloatAsState(
-        targetValue = if (fabButtonExpanded || uiState.isFundDialogVisible) 0.32f else 0f,
+        targetValue = if (fabButtonExpanded || uiState.isFundDialogVisible || uiState.isEtfDialogVisible) 0.32f else 0f,
         label = "overlay"
     )
 
@@ -186,7 +186,7 @@ private fun PortfolioScreen(
             }
         }
 
-        if (fabButtonExpanded || uiState.isFundDialogVisible) {
+        if (fabButtonExpanded || uiState.isFundDialogVisible || uiState.isEtfDialogVisible) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
