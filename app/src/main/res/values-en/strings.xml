@@ -41,10 +41,18 @@
     <string name="bank_name_label">Name (e.g., Bank of America):</string>
     <string name="total_money_label">Total money (€):</string>
     <string name="save_action">Save</string>
-    <string name="total_shares_label">Total number of shares:</string>
-    <string name="update_quantity_action">Update Quantity</string>
+    <string name="update_quantity_market_action">Update Quantity</string>
+    <string name="update_quantity_manual_action">Update Balance</string>
     <string name="fund_fetch_error">Unfortunately we couldn\'t fetch the fund.\nTry another ISIN.</string>
     <string name="etf_fetch_error">Unfortunately we couldn\'t fetch the ETF.\nTry another ISIN.</string>
+    <string name="current_holding_label">Current holding</string>
+    <string name="current_holding">%.2f Shares</string>
+    <string name="total_value">Total value</string>
+    <string name="new_quantity_market">Enter new quantity of shares</string>
+    <string name="new_quantity_manual">Enter the new balance</string>
+    <string name="estimated_new_value">Estimated new value</string>
+    <string name="cancel_edit_investment_cd">Tap to not edit the quantity</string>
+    <string name="error_quantity_empty">Enter a valid amount.</string>
 
     <!-- Market -->
     <string name="add_crypto_title">Add Crypto</string>

@@ -1,5 +1,10 @@
 package com.davidcrespo.onewallet.presentation.models
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountBalance
+import androidx.compose.material.icons.outlined.CurrencyBitcoin
+import androidx.compose.material.icons.outlined.PieChartOutline
+import androidx.compose.material.icons.outlined.StackedLineChart
 import androidx.compose.runtime.Immutable
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
@@ -19,7 +24,17 @@ data class InvestmentView(
     val type: InvestmentType,
     val month: Int,
     val year: Int
-)
+) {
+    fun getIcon() =
+        when (type) {
+            InvestmentType.STOCK -> Icons.Outlined.StackedLineChart
+            InvestmentType.CRYPTO -> Icons.Outlined.CurrencyBitcoin
+            InvestmentType.FUND,
+            InvestmentType.ETF -> Icons.Outlined.PieChartOutline
+
+            InvestmentType.CASH -> Icons.Outlined.AccountBalance
+        }
+}
 
 fun Investment.toUI(): InvestmentView {
     val changePercent = previousPrice

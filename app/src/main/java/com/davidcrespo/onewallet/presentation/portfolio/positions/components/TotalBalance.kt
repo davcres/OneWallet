@@ -21,9 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.TrendingDown
-import androidx.compose.material.icons.automirrored.filled.TrendingFlat
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Card
@@ -53,6 +50,7 @@ import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWCurrencyPrice
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWShakeListener
+import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.theme.cardGlowBrush
 import kotlinx.coroutines.delay
 
@@ -172,55 +170,40 @@ fun TotalBalance(
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
+                                    val variance = totalBalance - previousBalance
                                     val percentage =
                                         if (totalBalance == 0.0 || previousBalance == 0.0) {
                                             0.0
                                         } else {
-                                            (totalBalance - previousBalance) / previousBalance * 100
+                                            variance / previousBalance * 100
                                         }
-                                    val (percentageIcon, percentageColor, prefix) = when {
-                                        percentage > 0 -> Triple(
-                                            Icons.AutoMirrored.Filled.TrendingUp,
-                                            MaterialTheme.colorScheme.primary,
+
+                                    val (backgroundColor, prefix) = when {
+                                        percentage > 0 -> Pair(
+                                            MaterialTheme.colorScheme.primaryContainer,
                                             "+"
                                         )
-
-                                        percentage < 0 -> Triple(
-                                            Icons.AutoMirrored.Filled.TrendingDown,
-                                            MaterialTheme.colorScheme.error,
+                                        percentage < 0 -> Pair(
+                                            MaterialTheme.colorScheme.error.copy(alpha = 0.25f),
                                             ""
                                         )
-
-                                        else -> Triple(
-                                            Icons.AutoMirrored.Filled.TrendingFlat,
-                                            MaterialTheme.colorScheme.onSurfaceVariant,
+                                        else -> Pair(
+                                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.25f),
                                             ""
                                         )
                                     }
 
                                     Surface(
                                         shape = RoundedCornerShape(8.dp),
-                                        color = MaterialTheme.colorScheme.primaryContainer
+                                        color = backgroundColor
                                     ) {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = Modifier.padding(4.dp)
-                                        ) {
-                                            Icon(
-                                                imageVector = percentageIcon,
-                                                contentDescription = "Percentage Icon",
-                                                tint = percentageColor
-                                            )
-
-                                            Spacer(modifier = Modifier.width(8.dp))
-
-                                            OWCurrencyPrice(
-                                                price = totalBalance - previousBalance,
-                                                currency = currency,
-                                                fontSize = 18.sp,
-                                                textColor = percentageColor
-                                            )
-                                        }
+                                        TrendDisplay(
+                                            value = variance,
+                                            text = "%.2f %%".format(variance),
+                                            showPercentage = false,
+                                            currency = currency,
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
                                     }
 
                                     Spacer(modifier = Modifier.width(8.dp))

@@ -59,7 +59,7 @@ class QueFondosApiClient(private val client: HttpClient) {
             ?.replace("%", "")
             ?.normalizeDouble()
             ?.let { value * it / 100.0 }
-            ?.round(2)
+            ?.round(2) //TODO*** puedo quitarlo?
 
         // 4) Divisa
         val currencyText = priceAndCurrencyText.lastOrNull()

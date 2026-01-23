@@ -109,6 +109,8 @@ private fun SheetContent(
                 }
             }
     ) {
+        Spacer(Modifier.height(16.dp))
+
         Header(onClose = onClose)
 
         Spacer(Modifier.height(16.dp))

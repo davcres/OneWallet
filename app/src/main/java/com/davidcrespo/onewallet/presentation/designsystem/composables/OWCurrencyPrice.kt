@@ -8,6 +8,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,10 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.AnimatedCounter
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 
 @Composable
 fun OWCurrencyPrice(
@@ -33,8 +36,8 @@ fun OWCurrencyPrice(
 ) {
     val usdWidth by animateDpAsState(targetValue = if (currency == Currency.USD) fontSize.value.dp/2 else 0.dp, label = "usdWidth")
     val eurWidth by animateDpAsState(targetValue = if (currency == Currency.EUR) fontSize.value.dp/2 else 0.dp, label = "eurWidth")
-    val usdSpacer by animateDpAsState(targetValue = if (currency == Currency.USD) 8.dp else 0.dp, label = "usdSpacer")
-    val eurSpacer by animateDpAsState(targetValue = if (currency == Currency.EUR) 8.dp else 0.dp, label = "eurSpacer")
+    val usdSpacer by animateDpAsState(targetValue = if (currency == Currency.USD) 4.dp else 0.dp, label = "usdSpacer")
+    val eurSpacer by animateDpAsState(targetValue = if (currency == Currency.EUR) 4.dp else 0.dp, label = "eurSpacer")
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -80,5 +83,19 @@ fun OWCurrencyPrice(
                 textAlign = TextAlign.Start
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun OWCurrencyPricePreview() {
+    OneWalletTheme {
+        OWCurrencyPrice(
+            price = 100.0,
+            currency = Currency.EUR,
+            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+            textColor = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+        )
     }
 }
