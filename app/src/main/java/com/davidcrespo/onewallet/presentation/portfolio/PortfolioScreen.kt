@@ -239,6 +239,7 @@ private fun PortfolioScreen(
         AddBankBottomSheet(
             visible = uiState.isBankDialogVisible,
             currency = uiState.selectedCurrency,
+            isBank = true,
             onDismiss = { onAction(PortfolioIntent.DismissBankDialog) },
             onAddBank = { name, amount, currency ->
                 onAction(PortfolioIntent.AddBankItem(name, amount, currency))
@@ -249,6 +250,7 @@ private fun PortfolioScreen(
         AddBankBottomSheet(
             visible = uiState.isOtherDialogVisible,
             currency = uiState.selectedCurrency,
+            isBank = false,
             onDismiss = { onAction(PortfolioIntent.DismissOtherDialog) },
             onAddBank = { name, amount, currency ->
                 onAction(PortfolioIntent.AddOtherItem(name, amount, currency))

@@ -13,9 +13,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Addchart
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Euro
+import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.PieChartOutline
-import androidx.compose.material.icons.outlined.QrCode2
+import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -57,6 +59,7 @@ import kotlinx.coroutines.launch
 fun AddBankBottomSheet(
     visible: Boolean,
     currency: Currency,
+    isBank: Boolean,
     onDismiss: () -> Unit,
     onAddBank: (String, Double, Currency) -> Unit
 ) {
@@ -75,6 +78,7 @@ fun AddBankBottomSheet(
     ) {
         SheetContent(
             currency = currency,
+            isBank = isBank,
             onClose = {
                 scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
             },
@@ -89,6 +93,7 @@ fun AddBankBottomSheet(
 @Composable
 private fun SheetContent(
     currency: Currency,
+    isBank: Boolean,
     onClose: () -> Unit,
     onAddBank: (String, Double, Currency) -> Unit
 ) {
@@ -108,12 +113,13 @@ private fun SheetContent(
     ) {
         Spacer(Modifier.height(16.dp))
 
-        Header(onClose = onClose)
+        Header(isBank = isBank, onClose = onClose)
 
         Spacer(Modifier.height(16.dp))
 
         Form(
             currency = currency,
+            isBank = isBank,
             onClose = onClose,
             onAddBank = onAddBank
         )
@@ -121,18 +127,18 @@ private fun SheetContent(
 }
 
 @Composable
-private fun Header(onClose: () -> Unit) {
+private fun Header(isBank: Boolean, onClose: () -> Unit) {
     Box(Modifier.fillMaxWidth()) {
         Column(Modifier.align(Alignment.CenterStart)) {
             Row {
                 Icon(
-                    imageVector = Icons.Default.Addchart,
+                    imageVector = if (isBank) Icons.Outlined.AccountBalance else Icons.Outlined.Payments,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = stringResource(R.string.add_bank_title),
+                    text = if (isBank) stringResource(R.string.add_bank_title) else stringResource(R.string.add_other_title),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -152,6 +158,7 @@ private fun Header(onClose: () -> Unit) {
 @Composable
 private fun Form(
     currency: Currency,
+    isBank: Boolean,
     onClose: () -> Unit,
     onAddBank: (String, Double, Currency) -> Unit
 ) {
@@ -160,7 +167,7 @@ private fun Form(
 
     Column {
         Text(
-            text = stringResource(R.string.bank_name_label),
+            text = if (isBank) stringResource(R.string.bank_name_label) else stringResource(R.string.other_name_label),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(horizontal = 8.dp)
@@ -173,15 +180,15 @@ private fun Form(
             onValueChange = { input ->
                 name = input
             },
-            icon = Icons.Outlined.QrCode2,
-            placeholder = stringResource(R.string.bank_name_placeholder),
+            icon = Icons.Default.Addchart,
+            placeholder = if (isBank) stringResource(R.string.bank_name_placeholder) else stringResource(R.string.other_name_placeholder),
             cornerRadius = 16.dp
         )
 
         Spacer(Modifier.height(18.dp))
 
         Text(
-            text = stringResource(R.string.total_money_label, currency.symbol),
+            text = stringResource(R.string.total_money_label),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(horizontal = 8.dp)
@@ -197,7 +204,7 @@ private fun Form(
                     quantity = normalized
                 }
             },
-            icon = Icons.Outlined.PieChartOutline,
+            icon = if (currency == Currency.USD) Icons.Filled.AttachMoney else Icons.Filled.Euro,
             placeholder = "0.0",
             cornerRadius = 16.dp,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -244,6 +251,7 @@ private fun AddBankBottomSheetPreview() {
         AddBankBottomSheet(
             visible = true,
             currency = Currency.EUR,
+            isBank = true,
             onDismiss = {},
             onAddBank = { _, _, _ -> },
         )

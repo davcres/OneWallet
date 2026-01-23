@@ -42,7 +42,10 @@
     <string name="add_bank_title">Add Cash / Deposit</string>
     <string name="bank_name_label">Bank / Deposit Name:</string>
     <string name="bank_name_placeholder">e.g. Bank of America</string>
-    <string name="total_money_label">Total money (%s):</string>
+    <string name="add_other_title">Add Asset</string>
+    <string name="other_name_label">Asset name:</string>
+    <string name="other_name_placeholder">e.g. Luxury villa in Ibiza</string>
+    <string name="total_money_label">Total money:</string>
     <string name="add_bank_cd">Add a new cash / deposit to your portfolio</string>
     <string name="update_quantity_market_action">Update Quantity</string>
     <string name="update_quantity_manual_action">Update Balance</string>
