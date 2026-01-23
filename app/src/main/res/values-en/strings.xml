@@ -37,10 +37,13 @@
     <string name="asset_etf_subtitle">Exchange-traded funds and indices</string>
     <string name="asset_bank">Bank</string>
     <string name="asset_bank_subtitle">Cash, savings, &amp; deposits</string>
-    <string name="add_bank_title">Add Bank / Deposit</string>
-    <string name="bank_name_label">Name (e.g., Bank of America):</string>
-    <string name="total_money_label">Total money (€):</string>
-    <string name="save_action">Save</string>
+    <string name="asset_other">Other</string>
+    <string name="asset_other_subtitle">Any other type of asset you want to add to your portfolio</string>
+    <string name="add_bank_title">Add Cash / Deposit</string>
+    <string name="bank_name_label">Bank / Deposit Name:</string>
+    <string name="bank_name_placeholder">e.g. Bank of America</string>
+    <string name="total_money_label">Total money (%s):</string>
+    <string name="add_bank_cd">Add a new cash / deposit to your portfolio</string>
     <string name="update_quantity_market_action">Update Quantity</string>
     <string name="update_quantity_manual_action">Update Balance</string>
     <string name="fund_fetch_error">Unfortunately we couldn\'t fetch the fund.\nTry another ISIN.</string>

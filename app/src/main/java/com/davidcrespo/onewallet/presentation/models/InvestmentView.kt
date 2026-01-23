@@ -3,6 +3,7 @@ package com.davidcrespo.onewallet.presentation.models
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material.icons.outlined.CurrencyBitcoin
+import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material.icons.outlined.PieChartOutline
 import androidx.compose.material.icons.outlined.StackedLineChart
 import androidx.compose.runtime.Immutable
@@ -31,8 +32,8 @@ data class InvestmentView(
             InvestmentType.CRYPTO -> Icons.Outlined.CurrencyBitcoin
             InvestmentType.FUND,
             InvestmentType.ETF -> Icons.Outlined.PieChartOutline
-
             InvestmentType.CASH -> Icons.Outlined.AccountBalance
+            InvestmentType.OTHER -> Icons.Outlined.Payments
         }
 }
 
