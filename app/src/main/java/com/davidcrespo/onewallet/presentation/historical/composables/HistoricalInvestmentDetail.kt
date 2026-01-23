@@ -17,11 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
 import androidx.compose.material.icons.automirrored.filled.TrendingFlat
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.CurrencyBitcoin
-import androidx.compose.material.icons.outlined.PieChartOutline
-import androidx.compose.material.icons.outlined.StackedLineChart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -42,7 +38,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.DashedDivider
-import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
@@ -116,15 +111,8 @@ fun HistoricalInvestmentDetail(
                             .background(MaterialTheme.colorScheme.primaryContainer),
                         contentAlignment = Alignment.Center
                     ) {
-                        val icon = when (investment.type) {
-                            InvestmentType.STOCK -> Icons.Outlined.StackedLineChart
-                            InvestmentType.CRYPTO -> Icons.Outlined.CurrencyBitcoin
-                            InvestmentType.FUND,
-                            InvestmentType.ETF -> Icons.Outlined.PieChartOutline
-                            InvestmentType.CASH -> Icons.Outlined.AccountBalance
-                        }
                         Icon(
-                            imageVector = icon,
+                            imageVector = investment.getIcon(),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )

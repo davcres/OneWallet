@@ -25,11 +25,17 @@ fun AnimatedCounter(
     prefix: String = "",
     suffix: String = ""
 ) {
-    val animatedValue = remember { Animatable(targetValue.toFloat()) }
+    val targetValueFloat = targetValue
+        .toFloat()
+        .takeIf { it.isFinite() }
+        ?.coerceIn(-Float.MAX_VALUE, Float.MAX_VALUE)
+        ?: Float.MAX_VALUE
+
+    val animatedValue = remember { Animatable(targetValueFloat) }
 
     LaunchedEffect(targetValue) {
         animatedValue.animateTo(
-            targetValue = targetValue.toFloat(),
+            targetValue = targetValueFloat,
             animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
         )
     }

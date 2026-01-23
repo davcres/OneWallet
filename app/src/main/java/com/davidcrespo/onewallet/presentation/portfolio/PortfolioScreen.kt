@@ -44,8 +44,8 @@ import com.davidcrespo.onewallet.presentation.portfolio.components.SegmentedTabs
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddFundBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AssetType
+import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.updateInvestment.UpdateInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.BankDepositDialog
-import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.StockDetailDialog
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTab
 import com.davidcrespo.onewallet.presentation.portfolio.positions.PositionsTab
 import com.davidcrespo.onewallet.presentation.portfolio.prices.PricesTab
@@ -85,15 +85,22 @@ private fun PortfolioScreen(
     val tabs = remember { PortfolioTab.entries }
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     val scope = rememberCoroutineScope()
+    var fabButtonExpanded by remember { mutableStateOf(false) }
+    val hideBackground =
+        uiState.isFundDialogVisible ||
+                uiState.isEtfDialogVisible ||
+                uiState.isBankDialogVisible ||
+                uiState.editingItem != null ||
+                fabButtonExpanded
+
 
     LaunchedEffect(uiState.portfolioItems) {
         onAction(PortfolioIntent.UpdateBalance)
     }
 
-    var fabButtonExpanded by remember { mutableStateOf(false) }
 
     val blurRadius by animateDpAsState(
-        targetValue = if (fabButtonExpanded || uiState.isFundDialogVisible || uiState.isEtfDialogVisible) 16.dp else 0.dp,
+        targetValue = if (hideBackground) 16.dp else 0.dp,
         animationSpec = tween(
             durationMillis = 1000
         ),
@@ -101,7 +108,7 @@ private fun PortfolioScreen(
     )
 
     val overlayAlpha by animateFloatAsState(
-        targetValue = if (fabButtonExpanded || uiState.isFundDialogVisible || uiState.isEtfDialogVisible) 0.32f else 0f,
+        targetValue = if (hideBackground) 0.32f else 0f,
         label = "overlay"
     )
 
@@ -186,7 +193,7 @@ private fun PortfolioScreen(
             }
         }
 
-        if (fabButtonExpanded || uiState.isFundDialogVisible || uiState.isEtfDialogVisible) {
+        if (hideBackground) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -213,11 +220,16 @@ private fun PortfolioScreen(
 
         // Edit Quantity Dialog
         uiState.editingItem?.let { item ->
-            StockDetailDialog(
-                item = item,
+            UpdateInvestmentBottomSheet(
+                investment = item,
+                currency = uiState.selectedCurrency,
+                visible = true,
                 onDismiss = { onAction(PortfolioIntent.EditQuantity(null)) },
-                onConfirmQuantity = { quantity ->
+                onEditInvestment = { quantity ->
                     onAction(PortfolioIntent.UpdateQuantity(item, quantity))
+                },
+                onQuantityError = { quantityError ->
+                    onAction(PortfolioIntent.SetError(quantityError))
                 }
             )
         }

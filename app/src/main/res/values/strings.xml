@@ -41,10 +41,18 @@
     <string name="bank_name_label">Nombre (ej. Banco Santander):</string>
     <string name="total_money_label">Total dinero (€):</string>
     <string name="save_action">Guardar</string>
-    <string name="total_shares_label">Cantidad total de acciones:</string>
-    <string name="update_quantity_action">Actualizar Cantidad</string>
+    <string name="update_quantity_market_action">Actualizar Cantidad</string>
+    <string name="update_quantity_manual_action">Actualizar Saldo</string>
     <string name="fund_fetch_error">Desafortunadamente no hemos podido obtener el fondo.\nPrueba con otro ISIN.</string>
     <string name="etf_fetch_error">Desafortunadamente no hemos podido obtener el ETF.\nPrueba con otro ISIN.</string>
+    <string name="current_holding_label">Acciones actualmente</string>
+    <string name="current_holding">%.2f Acciones</string>
+    <string name="total_value">Valor total</string>
+    <string name="new_quantity_market">Introduce la nueva cantidad de acciones</string>
+    <string name="new_quantity_manual">Introduce el nuevo saldo</string>
+    <string name="estimated_new_value">Nuevo valor estimado</string>
+    <string name="cancel_edit_investment_cd">Pulsa para no editar la cantidad</string>
+    <string name="error_quantity_empty">Introduce una cantidad válida.</string>
 
     <!-- Market -->
     <string name="add_crypto_title">Añadir Criptomoneda</string>
