@@ -5,7 +5,8 @@ enum class InvestmentType {
     CRYPTO,
     FUND,
     ETF,
-    CASH
+    CASH,
+    OTHER
 }
 
 private val MARKET_TYPES = setOf(
@@ -16,7 +17,8 @@ private val MARKET_TYPES = setOf(
 )
 
 private val MANUAL_TYPES = setOf(
-    InvestmentType.CASH
+    InvestmentType.CASH,
+    InvestmentType.OTHER,
 )
 
 fun InvestmentType.isMarket(): Boolean = this in MARKET_TYPES

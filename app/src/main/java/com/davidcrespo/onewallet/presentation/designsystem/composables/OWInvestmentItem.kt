@@ -17,11 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountBalance
-import androidx.compose.material.icons.outlined.CurrencyBitcoin
-import androidx.compose.material.icons.outlined.PieChartOutline
-import androidx.compose.material.icons.outlined.StackedLineChart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -46,7 +41,6 @@ import com.davidcrespo.onewallet.core.composables.AutoScrollingText
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
 import com.davidcrespo.onewallet.domain.model.investment.Currency
-import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
@@ -98,15 +92,8 @@ fun OWInvestmentItem(
                     .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center
             ) {
-                val icon = when (item.type) {
-                    InvestmentType.STOCK -> Icons.Outlined.StackedLineChart
-                    InvestmentType.CRYPTO -> Icons.Outlined.CurrencyBitcoin
-                    InvestmentType.FUND,
-                    InvestmentType.ETF -> Icons.Outlined.PieChartOutline
-                    InvestmentType.CASH -> Icons.Outlined.AccountBalance
-                }
                 Icon(
-                    imageVector = icon,
+                    imageVector = item.getIcon(),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )

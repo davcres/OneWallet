@@ -18,6 +18,7 @@ data class PortfolioUiState(
     val isFundDialogVisible: Boolean = false,
     val isEtfDialogVisible: Boolean = false,
     val isBankDialogVisible: Boolean = false,
+    val isOtherDialogVisible: Boolean = false,
     val isLoading: Boolean = true,
     val error: String? = null
 )
@@ -38,9 +39,13 @@ sealed interface PortfolioIntent {
     data object ShowEtfDialog : PortfolioIntent
     data object DismissEtfDialog : PortfolioIntent
 
-    data class AddBankItem(val name: String, val quantity: Double) : PortfolioIntent
+    data class AddBankItem(val name: String, val quantity: Double, val currency: Currency) : PortfolioIntent
     data object ShowBankDialog : PortfolioIntent
     data object DismissBankDialog : PortfolioIntent
+
+    data class AddOtherItem(val name: String, val quantity: Double, val currency: Currency) : PortfolioIntent
+    data object ShowOtherDialog : PortfolioIntent
+    data object DismissOtherDialog : PortfolioIntent
 
     data class SetError(val error: String) : PortfolioIntent
     data object ClearError : PortfolioIntent

@@ -64,9 +64,13 @@ class PortfolioViewModel(
             is PortfolioIntent.ShowEtfDialog -> _uiState.update { it.copy(isEtfDialogVisible = true) }
             is PortfolioIntent.DismissEtfDialog -> _uiState.update { it.copy(isEtfDialogVisible = false) }
 
-            is PortfolioIntent.AddBankItem -> addBankItem(intent.name, intent.quantity)
+            is PortfolioIntent.AddBankItem -> addBankItem(intent.name, intent.quantity, intent.currency)
             is PortfolioIntent.ShowBankDialog -> _uiState.update { it.copy(isBankDialogVisible = true) }
             is PortfolioIntent.DismissBankDialog -> _uiState.update { it.copy(isBankDialogVisible = false) }
+
+            is PortfolioIntent.AddOtherItem -> addOtherItem(intent.name, intent.quantity, intent.currency)
+            is PortfolioIntent.ShowOtherDialog -> _uiState.update { it.copy(isOtherDialogVisible = true) }
+            is PortfolioIntent.DismissOtherDialog -> _uiState.update { it.copy(isOtherDialogVisible = false) }
 
             is PortfolioIntent.SetError -> _uiState.update { it.copy(error = intent.error) }
             is PortfolioIntent.ClearError -> _uiState.update { it.copy(error = null) }
@@ -136,7 +140,7 @@ class PortfolioViewModel(
         val alreadyPriced = state.symbolsWithPrice.toSet()
         val existingBySymbol = state.portfolioItems.associateBy { it.symbol }
 
-        val (fixedItems, marketItems) = items
+        val (manualItems, marketItems) = items
             .distinctBy { it.symbol }
             .partition { it.type.isManual() }
             .let { (a, b) -> a.toPersistentList() to b.toPersistentList() }
@@ -173,7 +177,9 @@ class PortfolioViewModel(
             }.awaitAll()
         }
 
-        val finalList = (fixedItems + updatedMarketItems).distinctBy { it.symbol }.toPersistentList()
+        val updatedManualItems = manualItems.map { currencyConverter.convert(it, selectedCurrency, usdEurRate) }
+
+        val finalList = (updatedManualItems + updatedMarketItems).distinctBy { it.symbol }.toPersistentList()
         val newlyPricedSymbols = updatedMarketItems.map { it.symbol }.toSet()
         val newSymbolsWithPrice = (alreadyPriced + newlyPricedSymbols).toPersistentList()
 
@@ -273,7 +279,7 @@ class PortfolioViewModel(
         }
     }
 
-    private fun addBankItem(name: String, quantity: Double) {
+    private fun addBankItem(name: String, quantity: Double, currency: Currency) {
         viewModelScope.launch {
             val now = LocalDate.now()
             val year = now.year
@@ -285,7 +291,7 @@ class PortfolioViewModel(
                 quantity = quantity,
                 price = 1.0,
                 previousPrice = 0.0,
-                currency = Currency.EUR,
+                currency = currency,
                 type = InvestmentType.CASH,
                 year = year,
                 month = month
@@ -293,6 +299,29 @@ class PortfolioViewModel(
 
             addInvestmentToPortfolioUseCase(cash)
             _uiState.update { it.copy(isBankDialogVisible = false) }
+        }
+    }
+
+    private fun addOtherItem(name: String, quantity: Double, currency: Currency) {
+        viewModelScope.launch {
+            val now = LocalDate.now()
+            val year = now.year
+            val month = now.monthValue
+
+            val other = Investment(
+                symbol = name,
+                name = name,
+                quantity = quantity,
+                price = 1.0,
+                previousPrice = 0.0,
+                currency = currency,
+                type = InvestmentType.OTHER,
+                year = year,
+                month = month
+            )
+
+            addInvestmentToPortfolioUseCase(other)
+            _uiState.update { it.copy(isOtherDialogVisible = false) }
         }
     }
 

@@ -41,11 +41,11 @@ import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.portfolio.components.EmptyInvestments
 import com.davidcrespo.onewallet.presentation.portfolio.components.Header
 import com.davidcrespo.onewallet.presentation.portfolio.components.SegmentedTabs
+import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddBankBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddFundBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AssetType
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.updateInvestment.UpdateInvestmentBottomSheet
-import com.davidcrespo.onewallet.presentation.portfolio.components.dialogs.BankDepositDialog
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTab
 import com.davidcrespo.onewallet.presentation.portfolio.positions.PositionsTab
 import com.davidcrespo.onewallet.presentation.portfolio.prices.PricesTab
@@ -90,9 +90,9 @@ private fun PortfolioScreen(
         uiState.isFundDialogVisible ||
                 uiState.isEtfDialogVisible ||
                 uiState.isBankDialogVisible ||
+                uiState.isOtherDialogVisible ||
                 uiState.editingItem != null ||
                 fabButtonExpanded
-
 
     LaunchedEffect(uiState.portfolioItems) {
         onAction(PortfolioIntent.UpdateBalance)
@@ -137,6 +137,13 @@ private fun PortfolioScreen(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                Header(
+                    currency = uiState.selectedCurrency,
+                    onCurrencyChange = { onAction(PortfolioIntent.ChangeCurrency) },
+                    navigateToHistorical = { onAction(PortfolioIntent.NavigateToHistorical) },
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+
                 when {
                     uiState.isLoading -> {
                         CircularProgressIndicator(
@@ -153,13 +160,6 @@ private fun PortfolioScreen(
                         )
                     }
                     else -> {
-                        Header(
-                            currency = uiState.selectedCurrency,
-                            onCurrencyChange = { onAction(PortfolioIntent.ChangeCurrency) },
-                            navigateToHistorical = { onAction(PortfolioIntent.NavigateToHistorical) },
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-
                         SegmentedTabs(
                             selectedIndex = pagerState.currentPage,
                             titles = tabs.toPersistentList(),
@@ -212,6 +212,7 @@ private fun PortfolioScreen(
                         AssetType.Fund -> onAction(PortfolioIntent.ShowFundDialog)
                         AssetType.ETF -> onAction(PortfolioIntent.ShowEtfDialog)
                         AssetType.Bank -> onAction(PortfolioIntent.ShowBankDialog)
+                        AssetType.Other -> onAction(PortfolioIntent.ShowOtherDialog)
                     }
                     fabButtonExpanded = false
                 }
@@ -235,14 +236,26 @@ private fun PortfolioScreen(
         }
 
         // Add Bank/Deposit Dialog
-        if (uiState.isBankDialogVisible) {
-            BankDepositDialog(
-                onDismiss = { onAction(PortfolioIntent.DismissBankDialog) },
-                onConfirm = { name, amount ->
-                    onAction(PortfolioIntent.AddBankItem(name, amount))
-                }
-            )
-        }
+        AddBankBottomSheet(
+            visible = uiState.isBankDialogVisible,
+            currency = uiState.selectedCurrency,
+            isBank = true,
+            onDismiss = { onAction(PortfolioIntent.DismissBankDialog) },
+            onAddBank = { name, amount, currency ->
+                onAction(PortfolioIntent.AddBankItem(name, amount, currency))
+            }
+        )
+
+        // Add Other Dialog
+        AddBankBottomSheet(
+            visible = uiState.isOtherDialogVisible,
+            currency = uiState.selectedCurrency,
+            isBank = false,
+            onDismiss = { onAction(PortfolioIntent.DismissOtherDialog) },
+            onAddBank = { name, amount, currency ->
+                onAction(PortfolioIntent.AddOtherItem(name, amount, currency))
+            }
+        )
 
         val defaultFundError = stringResource(R.string.fund_fetch_error)
         val defaultEtfError = stringResource(R.string.etf_fetch_error)
@@ -260,6 +273,7 @@ private fun PortfolioScreen(
             }
         )
 
+        // Add ETF Dialog
         AddFundBottomSheet(
             visible = uiState.isEtfDialogVisible,
             onDismiss = { onAction(PortfolioIntent.DismissEtfDialog) },

@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material.icons.outlined.CurrencyBitcoin
+import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material.icons.outlined.PieChartOutline
 import androidx.compose.material.icons.outlined.StackedLineChart
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -19,4 +20,5 @@ enum class AssetType(
     Fund(R.string.asset_fund, R.string.asset_fund_subtitle, Icons.Outlined.PieChartOutline),
     ETF(R.string.asset_etf, R.string.asset_etf_subtitle, Icons.Outlined.PieChartOutline),
     Bank(R.string.asset_bank, R.string.asset_bank_subtitle, Icons.Outlined.AccountBalance),
+    Other(R.string.asset_other, R.string.asset_other_subtitle, Icons.Outlined.Payments),
 }

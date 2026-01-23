@@ -38,6 +38,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.DashedDivider
+import com.davidcrespo.onewallet.core.models.Quadruple
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
@@ -53,24 +54,31 @@ fun HistoricalInvestmentDetail(
         if (previousMonthInvestment?.displayPrice == null || investment.displayPrice == 0.0 || previousMonthInvestment.displayPrice == 0.0) {
             0.0
         } else {
-            (investment.displayPrice - previousMonthInvestment.displayPrice) / previousMonthInvestment.displayPrice * 100
+            if (investment.type.isMarket()) {
+                (investment.displayPrice - previousMonthInvestment.displayPrice) / previousMonthInvestment.displayPrice * 100
+            } else {
+                ((investment.displayPrice * investment.quantity) - (previousMonthInvestment.displayPrice * previousMonthInvestment.quantity)) / (previousMonthInvestment.displayPrice * previousMonthInvestment.quantity) * 100
+            }
         }
-    val (percentageIcon, percentageColor, prefix) = when {
-        percentage > 0 -> Triple(
+    val (percentageIcon, percentageColor, backgroundColor, prefix) = when {
+        percentage > 0 -> Quadruple(
             Icons.AutoMirrored.Filled.TrendingUp,
             MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.primaryContainer,
             "+"
         )
 
-        percentage < 0 -> Triple(
+        percentage < 0 -> Quadruple(
             Icons.AutoMirrored.Filled.TrendingDown,
             MaterialTheme.colorScheme.error,
+            MaterialTheme.colorScheme.error.copy(alpha = 0.25f),
             ""
         )
 
-        else -> Triple(
+        else -> Quadruple(
             Icons.AutoMirrored.Filled.TrendingFlat,
             MaterialTheme.colorScheme.onSurfaceVariant,
+            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.25f),
             ""
         )
     }
@@ -100,7 +108,9 @@ fun HistoricalInvestmentDetail(
                 )
 
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 32.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -120,52 +130,65 @@ fun HistoricalInvestmentDetail(
 
                     Text(
                         text = investment.symbol,
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        textAlign = TextAlign.Center
                     )
+
+                    if (investment.symbol != investment.name && investment.name.isNotEmpty()) {
+                        Text(
+                            text = investment.name,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
                     HorizontalDivider()
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.shares_in_portfolio_label),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.weight(1f),
-                            textAlign = TextAlign.Center
-                        )
+                    if (investment.type.isMarket()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = stringResource(R.string.shares_in_portfolio_label),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center
+                            )
 
-                        Text(
-                            text = stringResource(R.string.price_per_share_label),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.weight(1f),
-                            textAlign = TextAlign.Center
-                        )
+                            Text(
+                                text = stringResource(R.string.price_per_share_label),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "%.2f".format(investment.quantity),
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center
+                            )
+
+                            Text(
+                                text = "%.2f €".format(investment.displayPrice),
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.weight(1f),
+                                textAlign = TextAlign.Center
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "%.2f".format(investment.quantity),
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.weight(1f),
-                            textAlign = TextAlign.Center
-                        )
-
-                        Text(
-                            text = "%.2f €".format(investment.displayPrice),
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.weight(1f),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth()
@@ -179,13 +202,15 @@ fun HistoricalInvestmentDetail(
                             textAlign = TextAlign.Center
                         )
 
-                        Text(
-                            text = "",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.weight(1f)
-                        )
+                        if (previousMonthInvestment != null && previousMonthInvestment.displayPrice > 0.0) {
+                            Text(
+                                text = "",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
                     }
 
                     Row(
@@ -198,14 +223,14 @@ fun HistoricalInvestmentDetail(
                             textAlign = TextAlign.Center
                         )
 
-                        Box(
-                            modifier = Modifier.weight(1f),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if ((investment.type.isMarket()) && (previousMonthInvestment != null && previousMonthInvestment.displayPrice > 0.0)) {
+                        if (previousMonthInvestment != null && previousMonthInvestment.displayPrice > 0.0) {
+                            Box(
+                                modifier = Modifier.weight(1f),
+                                contentAlignment = Alignment.Center
+                            ) {
                                 Surface(
                                     shape = RoundedCornerShape(8.dp),
-                                    color = MaterialTheme.colorScheme.primaryContainer
+                                    color = backgroundColor
                                 ) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
@@ -231,7 +256,7 @@ fun HistoricalInvestmentDetail(
                         }
                     }
 
-                    if ((investment.type.isMarket()) && (previousMonthInvestment != null && previousMonthInvestment.displayPrice > 0.0)) {
+                    if (previousMonthInvestment != null && previousMonthInvestment.displayPrice > 0.0) {
                         DashedDivider()
 
                         Row(
@@ -247,8 +272,14 @@ fun HistoricalInvestmentDetail(
                                 textAlign = TextAlign.Center
                             )
 
+                            val variance = if (investment.type.isMarket()) {
+                                investment.displayPrice - previousMonthInvestment.displayPrice
+                            } else {
+                                (investment.displayPrice * investment.quantity) - (previousMonthInvestment.displayPrice * previousMonthInvestment.quantity)
+                            }
+
                             Text(
-                                text = "$prefix%.2f €".format(investment.displayPrice - previousMonthInvestment.displayPrice),
+                                text = "$prefix%.2f €".format(variance),
                                 style = MaterialTheme.typography.titleLarge,
                                 color = percentageColor,
                                 modifier = Modifier.weight(1f),
