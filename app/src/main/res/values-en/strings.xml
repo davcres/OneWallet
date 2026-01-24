@@ -15,6 +15,7 @@
     <string name="tab_portfolio">My Portfolio</string>
     <string name="tab_prices">Prices</string>
     <string name="add_new_fund_title">Add New Fund</string>
+    <string name="add_new_etf_title">Add New ETF</string>
     <string name="close_cd">Close</string>
     <string name="isin_label">ISIN</string>
     <string name="isin_helper_text">International Securities Identification Number</string>

@@ -15,6 +15,7 @@
     <string name="tab_portfolio">Mi cartera</string>
     <string name="tab_prices">Cotización</string>
     <string name="add_new_fund_title">Añadir nuevo fondo</string>
+    <string name="add_new_etf_title">Añadir nuevo ETF</string>
     <string name="close_cd">Cerrar</string>
     <string name="isin_label">ISIN</string>
     <string name="isin_helper_text">Número de identificación de valores internacionales</string>

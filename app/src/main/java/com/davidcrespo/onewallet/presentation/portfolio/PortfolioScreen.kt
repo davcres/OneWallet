@@ -264,6 +264,7 @@ private fun PortfolioScreen(
         // Add Fund Dialog
         AddFundBottomSheet(
             visible = uiState.isFundDialogVisible,
+            isFund = true,
             onDismiss = { onAction(PortfolioIntent.DismissFundDialog) },
             onAddFund = { isin, quantity ->
                 onAction(PortfolioIntent.AddFundItem(isin, quantity))
@@ -276,6 +277,7 @@ private fun PortfolioScreen(
         // Add ETF Dialog
         AddFundBottomSheet(
             visible = uiState.isEtfDialogVisible,
+            isFund = false,
             onDismiss = { onAction(PortfolioIntent.DismissEtfDialog) },
             onAddFund = { isin, quantity ->
                 onAction(PortfolioIntent.AddEtfItem(isin, quantity))

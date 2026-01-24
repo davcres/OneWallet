@@ -59,6 +59,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddFundBottomSheet(
     visible: Boolean,
+    isFund: Boolean,
     onDismiss: () -> Unit,
     onAddFund: (String, Double) -> Unit,
     onIsinError: (String?) -> Unit
@@ -77,6 +78,7 @@ fun AddFundBottomSheet(
         scrimColor = Color.Transparent // Disable default scrim (darker content out of bottom sheet) to see light error
     ) {
         SheetContent(
+            isFund = isFund,
             onClose = {
                 scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
             },
@@ -91,6 +93,7 @@ fun AddFundBottomSheet(
 // ---------- UI ----------
 @Composable
 private fun SheetContent(
+    isFund: Boolean,
     onClose: () -> Unit,
     onAddFund: (String, Double) -> Unit,
     onIsinError: (String?) -> Unit
@@ -111,7 +114,7 @@ private fun SheetContent(
     ) {
         Spacer(Modifier.height(16.dp))
 
-        Header(onClose = onClose)
+        Header(isFund = isFund, onClose = onClose)
 
         Spacer(Modifier.height(16.dp))
 
@@ -124,7 +127,7 @@ private fun SheetContent(
 }
 
 @Composable
-private fun Header(onClose: () -> Unit) {
+private fun Header(isFund: Boolean, onClose: () -> Unit) {
     Box(Modifier.fillMaxWidth()) {
         Column(Modifier.align(Alignment.CenterStart)) {
             Row {
@@ -135,7 +138,7 @@ private fun Header(onClose: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = stringResource(R.string.add_new_fund_title),
+                    text = if (isFund) stringResource(R.string.add_new_fund_title) else stringResource(R.string.add_new_etf_title),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -277,6 +280,7 @@ private fun AddFundBottomSheetPreview() {
     OneWalletTheme {
         AddFundBottomSheet(
             visible = true,
+            isFund = true,
             onDismiss = {},
             onAddFund = { _, _ -> },
             onIsinError = {}
