@@ -61,6 +61,9 @@
     <string name="cancel_edit_investment_cd">Pulsa para no editar la cantidad</string>
     <string name="error_quantity_empty">Introduce una cantidad válida.</string>
 
+    <string name="delete_action">Eliminar</string>
+    <string name="delete_investment_message">¿Estás seguro de que quieres eliminar esta inversión de tu cartera?</string>
+
     <!-- Market -->
     <string name="add_crypto_title">Añadir Criptomoneda</string>
     <string name="add_stocks_title">Añadir Acciones</string>

@@ -55,6 +55,7 @@ class PortfolioViewModel(
             is PortfolioIntent.EditQuantity -> _uiState.update { it.copy(editingItem = intent.item) }
             is PortfolioIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity)
             is PortfolioIntent.RemoveItem -> removeItem(intent.item)
+            is PortfolioIntent.ShowDeleteDialog -> _uiState.update { it.copy(deletingItem = intent.item) }
 
             is PortfolioIntent.AddFundItem -> addFundItem(intent.name, intent.quantity)
             is PortfolioIntent.ShowFundDialog -> _uiState.update { it.copy(isFundDialogVisible = true) }
@@ -328,6 +329,7 @@ class PortfolioViewModel(
     private fun removeItem(item: InvestmentView) {
         viewModelScope.launch {
             removePortfolioItemUseCase(item.toDomain())
+            _uiState.update { it.copy(deletingItem = null) }
         }
     }
 

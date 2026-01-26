@@ -45,6 +45,7 @@ import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.a
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddFundBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AssetType
+import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.deleteInvestment.DeleteInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.updateInvestment.UpdateInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTab
 import com.davidcrespo.onewallet.presentation.portfolio.positions.PositionsTab
@@ -93,6 +94,7 @@ private fun PortfolioScreen(
                 uiState.isBankDialogVisible ||
                 uiState.isOtherDialogVisible ||
                 uiState.editingItem != null ||
+                uiState.deletingItem != null ||
                 fabButtonExpanded
 
     val blurRadius by animateDpAsState(
@@ -178,7 +180,7 @@ private fun PortfolioScreen(
                                     totalBalance = uiState.totalBalance,
                                     previousBalance = uiState.previousBalance,
                                     portfolioItems = uiState.portfolioItems,
-                                    onRemoveItem = { onAction(PortfolioIntent.RemoveItem(it)) },
+                                    onRemoveItem = { onAction(PortfolioIntent.ShowDeleteDialog(it)) },
                                     onEditQuantity = { onAction(PortfolioIntent.EditQuantity(it)) }
                                 )
                                 PortfolioTab.PRICES -> PricesTab(
@@ -232,6 +234,16 @@ private fun PortfolioScreen(
                 onQuantityError = { quantityError ->
                     onAction(PortfolioIntent.SetError(quantityError))
                 }
+            )
+        }
+
+        // Delete Investment Dialog
+        uiState.deletingItem?.let { item ->
+            DeleteInvestmentBottomSheet(
+                investment = item,
+                visible = true,
+                onDismiss = { onAction(PortfolioIntent.ShowDeleteDialog(null)) },
+                onDelete = { onAction(PortfolioIntent.RemoveItem(item)) }
             )
         }
 

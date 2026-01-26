@@ -59,7 +59,7 @@ fun PortfolioList(
                     confirmValueChange = {
                         if (it == SwipeToDismissBoxValue.EndToStart) {
                             onRemove(portfolioItem)
-                            true
+                            false
                         } else {
                             false
                         }

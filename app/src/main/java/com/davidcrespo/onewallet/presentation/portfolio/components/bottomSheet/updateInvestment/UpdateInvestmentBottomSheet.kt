@@ -204,7 +204,7 @@ private fun Header(investment: InvestmentView, onClose: () -> Unit, snackbarHost
                 }
             }
 
-            if (investment.type.isMarket()) {
+            if (investment.symbol != investment.name && investment.name.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
