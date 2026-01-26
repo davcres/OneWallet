@@ -21,5 +21,11 @@ private val MANUAL_TYPES = setOf(
     InvestmentType.OTHER,
 )
 
+private val ISIN_TYPES = setOf(
+    InvestmentType.FUND,
+    InvestmentType.ETF,
+)
+
 fun InvestmentType.isMarket(): Boolean = this in MARKET_TYPES
 fun InvestmentType.isManual(): Boolean = this in MANUAL_TYPES
+fun InvestmentType.hasIsin(): Boolean = this in ISIN_TYPES

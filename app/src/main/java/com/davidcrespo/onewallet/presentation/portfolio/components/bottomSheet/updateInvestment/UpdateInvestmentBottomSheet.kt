@@ -22,6 +22,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -47,6 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.Button
+import com.davidcrespo.onewallet.core.composables.CopiableText
 import com.davidcrespo.onewallet.core.composables.TextField
 import com.davidcrespo.onewallet.core.composables.auxiliar.ButtonStyle
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.shakeClickEffect
@@ -54,6 +57,7 @@ import com.davidcrespo.onewallet.core.extensions.applyIf
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.hasIsin
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWCurrencyPrice
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
@@ -77,6 +81,7 @@ fun UpdateInvestmentBottomSheet(
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -86,17 +91,30 @@ fun UpdateInvestmentBottomSheet(
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         scrimColor = Color.Transparent // Disable default scrim (darker content out of bottom sheet) to see light error
     ) {
-        SheetContent(
-            investment = investment,
-            currency = currency,
-            onClose = {
-                scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
-            },
-            onEditQuantity = { quantity -> onEditInvestment(quantity) },
-            onQuantityError = onQuantityError
-        )
+        Box(Modifier.fillMaxWidth()) {
+            Column {
+                SheetContent(
+                    investment = investment,
+                    currency = currency,
+                    onClose = {
+                        scope.launch { sheetState.hide() }
+                            .invokeOnCompletion { onDismiss() }
+                    },
+                    onEditQuantity = { quantity -> onEditInvestment(quantity) },
+                    onQuantityError = onQuantityError,
+                    snackbarHostState = snackbarHostState
+                )
 
-        Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(20.dp))
+            }
+
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp)
+            )
+        }
     }
 }
 
@@ -107,7 +125,8 @@ private fun SheetContent(
     currency: Currency,
     onClose: () -> Unit,
     onEditQuantity: (Double) -> Unit,
-    onQuantityError: (String) -> Unit
+    onQuantityError: (String) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -126,7 +145,8 @@ private fun SheetContent(
 
         Header(
             investment = investment,
-            onClose = onClose
+            onClose = onClose,
+            snackbarHostState = snackbarHostState
         )
 
         Spacer(Modifier.height(16.dp))
@@ -149,7 +169,7 @@ private fun SheetContent(
 }
 
 @Composable
-private fun Header(investment: InvestmentView, onClose: () -> Unit) {
+private fun Header(investment: InvestmentView, onClose: () -> Unit, snackbarHostState: SnackbarHostState) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -167,12 +187,21 @@ private fun Header(investment: InvestmentView, onClose: () -> Unit) {
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = investment.symbol,
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                Spacer(modifier = Modifier.width(8.dp))
+                if (investment.type.hasIsin()) {
+                    CopiableText(
+                        text = investment.symbol,
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        snackbarHostState = snackbarHostState
+                    )
+                } else {
+                    Text(
+                        text = investment.symbol,
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
             }
 
             if (investment.type.isMarket()) {

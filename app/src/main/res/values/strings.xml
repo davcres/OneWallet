@@ -82,4 +82,6 @@
 
     <!-- Core -->
     <string name="clear_text_cd">Borrar texto</string>
+    <string name="copiable_text_snackbar">Copiado al portapapeles</string>
+    <string name="copiable_text_cd">Copiar</string>
 </resources>

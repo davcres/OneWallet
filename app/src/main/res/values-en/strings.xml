@@ -82,4 +82,6 @@
 
     <!-- Core -->
     <string name="clear_text_cd">Clear text</string>
+    <string name="copiable_text_snackbar">Copied to clipboard</string>
+    <string name="copiable_text_cd">Copy</string>
 </resources>

@@ -7,12 +7,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -28,9 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.extensions.orEmpty
-import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalDetailBottomSheet
-import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalInvestmentDetail
+import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalInvestmentDetailBottomSheet
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalList
+import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalMonthDetailBottomSheet
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -57,12 +59,12 @@ private fun HistoricalScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LaunchedEffect(Unit) {
-        onAction(HistoricalIntent.LoadInitialData)
-    }
+    val hideBackground =
+        uiState.selectedMonthDetail != null ||
+                uiState.selectedInvestment != null
 
     val blurRadius by animateDpAsState(
-        targetValue = if (uiState.selectedMonthDetail != null) 16.dp else 0.dp,
+        targetValue = if (hideBackground) 16.dp else 0.dp,
         animationSpec = tween(
             durationMillis = 1000
         ),
@@ -70,73 +72,80 @@ private fun HistoricalScreen(
     )
 
     val overlayAlpha by animateFloatAsState(
-        targetValue = if (uiState.selectedMonthDetail != null) 0.32f else 0f,
+        targetValue = if (hideBackground) 0.32f else 0f,
         label = "overlay"
     )
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .blur(blurRadius)
-    ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(stringResource(R.string.historical_monthly_title)) },
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            onBack()
-                        }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_cd))
-                        }
+    LaunchedEffect(Unit) {
+        onAction(HistoricalIntent.LoadInitialData)
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.historical_monthly_title)) },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        onBack()
+                    }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_cd))
                     }
-                )
-            }
-        ) { padding ->
-            if (uiState.isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
                 }
-            } else {
-                HistoricalList(
-                    items = uiState.history,
-                    currency = uiState.selectedCurrency,
-                    onClick = { onAction(HistoricalIntent.SelectMonth(it.first().year, it.first().month)) },
-                    modifier = Modifier
-                        .padding(padding)
-                        .blur(blurRadius)
-                )
+            )
+        },
+        modifier = Modifier.fillMaxSize()
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .blur(blurRadius)
+                .background(Color.Black.copy(alpha = overlayAlpha))
+        ) {
+            when {
+                uiState.isLoading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize()
+                            .align(Alignment.Center),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                else -> {
+                    HistoricalList(
+                        items = uiState.history,
+                        currency = uiState.selectedCurrency,
+                        onClick = {
+                            onAction(
+                                HistoricalIntent.SelectMonth(
+                                    it.first().year,
+                                    it.first().month
+                                )
+                            )
+                        }
+                    )
+
+                    HistoricalMonthDetailBottomSheet(
+                        investments = uiState.selectedMonthDetail.orEmpty(),
+                        previousInvestments = uiState.selectedPreviousMonth.orEmpty(),
+                        currency = uiState.selectedCurrency,
+                        visible = uiState.selectedMonthDetail != null,
+                        onClickInvestment = { onAction(HistoricalIntent.SelectInvestment(it)) },
+                        onDismiss = { onAction(HistoricalIntent.DismissBottomSheet) },
+                        hideBackground = uiState.selectedInvestment != null
+                    )
+
+                    uiState.selectedInvestment?.let {
+                        HistoricalInvestmentDetailBottomSheet(
+                            visible = true,
+                            investment = it,
+                            previousMonthInvestment = uiState.selectedPreviousInvestment,
+                            onDismiss = { onAction(HistoricalIntent.DismissInvestmentDetail) }
+                        )
+                    }
+                }
             }
-        }
-
-        if (uiState.selectedMonthDetail != null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = overlayAlpha))
-            )
-        }
-
-        HistoricalDetailBottomSheet(
-            investments = uiState.selectedMonthDetail.orEmpty(),
-            previousInvestments = uiState.selectedPreviousMonth.orEmpty(),
-            currency = uiState.selectedCurrency,
-            visible = uiState.selectedMonthDetail != null,
-            onClickInvestment = { onAction(HistoricalIntent.SelectInvestment(it)) },
-            onDismiss = { onAction(HistoricalIntent.DismissBottomSheet) }
-        )
-
-        uiState.selectedInvestment?.let {
-            HistoricalInvestmentDetail(
-                investment = it,
-                previousMonthInvestment = uiState.selectedPreviousInvestment,
-                onDismiss = { onAction(HistoricalIntent.DismissInvestmentDetail) }
-            )
         }
     }
 }

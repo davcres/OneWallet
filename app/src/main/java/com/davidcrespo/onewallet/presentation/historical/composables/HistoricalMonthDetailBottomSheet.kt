@@ -1,5 +1,8 @@
 package com.davidcrespo.onewallet.presentation.historical.composables
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,10 +23,13 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -42,18 +48,32 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoricalDetailBottomSheet(
+fun HistoricalMonthDetailBottomSheet(
     investments: ImmutableList<InvestmentView>,
     previousInvestments: ImmutableList<InvestmentView>,
     currency: Currency,
     visible: Boolean,
     onClickInvestment: (InvestmentView) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    hideBackground: Boolean
 ) {
     if (!visible) return
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
+
+    val blurRadius by animateDpAsState(
+        targetValue = if (hideBackground) 16.dp else 0.dp,
+        animationSpec = tween(
+            durationMillis = 1000
+        ),
+        label = "blur"
+    )
+
+    val overlayAlpha by animateFloatAsState(
+        targetValue = if (hideBackground) 0.32f else 0f,
+        label = "overlay"
+    )
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -64,17 +84,25 @@ fun HistoricalDetailBottomSheet(
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) },
         modifier = Modifier.padding(top = 120.dp)
     ) {
-        SheetContent(
-            investments = investments,
-            previousInvestments = previousInvestments,
-            currency = currency,
-            onClickInvestment = onClickInvestment,
-            onClose = {
-                scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
-            }
-        )
+        Box(Modifier
+            .fillMaxWidth()
+            .blur(blurRadius)
+            .background(Color.Black.copy(alpha = overlayAlpha))
+        ) {
+            Column {
+                SheetContent(
+                    investments = investments,
+                    previousInvestments = previousInvestments,
+                    currency = currency,
+                    onClickInvestment = onClickInvestment,
+                    onClose = {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
+                    }
+                )
 
-        Spacer(Modifier.height(80.dp))
+                Spacer(Modifier.height(80.dp))
+            }
+        }
     }
 }
 

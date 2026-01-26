@@ -86,6 +86,7 @@ private fun PortfolioScreen(
     val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
     val scope = rememberCoroutineScope()
     var fabButtonExpanded by remember { mutableStateOf(false) }
+
     val hideBackground =
         uiState.isFundDialogVisible ||
                 uiState.isEtfDialogVisible ||
@@ -93,11 +94,6 @@ private fun PortfolioScreen(
                 uiState.isOtherDialogVisible ||
                 uiState.editingItem != null ||
                 fabButtonExpanded
-
-    LaunchedEffect(uiState.portfolioItems) {
-        onAction(PortfolioIntent.UpdateBalance)
-    }
-
 
     val blurRadius by animateDpAsState(
         targetValue = if (hideBackground) 16.dp else 0.dp,
@@ -111,6 +107,10 @@ private fun PortfolioScreen(
         targetValue = if (hideBackground) 0.32f else 0f,
         label = "overlay"
     )
+
+    LaunchedEffect(uiState.portfolioItems) {
+        onAction(PortfolioIntent.UpdateBalance)
+    }
 
     Scaffold(
         floatingActionButton = {
