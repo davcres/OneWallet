@@ -87,4 +87,22 @@
     <string name="clear_text_cd">Borrar texto</string>
     <string name="copiable_text_snackbar">Copiado al portapapeles</string>
     <string name="copiable_text_cd">Copiar</string>
+
+    <string name="total_balance">Balance Total</string>
+    <string name="hide_balance_cd">Ocultar balance</string>
+    <string name="show_balance_cd">Mostrar balance</string>
+    <string-array name="rich_phrases">
+        <item>Demasiado dinero para mostrarlo sin gafas de sol.</item>
+        <item>A Hacienda le gusta esto.</item>
+        <item>Eres rico, ¿para qué quieres saber si has ganado 5€ más?</item>
+        <item>Con esto te dejan entrar al Época sin hacer cola.</item>
+        <item>Seguro que te puedes permitir hacerle un bizum al humilde desarrollador de la app.</item>
+        <item>¿Seguro que no has añadido ceros de más? Te dejo un momento para reflexionar.</item>
+        <item>Deja algo para los demás Javito.</item>
+    </string-array>
+    <string name="your_investments">Tus inversiones</string>
+
+    <!-- Widget -->
+    <string name="reload_cd">Recargar</string>
+    <string name="asset_prices_title">Precios de Activos</string>
 </resources>

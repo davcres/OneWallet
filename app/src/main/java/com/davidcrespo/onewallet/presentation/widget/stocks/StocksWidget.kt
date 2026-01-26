@@ -16,6 +16,7 @@ import androidx.glance.ImageProvider
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
+import androidx.glance.LocalContext
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
@@ -109,7 +110,7 @@ class StocksWidget : GlanceAppWidget() {
     @Composable
     fun Title() {
         Text(
-            text = "Precios de Activos",
+            text = LocalContext.current.getString(R.string.asset_prices_title),
             style = TextStyle(
                 color = GlanceTheme.colors.surface,
                 fontSize = 14.sp
@@ -152,7 +153,7 @@ class StocksWidget : GlanceAppWidget() {
         ) {
             Image(
                 provider = ImageProvider(R.drawable.ic_reload),
-                contentDescription = "Reload",
+                contentDescription = LocalContext.current.getString(R.string.reload_cd),
                 colorFilter = ColorFilter.tint(GlanceTheme.colors.surface)
             )
         }

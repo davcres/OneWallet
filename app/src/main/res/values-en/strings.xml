@@ -87,4 +87,22 @@
     <string name="clear_text_cd">Clear text</string>
     <string name="copiable_text_snackbar">Copied to clipboard</string>
     <string name="copiable_text_cd">Copy</string>
+
+    <string name="total_balance">Total Balance</string>
+    <string name="hide_balance_cd">Hide balance</string>
+    <string name="show_balance_cd">Show balance</string>
+    <string-array name="rich_phrases">
+        <item>Too much money to look at without sunglasses.</item>
+        <item>The IRS likes this.</item>
+        <item>You\'re rich, why care about 5€ more?</item>
+        <item>This gets you VIP access anywhere.</item>
+        <item>You can definitely afford a tip for the humble developer.</item>
+        <item>Are you sure you didn\'t add too many zeros? Reflect on it.</item>
+        <item>Leave some for the rest of us, Javito.</item>
+    </string-array>
+    <string name="your_investments">Your investments</string>
+
+    <!-- Widget -->
+    <string name="reload_cd">Reload</string>
+    <string name="asset_prices_title">Asset Prices</string>
 </resources>

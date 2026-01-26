@@ -114,7 +114,7 @@ class PortfolioWidget : GlanceAppWidget() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Balance Total",
+                text = LocalContext.current.getString(R.string.total_balance),
                 style = TextStyle(
                     color = GlanceTheme.colors.onSurfaceVariant,
                     fontSize = 12.sp
@@ -171,7 +171,7 @@ class PortfolioWidget : GlanceAppWidget() {
         ) {
             Image(
                 provider = ImageProvider(R.drawable.ic_reload),
-                contentDescription = "Reload"
+                contentDescription = LocalContext.current.getString(R.string.reload_cd)
             )
         }
     }

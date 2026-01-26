@@ -45,6 +45,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
 import com.davidcrespo.onewallet.domain.model.investment.Currency
@@ -62,17 +65,7 @@ fun TotalBalance(
     modifier: Modifier = Modifier,
     isExpanded: Boolean = true
 ) {
-    val richPhrases = remember {
-        listOf(
-            "Demasiado dinero para mostrarlo sin gafas de sol.",
-            "A Hacienda le gusta esto.",
-            "Eres rico, ¿para qué quieres saber si has ganado 5€ más?",
-            "Con esto te dejan entrar al Época sin hacer cola.",
-            "Seguro que te puedes permitir hacerle un bizum al humilde desarrollador de la app.",
-            "¿Seguro que no has añadido ceros de más? Te dejo un momento para reflexionar.",
-            "Deja algo para los demás Javito.",
-        )
-    }
+    val richPhrases = stringArrayResource(R.array.rich_phrases).toList()
     var currentRichPhrase by remember { mutableStateOf(richPhrases.random()) }
     var isBalanceVisible by rememberSaveable { mutableStateOf(true) }
 
@@ -130,7 +123,7 @@ fun TotalBalance(
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = "Balance Total",
+                                text = stringResource(R.string.total_balance),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
@@ -229,7 +222,7 @@ fun TotalBalance(
             ) {
                 Icon(
                     imageVector = if (isBalanceVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                    contentDescription = if (isBalanceVisible) "Ocultar balance" else "Mostrar balance",
+                    contentDescription = if (isBalanceVisible) stringResource(R.string.hide_balance_cd) else stringResource(R.string.show_balance_cd),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
