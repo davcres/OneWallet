@@ -8,3 +8,12 @@ fun Double.round(decimals: Int = 2): Double {
     val rounded = bigDecimal.setScale(2, RoundingMode.HALF_UP)
     return rounded.toDouble()
 }
+
+fun Double.signPrefix(showSign: Boolean): String {
+    if (!showSign) return ""
+    return when {
+        this > 0.0 -> "+"
+        this < 0.0 -> ""
+        else -> "±"
+    }
+}

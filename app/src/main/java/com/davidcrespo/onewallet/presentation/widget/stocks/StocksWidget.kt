@@ -2,31 +2,27 @@ package com.davidcrespo.onewallet.presentation.widget.stocks
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.doublePreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
-import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
-import androidx.glance.Image
 import androidx.glance.ImageProvider
-import androidx.glance.action.ActionParameters
+import androidx.glance.LocalContext
+import androidx.glance.action.Action
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
-import androidx.glance.LocalContext
 import androidx.glance.appwidget.GlanceAppWidget
-import androidx.glance.appwidget.action.ActionCallback
-import androidx.glance.appwidget.action.actionRunCallback
-import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
-import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
@@ -34,16 +30,23 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
-import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.davidcrespo.onewallet.MainActivity
 import com.davidcrespo.onewallet.R
-import com.davidcrespo.onewallet.domain.model.investment.Investment
-import com.davidcrespo.onewallet.domain.model.investment.toInvestment
-import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
+import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import com.davidcrespo.onewallet.presentation.models.toInvestmentView
+import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
+import com.davidcrespo.onewallet.presentation.widget.designsystem.composables.OWInvestmentWidget
+import com.davidcrespo.onewallet.presentation.widget.designsystem.composables.Reload
+import com.davidcrespo.onewallet.presentation.widget.designsystem.theme.WidgetColors
+import com.davidcrespo.onewallet.presentation.widget.portfolio.PortfolioPrefsKeys
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 class StocksWidget : GlanceAppWidget() {
@@ -51,26 +54,36 @@ class StocksWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val state = currentState<Preferences>()
-            val stocks = stringToPortfolio(state[StocksPrefsKeys.stocks].orEmpty()).toImmutableList()
+            val stocks = stringToPortfolio(state[StocksPrefsKeys.stocks].orEmpty())
+            val currency = Currency.valueOf(state[PortfolioPrefsKeys.currency] ?: Currency.EUR.name)
+            val usdEurRate = state[PortfolioPrefsKeys.usdEurRate] ?: 1.0
 
-            StocksWidgetContent(
-                stocks = stocks
-            )
+            val currencyConverter = CurrencyConverter()
+            val stocksConverted = stocks.map {
+                currencyConverter.convert(it, currency, usdEurRate)
+            }
+
+            GlanceTheme(colors = WidgetColors) {
+                StocksWidgetContent(
+                    stocks = stocksConverted.toImmutableList(),
+                    currency = currency
+                )
+            }
         }
     }
 
     @Composable
     fun StocksWidgetContent(
-        stocks: ImmutableList<Investment>
+        stocks: ImmutableList<InvestmentView>,
+        currency: Currency
     ) {
 
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
-                .background(Color(0xCC1C1C1E))
+                .background(ImageProvider(R.drawable.widget_gradient_background))
                 .clickable(actionStartActivity<MainActivity>())
-                .cornerRadius(20.dp)
-                .padding(12.dp)
+                .padding(16.dp)
         ) {
             if (stocks.isEmpty()) {
                 Column(
@@ -89,9 +102,10 @@ class StocksWidget : GlanceAppWidget() {
                     modifier = GlanceModifier.fillMaxSize(),
                 ) {
                     Row(
-                        modifier = GlanceModifier.fillMaxWidth(),
+                        modifier = GlanceModifier
+                            .fillMaxWidth(),
                         horizontalAlignment = Alignment.Start,
-                        verticalAlignment = Alignment.Top
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Title()
 
@@ -99,9 +113,14 @@ class StocksWidget : GlanceAppWidget() {
 
                         Reload()
                     }
-                    if (stocks.isNotEmpty()) {
-                        StockList(stocks)
-                    }
+
+                    Spacer(modifier = GlanceModifier.height(12.dp))
+
+                    StockList(
+                        items = stocks,
+                        currency = currency,
+                        onClick = actionStartActivity<MainActivity>()
+                    )
                 }
             }
         }
@@ -112,102 +131,60 @@ class StocksWidget : GlanceAppWidget() {
         Text(
             text = LocalContext.current.getString(R.string.asset_prices_title),
             style = TextStyle(
-                color = GlanceTheme.colors.surface,
-                fontSize = 14.sp
+                color = GlanceTheme.colors.onSurface,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold
             )
         )
     }
 
     @Composable
-    fun StockList(items: List<Investment>) {
-        LazyColumn(
-            modifier = GlanceModifier.fillMaxSize(),
-            horizontalAlignment = Alignment.Start
-        ) {
-            item {
-                Spacer(modifier = GlanceModifier.height(12.dp))
-
-                // Divider
-                Box(
-                    modifier = GlanceModifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(GlanceTheme.colors.outline)
-                ) {}
-
-                Spacer(modifier = GlanceModifier.height(12.dp))
-            }
-
-            items(items.size) {
-                StockRow(items[it])
-            }
-        }
-    }
-
-    @Composable
-    fun Reload(modifier: GlanceModifier = GlanceModifier) {
-        Box(
-            modifier = modifier
-                .clickable(actionRunCallback<GetPortfolioCallback>())
-                .size(48.dp)
-        ) {
-            Image(
-                provider = ImageProvider(R.drawable.ic_reload),
-                contentDescription = LocalContext.current.getString(R.string.reload_cd),
-                colorFilter = ColorFilter.tint(GlanceTheme.colors.surface)
-            )
-        }
-    }
-
-    @Composable
-    fun StockRow(item: Investment) {
-        Row(
-            modifier = GlanceModifier
-                .clickable(actionStartActivity<MainActivity>())
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = item.symbol,
-                style = TextStyle(
-                    color = GlanceTheme.colors.surface,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp
-                ),
-                modifier = GlanceModifier.defaultWeight(),
-                maxLines = 1
-            )
-            Text(
-                text = "%.2f €".format(item.price),
-                style = TextStyle(
-                    color = GlanceTheme.colors.surface,
-                    fontSize = 14.sp
-                ),
-                maxLines = 1
-            )
-        }
-    }
-
-
-    private fun stringToPortfolio(items: Set<String>): List<Investment> {
-        return items.map { item ->
-            item.toInvestment()
-        }
-    }
-}
-
-class GetPortfolioCallback() : ActionCallback {
-
-    override suspend fun onAction(
-        context: Context,
-        glanceId: GlanceId,
-        parameters: ActionParameters
+    private fun StockList(
+        items: ImmutableList<InvestmentView>,
+        currency: Currency,
+        onClick: Action
     ) {
-        WidgetsRefreshWorker.enqueueNow(context)
+        LazyColumn(
+            modifier = GlanceModifier.fillMaxSize()
+        ) {
+            items(
+                count = items.size
+            ) {
+                Column(
+                    modifier = GlanceModifier.clickable(onClick)
+                ) {
+                    OWInvestmentWidget(
+                        item = items[it],
+                        currency = currency,
+                        section = SectionType.PRICES
+                    )
+
+                    Spacer(modifier = GlanceModifier.height(12.dp))
+                }
+            }
+        }
+    }
+
+    private fun stringToPortfolio(items: Set<String>): List<InvestmentView> {
+        return items.map { item ->
+            item.toInvestmentView()
+        }
     }
 }
 
 object StocksPrefsKeys {
     val stocks = stringSetPreferencesKey("stocks")
+    val currency = stringPreferencesKey("currency")
+    val usdEurRate = doublePreferencesKey("usdEurRate")
+}
+
+@Preview
+@Composable
+private fun StocksWidgetPreview() {
+    OneWalletTheme {
+        StocksWidget().StocksWidgetContent(
+            stocks = persistentListOf(),
+            currency = Currency.EUR
+        )
+    }
 }

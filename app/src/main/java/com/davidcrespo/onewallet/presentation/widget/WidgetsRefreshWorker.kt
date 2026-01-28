@@ -12,8 +12,11 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
-import com.davidcrespo.onewallet.domain.model.investment.toPreference
+import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.GetUsdEurUseCase
+import com.davidcrespo.onewallet.presentation.models.toPreference
+import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.widget.portfolio.PortfolioPrefsKeys
 import com.davidcrespo.onewallet.presentation.widget.portfolio.PortfolioWidget
 import com.davidcrespo.onewallet.presentation.widget.stocks.StocksPrefsKeys
@@ -28,7 +31,9 @@ class WidgetsRefreshWorker(
     params: WorkerParameters
 ) : CoroutineWorker(appContext, params), KoinComponent {
 
-    val getPortfolioItemsUseCase : GetPortfolioItemsUseCase by inject()
+    val getPortfolioItemsUseCase: GetPortfolioItemsUseCase by inject()
+    val financialRepository: FinancialRepository by inject()
+    val getUsdEurUseCase: GetUsdEurUseCase by inject()
 
     override suspend fun doWork(): Result = runCatching {
 
@@ -36,11 +41,10 @@ class WidgetsRefreshWorker(
         val portfolioData = getPortfolioItemsUseCase().first()
 
         // 2) Datos para PortfolioWidget
-        val balance = portfolioData.sumOf { it.quantity * it.price }
         val portfolioItemsSet = portfolioData
             .sortedBy { it.price * it.quantity }
             .map {
-                it.toPreference()
+                it.toUI().toPreference()
             }
             .toSet()
 
@@ -49,17 +53,21 @@ class WidgetsRefreshWorker(
             .filter { it.type.isMarket() }
             .sortedByDescending { it.price }
             .map {
-                it.toPreference()
+                it.toUI().toPreference()
             }
             .toSet()
 
-        val manager = GlanceAppWidgetManager(applicationContext)
+        val selectedCurrency = financialRepository.getSelectedCurrency()
+        val usdEurRate = getUsdEurUseCase().getOrDefault(1.0)
 
         // 4) Actualiza todos los PortfolioWidget
+        val manager = GlanceAppWidgetManager(applicationContext)
+
         manager.getGlanceIds(PortfolioWidget::class.java).forEach { glanceId ->
             updateAppWidgetState(applicationContext, glanceId) { prefs: MutablePreferences ->
-                prefs[PortfolioPrefsKeys.balance] = balance
                 prefs[PortfolioPrefsKeys.items] = portfolioItemsSet
+                prefs[PortfolioPrefsKeys.currency] = selectedCurrency.name
+                prefs[PortfolioPrefsKeys.usdEurRate] = usdEurRate
             }
             PortfolioWidget().update(applicationContext, glanceId)
         }
@@ -68,6 +76,8 @@ class WidgetsRefreshWorker(
         manager.getGlanceIds(StocksWidget::class.java).forEach { glanceId ->
             updateAppWidgetState(applicationContext, glanceId) { prefs: MutablePreferences ->
                 prefs[StocksPrefsKeys.stocks] = stocksSet
+                prefs[StocksPrefsKeys.currency] = selectedCurrency.name
+                prefs[StocksPrefsKeys.usdEurRate] = usdEurRate
             }
             StocksWidget().update(applicationContext, glanceId)
         }
