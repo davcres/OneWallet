@@ -254,7 +254,8 @@ private fun CurrentHolding(
                         text = stringResource(R.string.current_holding_label),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                        modifier = Modifier.padding(horizontal = 8.dp)
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        textAlign = TextAlign.Center
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
@@ -263,7 +264,8 @@ private fun CurrentHolding(
                         text = stringResource(R.string.current_holding, investment.quantity),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.padding(horizontal = 8.dp)
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        textAlign = TextAlign.Center
                     )
                 }
 
@@ -285,7 +287,8 @@ private fun CurrentHolding(
                     text = stringResource(R.string.total_value),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    textAlign = TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
