@@ -104,5 +104,5 @@
 
     <!-- Widget -->
     <string name="reload_cd">Recargar</string>
-    <string name="asset_prices_title">Precios de Activos</string>
+    <string name="asset_prices_title">Precios de Mercado</string>
 </resources>

@@ -377,6 +377,8 @@ class PortfolioViewModel(
                     portfolioItems = it.portfolioItems.map { currencyConverter.convert(it, newSelectedCurrency, usdEurRate) }.toPersistentList()
                 )
             }
+
+            updateWidgets()
         }
     }
 }

@@ -33,7 +33,6 @@ val DarkScheme = darkColorScheme(
 
     surface = SurfaceDark,
     onSurface = OnSurfaceDark,
-
     surfaceVariant = SurfaceVariantDark,
     onSurfaceVariant = OnSurfaceVariantDark,
 
