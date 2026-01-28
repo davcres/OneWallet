@@ -129,7 +129,7 @@ class PortfolioWidget : GlanceAppWidget() {
         onClick: Action
     ) {
         LazyColumn(
-            modifier = GlanceModifier.fillMaxSize()
+            modifier = GlanceModifier.fillMaxWidth()
         ) {
             items(
                 count = items.size
