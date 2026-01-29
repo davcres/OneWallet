@@ -48,8 +48,7 @@
     <string name="other_name_placeholder">ej: Chalet Ibiza</string>
     <string name="total_money_label">Total dinero:</string>
     <string name="add_bank_cd">Añade un nuevo saldo / depósito a tu cartera</string>
-    <string name="update_quantity_market_action">Actualizar Cantidad</string>
-    <string name="update_quantity_manual_action">Actualizar Saldo</string>
+    <string name="update_quantity_action">Actualizar</string>
     <string name="fund_fetch_error">Desafortunadamente no hemos podido obtener el fondo.\nPrueba con otro ISIN.</string>
     <string name="etf_fetch_error">Desafortunadamente no hemos podido obtener el ETF.\nPrueba con otro ISIN.</string>
     <string name="current_holding_label">Acciones actualmente</string>

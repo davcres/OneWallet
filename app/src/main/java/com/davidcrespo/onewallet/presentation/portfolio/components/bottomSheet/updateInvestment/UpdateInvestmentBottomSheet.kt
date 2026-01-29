@@ -410,8 +410,8 @@ private fun Form(
             val errorInvalidQuantity = stringResource(R.string.error_quantity_empty)
 
             Button(
-                text = if (investment.type.isMarket()) stringResource(R.string.update_quantity_market_action) else stringResource(R.string.update_quantity_manual_action),
-                contentDescription = if (investment.type.isMarket()) stringResource(R.string.update_quantity_market_action) else stringResource(R.string.update_quantity_manual_action),
+                text = stringResource(R.string.update_quantity_action),
+                contentDescription = stringResource(R.string.update_quantity_action),
                 style = ButtonStyle.PRIMARY,
                 onClick = {
                     if (quantity >= 0) {
