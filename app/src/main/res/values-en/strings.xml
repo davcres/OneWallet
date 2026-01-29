@@ -12,6 +12,7 @@
     <string name="portfolio_summary">Portfolio Summary</string>
     <string name="currency_selector_cd">Currency selector</string>
     <string name="history_cd">History</string>
+    <string name="tab_allocation">Allocation</string>
     <string name="tab_portfolio">My Portfolio</string>
     <string name="tab_prices">Prices</string>
     <string name="add_new_fund_title">Add New Fund</string>

@@ -38,6 +38,7 @@ import com.davidcrespo.onewallet.core.composables.modifiers.animations.pulse
 import com.davidcrespo.onewallet.core.extensions.applyIf
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWFloatingActionButton
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.portfolio.allocation.AllocationTab
 import com.davidcrespo.onewallet.presentation.portfolio.components.EmptyInvestments
 import com.davidcrespo.onewallet.presentation.portfolio.components.Header
 import com.davidcrespo.onewallet.presentation.portfolio.components.SegmentedTabs
@@ -175,6 +176,10 @@ private fun PortfolioScreen(
                                 .fillMaxSize()
                         ) { page ->
                             when (tabs[page]) {
+                                PortfolioTab.ALLOCATION -> AllocationTab(
+                                    portfolioItems = uiState.portfolioItems,
+                                    modifier = Modifier.fillMaxSize()
+                                )
                                 PortfolioTab.PORTFOLIO -> PositionsTab(
                                     currency = uiState.selectedCurrency,
                                     totalBalance = uiState.totalBalance,

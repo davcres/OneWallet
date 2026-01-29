@@ -1,12 +1,14 @@
 package com.davidcrespo.onewallet.domain.model.investment
 
-enum class InvestmentType {
-    STOCK,
-    CRYPTO,
-    FUND,
-    ETF,
-    CASH,
-    OTHER
+import androidx.compose.ui.graphics.Color
+
+enum class InvestmentType(val color: Color) {
+    STOCK(Color(0xFF3B82F6)),
+    CRYPTO(Color(0xFFF59E0B)),
+    FUND(Color(0xFF8B5CF6)),
+    ETF(Color(0xFF10B981)),
+    CASH(Color(0xFF64748B)),
+    OTHER(Color(0xFFEC4899)),
 }
 
 private val MARKET_TYPES = setOf(
