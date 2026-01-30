@@ -11,5 +11,5 @@ sealed interface Route : NavKey {
     data class Market(val isCrypto: Boolean) : Route
 
     @Serializable
-    data object Historical : Route
+    data class Historical(val isBalanceVisible: Boolean) : Route
 }

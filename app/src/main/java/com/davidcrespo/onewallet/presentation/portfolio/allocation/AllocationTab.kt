@@ -3,21 +3,30 @@ package com.davidcrespo.onewallet.presentation.portfolio.allocation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.charts.models.AssetSlice
+import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import com.davidcrespo.onewallet.presentation.portfolio.allocation.composables.AllocationList
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.composables.Graphic
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun AllocationTab(
-    portfolioItems: ImmutableList<InvestmentView>,
-    modifier: Modifier = Modifier
+    itemsByType: ImmutableMap<InvestmentType, ImmutableList<InvestmentView>>,
+    totalBalance: Double,
+    previousBalance: Double,
+    currency: Currency,
+    onSelect: (InvestmentType) -> Unit,
+    modifier: Modifier = Modifier,
+    isBalanceVisible: Boolean = true,
 ) {
     Column(
         modifier = modifier,
@@ -26,22 +35,44 @@ fun AllocationTab(
         Spacer(modifier = Modifier.height(16.dp))
 
         Graphic(
-            portfolioItems = portfolioItems.map {
-                AssetSlice(it.quantity * it.displayPrice, it.type.color)
-            }.toPersistentList()
+            portfolioItems = itemsByType.map {
+                AssetSlice(
+                    name = stringResource(it.key.titleRes),
+                    value = it.value.sumOf { it.quantity * it.displayPrice },
+                    color = it.key.color
+                )
+            }.toPersistentList(),
+            totalBalance = totalBalance,
+            previousBalance = previousBalance,
+            currency = currency
         )
 
-        Text("HOLA")
+        //TODO*** pedirle a gemini que refactorice
+        AllocationList(
+            items = itemsByType.map {
+                val totalValue = it.value.sumOf { it.quantity * it.displayPrice }
+                val totalPreviousValue = it.value.sumOf { it.quantity * it.displayPreviousPrice }
+                val changePercent = totalPreviousValue
+                    .takeIf { it != 0.0 }
+                    ?.let { ((totalValue - it) / it) * 100.0 } ?: 0.0
+                InvestmentView(
+                    symbol = stringResource(it.key.titleRes),
+                    name = stringResource(it.key.titleRes),
+                    quantity = 1.0,
+                    displayPrice = totalValue,
+                    displayPreviousPrice = totalPreviousValue,
+                    originalPrice = totalValue,
+                    originalPreviousPrice = totalPreviousValue,
+                    originalCurrency = currency,
+                    changePercent = changePercent,
+                    type = it.key,
+                    month = 0,
+                    year = 0
+                )
+            }.toPersistentList(),
+            currency = currency,
+            onSelect = onSelect,
+            isBalanceVisible = isBalanceVisible
+        )
     }
 }
-
-/*val assets = persistentListOf(
-    AssetSlice(82f, Color(0xFFFFB300)),  // Cash
-    AssetSlice(6f, Color(0xFF3DDC97)), // Stocks
-    AssetSlice(6f, Color(0xFF7C4DFF)), // Crypto
-    AssetSlice(6f, Color(0xFF4285F4)), // Funds
-)*/
-
-
-
-

@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.bottomSheet.SheetHandle
 import kotlinx.coroutines.launch
@@ -46,7 +47,7 @@ import kotlinx.coroutines.launch
 fun AddInvestmentBottomSheet(
     visible: Boolean,
     onDismiss: () -> Unit,
-    onAssetTypeClick: (AssetType) -> Unit
+    onAssetTypeClick: (InvestmentType) -> Unit
 ) {
     if (!visible) return
 
@@ -76,7 +77,7 @@ fun AddInvestmentBottomSheet(
 @Composable
 private fun SheetContent(
     onClose: () -> Unit,
-    onAssetTypeClick: (AssetType) -> Unit
+    onAssetTypeClick: (InvestmentType) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -97,10 +98,10 @@ private fun SheetContent(
                 .fillMaxWidth()
                 .heightIn(min = 240.dp)
         ) {
-            items(AssetType.entries) { item ->
+            items(InvestmentType.entries) { item ->
                 AssetTypeCard(
-                    title = stringResource(item.title),
-                    subtitle = stringResource(item.subtitle),
+                    title = stringResource(item.titleRes),
+                    subtitle = stringResource(item.subtitleRes),
                     icon = item.icon,
                     onClick = { onAssetTypeClick(item) }
                 )

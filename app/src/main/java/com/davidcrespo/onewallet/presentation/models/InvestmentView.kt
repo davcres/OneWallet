@@ -33,7 +33,7 @@ data class InvestmentView(
             InvestmentType.CRYPTO -> Icons.Outlined.CurrencyBitcoin
             InvestmentType.FUND,
             InvestmentType.ETF -> Icons.Outlined.PieChartOutline
-            InvestmentType.CASH -> Icons.Outlined.AccountBalance
+            InvestmentType.BANK -> Icons.Outlined.AccountBalance
             InvestmentType.OTHER -> Icons.Outlined.Payments
         }
 
@@ -43,7 +43,7 @@ data class InvestmentView(
             InvestmentType.CRYPTO -> R.drawable.ic_currency_bitcoin
             InvestmentType.FUND,
             InvestmentType.ETF -> R.drawable.ic_pie_chart
-            InvestmentType.CASH -> R.drawable.ic_account_balance
+            InvestmentType.BANK -> R.drawable.ic_account_balance
             InvestmentType.OTHER -> R.drawable.ic_payments
         }
 }

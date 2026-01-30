@@ -20,6 +20,9 @@ import com.davidcrespo.onewallet.presentation.models.toDomain
 import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -78,6 +81,10 @@ class PortfolioViewModel(
 
             is PortfolioIntent.NavigateToHistorical -> {}
             is PortfolioIntent.NavigateToMarket -> {}
+
+            is PortfolioIntent.GetItemsByType -> getItemsByType()
+            is PortfolioIntent.SelectInvestmentType -> _uiState.update { it.copy(typeDetail = intent.type) }
+            is PortfolioIntent.DismissInvestmentType -> _uiState.update { it.copy(typeDetail = null) }
         }
     }
 
@@ -286,19 +293,19 @@ class PortfolioViewModel(
             val year = now.year
             val month = now.monthValue
 
-            val cash = Investment(
+            val bank = Investment(
                 symbol = name,
                 name = name,
                 quantity = quantity,
                 price = 1.0,
                 previousPrice = 0.0,
                 currency = currency,
-                type = InvestmentType.CASH,
+                type = InvestmentType.BANK,
                 year = year,
                 month = month
             )
 
-            addInvestmentToPortfolioUseCase(cash)
+            addInvestmentToPortfolioUseCase(bank)
             _uiState.update { it.copy(isBankDialogVisible = false) }
         }
     }
@@ -379,6 +386,19 @@ class PortfolioViewModel(
             }
 
             updateWidgets()
+        }
+    }
+
+    private fun getItemsByType() {
+        viewModelScope.launch {
+            val portfolioItems = _uiState.value.portfolioItems
+            val grouped: ImmutableMap<InvestmentType, ImmutableList<InvestmentView>> =
+                portfolioItems
+                    .groupBy { it.type }
+                    .mapValues { (_, items) -> items.toImmutableList() }
+                    .toImmutableMap()
+
+            _uiState.update { it.copy(portfolioItemsByType = grouped) }
         }
     }
 }

@@ -26,11 +26,11 @@ import androidx.compose.ui.unit.dp
  * ```
  */
 @Composable
-fun Modifier.privacySensitive(effect: PrivacyEffect = PrivacyEffect.Blur(16.dp)): Modifier {
+fun Modifier.privacySensitive(hideContent: Boolean, effect: PrivacyEffect = PrivacyEffect.Blur(16.dp)): Modifier {
     val windowInfo = LocalWindowInfo.current
     val isInRecentApps by rememberUpdatedState(!windowInfo.isWindowFocused)
 
-    return if (isInRecentApps) {
+    return if (isInRecentApps || hideContent) {
         when (effect) {
             is PrivacyEffect.Redact -> applyRedact(effect.color)
             is PrivacyEffect.Blur -> applyBlur(effect.blurRadius)

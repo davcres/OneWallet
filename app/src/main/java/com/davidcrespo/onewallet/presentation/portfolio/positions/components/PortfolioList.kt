@@ -40,6 +40,7 @@ fun PortfolioList(
     currency: Currency,
     onRemove: (InvestmentView) -> Unit,
     onEdit: (InvestmentView) -> Unit,
+    isBalanceVisible: Boolean,
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState()
 ) {
@@ -102,6 +103,7 @@ fun PortfolioList(
                         currency = currency,
                         section = SectionType.PORTFOLIO,
                         onClick = { onEdit(portfolioItem) },
+                        isBalanceVisible = isBalanceVisible
                     )
                 },
                 modifier = modifier.bounceClick()

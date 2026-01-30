@@ -32,20 +32,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.AutoScrollingText
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.coroutines.delay
 
@@ -56,6 +60,7 @@ fun OWInvestmentItem(
     previousMonthItem: InvestmentView? = null,
     section: SectionType,
     onClick: (InvestmentView) -> Unit,
+    isBalanceVisible: Boolean,
     onGloballyPositioned: (LayoutCoordinates) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -89,13 +94,13 @@ fun OWInvestmentItem(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
+                    .background(item.type.color),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = item.getIcon(),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = Color.White
                 )
             }
 
@@ -125,14 +130,14 @@ fun OWInvestmentItem(
             Box(
                 contentAlignment = Alignment.CenterEnd,
                 modifier = Modifier
-                    .privacySensitive()
+                    .privacySensitive(hideContent = !isBalanceVisible)
                     .padding(all = 16.dp)
             ) {
                 Column(horizontalAlignment = Alignment.End) {
                     val showPercentage = item.type.isMarket()
                     val totalValue = when (section) {
                         SectionType.PORTFOLIO, SectionType.HISTORICAL -> item.quantity * item.displayPrice
-                        SectionType.PRICES -> item.displayPrice
+                        SectionType.PRICES, SectionType.ALLOCATION -> item.displayPrice
                     }
 
                     if (showPercentage) {
@@ -194,5 +199,32 @@ private fun GhostContent() {
         PriceDisplay(value = 0.0, currency = Currency.EUR)
         Spacer(modifier = Modifier.height(8.dp))
         TrendDisplay(value = 1.0, text = "0.00 %", false, Currency.EUR)
+    }
+}
+
+@Preview
+@Composable
+private fun OWInvestmentItemPreview() {
+    OneWalletTheme {
+        OWInvestmentItem(
+            item = InvestmentView(
+                symbol = "AAPL",
+                name = "Apple",
+                quantity = 10.0,
+                displayPrice = 150.0,
+                displayPreviousPrice = 140.0,
+                originalPrice = 150.0,
+                originalPreviousPrice = 140.0,
+                originalCurrency = Currency.EUR,
+                changePercent = 10.0,
+                type = InvestmentType.STOCK,
+                month = 0,
+                year = 0
+            ),
+            currency = Currency.EUR,
+            section = SectionType.PORTFOLIO,
+            onClick = {},
+            isBalanceVisible = true
+        )
     }
 }

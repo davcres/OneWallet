@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 
 @Immutable
 data class AssetSlice(
+    val name: String,
     val value: Double,
     val color: Color
 )

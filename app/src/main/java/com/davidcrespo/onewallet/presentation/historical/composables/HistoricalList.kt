@@ -20,6 +20,7 @@ fun HistoricalList(
     items: ImmutableList<ImmutableList<InvestmentView>>,
     currency: Currency,
     onClick: (ImmutableList<InvestmentView>) -> Unit,
+    isBalanceVisible: Boolean,
     modifier: Modifier = Modifier,
     state: LazyListState = rememberLazyListState()
 ) {
@@ -36,6 +37,7 @@ fun HistoricalList(
                 previousItem = items.getOrNull(index + 1),
                 currency = currency,
                 onClick = { onClick(historicalItem) },
+                isBalanceVisible = isBalanceVisible,
                 modifier = modifier
             )
         }

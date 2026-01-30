@@ -55,6 +55,7 @@ fun HistoricalMonthCard(
     previousItem: ImmutableList<InvestmentView>? = null,
     currency: Currency,
     onClick: () -> Unit,
+    isBalanceVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
     var showPercentageState by remember { mutableStateOf(true) }
@@ -110,7 +111,7 @@ fun HistoricalMonthCard(
 
             Box(contentAlignment = Alignment.CenterEnd,
                 modifier = Modifier
-                    .privacySensitive()
+                    .privacySensitive(hideContent = !isBalanceVisible)
                     .padding(horizontal = 4.dp)
             ) {
                 Column(

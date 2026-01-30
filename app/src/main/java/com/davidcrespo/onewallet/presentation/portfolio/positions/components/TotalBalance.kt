@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -35,24 +34,21 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.res.stringArrayResource
-import androidx.compose.ui.res.stringResource
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWCurrencyPrice
-import com.davidcrespo.onewallet.presentation.designsystem.composables.OWShakeListener
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.theme.cardGlowBrush
 import kotlinx.coroutines.delay
@@ -62,16 +58,13 @@ fun TotalBalance(
     currency: Currency,
     totalBalance: Double,
     previousBalance: Double,
+    changeBalanceVisibility: () -> Unit,
     modifier: Modifier = Modifier,
-    isExpanded: Boolean = true
+    isExpanded: Boolean = true,
+    isBalanceVisible: Boolean,
 ) {
     val richPhrases = stringArrayResource(R.array.rich_phrases).toList()
     var currentRichPhrase by remember { mutableStateOf(richPhrases.random()) }
-    var isBalanceVisible by rememberSaveable { mutableStateOf(true) }
-
-    OWShakeListener(
-        onShake = { isBalanceVisible = !isBalanceVisible }
-    )
 
     LaunchedEffect(totalBalance) {
         if (totalBalance > 1_000_000) {
@@ -84,13 +77,6 @@ fun TotalBalance(
 
     val verticalPadding by animateDpAsState(targetValue = if (isExpanded) 32.dp else 16.dp, label = "padding")
     val fontSize by animateFloatAsState(targetValue = if (isExpanded) 45f else 32f, label = "fontSize")
-    val blurRadius by animateDpAsState(
-        targetValue = if (isBalanceVisible) 0.dp else 16.dp,
-        animationSpec = tween(
-            durationMillis = 400
-        ),
-        label = "blur"
-    )
 
     Card(
         modifier = modifier.bounceClick(),
@@ -107,8 +93,7 @@ fun TotalBalance(
         ) {
             Box(
                 modifier = Modifier
-                    .blur(blurRadius)
-                    .privacySensitive()
+                    .privacySensitive(hideContent = !isBalanceVisible)
             ) {
                 Column(
                     modifier = Modifier
@@ -215,7 +200,7 @@ fun TotalBalance(
             }
 
             IconButton(
-                onClick = { isBalanceVisible = !isBalanceVisible },
+                onClick = { changeBalanceVisibility() },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)

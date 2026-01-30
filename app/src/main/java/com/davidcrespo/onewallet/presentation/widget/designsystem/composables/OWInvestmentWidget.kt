@@ -44,7 +44,7 @@ fun OWInvestmentWidget(
     val showTrend = item.type.isMarket()
     val totalValue = when (section) {
         SectionType.PORTFOLIO, SectionType.HISTORICAL -> item.quantity * item.displayPrice
-        SectionType.PRICES -> item.displayPrice
+        SectionType.PRICES, SectionType.ALLOCATION -> item.displayPrice
     }
 
     Box(

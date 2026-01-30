@@ -11,12 +11,14 @@ import kotlinx.collections.immutable.ImmutableList
 fun PricesTab(
     currency: Currency,
     portfolioItems: ImmutableList<InvestmentView>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isBalanceVisible: Boolean = true,
 ) {
     PricesList(
         items = portfolioItems,
         currency = currency,
-        modifier = modifier
+        modifier = modifier,
+        isBalanceVisible = isBalanceVisible
     )
 }
 
