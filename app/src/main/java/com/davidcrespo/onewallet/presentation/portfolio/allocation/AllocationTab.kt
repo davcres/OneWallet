@@ -44,7 +44,8 @@ fun AllocationTab(
             }.toPersistentList(),
             totalBalance = totalBalance,
             previousBalance = previousBalance,
-            currency = currency
+            currency = currency,
+            isBalanceVisible = isBalanceVisible
         )
 
         //TODO*** pedirle a gemini que refactorice
