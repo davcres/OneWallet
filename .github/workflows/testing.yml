@@ -23,14 +23,14 @@ jobs:
           echo "TELEGRAM_API_KEY=${{ secrets.TELEGRAM_API_KEY }}" >> $GITHUB_WORKSPACE/secrets.properties
           echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> $GITHUB_WORKSPACE/secrets.properties
 
-      - name: Unit Tests
-        run: ./gradlew testDebugUnitTest # ejecuta tests
-
-      # Recomendado: instala Android SDK + acepta licenses
+      # Instala Android SDK + acepta licenses
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         # (opcional) with: por si una versión nueva de cmdline-tools cambia algo y da error
         #   cmdline-tools-version: 11076708
+
+      - name: Unit Tests
+        run: ./gradlew testDebugUnitTest --no-daemon --stacktrace # ejecuta tests
 
       - name: Enable KVM group perms
         run: |
@@ -46,20 +46,25 @@ jobs:
           target: google_apis
           arch: x86_64
           emulator-boot-timeout: 1200
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -partition-size 2048
+          emulator-options: >-
+            -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+            -partition-size 2048
           disable-animations: true
           script: |
-            adb kill-server || true
-            adb start-server
-            adb devices
-
             adb wait-for-device
             adb shell 'while [[ "$(getprop sys.boot_completed | tr -d "\r")" != "1" ]]; do sleep 2; done'
-            adb shell settings put global window_animation_scale 0
-            adb shell settings put global transition_animation_scale 0
-            adb shell settings put global animator_duration_scale 0
+            ./gradlew connectedDebugAndroidTest --no-daemon --stacktrace --info
 
-            ./gradlew connectedDebugAndroidTest --stacktrace --info
+      # Evita que la action de report "rompa" paths con espacios (e.g. "emulator-5554 - 16")
+      - name: Prepare androidTest XML (sanitize filenames)
+        if: ${{ always() }}
+        run: |
+          mkdir -p test-results/androidTest
+          find app/build/outputs/androidTest-results/connected -name "TEST-*.xml" -print0 | \
+            while IFS= read -r -d '' f; do
+              b="$(basename "$f" | tr ' ' '_' )"
+              cp "$f" "test-results/androidTest/$b"
+            done
 
       # Sube reportes como artefactos para ver cual es el problema si fallan los tests
       - name: Upload Android Test Reports
@@ -70,9 +75,22 @@ jobs:
           path: |
             **/build/reports/*
             **/build/outputs/androidTest-results/*
-            **/build/outputs/androidTest-results/connected/**/*.xml
+            test-results/androidTest/*.xml
 
-      # 👇 IMPORTANTÍSIMO: solo ejecutar si existen XMLs de androidTest
+      - name: Collect logcat on failure
+        if: failure()
+        run: |
+          adb logcat -d > logcat.txt || true
+
+      - name: Upload logcat
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logcat
+          path: logcat.txt
+
       - name: Android Tests Report
-        if: ${{ always() && hashFiles('**/build/outputs/androidTest-results/connected/**/*.xml') != '' }} # ejecutar siempre, aunque los tests fallen
+        if: ${{ always() && hashFiles('test-results/androidTest/*.xml') != '' }} # ejecutar siempre, aunque los tests fallen
         uses: asadmansr/android-test-report-action@v1.2.0 # reporte de los tests
+        with:
+          path: test-results/androidTest/*.xml
