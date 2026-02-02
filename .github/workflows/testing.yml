@@ -32,6 +32,12 @@ jobs:
         # (opcional) with: por si una versión nueva de cmdline-tools cambia algo y da error
         #   cmdline-tools-version: 11076708
 
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
       # UI / Instrumentation tests (Compose) en emulador
       - name: Instrumentation (UI) Tests - Compose
         uses: reactivecircus/android-emulator-runner@v2
@@ -39,15 +45,9 @@ jobs:
           api-level: 34
           target: google_apis
           arch: x86_64
-
-          # 👇 Más robustez: más partición + sin snapshots + opciones “CI friendly”
-          emulator-options: >
-            -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
-            -partition-size 2048
-
+          emulator-boot-timeout: 1200
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -partition-size 2048
           disable-animations: true
-
-          # 👇 Aquí metemos “wait boot” + reset adb + log básico
           script: |
             adb kill-server || true
             adb start-server
