@@ -5,11 +5,12 @@ on: [ push ]
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup JDK 17
-        uses: actions/setup-java@v3 # preparar java
+        uses: actions/setup-java@v4 # preparar java
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -22,9 +23,74 @@ jobs:
           echo "TELEGRAM_API_KEY=${{ secrets.TELEGRAM_API_KEY }}" >> $GITHUB_WORKSPACE/secrets.properties
           echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> $GITHUB_WORKSPACE/secrets.properties
 
+      # Instala Android SDK + acepta licenses
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        # (opcional) with: por si una versión nueva de cmdline-tools cambia algo y da error
+        #   cmdline-tools-version: 11076708
+
       - name: Unit Tests
-        run: ./gradlew testDebugUnitTest # ejecuta tests
+        run: ./gradlew testDebugUnitTest --no-daemon --stacktrace # ejecuta tests
+
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # UI / Instrumentation tests (Compose) en emulador
+      - name: Instrumentation (UI) Tests - Compose
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          emulator-boot-timeout: 1200
+          emulator-options: >-
+            -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+            -partition-size 2048
+          disable-animations: true
+          script: |
+            adb wait-for-device
+            adb shell 'while [[ "$(getprop sys.boot_completed | tr -d "\r")" != "1" ]]; do sleep 2; done'
+            ./gradlew connectedDebugAndroidTest --no-daemon --stacktrace --info
+
+      # Evita que la action de report "rompa" paths con espacios (e.g. "emulator-5554 - 16")
+      - name: Prepare androidTest XML (sanitize filenames)
+        if: ${{ always() }}
+        run: |
+          mkdir -p test-results/androidTest
+          find app/build/outputs/androidTest-results/connected -name "TEST-*.xml" -print0 | \
+            while IFS= read -r -d '' f; do
+              b="$(basename "$f" | tr ' ' '_' )"
+              cp "$f" "test-results/androidTest/$b"
+            done
+
+      # Sube reportes como artefactos para ver cual es el problema si fallan los tests
+      - name: Upload Android Test Reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-test-reports
+          path: |
+            **/build/reports/*
+            **/build/outputs/androidTest-results/*
+            test-results/androidTest/*.xml
+
+      - name: Collect logcat on failure
+        if: failure()
+        run: |
+          adb logcat -d > logcat.txt || true
+
+      - name: Upload logcat
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logcat
+          path: logcat.txt
 
       - name: Android Tests Report
+        if: ${{ always() && hashFiles('test-results/androidTest/*.xml') != '' }} # ejecutar siempre, aunque los tests fallen
         uses: asadmansr/android-test-report-action@v1.2.0 # reporte de los tests
-        if: ${{ always() }} # ejecutar siempre, aunque los tests fallen
+        with:
+          path: test-results/androidTest/*.xml
