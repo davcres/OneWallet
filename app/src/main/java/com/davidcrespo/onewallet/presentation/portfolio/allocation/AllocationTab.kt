@@ -57,9 +57,12 @@ fun AllocationTab(
                 val changePercent = totalPreviousValue
                     .takeIf { it != 0.0 }
                     ?.let { ((itemsByType.totalValue - it) / it) * 100.0 } ?: 0.0
+
+                val percentage = itemsByType.totalValue / totalBalance * 100
+                val name = stringResource(itemsByType.type.titleRes) + " (%.2f%%)".format(percentage)
                 InvestmentView(
-                    symbol = stringResource(itemsByType.type.titleRes),
-                    name = stringResource(itemsByType.type.titleRes),
+                    symbol = name,
+                    name = "",
                     quantity = 1.0,
                     displayPrice = itemsByType.totalValue,
                     displayPreviousPrice = totalPreviousValue,
