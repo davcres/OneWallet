@@ -37,6 +37,7 @@ fun TotalBalance(
     modifier: Modifier = Modifier,
     isExpanded: Boolean = true,
     isBalanceVisible: Boolean,
+    shouldAnimate: Boolean = true
 ) {
     Card(
         modifier = modifier.bounceClick(),
@@ -57,7 +58,8 @@ fun TotalBalance(
                 previousBalance = previousBalance,
                 isBalanceVisible = isBalanceVisible,
                 isExpanded = isExpanded,
-                section = SectionType.PORTFOLIO
+                section = SectionType.PORTFOLIO,
+                shouldAnimate = shouldAnimate
             )
 
             IconButton(

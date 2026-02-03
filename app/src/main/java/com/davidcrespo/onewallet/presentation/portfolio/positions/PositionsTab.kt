@@ -39,6 +39,7 @@ fun PositionsTab(
     onEditQuantity: (InvestmentView) -> Unit,
     changeBalanceVisibility: () -> Unit,
     isBalanceVisible: Boolean,
+    isActivePage: Boolean = true
 ) {
     val isExpanded by remember {
         derivedStateOf { mutableStateOf(true) }
@@ -71,7 +72,8 @@ fun PositionsTab(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             isExpanded = isExpanded.value,
             changeBalanceVisibility = changeBalanceVisibility,
-            isBalanceVisible = isBalanceVisible
+            isBalanceVisible = isBalanceVisible,
+            shouldAnimate = isActivePage
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -88,7 +90,8 @@ fun PositionsTab(
             currency = currency,
             onRemove = onRemoveItem,
             onEdit = onEditQuantity,
-            isBalanceVisible = isBalanceVisible
+            isBalanceVisible = isBalanceVisible,
+            shouldAnimate = isActivePage
         )
     }
 }

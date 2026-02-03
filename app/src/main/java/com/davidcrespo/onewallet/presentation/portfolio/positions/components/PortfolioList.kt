@@ -42,72 +42,77 @@ fun PortfolioList(
     onEdit: (InvestmentView) -> Unit,
     isBalanceVisible: Boolean,
     modifier: Modifier = Modifier,
-    state: LazyListState = rememberLazyListState()
+    state: LazyListState = rememberLazyListState(),
+    shouldAnimate: Boolean = true
 ) {
-    OWAnimatedList(
-        items = items,
-        key = { it.symbol },
-        state = state,
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        itemContent = { modifier, portfolioItem, index ->
-            val density = LocalDensity.current
-            val dismissState = remember(portfolioItem.symbol) {
-                SwipeToDismissBoxState(
-                    initialValue = SwipeToDismissBoxValue.Settled,
-                    density = density,
-                    confirmValueChange = {
-                        if (it == SwipeToDismissBoxValue.EndToStart) {
-                            onRemove(portfolioItem)
-                            false
+    if (shouldAnimate) {
+        OWAnimatedList(
+            items = items,
+            key = { it.symbol },
+            state = state,
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            itemContent = { modifier, portfolioItem, index ->
+                val density = LocalDensity.current
+                val dismissState = remember(portfolioItem.symbol) {
+                    SwipeToDismissBoxState(
+                        initialValue = SwipeToDismissBoxValue.Settled,
+                        density = density,
+                        confirmValueChange = {
+                            if (it == SwipeToDismissBoxValue.EndToStart) {
+                                onRemove(portfolioItem)
+                                false
+                            } else {
+                                false
+                            }
+                        },
+                        positionalThreshold = { with(density) { 56.dp.toPx() } }
+                    )
+                }
+
+                SwipeToDismissBox(
+                    state = dismissState,
+                    backgroundContent = {
+                        val color = if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
+                            Brush.horizontalGradient(
+                                colors = listOf(Color.Transparent, Color.Red.copy(alpha = 0.8f))
+                            )
                         } else {
-                            false
+                            Brush.horizontalGradient(
+                                colors = listOf(Color.Transparent, Color.Transparent)
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .background(color)
+                                .padding(horizontal = 20.dp),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Borrar",
+                                tint = Color.White
+                            )
                         }
                     },
-                    positionalThreshold = { with(density) { 56.dp.toPx() } }
+                    content = {
+                        OWInvestmentItem(
+                            item = portfolioItem,
+                            currency = currency,
+                            section = SectionType.PORTFOLIO,
+                            onClick = { onEdit(portfolioItem) },
+                            isBalanceVisible = isBalanceVisible
+                        )
+                    },
+                    modifier = modifier.bounceClick()
                 )
             }
-
-            SwipeToDismissBox(
-                state = dismissState,
-                backgroundContent = {
-                    val color = if (dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
-                        Brush.horizontalGradient(
-                            colors = listOf(Color.Transparent, Color.Red.copy(alpha = 0.8f))
-                        )
-                    } else {
-                        Brush.horizontalGradient(
-                            colors = listOf(Color.Transparent, Color.Transparent)
-                        )
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape)
-                            .background(color)
-                            .padding(horizontal = 20.dp),
-                        contentAlignment = Alignment.CenterEnd
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Borrar",
-                            tint = Color.White
-                        )
-                    }
-                },
-                content = {
-                    OWInvestmentItem(
-                        item = portfolioItem,
-                        currency = currency,
-                        section = SectionType.PORTFOLIO,
-                        onClick = { onEdit(portfolioItem) },
-                        isBalanceVisible = isBalanceVisible
-                    )
-                },
-                modifier = modifier.bounceClick()
-            )
-        }
-    )
+        )
+    } else {
+        Box(modifier = modifier.fillMaxSize())
+    }
 }

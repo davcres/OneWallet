@@ -89,7 +89,7 @@ private fun PortfolioScreen(
     modifier: Modifier = Modifier
 ) {
     val tabs = remember { PortfolioTab.entries }
-    val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
+    val pagerState = rememberPagerState(initialPage = 1) { tabs.size }
     val scope = rememberCoroutineScope()
     var isBalanceVisible by rememberSaveable { mutableStateOf(true) }
     var fabButtonExpanded by remember { mutableStateOf(false) }
@@ -188,6 +188,7 @@ private fun PortfolioScreen(
                             beyondViewportPageCount = 1
                         ) { page ->
                             val tab = tabs[page]
+                            val isActivePage = pagerState.targetPage == page || pagerState.currentPage == page
                             stateHolder.SaveableStateProvider(key = tab) {
                                 when (tab) {
                                     PortfolioTab.ALLOCATION -> AllocationTab(
@@ -197,7 +198,8 @@ private fun PortfolioScreen(
                                         currency = uiState.selectedCurrency,
                                         onSelect = { onAction(PortfolioIntent.SelectInvestmentType(it)) },
                                         modifier = Modifier.fillMaxSize(),
-                                        isBalanceVisible = isBalanceVisible
+                                        isBalanceVisible = isBalanceVisible,
+                                        isActivePage = isActivePage
                                     )
                                     PortfolioTab.PORTFOLIO -> PositionsTab(
                                         currency = uiState.selectedCurrency,
@@ -207,13 +209,15 @@ private fun PortfolioScreen(
                                         onRemoveItem = { onAction(PortfolioIntent.ShowDeleteDialog(it)) },
                                         onEditQuantity = { onAction(PortfolioIntent.EditQuantity(it)) },
                                         changeBalanceVisibility = { isBalanceVisible = !isBalanceVisible },
-                                        isBalanceVisible = isBalanceVisible
+                                        isBalanceVisible = isBalanceVisible,
+                                        isActivePage = isActivePage
                                     )
                                     PortfolioTab.PRICES -> PricesTab(
                                         currency = uiState.selectedCurrency,
                                         portfolioItems = uiState.portfolioItems,
                                         modifier = Modifier.fillMaxSize(),
-                                        isBalanceVisible = isBalanceVisible
+                                        isBalanceVisible = isBalanceVisible,
+                                        isActivePage = isActivePage
                                     )
                                 }
                             }

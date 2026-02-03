@@ -55,6 +55,7 @@ fun OWBalance(
     isExpanded: Boolean,
     section: SectionType,
     modifier: Modifier = Modifier,
+    shouldAnimate: Boolean = true
 ) {
     val richPhrases = stringArrayResource(R.array.rich_phrases).toList()
     var currentRichPhrase by remember { mutableStateOf(richPhrases.random()) }
@@ -136,7 +137,8 @@ fun OWBalance(
                 OWCurrencyPrice(
                     price = balance,
                     currency = currency,
-                    fontSize = fontSize.sp
+                    fontSize = fontSize.sp,
+                    shouldAnimate = shouldAnimate
                 )
 
                 AnimatedVisibility(

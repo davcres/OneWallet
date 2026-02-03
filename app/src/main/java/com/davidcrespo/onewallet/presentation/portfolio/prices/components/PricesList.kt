@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.presentation.portfolio.prices.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,22 +24,27 @@ fun PricesList(
     currency: Currency,
     modifier: Modifier = Modifier,
     isBalanceVisible: Boolean = true,
+    shouldAnimate: Boolean = true
 ) {
-    OWAnimatedList(
-        items = items.filter { it.type.isMarket() }.toPersistentList(),
-        key = { it.symbol },
-        contentPadding = PaddingValues(16.dp),
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        itemContent = { modifier, priceItem, index ->
-            OWInvestmentItem(
-                item = priceItem,
-                currency = currency,
-                section = SectionType.PRICES,
-                onClick = {},
-                modifier = modifier,
-                isBalanceVisible = isBalanceVisible
-            )
-        }
-    )
+    if (shouldAnimate) {
+        OWAnimatedList(
+            items = items.filter { it.type.isMarket() }.toPersistentList(),
+            key = { it.symbol },
+            contentPadding = PaddingValues(16.dp),
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            itemContent = { modifier, priceItem, index ->
+                OWInvestmentItem(
+                    item = priceItem,
+                    currency = currency,
+                    section = SectionType.PRICES,
+                    onClick = {},
+                    modifier = modifier,
+                    isBalanceVisible = isBalanceVisible
+                )
+            }
+        )
+    } else {
+        Box(modifier = modifier.fillMaxSize())
+    }
 }

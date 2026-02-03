@@ -27,6 +27,7 @@ fun AllocationTab(
     onSelect: (InvestmentType) -> Unit,
     modifier: Modifier = Modifier,
     isBalanceVisible: Boolean = true,
+    isActivePage: Boolean = true
 ) {
     Column(
         modifier = modifier,
@@ -45,7 +46,8 @@ fun AllocationTab(
             totalBalance = totalBalance,
             previousBalance = previousBalance,
             currency = currency,
-            isBalanceVisible = isBalanceVisible
+            isBalanceVisible = isBalanceVisible,
+            shouldAnimate = isActivePage
         )
 
         //TODO*** pedirle a gemini que refactorice
@@ -73,7 +75,8 @@ fun AllocationTab(
             }.toPersistentList(),
             currency = currency,
             onSelect = onSelect,
-            isBalanceVisible = isBalanceVisible
+            isBalanceVisible = isBalanceVisible,
+            shouldAnimate = isActivePage
         )
     }
 }

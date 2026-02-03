@@ -24,19 +24,24 @@ fun ChartSequentialAnimation(
     modifier: Modifier = Modifier,
     strokeWidth: Dp = 28.dp,
     durationMs: Int = 2000,
-    minSlicePercent: Float = 0.01f
+    minSlicePercent: Float = 0.01f,
+    shouldAnimate: Boolean = true
 ) {
     val sweepProgress = remember { Animatable(0f) }
 
-    LaunchedEffect(slices) {
-        sweepProgress.snapTo(0f)
-        sweepProgress.animateTo(
-            targetValue = 360f,
-            animationSpec = tween(
-                durationMillis = durationMs,
-                easing = FastOutSlowInEasing
+    LaunchedEffect(slices, shouldAnimate) {
+        if (shouldAnimate) {
+            sweepProgress.snapTo(0f)
+            sweepProgress.animateTo(
+                targetValue = 360f,
+                animationSpec = tween(
+                    durationMillis = durationMs,
+                    easing = FastOutSlowInEasing
+                )
             )
-        )
+        } else {
+            sweepProgress.snapTo(0f)
+        }
     }
 
     val sweeps = remember(slices) {
@@ -138,19 +143,24 @@ fun ChartRevealAllAnimation(
     modifier: Modifier = Modifier,
     strokeWidth: Dp = 28.dp,
     animationDurationMs: Int = 900,
-    minSlicePercent: Float = 0.01f
+    minSlicePercent: Float = 0.01f,
+    shouldAnimate: Boolean = true
 ) {
     val progress = remember { Animatable(0f) }
 
-    LaunchedEffect(slices) {
-        progress.snapTo(0f)
-        progress.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(
-                durationMillis = animationDurationMs,
-                easing = FastOutSlowInEasing
+    LaunchedEffect(slices, shouldAnimate) {
+        if (shouldAnimate) {
+            progress.snapTo(0f)
+            progress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = animationDurationMs,
+                    easing = FastOutSlowInEasing
+                )
             )
-        )
+        } else {
+            progress.snapTo(0f)
+        }
     }
 
     // Sweeps “visuales” con mínimo (suman 360)

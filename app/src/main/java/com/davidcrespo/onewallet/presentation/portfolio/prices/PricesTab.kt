@@ -13,12 +13,14 @@ fun PricesTab(
     portfolioItems: ImmutableList<InvestmentView>,
     modifier: Modifier = Modifier,
     isBalanceVisible: Boolean = true,
+    isActivePage: Boolean = true
 ) {
     PricesList(
         items = portfolioItems,
         currency = currency,
         modifier = modifier,
-        isBalanceVisible = isBalanceVisible
+        isBalanceVisible = isBalanceVisible,
+        shouldAnimate = isActivePage
     )
 }
 

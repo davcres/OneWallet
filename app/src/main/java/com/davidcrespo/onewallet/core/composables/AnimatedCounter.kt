@@ -23,7 +23,8 @@ fun AnimatedCounter(
     fontWeight: FontWeight? = null,
     style: TextStyle = LocalTextStyle.current,
     prefix: String = "",
-    suffix: String = ""
+    suffix: String = "",
+    shouldAnimate: Boolean = true
 ) {
     val targetValueFloat = targetValue
         .toFloat()
@@ -31,13 +32,17 @@ fun AnimatedCounter(
         ?.coerceIn(-Float.MAX_VALUE, Float.MAX_VALUE)
         ?: Float.MAX_VALUE
 
-    val animatedValue = remember { Animatable(targetValueFloat) }
+    val animatedValue = remember { Animatable(0f) }
 
-    LaunchedEffect(targetValue) {
-        animatedValue.animateTo(
-            targetValue = targetValueFloat,
-            animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
-        )
+    LaunchedEffect(targetValue, shouldAnimate) {
+        if (shouldAnimate) {
+            animatedValue.animateTo(
+                targetValue = targetValueFloat,
+                animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+            )
+        } else {
+            animatedValue.snapTo(0f)
+        }
     }
 
     Text(

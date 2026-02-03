@@ -29,7 +29,8 @@ fun Graphic(
     previousBalance: Double,
     currency: Currency,
     isBalanceVisible: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    shouldAnimate: Boolean = true
 ) {
     Column(
         modifier = modifier,
@@ -42,7 +43,8 @@ fun Graphic(
             ChartSequentialAnimation(
                 slices = portfolioItems,
                 strokeWidth = ChartStrokeWidth,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                shouldAnimate = shouldAnimate
             )
 
             OWBalance(
@@ -53,7 +55,8 @@ fun Graphic(
                 isExpanded = true,//TODO***
                 section = SectionType.ALLOCATION,
                 modifier = Modifier
-                    .size(ChartSize - ChartStrokeWidth)
+                    .size(ChartSize - ChartStrokeWidth),
+                shouldAnimate = shouldAnimate
             )
         }
 
