@@ -4,15 +4,14 @@ import androidx.compose.runtime.Immutable
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.persistentMapOf
 
 @Immutable
 data class PortfolioUiState(
     val portfolioItems: ImmutableList<InvestmentView> = persistentListOf(),
-    val portfolioItemsByType: ImmutableMap<InvestmentType, ImmutableList<InvestmentView>> = persistentMapOf(),
+    val portfolioItemsByType: ImmutableList<ItemsByTypeView> = persistentListOf(),
     val symbolsWithPrice: ImmutableList<String> = persistentListOf(),
     val selectedCurrency: Currency = Currency.EUR,
     val usdEurRate: Double = 1.0,

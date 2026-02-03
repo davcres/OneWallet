@@ -14,13 +14,13 @@ import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.composables.AllocationList
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.composables.Graphic
+import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun AllocationTab(
-    itemsByType: ImmutableMap<InvestmentType, ImmutableList<InvestmentView>>,
+    itemsByType: ImmutableList<ItemsByTypeView>,
     totalBalance: Double,
     previousBalance: Double,
     currency: Currency,
@@ -38,9 +38,9 @@ fun AllocationTab(
         Graphic(
             portfolioItems = itemsByType.map {
                 AssetSlice(
-                    name = stringResource(it.key.titleRes),
-                    value = it.value.sumOf { it.quantity * it.displayPrice },
-                    color = it.key.color
+                    name = stringResource(it.type.titleRes),
+                    value = it.totalValue,
+                    color = it.type.color
                 )
             }.toPersistentList(),
             totalBalance = totalBalance,
@@ -52,23 +52,22 @@ fun AllocationTab(
 
         //TODO*** pedirle a gemini que refactorice
         AllocationList(
-            items = itemsByType.map {
-                val totalValue = it.value.sumOf { it.quantity * it.displayPrice }
-                val totalPreviousValue = it.value.sumOf { it.quantity * it.displayPreviousPrice }
+            items = itemsByType.map { itemsByType ->
+                val totalPreviousValue = itemsByType.items.sumOf { it.quantity * it.displayPreviousPrice }
                 val changePercent = totalPreviousValue
                     .takeIf { it != 0.0 }
-                    ?.let { ((totalValue - it) / it) * 100.0 } ?: 0.0
+                    ?.let { ((itemsByType.totalValue - it) / it) * 100.0 } ?: 0.0
                 InvestmentView(
-                    symbol = stringResource(it.key.titleRes),
-                    name = stringResource(it.key.titleRes),
+                    symbol = stringResource(itemsByType.type.titleRes),
+                    name = stringResource(itemsByType.type.titleRes),
                     quantity = 1.0,
-                    displayPrice = totalValue,
+                    displayPrice = itemsByType.totalValue,
                     displayPreviousPrice = totalPreviousValue,
-                    originalPrice = totalValue,
+                    originalPrice = itemsByType.totalValue,
                     originalPreviousPrice = totalPreviousValue,
                     originalCurrency = currency,
                     changePercent = changePercent,
-                    type = it.key,
+                    type = itemsByType.type,
                     month = 0,
                     year = 0
                 )

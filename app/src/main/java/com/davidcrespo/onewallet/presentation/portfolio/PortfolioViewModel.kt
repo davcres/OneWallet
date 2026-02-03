@@ -18,11 +18,10 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUs
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toDomain
 import com.davidcrespo.onewallet.presentation.models.toUI
+import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -391,14 +390,19 @@ class PortfolioViewModel(
 
     private fun getItemsByType() {
         viewModelScope.launch {
-            val portfolioItems = _uiState.value.portfolioItems
-            val grouped: ImmutableMap<InvestmentType, ImmutableList<InvestmentView>> =
-                portfolioItems
-                    .groupBy { it.type }
-                    .mapValues { (_, items) -> items.toImmutableList() }
-                    .toImmutableMap()
+            val items = _uiState.value.portfolioItems
 
-            _uiState.update { it.copy(portfolioItemsByType = grouped) }
+            val groups: ImmutableList<ItemsByTypeView> =
+                items
+                    .groupBy { it.type }
+                    .map { (type, list) ->
+                        val total = list.sumOf { it.quantity * it.displayPrice }
+                        ItemsByTypeView(type, list.toImmutableList(), total)
+                    }
+                    .sortedByDescending { it.totalValue }
+                    .toImmutableList()
+
+            _uiState.update { it.copy(portfolioItemsByType = groups) }
         }
     }
 }
