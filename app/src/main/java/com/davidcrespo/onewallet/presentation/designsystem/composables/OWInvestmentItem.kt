@@ -78,7 +78,7 @@ fun OWInvestmentItem(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = item.getIcon(),
+                    imageVector = item.type.icon,
                     contentDescription = null,
                     tint = Color.White
                 )

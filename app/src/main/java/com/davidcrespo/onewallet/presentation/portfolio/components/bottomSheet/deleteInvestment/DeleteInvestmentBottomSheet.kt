@@ -129,7 +129,7 @@ private fun Header(investment: InvestmentView, onClose: () -> Unit) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    imageVector = investment.getIcon(),
+                    imageVector = investment.type.icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )

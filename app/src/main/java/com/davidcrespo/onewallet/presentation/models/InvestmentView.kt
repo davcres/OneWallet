@@ -1,11 +1,5 @@
 package com.davidcrespo.onewallet.presentation.models
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountBalance
-import androidx.compose.material.icons.outlined.CurrencyBitcoin
-import androidx.compose.material.icons.outlined.Payments
-import androidx.compose.material.icons.outlined.PieChartOutline
-import androidx.compose.material.icons.outlined.StackedLineChart
 import androidx.compose.runtime.Immutable
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.domain.model.investment.Currency
@@ -27,24 +21,14 @@ data class InvestmentView(
     val month: Int,
     val year: Int
 ) {
-    fun getIcon() =
-        when (type) {
-            InvestmentType.STOCK -> Icons.Outlined.StackedLineChart
-            InvestmentType.CRYPTO -> Icons.Outlined.CurrencyBitcoin
-            InvestmentType.FUND,
-            InvestmentType.ETF -> Icons.Outlined.PieChartOutline
-            InvestmentType.BANK -> Icons.Outlined.AccountBalance
-            InvestmentType.OTHER -> Icons.Outlined.Payments
-        }
-
     fun getIconRes() =
         when (type) {
             InvestmentType.STOCK -> R.drawable.ic_stacked_line_chart
             InvestmentType.CRYPTO -> R.drawable.ic_currency_bitcoin
-            InvestmentType.FUND,
-            InvestmentType.ETF -> R.drawable.ic_pie_chart
-            InvestmentType.BANK -> R.drawable.ic_account_balance
-            InvestmentType.OTHER -> R.drawable.ic_payments
+            InvestmentType.FUND -> R.drawable.ic_account_balance
+            InvestmentType.ETF -> R.drawable.ic_query_stats
+            InvestmentType.BANK -> R.drawable.ic_savings
+            InvestmentType.OTHER -> R.drawable.ic_category
         }
 }
 

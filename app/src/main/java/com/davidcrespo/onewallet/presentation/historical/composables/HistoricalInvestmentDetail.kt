@@ -167,7 +167,7 @@ private fun SheetContent(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = investment.getIcon(),
+                    imageVector = investment.type.icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
