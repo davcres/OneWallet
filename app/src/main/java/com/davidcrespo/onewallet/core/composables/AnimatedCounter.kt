@@ -32,14 +32,17 @@ fun AnimatedCounter(
         ?.coerceIn(-Float.MAX_VALUE, Float.MAX_VALUE)
         ?: Float.MAX_VALUE
 
-    val animatedValue = remember { Animatable(0f) }
+    val animatedValue = remember { Animatable(if (shouldAnimate) targetValueFloat else 0f) }
 
     LaunchedEffect(targetValue, shouldAnimate) {
         if (shouldAnimate) {
-            animatedValue.animateTo(
-                targetValue = targetValueFloat,
-                animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
-            )
+            // Only animate if the value has changed or if we are starting from 0
+            if (animatedValue.value != targetValueFloat) {
+                animatedValue.animateTo(
+                    targetValue = targetValueFloat,
+                    animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+                )
+            }
         } else {
             animatedValue.snapTo(0f)
         }
