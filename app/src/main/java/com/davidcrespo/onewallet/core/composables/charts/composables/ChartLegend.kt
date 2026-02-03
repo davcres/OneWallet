@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.Dot
@@ -21,6 +22,7 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun ChartLegend(
     portfolioItems: ImmutableList<AssetSlice>,
+    style: TextStyle,
     modifier: Modifier = Modifier
 ) {
     val maxPerRow = remember(portfolioItems.size) {
@@ -47,7 +49,7 @@ fun ChartLegend(
 
                 Text(
                     text = type.name,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = style,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
