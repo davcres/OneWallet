@@ -383,7 +383,6 @@ private fun Form(
             ) {
                 TrendDisplay(
                     value = variance,
-                    text = "%.2f %%".format(variance),
                     showPercentage = false,
                     currency = currency,
                     style = MaterialTheme.typography.titleMedium

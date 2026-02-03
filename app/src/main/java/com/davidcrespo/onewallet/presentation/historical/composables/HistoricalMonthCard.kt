@@ -138,7 +138,7 @@ fun HistoricalMonthCard(
                                 TrendDisplay(value = percentage, text = "%.2f %%".format(percentage), show, currency)
                             } else {
                                 val variance = balance - previousBalance
-                                TrendDisplay(value = variance, text = "%.2f €".format(variance), show, currency)
+                                TrendDisplay(value = variance, showPercentage = show, currency = currency)
                             }
                         }
                     }
@@ -160,6 +160,6 @@ private fun GhostContent() {
     ) {
         PriceDisplay(value = 0.0, currency = Currency.EUR)
         Spacer(modifier = Modifier.height(8.dp))
-        TrendDisplay(value = 1.0, text = "0.00 %", false, Currency.EUR)
+        TrendDisplay(value = 1.0, showPercentage = false, currency = Currency.EUR)
     }
 }
