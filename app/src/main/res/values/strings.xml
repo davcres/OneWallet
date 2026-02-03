@@ -57,6 +57,7 @@
     <string name="total_value">Valor total</string>
     <string name="new_quantity_market">Introduce la nueva cantidad de acciones</string>
     <string name="new_quantity_manual">Introduce el nuevo saldo</string>
+    <string name="new_quantity_manual_info">Usa la moneda original de la inversión (%s)</string>
     <string name="estimated_new_value">Nuevo valor estimado</string>
     <string name="cancel_edit_investment_cd">Pulsa para no editar la cantidad</string>
     <string name="error_quantity_empty">Introduce una cantidad válida.</string>

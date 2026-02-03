@@ -57,6 +57,7 @@
     <string name="total_value">Total value</string>
     <string name="new_quantity_market">Enter new quantity of shares</string>
     <string name="new_quantity_manual">Enter the new balance</string>
+    <string name="new_quantity_manual_info">Use the original investment currency (%s)</string>
     <string name="estimated_new_value">Estimated new value</string>
     <string name="cancel_edit_investment_cd">Tap to not edit the quantity</string>
     <string name="error_quantity_empty">Enter a valid amount.</string>

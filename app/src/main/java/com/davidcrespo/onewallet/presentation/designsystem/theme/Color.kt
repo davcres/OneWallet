@@ -36,8 +36,6 @@ val OnSurfaceVariantDark = Color(0xFFB9C6C0)
 val OutlineDark = Color(0xFF1D3A2D)
 val OutlineVariantDark = Color(0xFF132A21)
 
-// States
-val Success = MintPrimary
 val Error = Color(0xFFFF5A5F)
 
 // Error tokens (Material3)
@@ -50,33 +48,12 @@ val InverseSurface = Color(0xFFE9EEEC)
 val InverseOnSurface = Color(0xFF12201A)
 val InversePrimary = Color(0xFF1FBF67)
 
-
-
-// Glows (look 1:1)
-val HeaderGlowInner = Color(0xFF163728)
-val HeaderGlowOuter = SurfaceDark
-
 val CardGlowInner = Color(0xFF1a3627)
 val CardGlowOuter = Color(0xFF1b2620)
 
-val ChipGlowInner = Color(0xFF1A4A33)
-val ChipGlowOuter = MintContainer
-
-/** Glow radial como en la card del balance */
 fun cardGlowBrush(): Brush = Brush.horizontalGradient(
         listOf(
             CardGlowOuter,
             CardGlowInner
         )
     )
-
-/** Glow del header (Portfolio Overview) */
-fun headerGlowBrush(): Brush = Brush.radialGradient(
-    colors = listOf(HeaderGlowInner, HeaderGlowOuter),
-    radius = 1000f
-)
-
-/** Chip positivo (subida) */
-fun positiveChipBrush(): Brush = Brush.horizontalGradient(
-    colors = listOf(ChipGlowInner, ChipGlowOuter)
-)

@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.PieChartOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,6 +60,7 @@ import com.davidcrespo.onewallet.core.extensions.normalizeDouble
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.hasIsin
+import com.davidcrespo.onewallet.domain.model.investment.isManual
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWCurrencyPrice
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
@@ -316,7 +319,6 @@ private fun Form(
     var quantity by remember { mutableStateOf("") }
     val newPrice = investment.displayPrice * quantity.normalizeDouble()
 
-
     Column {
         Text(
             text = if (investment.type.isMarket()) stringResource(R.string.new_quantity_market) else stringResource(
@@ -337,11 +339,36 @@ private fun Form(
                     quantity = normalized
                 }
             },
-            icon = Icons.Outlined.PieChartOutline,
+            icon = if (investment.type.isMarket()) Icons.Outlined.PieChartOutline else investment.originalCurrency.icon,
             placeholder = "0.0",
             cornerRadius = 16.dp,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
+
+        if (investment.type.isManual()) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(16.dp)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Text(
+                    text = stringResource(R.string.new_quantity_manual_info, investment.originalCurrency.symbol),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        }
 
         Spacer(Modifier.height(32.dp))
 
