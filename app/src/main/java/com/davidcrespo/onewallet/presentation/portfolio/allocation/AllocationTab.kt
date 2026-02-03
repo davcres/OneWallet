@@ -11,9 +11,9 @@ import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.charts.models.AssetSlice
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
-import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.composables.AllocationList
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.composables.Graphic
+import com.davidcrespo.onewallet.presentation.portfolio.allocation.mapper.toAllocationInvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -50,29 +50,14 @@ fun AllocationTab(
             shouldAnimate = isActivePage
         )
 
-        //TODO*** pedirle a gemini que refactorice
         AllocationList(
-            items = itemsByType.map { itemsByType ->
-                val totalPreviousValue = itemsByType.items.sumOf { it.quantity * it.displayPreviousPrice }
-                val changePercent = totalPreviousValue
-                    .takeIf { it != 0.0 }
-                    ?.let { ((itemsByType.totalValue - it) / it) * 100.0 } ?: 0.0
-
-                val percentage = itemsByType.totalValue / totalBalance * 100
-                val name = stringResource(itemsByType.type.titleRes) + " (%.2f%%)".format(percentage)
-                InvestmentView(
-                    symbol = name,
-                    name = "",
-                    quantity = 1.0,
-                    displayPrice = itemsByType.totalValue,
-                    displayPreviousPrice = totalPreviousValue,
-                    originalPrice = itemsByType.totalValue,
-                    originalPreviousPrice = totalPreviousValue,
-                    originalCurrency = currency,
-                    changePercent = changePercent,
-                    type = itemsByType.type,
-                    month = 0,
-                    year = 0
+            items = itemsByType.map { item ->
+                val percentage = if (totalBalance != 0.0) item.totalValue / totalBalance * 100 else 0.0
+                val name = stringResource(item.type.titleRes) + " (%.2f%%)".format(percentage)
+                
+                item.toAllocationInvestmentView(
+                    currency = currency,
+                    displayName = name
                 )
             }.toPersistentList(),
             currency = currency,
