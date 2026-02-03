@@ -19,7 +19,7 @@ import kotlin.math.abs
 fun OWShakeListener(
     enabled: Boolean = true,
     onShake: () -> Unit,
-    threshold: Float = 2.7f,      // sensibilidad (2.2–3.2 típico)
+    threshold: Float = 3.2f,      // sensibilidad (2.2–3.2 típico)
     slopTimeMs: Long = 1000L       // evita múltiples disparos seguidos
 ) {
     val context = LocalContext.current
