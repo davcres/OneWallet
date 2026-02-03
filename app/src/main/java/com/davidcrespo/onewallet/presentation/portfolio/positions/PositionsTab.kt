@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,9 +36,11 @@ fun PositionsTab(
     previousBalance: Double,
     portfolioItems: ImmutableList<InvestmentView>,
     onRemoveItem: (InvestmentView) -> Unit,
-    onEditQuantity: (InvestmentView) -> Unit
+    onEditQuantity: (InvestmentView) -> Unit,
+    changeBalanceVisibility: () -> Unit,
+    isBalanceVisible: Boolean,
+    isActivePage: Boolean = true
 ) {
-    val listState = rememberLazyListState()
     val isExpanded by remember {
         derivedStateOf { mutableStateOf(true) }
     }
@@ -69,7 +70,10 @@ fun PositionsTab(
             totalBalance = totalBalance,
             previousBalance = previousBalance,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            isExpanded = isExpanded.value
+            isExpanded = isExpanded.value,
+            changeBalanceVisibility = changeBalanceVisibility,
+            isBalanceVisible = isBalanceVisible,
+            shouldAnimate = isActivePage
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -86,7 +90,8 @@ fun PositionsTab(
             currency = currency,
             onRemove = onRemoveItem,
             onEdit = onEditQuantity,
-            state = listState
+            isBalanceVisible = isBalanceVisible,
+            shouldAnimate = isActivePage
         )
     }
 }

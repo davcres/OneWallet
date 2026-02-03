@@ -23,6 +23,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,16 +38,19 @@ import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.ErrorBanner
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.pulse
 import com.davidcrespo.onewallet.core.extensions.applyIf
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWFloatingActionButton
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWShakeListener
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.portfolio.allocation.AllocationTab
 import com.davidcrespo.onewallet.presentation.portfolio.components.EmptyInvestments
 import com.davidcrespo.onewallet.presentation.portfolio.components.Header
 import com.davidcrespo.onewallet.presentation.portfolio.components.SegmentedTabs
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddBankBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddFundBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddInvestmentBottomSheet
-import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AssetType
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.deleteInvestment.DeleteInvestmentBottomSheet
+import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.investmentType.InvestmentTypeBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.updateInvestment.UpdateInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTab
 import com.davidcrespo.onewallet.presentation.portfolio.positions.PositionsTab
@@ -57,7 +62,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PortfolioRoot(
-    navigateToHistorical: () -> Unit,
+    navigateToHistorical: (isBalanceVisible: Boolean) -> Unit,
     navigateToMarket: (isCrypto: Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PortfolioViewModel = koinViewModel()
@@ -68,7 +73,7 @@ fun PortfolioRoot(
         uiState = uiState,
         onAction = { action ->
             when(action) {
-                is PortfolioIntent.NavigateToHistorical -> navigateToHistorical()
+                is PortfolioIntent.NavigateToHistorical -> navigateToHistorical(action.isBalanceVisible)
                 is PortfolioIntent.NavigateToMarket -> navigateToMarket(action.isCrypto)
                 else -> viewModel.handleIntent(action)
             }
@@ -84,9 +89,11 @@ private fun PortfolioScreen(
     modifier: Modifier = Modifier
 ) {
     val tabs = remember { PortfolioTab.entries }
-    val pagerState = rememberPagerState(initialPage = 0) { tabs.size }
+    val pagerState = rememberPagerState(initialPage = 1) { tabs.size }
     val scope = rememberCoroutineScope()
+    var isBalanceVisible by rememberSaveable { mutableStateOf(true) }
     var fabButtonExpanded by remember { mutableStateOf(false) }
+    val stateHolder = rememberSaveableStateHolder()
 
     val hideBackground =
         uiState.isFundDialogVisible ||
@@ -95,6 +102,7 @@ private fun PortfolioScreen(
                 uiState.isOtherDialogVisible ||
                 uiState.editingItem != null ||
                 uiState.deletingItem != null ||
+                uiState.typeDetail != null ||
                 fabButtonExpanded
 
     val blurRadius by animateDpAsState(
@@ -112,7 +120,12 @@ private fun PortfolioScreen(
 
     LaunchedEffect(uiState.portfolioItems) {
         onAction(PortfolioIntent.UpdateBalance)
+        onAction(PortfolioIntent.GetItemsByType)
     }
+
+    OWShakeListener(
+        onShake = { isBalanceVisible = !isBalanceVisible }
+    )
 
     Scaffold(
         floatingActionButton = {
@@ -142,7 +155,7 @@ private fun PortfolioScreen(
                 Header(
                     currency = uiState.selectedCurrency,
                     onCurrencyChange = { onAction(PortfolioIntent.ChangeCurrency) },
-                    navigateToHistorical = { onAction(PortfolioIntent.NavigateToHistorical) },
+                    navigateToHistorical = { onAction(PortfolioIntent.NavigateToHistorical(isBalanceVisible)) },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
 
@@ -171,23 +184,42 @@ private fun PortfolioScreen(
 
                         HorizontalPager(
                             state = pagerState,
-                            modifier = Modifier
-                                .fillMaxSize()
+                            modifier = Modifier.fillMaxSize(),
+                            beyondViewportPageCount = 1
                         ) { page ->
-                            when (tabs[page]) {
-                                PortfolioTab.PORTFOLIO -> PositionsTab(
-                                    currency = uiState.selectedCurrency,
-                                    totalBalance = uiState.totalBalance,
-                                    previousBalance = uiState.previousBalance,
-                                    portfolioItems = uiState.portfolioItems,
-                                    onRemoveItem = { onAction(PortfolioIntent.ShowDeleteDialog(it)) },
-                                    onEditQuantity = { onAction(PortfolioIntent.EditQuantity(it)) }
-                                )
-                                PortfolioTab.PRICES -> PricesTab(
-                                    currency = uiState.selectedCurrency,
-                                    portfolioItems = uiState.portfolioItems,
-                                    modifier = Modifier.fillMaxSize()
-                                )
+                            val tab = tabs[page]
+                            val isActivePage = pagerState.targetPage == page || pagerState.currentPage == page
+                            stateHolder.SaveableStateProvider(key = tab) {
+                                when (tab) {
+                                    PortfolioTab.ALLOCATION -> AllocationTab(
+                                        itemsByType = uiState.portfolioItemsByType,
+                                        totalBalance = uiState.totalBalance,
+                                        previousBalance = uiState.previousBalance,
+                                        currency = uiState.selectedCurrency,
+                                        onSelect = { onAction(PortfolioIntent.SelectInvestmentType(it)) },
+                                        modifier = Modifier.fillMaxSize(),
+                                        isBalanceVisible = isBalanceVisible,
+                                        isActivePage = isActivePage
+                                    )
+                                    PortfolioTab.PORTFOLIO -> PositionsTab(
+                                        currency = uiState.selectedCurrency,
+                                        totalBalance = uiState.totalBalance,
+                                        previousBalance = uiState.previousBalance,
+                                        portfolioItems = uiState.portfolioItems,
+                                        onRemoveItem = { onAction(PortfolioIntent.ShowDeleteDialog(it)) },
+                                        onEditQuantity = { onAction(PortfolioIntent.EditQuantity(it)) },
+                                        changeBalanceVisibility = { isBalanceVisible = !isBalanceVisible },
+                                        isBalanceVisible = isBalanceVisible,
+                                        isActivePage = isActivePage
+                                    )
+                                    PortfolioTab.PRICES -> PricesTab(
+                                        currency = uiState.selectedCurrency,
+                                        portfolioItems = uiState.portfolioItems,
+                                        modifier = Modifier.fillMaxSize(),
+                                        isBalanceVisible = isBalanceVisible,
+                                        isActivePage = isActivePage
+                                    )
+                                }
                             }
                         }
                     }
@@ -209,12 +241,12 @@ private fun PortfolioScreen(
                 onDismiss = { fabButtonExpanded = false },
                 onAssetTypeClick = { asset ->
                     when (asset) {
-                        AssetType.Stock -> onAction(PortfolioIntent.NavigateToMarket(false))
-                        AssetType.Crypto -> onAction(PortfolioIntent.NavigateToMarket(true))
-                        AssetType.Fund -> onAction(PortfolioIntent.ShowFundDialog)
-                        AssetType.ETF -> onAction(PortfolioIntent.ShowEtfDialog)
-                        AssetType.Bank -> onAction(PortfolioIntent.ShowBankDialog)
-                        AssetType.Other -> onAction(PortfolioIntent.ShowOtherDialog)
+                        InvestmentType.STOCK -> onAction(PortfolioIntent.NavigateToMarket(false))
+                        InvestmentType.CRYPTO -> onAction(PortfolioIntent.NavigateToMarket(true))
+                        InvestmentType.FUND -> onAction(PortfolioIntent.ShowFundDialog)
+                        InvestmentType.ETF -> onAction(PortfolioIntent.ShowEtfDialog)
+                        InvestmentType.BANK -> onAction(PortfolioIntent.ShowBankDialog)
+                        InvestmentType.OTHER -> onAction(PortfolioIntent.ShowOtherDialog)
                     }
                     fabButtonExpanded = false
                 }
@@ -298,6 +330,18 @@ private fun PortfolioScreen(
                 onAction(PortfolioIntent.SetError(isinError ?: defaultEtfError))
             }
         )
+
+        // Add Type Detail Bottom Sheet
+        uiState.typeDetail?.let { type ->
+            InvestmentTypeBottomSheet(
+                visible = true,
+                type = type,
+                investments = uiState.portfolioItems.filter { it.type == type }.toPersistentList(),
+                currency = uiState.selectedCurrency,
+                onDismiss = { onAction(PortfolioIntent.DismissInvestmentType) },
+                isBalanceVisible = isBalanceVisible
+            )
+        }
 
         ErrorBanner(
             message = uiState.error,

@@ -37,6 +37,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HistoricalRoot(
+    isBalanceVisible: Boolean,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HistoricalViewModel = koinViewModel()
@@ -47,6 +48,7 @@ fun HistoricalRoot(
         uiState = uiState,
         onAction = viewModel::handleIntent,
         onBack = onBack,
+        isBalanceVisible = isBalanceVisible,
         modifier = modifier
     )
 }
@@ -57,6 +59,7 @@ private fun HistoricalScreen(
     uiState: HistoricalUiState,
     onAction: (HistoricalIntent) -> Unit,
     onBack: () -> Unit,
+    isBalanceVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
     val hideBackground =
@@ -123,7 +126,8 @@ private fun HistoricalScreen(
                                     it.first().month
                                 )
                             )
-                        }
+                        },
+                        isBalanceVisible = isBalanceVisible,
                     )
 
                     HistoricalMonthDetailBottomSheet(
@@ -133,7 +137,8 @@ private fun HistoricalScreen(
                         visible = uiState.selectedMonthDetail != null,
                         onClickInvestment = { onAction(HistoricalIntent.SelectInvestment(it)) },
                         onDismiss = { onAction(HistoricalIntent.DismissBottomSheet) },
-                        hideBackground = uiState.selectedInvestment != null
+                        hideBackground = uiState.selectedInvestment != null,
+                        isBalanceVisible = isBalanceVisible
                     )
 
                     uiState.selectedInvestment?.let {

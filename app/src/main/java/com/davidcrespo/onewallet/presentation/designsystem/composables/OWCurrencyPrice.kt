@@ -32,7 +32,8 @@ fun OWCurrencyPrice(
     currency: Currency,
     fontSize: TextUnit,
     textColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    shouldAnimate: Boolean = true
 ) {
     val usdWidth by animateDpAsState(targetValue = if (currency == Currency.USD) fontSize.value.dp/2 else 0.dp, label = "usdWidth")
     val eurWidth by animateDpAsState(targetValue = if (currency == Currency.EUR) fontSize.value.dp/2 else 0.dp, label = "eurWidth")
@@ -64,7 +65,8 @@ fun OWCurrencyPrice(
             targetValue = price,
             fontSize = fontSize,
             fontWeight = FontWeight.Bold,
-            color = textColor
+            color = textColor,
+            shouldAnimate = shouldAnimate
         )
 
         Spacer(Modifier.width(eurSpacer))

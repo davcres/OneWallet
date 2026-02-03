@@ -24,7 +24,8 @@ fun CardWithComicBubble(
     currency: Currency,
     section: SectionType,
     modifier: Modifier = Modifier,
-    onClick: (InvestmentView) -> Unit
+    onClick: (InvestmentView) -> Unit,
+    isBalanceVisible: Boolean,
 ) {
     var show by remember { mutableStateOf(false) }
     var anchor by remember { mutableStateOf<LayoutCoordinates?>(null) }
@@ -38,7 +39,8 @@ fun CardWithComicBubble(
                 show = !show
                 onClick(item)
             },
-            onGloballyPositioned = { anchor = it }
+            onGloballyPositioned = { anchor = it },
+            isBalanceVisible = isBalanceVisible
         )
 
         if (show && anchor != null) {

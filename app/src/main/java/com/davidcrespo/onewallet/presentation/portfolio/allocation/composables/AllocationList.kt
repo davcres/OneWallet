@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.portfolio.prices.components
+package com.davidcrespo.onewallet.presentation.portfolio.allocation.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,26 +9,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.domain.model.investment.Currency
-import com.davidcrespo.onewallet.domain.model.investment.isMarket
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PricesList(
+fun AllocationList(
     items: ImmutableList<InvestmentView>,
     currency: Currency,
+    onSelect: (InvestmentType) -> Unit,
     modifier: Modifier = Modifier,
     isBalanceVisible: Boolean = true,
     shouldAnimate: Boolean = true
 ) {
     if (shouldAnimate) {
         OWAnimatedList(
-            items = items.filter { it.type.isMarket() }.toPersistentList(),
+            items = items,
             key = { it.symbol },
             contentPadding = PaddingValues(16.dp),
             modifier = modifier.fillMaxSize(),
@@ -38,7 +38,7 @@ fun PricesList(
                     item = priceItem,
                     currency = currency,
                     section = SectionType.PRICES,
-                    onClick = {},
+                    onClick = { onSelect(it.type) },
                     modifier = modifier,
                     isBalanceVisible = isBalanceVisible
                 )

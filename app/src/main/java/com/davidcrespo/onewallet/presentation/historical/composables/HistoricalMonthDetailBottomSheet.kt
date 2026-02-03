@@ -11,9 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
@@ -28,10 +27,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.domain.model.investment.Currency
@@ -39,6 +39,7 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimate
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.bottomSheet.SheetHandle
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
@@ -55,12 +56,16 @@ fun HistoricalMonthDetailBottomSheet(
     visible: Boolean,
     onClickInvestment: (InvestmentView) -> Unit,
     onDismiss: () -> Unit,
-    hideBackground: Boolean
+    hideBackground: Boolean,
+    isBalanceVisible: Boolean,
 ) {
     if (!visible) return
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
+
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val maxSheetHeight = screenHeight * 0.80f
 
     val blurRadius by animateDpAsState(
         targetValue = if (hideBackground) 16.dp else 0.dp,
@@ -97,7 +102,9 @@ fun HistoricalMonthDetailBottomSheet(
                     onClickInvestment = onClickInvestment,
                     onClose = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
-                    }
+                    },
+                    maxSheetHeight = maxSheetHeight,
+                    isBalanceVisible = isBalanceVisible
                 )
 
                 Spacer(Modifier.height(80.dp))
@@ -113,11 +120,14 @@ private fun SheetContent(
     previousInvestments: ImmutableList<InvestmentView>,
     currency: Currency,
     onClickInvestment: (InvestmentView) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    maxSheetHeight: Dp = Dp.Unspecified,
+    isBalanceVisible: Boolean,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .heightIn(max = maxSheetHeight)
             .padding(horizontal = 16.dp)
     ) {
         Header(
@@ -130,7 +140,9 @@ private fun SheetContent(
         OWAnimatedList(
             items = investments,
             key = { it.symbol },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f, fill = false),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             itemContent = { modifier, historicalItem, index ->
                 val previousMonthItem = previousInvestments.find { it.symbol == historicalItem.symbol }
@@ -140,7 +152,8 @@ private fun SheetContent(
                     previousMonthItem = previousMonthItem,
                     section = SectionType.HISTORICAL,
                     onClick = { onClickInvestment(it) },
-                    modifier = modifier
+                    modifier = modifier,
+                    isBalanceVisible = isBalanceVisible
                 )
             }
         )
@@ -174,24 +187,6 @@ private fun Header(
             contentDescription = stringResource(R.string.close_cd),
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-        )
-    }
-}
-
-@Composable
-private fun SheetHandle() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 10.dp, bottom = 8.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .width(56.dp)
-                .height(5.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary)
         )
     }
 }

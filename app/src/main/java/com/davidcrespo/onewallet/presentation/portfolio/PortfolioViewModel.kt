@@ -18,8 +18,10 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUs
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toDomain
 import com.davidcrespo.onewallet.presentation.models.toUI
+import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -78,6 +80,10 @@ class PortfolioViewModel(
 
             is PortfolioIntent.NavigateToHistorical -> {}
             is PortfolioIntent.NavigateToMarket -> {}
+
+            is PortfolioIntent.GetItemsByType -> getItemsByType()
+            is PortfolioIntent.SelectInvestmentType -> _uiState.update { it.copy(typeDetail = intent.type) }
+            is PortfolioIntent.DismissInvestmentType -> _uiState.update { it.copy(typeDetail = null) }
         }
     }
 
@@ -286,19 +292,19 @@ class PortfolioViewModel(
             val year = now.year
             val month = now.monthValue
 
-            val cash = Investment(
+            val bank = Investment(
                 symbol = name,
                 name = name,
                 quantity = quantity,
                 price = 1.0,
                 previousPrice = 0.0,
                 currency = currency,
-                type = InvestmentType.CASH,
+                type = InvestmentType.BANK,
                 year = year,
                 month = month
             )
 
-            addInvestmentToPortfolioUseCase(cash)
+            addInvestmentToPortfolioUseCase(bank)
             _uiState.update { it.copy(isBankDialogVisible = false) }
         }
     }
@@ -379,6 +385,24 @@ class PortfolioViewModel(
             }
 
             updateWidgets()
+        }
+    }
+
+    private fun getItemsByType() {
+        viewModelScope.launch {
+            val items = _uiState.value.portfolioItems
+
+            val groups: ImmutableList<ItemsByTypeView> =
+                items
+                    .groupBy { it.type }
+                    .map { (type, list) ->
+                        val total = list.sumOf { it.quantity * it.displayPrice }
+                        ItemsByTypeView(type, list.toImmutableList(), total)
+                    }
+                    .sortedByDescending { it.totalValue }
+                    .toImmutableList()
+
+            _uiState.update { it.copy(portfolioItemsByType = groups) }
         }
     }
 }

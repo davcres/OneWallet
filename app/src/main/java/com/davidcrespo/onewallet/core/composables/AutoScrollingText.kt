@@ -1,5 +1,7 @@
 package com.davidcrespo.onewallet.core.composables
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,18 +10,15 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun AutoScrollingText(
@@ -35,40 +34,45 @@ fun AutoScrollingText(
 ) {
     val scrollState = rememberScrollState()
 
-    var viewportWidthPx by remember { mutableIntStateOf(0) }
-    var contentWidthPx by remember { mutableIntStateOf(0) }
-
-    // Solo tiene sentido si el contenido es más ancho que el viewport
-    val maxScroll = (contentWidthPx - viewportWidthPx).coerceAtLeast(0)
-
-    LaunchedEffect(text, viewportWidthPx, contentWidthPx) {
-        if (maxScroll <= 0) return@LaunchedEffect
-
-        // Loop: 0 -> max -> 0 -> ...
+    LaunchedEffect(text) {
         while (true) {
+            // Wait for content to be scrollable
+            var maxScroll = scrollState.maxValue
+            if (maxScroll <= 0) {
+                maxScroll = snapshotFlow { scrollState.maxValue }.first { it > 0 }
+            }
+
+            // Pause at start
             delay(edgePauseMs)
-            scrollState.animateScrollTo(
-                value = maxScroll,
-                animationSpec = androidx.compose.animation.core.tween(
-                    durationMillis = ((maxScroll / speedPxPerSecond) * 1000).toInt().coerceAtLeast(1),
-                    easing = androidx.compose.animation.core.LinearEasing
+
+            // Scroll to End
+            maxScroll = scrollState.maxValue
+            if (maxScroll > 0) {
+                val duration = ((maxScroll.toFloat() / speedPxPerSecond) * 1000).toInt().coerceAtLeast(1)
+                scrollState.animateScrollTo(
+                    maxScroll,
+                    animationSpec = tween(duration, easing = LinearEasing)
                 )
-            )
+            }
+
+            // Pause at End
             delay(edgePauseMs)
-            scrollState.animateScrollTo(
-                value = 0,
-                animationSpec = androidx.compose.animation.core.tween(
-                    durationMillis = ((maxScroll / speedPxPerSecond) * 1000).toInt().coerceAtLeast(1),
-                    easing = androidx.compose.animation.core.LinearEasing
+
+            // Scroll to Start
+            val currentPos = scrollState.value
+            if (currentPos > 0) {
+                val duration = ((currentPos.toFloat() / speedPxPerSecond) * 1000).toInt().coerceAtLeast(1)
+                scrollState.animateScrollTo(
+                    0,
+                    animationSpec = tween(duration, easing = LinearEasing)
                 )
-            )
+            }
         }
     }
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .onSizeChanged { viewportWidthPx = it.width }
             .horizontalScroll(scrollState, enabled = false) // desactiva scroll manual
     ) {
         Text(
@@ -78,8 +82,7 @@ fun AutoScrollingText(
             fontWeight = fontWeight,
             maxLines = 1,
             softWrap = false,
-            overflow = TextOverflow.Clip,
-            modifier = Modifier.onSizeChanged { contentWidthPx = it.width }
+            overflow = TextOverflow.Clip
         )
     }
 }

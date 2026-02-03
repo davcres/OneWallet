@@ -43,8 +43,8 @@ fun MainNavigation(
         entryProvider = entryProvider {
             entry<Route.Portfolio> {
                 PortfolioRoot(
-                    navigateToHistorical = {
-                        backStack.add(Route.Historical)
+                    navigateToHistorical = { isBalanceVisible ->
+                        backStack.add(Route.Historical(isBalanceVisible = isBalanceVisible))
                     },
                     navigateToMarket = { isCrypto ->
                         backStack.add(Route.Market(isCrypto = isCrypto))
@@ -65,6 +65,7 @@ fun MainNavigation(
 
             entry<Route.Historical> {
                 HistoricalRoot(
+                    isBalanceVisible = it.isBalanceVisible,
                     onBack = {
                         if (backStack.size > 1) backStack.removeLastOrNull()
                     },

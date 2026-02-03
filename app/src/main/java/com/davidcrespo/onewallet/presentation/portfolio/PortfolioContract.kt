@@ -2,13 +2,16 @@ package com.davidcrespo.onewallet.presentation.portfolio
 
 import androidx.compose.runtime.Immutable
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 @Immutable
 data class PortfolioUiState(
     val portfolioItems: ImmutableList<InvestmentView> = persistentListOf(),
+    val portfolioItemsByType: ImmutableList<ItemsByTypeView> = persistentListOf(),
     val symbolsWithPrice: ImmutableList<String> = persistentListOf(),
     val selectedCurrency: Currency = Currency.EUR,
     val usdEurRate: Double = 1.0,
@@ -20,6 +23,7 @@ data class PortfolioUiState(
     val isEtfDialogVisible: Boolean = false,
     val isBankDialogVisible: Boolean = false,
     val isOtherDialogVisible: Boolean = false,
+    val typeDetail: InvestmentType? = null,
     val isLoading: Boolean = true,
     val error: String? = null
 )
@@ -52,7 +56,10 @@ sealed interface PortfolioIntent {
     data class SetError(val error: String) : PortfolioIntent
     data object ClearError : PortfolioIntent
 
-    data object NavigateToHistorical : PortfolioIntent
+    data class NavigateToHistorical(val isBalanceVisible: Boolean) : PortfolioIntent
     data class NavigateToMarket(val isCrypto: Boolean) : PortfolioIntent
 
+    data object GetItemsByType : PortfolioIntent
+    data class SelectInvestmentType(val type: InvestmentType?) : PortfolioIntent
+    data object DismissInvestmentType : PortfolioIntent
 }

@@ -24,7 +24,7 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.OWCurrenc
 @Composable
 fun TrendDisplay(
     value: Double,
-    text: String,
+    text: String = "",
     showPercentage: Boolean,
     currency: Currency,
     style: TextStyle = MaterialTheme.typography.bodyMedium
