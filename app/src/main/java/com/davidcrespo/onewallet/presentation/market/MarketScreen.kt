@@ -151,7 +151,7 @@ private fun MarketScreen(
                     ) { asset ->
                         MarketListItem(
                             marketAsset = asset,
-                            isSelected = uiState.assetsToSaveToPortfolio.contains(asset),
+                            isSelected = uiState.assetsToSaveToPortfolio.find { it.symbol == asset.symbol } != null,
                             addOneAsset = {
                                 focusManager.clearFocus(force = true)
                                 keyboardController?.hide()

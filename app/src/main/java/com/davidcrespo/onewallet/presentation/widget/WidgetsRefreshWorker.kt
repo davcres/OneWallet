@@ -15,7 +15,6 @@ import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetUsdEurUseCase
-import com.davidcrespo.onewallet.presentation.models.toPreference
 import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.widget.portfolio.PortfolioPrefsKeys
 import com.davidcrespo.onewallet.presentation.widget.portfolio.PortfolioWidget
@@ -44,7 +43,7 @@ class WidgetsRefreshWorker(
         val portfolioItemsSet = portfolioData
             .sortedBy { it.price * it.quantity }
             .map {
-                it.toUI().toPreference()
+                it.toUI().toString()
             }
             .toSet()
 
@@ -53,7 +52,7 @@ class WidgetsRefreshWorker(
             .filter { it.type.isMarket() }
             .sortedByDescending { it.price }
             .map {
-                it.toUI().toPreference()
+                it.toUI().toString()
             }
             .toSet()
 

@@ -24,7 +24,7 @@ import com.davidcrespo.onewallet.presentation.portfolio.allocation.composables.G
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.mapper.toAllocationInvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun AllocationTab(
@@ -68,7 +68,7 @@ fun AllocationTab(
                     value = it.totalValue,
                     color = it.type.color
                 )
-            }.toPersistentList(),
+            }.toImmutableList(),
             totalBalance = totalBalance,
             previousBalance = previousBalance,
             currency = currency,
@@ -86,7 +86,7 @@ fun AllocationTab(
                     currency = currency,
                     displayName = name
                 )
-            }.toPersistentList(),
+            }.toImmutableList(),
             currency = currency,
             onSelect = onSelect,
             isBalanceVisible = isBalanceVisible,
