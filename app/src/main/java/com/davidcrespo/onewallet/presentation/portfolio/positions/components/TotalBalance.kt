@@ -37,7 +37,7 @@ fun TotalBalance(
     modifier: Modifier = Modifier,
     isExpanded: Boolean = true,
     isBalanceVisible: Boolean,
-    shouldAnimate: Boolean = true
+    shouldAnimate: Boolean
 ) {
     Card(
         modifier = modifier.bounceClick(),
@@ -87,7 +87,8 @@ private fun TotalBalancePreview() {
             totalBalance = 110.0,
             previousBalance = 100.0,
             changeBalanceVisibility = {},
-            isBalanceVisible = true
+            isBalanceVisible = true,
+            shouldAnimate = true
         )
     }
 }

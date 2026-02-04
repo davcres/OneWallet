@@ -55,7 +55,7 @@ fun OWBalance(
     isExpanded: Boolean,
     section: SectionType,
     modifier: Modifier = Modifier,
-    shouldAnimate: Boolean = true
+    shouldAnimate: Boolean
 ) {
     val richPhrases = stringArrayResource(R.array.rich_phrases).toList()
     var currentRichPhrase by remember { mutableStateOf(richPhrases.random()) }
@@ -220,7 +220,8 @@ private fun OWBalancePreview() {
             previousBalance = 100.0,
             isBalanceVisible = true,
             isExpanded = true,
-            section = SectionType.PORTFOLIO
+            section = SectionType.PORTFOLIO,
+            shouldAnimate = true
         )
     }
 }
