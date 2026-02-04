@@ -56,7 +56,7 @@ import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTab
 import com.davidcrespo.onewallet.presentation.portfolio.positions.PositionsTab
 import com.davidcrespo.onewallet.presentation.portfolio.prices.PricesTab
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -177,7 +177,7 @@ private fun PortfolioScreen(
                     else -> {
                         SegmentedTabs(
                             selectedIndex = pagerState.currentPage,
-                            titles = tabs.toPersistentList(),
+                            titles = tabs.toImmutableList(),
                             onSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
@@ -336,7 +336,7 @@ private fun PortfolioScreen(
             InvestmentTypeBottomSheet(
                 visible = true,
                 type = type,
-                investments = uiState.portfolioItems.filter { it.type == type }.toPersistentList(),
+                investments = uiState.portfolioItems.filter { it.type == type }.toImmutableList(),
                 currency = uiState.selectedCurrency,
                 onDismiss = { onAction(PortfolioIntent.DismissInvestmentType) },
                 isBalanceVisible = isBalanceVisible

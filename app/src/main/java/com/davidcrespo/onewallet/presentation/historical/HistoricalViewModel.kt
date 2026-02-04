@@ -11,7 +11,7 @@ import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -59,8 +59,8 @@ class HistoricalViewModel(
                         .map { currencyConverter.convert(it, selectedCurrency, usdEurRate) }
                         .groupBy { it.year to it.month }
                         .values
-                        .map { it.toPersistentList() }
-                        .toPersistentList()
+                        .map { it.toImmutableList() }
+                        .toImmutableList()
 
 
                 _uiState.update {
@@ -88,7 +88,7 @@ class HistoricalViewModel(
 
             _uiState.update {
                 it.copy(
-                    selectedMonthDetail = details.sortedByDescending { it.quantity * it.displayPrice }.toPersistentList(),
+                    selectedMonthDetail = details.sortedByDescending { it.quantity * it.displayPrice }.toImmutableList(),
                     selectedPreviousMonth = _uiState.value.history.getOrNull(index + 1)
                 )
             }

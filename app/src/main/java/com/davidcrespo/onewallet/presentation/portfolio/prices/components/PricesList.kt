@@ -15,7 +15,7 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestm
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,7 +28,7 @@ fun PricesList(
 ) {
     if (shouldAnimate) {
         OWAnimatedList(
-            items = items.filter { it.type.isMarket() }.toPersistentList(),
+            items = items.filter { it.type.isMarket() }.toImmutableList(),
             key = { it.symbol },
             contentPadding = PaddingValues(16.dp),
             modifier = modifier.fillMaxSize(),

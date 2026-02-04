@@ -18,7 +18,11 @@ data class InvestmentEntity(
     val type: InvestmentType,
     val year: Int,
     val month: Int
-)
+) {
+    override fun toString(): String {
+        return "$symbol|$name|$quantity|$price|$previousPrice|$currency|$type|$year|$month"
+    }
+}
 
 fun Investment.toEntity(): InvestmentEntity = InvestmentEntity(
     symbol = symbol,
@@ -57,8 +61,4 @@ fun String.toInvestmentEntity(): InvestmentEntity {
         year = parts[7].toIntOrNull() ?: 0,
         month = parts[8].toIntOrNull() ?: 0,
     )
-}
-
-fun InvestmentEntity.toPreference(): String {
-    return "$symbol|$name|$quantity|$price|$previousPrice|$currency|$type|$year|$month"
 }

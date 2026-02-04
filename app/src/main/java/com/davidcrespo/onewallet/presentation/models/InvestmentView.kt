@@ -30,6 +30,10 @@ data class InvestmentView(
             InvestmentType.BANK -> R.drawable.ic_savings
             InvestmentType.OTHER -> R.drawable.ic_category
         }
+
+    override fun toString(): String {
+        return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|$originalCurrency|$changePercent|$type|$year|$month"
+    }
 }
 
 fun Investment.toUI(): InvestmentView {
@@ -83,8 +87,4 @@ fun String.toInvestmentView(): InvestmentView {
         year = parts[10].toIntOrNull() ?: 0,
         month = parts[11].toIntOrNull() ?: 0,
     )
-}
-
-fun InvestmentView.toPreference(): String {
-    return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|$originalCurrency|$changePercent|$type|$year|$month"
 }

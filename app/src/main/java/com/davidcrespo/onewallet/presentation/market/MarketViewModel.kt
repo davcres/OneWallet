@@ -1,27 +1,48 @@
 package com.davidcrespo.onewallet.presentation.market
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davidcrespo.onewallet.domain.usecase.market.AddMarketAssetToPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.market.GetMarketAssetsUseCase
 import com.davidcrespo.onewallet.presentation.models.MarketAssetView
 import com.davidcrespo.onewallet.presentation.models.toDomain
+import com.davidcrespo.onewallet.presentation.models.toMarketAssetView
 import com.davidcrespo.onewallet.presentation.models.toUI
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MarketViewModel(
+    private val savedStateHandle: SavedStateHandle,
     private val getMarketAssetsUseCase: GetMarketAssetsUseCase,
     private val addMarketAssetToPortfolioUseCase: AddMarketAssetToPortfolioUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(MarketUiState())
-    val uiState = _uiState.asStateFlow()
+    private val restoredAssetsToSave = savedStateHandle.get<String>("assetsToSaveToPortfolio")?.split(",")
+
+    private val _uiState = MutableStateFlow(MarketUiState(
+        searchQuery = savedStateHandle["searchQuery"] ?: "",
+        assetsToSaveToPortfolio = restoredAssetsToSave?.map { stringAsset ->
+            stringAsset.toMarketAssetView()
+        }?.toImmutableList() ?: persistentListOf()
+    ))
+    val uiState = _uiState
+        .onEach { state ->
+            savedStateHandle["searchQuery"] = state.searchQuery
+            savedStateHandle["assetsToSaveToPortfolio"] = state.assetsToSaveToPortfolio.joinToString(",") { it.toString() }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000L),
+            initialValue = MarketUiState()
+        )
 
     fun handleIntent(intent: MarketIntent) {
         when (intent) {
@@ -41,9 +62,9 @@ class MarketViewModel(
                     val marketAssetsView =
                         marketAssets
                             .map { (letter, assets) ->
-                                letter to assets.map { it.toUI() }.toPersistentList()
+                                letter to assets.map { it.toUI() }.toImmutableList()
                             }
-                            .toPersistentList()
+                            .toImmutableList()
                     _uiState.update {
                         it.copy(
                             marketAssets = marketAssetsView,
@@ -94,7 +115,7 @@ class MarketViewModel(
                 current.filterNot { it == asset }
             } else {
                 current + asset
-            }.toPersistentList()
+            }.toImmutableList()
 
             state.copy(assetsToSaveToPortfolio = newList)
         }
@@ -129,9 +150,9 @@ class MarketViewModel(
                         asset.symbol.contains(query, ignoreCase = true) ||
                         asset.description?.contains(query, ignoreCase = true) == true ||
                         asset.figi?.contains(query, ignoreCase = true) == true
-                    }.toPersistentList()
+                    }.toImmutableList()
                 }.filter { (_, assets) -> assets.isNotEmpty() }
-            }.toPersistentList()
+            }.toImmutableList()
 
         return filtered
     }

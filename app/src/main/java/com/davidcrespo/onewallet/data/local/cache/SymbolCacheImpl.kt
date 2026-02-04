@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.davidcrespo.onewallet.data.local.database.portfolio.entities.InvestmentEntity
 import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toInvestmentEntity
-import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toPreference
 import java.time.Clock
 import java.util.concurrent.TimeUnit
 
@@ -26,7 +25,7 @@ class SymbolCacheImpl(
 
         sharedPreferences.edit {
             putLong(cachedAtKey(symbol), nowMillis)
-            putString(valueKey(symbol), investmentEntity.toPreference())
+            putString(valueKey(symbol), investmentEntity.toString())
         }
     }
 
