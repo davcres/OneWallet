@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
+import com.davidcrespo.onewallet.core.composables.modifiers.privacyBlur
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
@@ -91,7 +92,7 @@ fun HistoricalMonthDetailBottomSheet(
     ) {
         Box(Modifier
             .fillMaxWidth()
-            .blur(blurRadius)
+            .privacyBlur(blurRadius)
             .background(Color.Black.copy(alpha = overlayAlpha))
         ) {
             Column {

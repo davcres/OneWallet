@@ -63,7 +63,7 @@ fun Modifier.applyBlur(blurRadius: Dp = 16.dp): Modifier = when {
         this.blur(blurRadius)
     }
     // Older versions: Fallback to redacting the content
-    else -> this.applyRedact(Color.LightGray)
+    else -> this//.applyRedact(Color.LightGray)
 }
 
 /**

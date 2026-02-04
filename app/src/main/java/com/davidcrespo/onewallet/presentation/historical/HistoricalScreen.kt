@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davidcrespo.onewallet.R
+import com.davidcrespo.onewallet.core.composables.modifiers.privacyBlur
 import com.davidcrespo.onewallet.core.extensions.orEmpty
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalInvestmentDetailBottomSheet
 import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalList
@@ -102,7 +103,7 @@ private fun HistoricalScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .blur(blurRadius)
+                .privacyBlur(blurRadius)
                 .background(Color.Black.copy(alpha = overlayAlpha))
         ) {
             when {

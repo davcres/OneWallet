@@ -28,7 +28,6 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.ErrorBanner
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.pulse
+import com.davidcrespo.onewallet.core.composables.modifiers.privacyBlur
 import com.davidcrespo.onewallet.core.extensions.applyIf
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWFloatingActionButton
@@ -123,9 +123,11 @@ private fun PortfolioScreen(
         onAction(PortfolioIntent.GetItemsByType)
     }
 
-    OWShakeListener(
-        onShake = { isBalanceVisible = !isBalanceVisible }
-    )
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+        OWShakeListener(
+            onShake = { isBalanceVisible = !isBalanceVisible }
+        )
+    }
 
     Scaffold(
         floatingActionButton = {
@@ -142,7 +144,7 @@ private fun PortfolioScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .blur(blurRadius)
+                .privacyBlur(blurRadius)
                 .padding(paddingValues)
         ) {
             Column(

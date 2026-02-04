@@ -62,17 +62,19 @@ fun TotalBalance(
                 shouldAnimate = shouldAnimate
             )
 
-            IconButton(
-                onClick = { changeBalanceVisibility() },
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-            ) {
-                Icon(
-                    imageVector = if (isBalanceVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                    contentDescription = if (isBalanceVisible) stringResource(R.string.hide_balance_cd) else stringResource(R.string.show_balance_cd),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                IconButton(
+                    onClick = { changeBalanceVisibility() },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isBalanceVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        contentDescription = if (isBalanceVisible) stringResource(R.string.hide_balance_cd) else stringResource(R.string.show_balance_cd),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
             }
         }
     }
