@@ -41,7 +41,7 @@ import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
-import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
+import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBackground
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.delay
@@ -73,7 +73,7 @@ fun HistoricalMonthCard(
             .bounceClick(),
         shape = CircleShape,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = CardGlowOuter),
+        colors = CardDefaults.cardColors(containerColor = ItemBackground),
         onClick = onClick
     ) {
         Row(

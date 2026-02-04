@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.presentation.designsystem.composables
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,7 +39,8 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
-import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
+import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBackground
+import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBorder
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 
@@ -59,8 +61,9 @@ fun OWInvestmentItem(
             .fillMaxWidth()
             .bounceClick(),
         shape = CircleShape,
+        border = BorderStroke(1.dp, ItemBorder),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = CardGlowOuter),
+        colors = CardDefaults.cardColors(containerColor = ItemBackground),
         onClick = { onClick(item) }
     ) {
         Row(

@@ -15,9 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Addchart
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Euro
-import androidx.compose.material.icons.outlined.AccountBalance
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -49,6 +47,7 @@ import com.davidcrespo.onewallet.core.composables.modifiers.animations.shakeClic
 import com.davidcrespo.onewallet.core.extensions.applyIf
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.bottomSheet.SheetHandle
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
@@ -132,7 +131,7 @@ private fun Header(isBank: Boolean, onClose: () -> Unit) {
         Column(Modifier.align(Alignment.CenterStart)) {
             Row {
                 Icon(
-                    imageVector = if (isBank) Icons.Outlined.AccountBalance else Icons.Outlined.Payments,
+                    imageVector = if (isBank) InvestmentType.BANK.icon else InvestmentType.OTHER.icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )

@@ -3,7 +3,6 @@ package com.davidcrespo.onewallet.presentation.designsystem.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
 val DarkScheme = darkColorScheme(
     primary = MintPrimary,
@@ -47,7 +46,7 @@ val DarkScheme = darkColorScheme(
 
     // Extras útiles en M3
     surfaceTint = MintPrimary,          // tint de elevación (si usas tonal elevation)
-    scrim = Color(0xFF000000)           // típico en dark
+    scrim = ScrimDark           // típico en dark
 )
 
 @Composable

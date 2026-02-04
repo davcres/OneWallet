@@ -5,55 +5,56 @@ import androidx.compose.ui.graphics.Color
 
 // Accent
 val MintPrimary = Color(0xFF35F28F)
-val OnMintPrimary = Color(0xFF052112)
+val OnMintPrimary = Color(0xFF062114)
 
-val MintContainer = Color(0xFF123826)
-val OnMintContainer = Color(0xFFFFFFFF)
+val MintContainer = Color(0xFF163A2A)
+val OnMintContainer = Color(0xFFD8FFE9)
+
 
 // Secondary
 val SecondaryGreen = Color(0xFF22C55E)
-val OnSecondaryGreen = OnMintPrimary
-val SecondaryContainer = Color(0xFF0F2A1D)
-val OnSecondaryContainer = Color(0xFFB7F3CE)
+val OnSecondaryGreen = Color(0xFF052112)
 
-// Tertiary (Teal/Cyan accent for Dark)
+val SecondaryContainer = Color(0xFF143224)
+val OnSecondaryContainer = Color(0xFFCFF7DE)
+
+// Tertiary
 val TertiaryTeal = Color(0xFF2DD4BF)
 val OnTertiaryTeal = Color(0xFF001F1A)
-val TertiaryContainer = Color(0xFF0D3A33)
+
+val TertiaryContainer = Color(0xFF113833)
 val OnTertiaryContainer = Color(0xFFB8FFF2)
 
 // Background & Surfaces
 val BgDark = Color(0xFF091A12)
-val OnBgDark = Color(0xFFF2F5F3)
+val OnBgDark = Color(0xFFEAF1ED)
 
-val SurfaceDark = Color(0xFF0B1712)
-val OnSurfaceDark = OnBgDark
+val SurfaceDark = Color(0xFF0F1412)
+val OnSurfaceDark = Color(0xFFEAF1ED)
 
-val SurfaceVariantDark = Color(0xFF0F221A)
-val OnSurfaceVariantDark = Color(0xFFB9C6C0)
+val SurfaceVariantDark = Color(0xFF161C19)
+val OnSurfaceVariantDark = Color(0xFFB8C6BF)
 
 // Outlines
-val OutlineDark = Color(0xFF1D3A2D)
-val OutlineVariantDark = Color(0xFF132A21)
+val OutlineDark = Color(0xFF2A3430)
+val OutlineVariantDark = Color(0xFF1F2724)
 
 val Error = Color(0xFFFF5A5F)
-
-// Error tokens (Material3)
-val OnError = Color(0xFFFFD6D8)          // mejor legibilidad en dark que un onError oscuro
+val OnError = Color(0xFF2B0B0D)
 val ErrorContainer = Color(0xFF3B1214)
 val OnErrorContainer = Color(0xFFFFD6D8)
 
 // Extras (Material3)
-val InverseSurface = Color(0xFFE9EEEC)
-val InverseOnSurface = Color(0xFF12201A)
+val InverseSurface = Color(0xFFE7EEE9)
+val InverseOnSurface = Color(0xFF101513)
 val InversePrimary = Color(0xFF1FBF67)
 
-val CardGlowInner = Color(0xFF1a3627)
-val CardGlowOuter = Color(0xFF1b2620)
+val ScrimDark = Color(0xFF000000)
+
+val CardGlowInner = MintPrimary.copy(alpha = 0.10f)
+val ItemBackground = Color(0xFF1B2E27)
+val ItemBorder = Color(0x1AFFFFFF)
 
 fun cardGlowBrush(): Brush = Brush.horizontalGradient(
-        listOf(
-            CardGlowOuter,
-            CardGlowInner
-        )
-    )
+    listOf(ItemBackground, CardGlowInner)
+)

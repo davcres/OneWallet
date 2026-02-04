@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
-import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
+import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBackground
 import kotlinx.coroutines.delay
 
 @Composable
@@ -126,7 +126,7 @@ fun ComicBubblePopup(
                 bubbleLeftInWindowPx = x,
                 arrowOnTop = !placeAbove, // si va debajo, el pico arriba; si va arriba, el pico abajo,
                 borderColor = MaterialTheme.colorScheme.primary,
-                fillColor = CardGlowOuter,
+                fillColor = ItemBackground,
                 borderWidth = 2.dp,
                 onDismiss = onDismiss,
                 content = content

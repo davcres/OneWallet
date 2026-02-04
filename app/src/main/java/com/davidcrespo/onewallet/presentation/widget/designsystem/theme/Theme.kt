@@ -1,7 +1,6 @@
 package com.davidcrespo.onewallet.presentation.widget.designsystem.theme
 
 import androidx.compose.material3.ColorScheme
-import androidx.compose.ui.graphics.Color
 import androidx.glance.material3.ColorProviders
 import com.davidcrespo.onewallet.presentation.designsystem.theme.BgDark
 import com.davidcrespo.onewallet.presentation.designsystem.theme.Error
@@ -24,6 +23,7 @@ import com.davidcrespo.onewallet.presentation.designsystem.theme.OnTertiaryConta
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OnTertiaryTeal
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OutlineDark
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OutlineVariantDark
+import com.davidcrespo.onewallet.presentation.designsystem.theme.ScrimDark
 import com.davidcrespo.onewallet.presentation.designsystem.theme.SecondaryContainer
 import com.davidcrespo.onewallet.presentation.designsystem.theme.SecondaryGreen
 import com.davidcrespo.onewallet.presentation.designsystem.theme.SurfaceDark
@@ -74,7 +74,7 @@ val WidgetColors = ColorProviders(
 
         // Extras útiles en M3
         surfaceTint = MintPrimary,          // tint de elevación (si usas tonal elevation)
-        scrim = Color(0xFF000000)           // típico en dark
+        scrim = ScrimDark           // típico en dark
     ),
     dark = ColorScheme(
         primary = MintPrimary,
@@ -118,6 +118,6 @@ val WidgetColors = ColorProviders(
 
         // Extras útiles en M3
         surfaceTint = MintPrimary,          // tint de elevación (si usas tonal elevation)
-        scrim = Color(0xFF000000)           // típico en dark
+        scrim = ScrimDark           // típico en dark
     )
 )

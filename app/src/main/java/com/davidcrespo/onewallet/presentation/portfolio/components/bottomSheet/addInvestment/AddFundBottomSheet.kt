@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Addchart
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.PieChartOutline
@@ -50,6 +49,7 @@ import com.davidcrespo.onewallet.core.composables.modifiers.animations.shakeClic
 import com.davidcrespo.onewallet.core.extensions.applyIf
 import com.davidcrespo.onewallet.core.extensions.isValidIsin
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.bottomSheet.SheetHandle
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
@@ -132,7 +132,7 @@ private fun Header(isFund: Boolean, onClose: () -> Unit) {
         Column(Modifier.align(Alignment.CenterStart)) {
             Row {
                 Icon(
-                    imageVector = Icons.Default.Addchart,
+                    imageVector = if (isFund) InvestmentType.FUND.icon else InvestmentType.ETF.icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )

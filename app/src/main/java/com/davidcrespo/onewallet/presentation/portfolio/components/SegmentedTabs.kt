@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.presentation.designsystem.theme.CardGlowOuter
+import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBackground
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTab
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -47,7 +47,7 @@ fun SegmentedTabs(
             .fillMaxWidth()
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.surface)
-            .border(2.dp, CardGlowOuter, CircleShape)
+            .border(2.dp, ItemBackground, CircleShape)
             .padding(8.dp)
     ) {
         val segmentWidth = maxWidth / titles.size
@@ -61,7 +61,7 @@ fun SegmentedTabs(
                 .width(segmentWidth)
                 .fillMaxSize()
                 .clip(CircleShape)
-                .background(CardGlowOuter)
+                .background(ItemBackground)
         )
 
         // Click areas + text
