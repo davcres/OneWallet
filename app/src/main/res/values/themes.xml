@@ -3,9 +3,5 @@
 
     <style name="Theme.OneWallet" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/splash</item>
-        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
-        <item name="postSplashScreenTheme">@style/Theme.OneWallet</item>
-    </style>
+    <style name="Theme.OneWallet.Splash" />
 </resources>
