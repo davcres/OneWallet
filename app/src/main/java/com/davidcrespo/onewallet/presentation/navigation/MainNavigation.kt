@@ -15,12 +15,13 @@ import androidx.navigation3.ui.NavDisplay
 import com.davidcrespo.onewallet.presentation.historical.HistoricalRoot
 import com.davidcrespo.onewallet.presentation.market.MarketRoot
 import com.davidcrespo.onewallet.presentation.portfolio.PortfolioRoot
+import com.davidcrespo.onewallet.presentation.splash.SplashScreen
 
 @Composable
 fun MainNavigation(
     contentPadding: PaddingValues
 ) {
-    val backStack = rememberNavBackStack(Route.Portfolio)
+    val backStack = rememberNavBackStack(Route.Splash)
 
     NavDisplay(
         backStack = backStack,
@@ -41,6 +42,15 @@ fun MainNavigation(
             )
         },
         entryProvider = entryProvider {
+            entry<Route.Splash> {
+                SplashScreen(
+                    onAnimationFinished = {
+                        backStack.clear()
+                        backStack.add(Route.Portfolio)
+                    }
+                )
+            }
+
             entry<Route.Portfolio> {
                 PortfolioRoot(
                     navigateToHistorical = { isBalanceVisible ->
