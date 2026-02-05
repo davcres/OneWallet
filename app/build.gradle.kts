@@ -133,4 +133,10 @@ dependencies {
 
     // Immutable List
     implementation(libs.colletions.immutable)
+
+    // Lottie
+    implementation(libs.lottie.compose)
+
+    // Splash Screen
+    implementation(libs.core.splashscreen)
 }
