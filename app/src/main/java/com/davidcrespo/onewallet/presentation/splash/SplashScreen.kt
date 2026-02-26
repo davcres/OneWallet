@@ -18,19 +18,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.davidcrespo.onewallet.R
 import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 
 const val START_ANIMATION = 0.65f
 const val ANIMATION_DURATION = 400
 
 @Composable
-fun SplashScreen(
-    onAnimationFinished: () -> Unit
+fun SplashRoot(
+    onAnimationFinished: (onboardingCompleted: Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: SplashViewModel = koinViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(viewModel) {
+        viewModel.handleIntent(SplashIntent.IsOnboardingCompleted)
+    }
+
+    SplashScreen(
+        uiState = uiState,
+        onAnimationFinished = onAnimationFinished,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun SplashScreen(
+    uiState: SplashUiState,
+    onAnimationFinished: (onboardingCompleted: Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash))
     val progress by animateLottieCompositionAsState(
@@ -63,12 +86,12 @@ fun SplashScreen(
     LaunchedEffect(startAnimation) {
         if (startAnimation) {
             delay(ANIMATION_DURATION.toLong())
-            onAnimationFinished()
+            onAnimationFinished(uiState.onboardingCompleted ?: false)
         }
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .clickable {

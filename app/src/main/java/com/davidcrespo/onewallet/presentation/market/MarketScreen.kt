@@ -40,6 +40,10 @@ fun MarketRoot(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(viewModel) {
+        viewModel.handleIntent(MarketIntent.LoadInitialData(isCrypto))
+    }
+
     MarketScreen(
         uiState = uiState,
         onAction = viewModel::handleIntent,
@@ -58,10 +62,6 @@ private fun MarketScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LaunchedEffect(Unit) {
-        onAction(MarketIntent.LoadInitialData(isCrypto))
-    }
-
     if (uiState.navigateBack) {
         onBack()
     }

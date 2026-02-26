@@ -1,7 +1,19 @@
 <resources>
     <string name="app_name">OneWallet Portafolio</string>
-    <string name="widget_portfolio_description">Consulta los valores de tu cartera</string>
-    <string name="widget_stocks_description">Sigue la cotización de tus activos en tiempo real</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_1_title">Bienvenido a OneWallet</string>
+    <string name="onboarding_1_description">Controla todas tus inversiones en un solo lugar. Simple y rápido.</string>
+    <string name="onboarding_2_title">Seguimiento de tus inversiones en tiempo real</string>
+    <string name="onboarding_2_description">Obtén datos de mercado actualizados sobre acciones, fondos, ETFs y criptomonedas.</string>
+    <string name="onboarding_3_title">Analiza tu evolución mensual</string>
+    <string name="onboarding_3_description">Consulta el rendimiento de tu cartera para ver como evoluciona mes a mes con datos históricos.</string>
+    <string name="onboarding_4_title">Tus datos son solo tuyos</string>
+    <string name="onboarding_4_description">Todos tus datos se almacenan localmente en tu dispositivo. Sin nube, sin seguimiento.</string>
+    <string name="onboarding_5_title">Tus finanzas simplificadas</string>
+    <string name="onboarding_5_description">¿Empezamos?</string>
+    <string name="onboarding_button_next">Siguiente</string>
+    <string name="onboarding_button_get_started">Empezar ahora</string>
 
     <!-- Portfolio -->
     <string name="empty_investments_title">Aún no has añadido ninguna inversión</string>
@@ -88,6 +100,7 @@
     <string name="clear_text_cd">Borrar texto</string>
     <string name="copiable_text_snackbar">Copiado al portapapeles</string>
     <string name="copiable_text_cd">Copiar</string>
+    <string name="reload_cd">Recargar</string>
 
     <string name="total_balance">Balance Total</string>
     <string name="hide_balance_cd">Ocultar balance</string>
@@ -104,6 +117,7 @@
     <string name="your_investments">Tus inversiones</string>
 
     <!-- Widget -->
-    <string name="reload_cd">Recargar</string>
+    <string name="widget_portfolio_description">Consulta los valores de tu cartera</string>
+    <string name="widget_stocks_description">Sigue la cotización de tus activos en tiempo real</string>
     <string name="asset_prices_title">Precios de Mercado</string>
 </resources>
