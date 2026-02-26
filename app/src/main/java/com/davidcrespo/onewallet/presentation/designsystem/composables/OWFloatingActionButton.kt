@@ -17,7 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import kotlin.math.max
@@ -60,8 +60,10 @@ fun OWFloatingActionButton(
             imageVector = Icons.Default.Add,
             contentDescription = "Añadir",
             modifier = Modifier
-                .rotate(max(rotation, pressedRotation))
                 .size(35.dp)
+                .graphicsLayer {
+                    rotationZ = max(rotation, pressedRotation)
+                }
         )
     }
 }
