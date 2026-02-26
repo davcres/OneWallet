@@ -24,7 +24,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
@@ -36,6 +38,7 @@ import kotlinx.collections.immutable.ImmutableList
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PortfolioList(
+    header: @Composable () -> Unit,
     items: ImmutableList<InvestmentView>,
     currency: Currency,
     onRemove: (InvestmentView) -> Unit,
@@ -47,6 +50,7 @@ fun PortfolioList(
 ) {
     if (shouldAnimate) {
         OWAnimatedList(
+            header = header,
             items = items,
             key = { it.symbol },
             state = state,
@@ -94,7 +98,7 @@ fun PortfolioList(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
-                                contentDescription = "Borrar",
+                                contentDescription = stringResource(R.string.clear_cd),
                                 tint = Color.White
                             )
                         }

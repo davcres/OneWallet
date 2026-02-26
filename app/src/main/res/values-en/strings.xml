@@ -99,6 +99,7 @@
     <string name="percentage_icon_cd">Percentage Icon</string>
 
     <!-- Core -->
+    <string name="clear_cd">Delete investment</string>
     <string name="clear_text_cd">Clear text</string>
     <string name="copiable_text_snackbar">Copied to clipboard</string>
     <string name="copiable_text_cd">Copy</string>

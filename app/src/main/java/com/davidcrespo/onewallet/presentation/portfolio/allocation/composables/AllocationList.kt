@@ -19,6 +19,7 @@ import kotlinx.collections.immutable.ImmutableList
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllocationList(
+    header: @Composable () -> Unit,
     items: ImmutableList<InvestmentView>,
     currency: Currency,
     onSelect: (InvestmentType) -> Unit,
@@ -28,6 +29,7 @@ fun AllocationList(
 ) {
     if (shouldAnimate) {
         OWAnimatedList(
+            header = header,
             items = items,
             key = { it.symbol },
             contentPadding = PaddingValues(16.dp),

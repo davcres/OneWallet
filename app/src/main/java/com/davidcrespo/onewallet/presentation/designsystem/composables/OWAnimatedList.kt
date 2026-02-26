@@ -34,6 +34,7 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> OWAnimatedList(
+    header: @Composable () -> Unit = {},
     items: ImmutableList<T>,
     key: (T) -> Any,
     state: LazyListState = rememberLazyListState(),
@@ -54,7 +55,7 @@ fun <T> OWAnimatedList(
         snapshotFlow { state.layoutInfo.visibleItemsInfo.map { it.index } } // index de cada item visible
             .collect { firstVisibleItems ->
                 if (!hasInitialVisibleIndex) {
-                    initialVisibleIndex = firstVisibleItems
+                    initialVisibleIndex = firstVisibleItems.take(firstVisibleItems.size - 1)
                 }
             }
     }
@@ -67,6 +68,10 @@ fun <T> OWAnimatedList(
         horizontalAlignment = horizontalAlignment,
         modifier = modifier.graphicsLayer { alpha = if (hasInitialVisibleIndex) 1f else 0f }
     ) {
+        item {
+            header()
+        }
+
         itemsIndexed(items, key = { _, it -> key(it) }) { index, item ->
 
             val rank = initialVisibleIndex.indexOf(index) // devuelve -1 si el item no está visible al entrar
