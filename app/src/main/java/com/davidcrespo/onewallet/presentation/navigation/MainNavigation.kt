@@ -14,8 +14,9 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.davidcrespo.onewallet.presentation.historical.HistoricalRoot
 import com.davidcrespo.onewallet.presentation.market.MarketRoot
+import com.davidcrespo.onewallet.presentation.onboarding.OnboardingRoot
 import com.davidcrespo.onewallet.presentation.portfolio.PortfolioRoot
-import com.davidcrespo.onewallet.presentation.splash.SplashScreen
+import com.davidcrespo.onewallet.presentation.splash.SplashRoot
 
 @Composable
 fun MainNavigation(
@@ -43,11 +44,25 @@ fun MainNavigation(
         },
         entryProvider = entryProvider {
             entry<Route.Splash> {
-                SplashScreen(
-                    onAnimationFinished = {
+                SplashRoot(
+                    onAnimationFinished = { onboardingCompleted ->
+                        backStack.clear()
+                        if (onboardingCompleted) {
+                            backStack.add(Route.Portfolio)
+                        } else {
+                            backStack.add(Route.Onboarding)
+                        }
+                    }
+                )
+            }
+
+            entry<Route.Onboarding> {
+                OnboardingRoot(
+                    onFinish = {
                         backStack.clear()
                         backStack.add(Route.Portfolio)
-                    }
+                    },
+                    modifier = Modifier.padding(contentPadding)
                 )
             }
 

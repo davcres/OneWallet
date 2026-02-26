@@ -24,7 +24,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -45,6 +44,10 @@ fun HistoricalRoot(
     viewModel: HistoricalViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(viewModel) {
+        viewModel.handleIntent(HistoricalIntent.LoadInitialData)
+    }
 
     HistoricalScreen(
         uiState = uiState,
@@ -80,10 +83,6 @@ private fun HistoricalScreen(
         targetValue = if (hideBackground) 0.32f else 0f,
         label = "overlay"
     )
-
-    LaunchedEffect(Unit) {
-        onAction(HistoricalIntent.LoadInitialData)
-    }
 
     Scaffold(
         topBar = {

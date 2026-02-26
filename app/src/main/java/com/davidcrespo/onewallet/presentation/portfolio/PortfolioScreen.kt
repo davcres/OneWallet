@@ -69,6 +69,11 @@ fun PortfolioRoot(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(uiState.portfolioItems) {
+        viewModel.handleIntent(PortfolioIntent.UpdateBalance)
+        viewModel.handleIntent(PortfolioIntent.GetItemsByType)
+    }
+
     PortfolioScreen(
         uiState = uiState,
         onAction = { action ->
@@ -117,11 +122,6 @@ private fun PortfolioScreen(
         targetValue = if (hideBackground) 0.32f else 0f,
         label = "overlay"
     )
-
-    LaunchedEffect(uiState.portfolioItems) {
-        onAction(PortfolioIntent.UpdateBalance)
-        onAction(PortfolioIntent.GetItemsByType)
-    }
 
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
         OWShakeListener(
