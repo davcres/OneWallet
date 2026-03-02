@@ -53,7 +53,7 @@ fun ExtraEtfResponse.toInvestDto(): InvestmentDto {
         quantity = 0.0,
         price = etf?.lastQuote?.mid ?: etf?.nav ?: 0.0,
         previousPrice = previousDay?.closePrice ?: 0.0,
-        currency = if (!currency.isNullOrEmpty()) Currency.valueOf(currency) else Currency.EUR,
+        currency = if (!currency.isNullOrEmpty()) Currency.from(currency) else Currency.EUR,
         type = InvestmentType.ETF,
         year = 0,
         month = 0

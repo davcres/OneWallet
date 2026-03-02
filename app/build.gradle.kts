@@ -19,6 +19,24 @@ val finnhubApiKey: String = (rootProject.extra["FINNHUB_API_KEY"] as? String)
         "FINNHUB_API_KEY not set. " +
                 "Add it to secrets.properties (root) or as env var FINNHUB_API_KEY"
     )
+val alphaVantageApiKey: String = (rootProject.extra["ALPHA_VANTAGE_API_KEY"] as? String)
+    ?: System.getenv("ALPHA_VANTAGE_API_KEY")
+    ?: throw GradleException(
+        "ALPHA_VANTAGE_API_KEY not set. " +
+                "Add it to secrets.properties (root) or as env var ALPHA_VANTAGE_API_KEY"
+    )
+val alphaVantageApiKey2: String = (rootProject.extra["ALPHA_VANTAGE_API_KEY_2"] as? String)
+    ?: System.getenv("ALPHA_VANTAGE_API_KEY_2")
+    ?: throw GradleException(
+        "ALPHA_VANTAGE_API_KEY_2 not set. " +
+                "Add it to secrets.properties (root) or as env var ALPHA_VANTAGE_API_KEY_2"
+    )
+val alphaVantageApiKey3: String = (rootProject.extra["ALPHA_VANTAGE_API_KEY_3"] as? String)
+    ?: System.getenv("ALPHA_VANTAGE_API_KEY_3")
+    ?: throw GradleException(
+        "ALPHA_VANTAGE_API_KEY_3 not set. " +
+                "Add it to secrets.properties (root) or as env var ALPHA_VANTAGE_API_KEY_3"
+    )
 val twelveDataApiKey: String = (rootProject.extra["TWELVE_DATA_API_KEY"] as? String)
     ?: System.getenv("TWELVE_DATA_API_KEY")
     ?: throw GradleException(
@@ -54,6 +72,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "FINNHUB_API_KEY", "\"$finnhubApiKey\"")
+        buildConfigField("String", "ALPHA_VANTAGE_API_KEY", "\"$alphaVantageApiKey\"")
+        buildConfigField("String", "ALPHA_VANTAGE_API_KEY_2", "\"$alphaVantageApiKey2\"")
+        buildConfigField("String", "ALPHA_VANTAGE_API_KEY_3", "\"$alphaVantageApiKey3\"")
         buildConfigField("String", "TWELVE_DATA_API_KEY", "\"$twelveDataApiKey\"")
         buildConfigField("String", "TELEGRAM_API_KEY", "\"$telegramApiKey\"")
         buildConfigField("String", "TELEGRAM_CHAT_ID", "\"$telegramChatId\"")

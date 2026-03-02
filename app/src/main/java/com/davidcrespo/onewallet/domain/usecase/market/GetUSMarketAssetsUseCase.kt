@@ -5,7 +5,7 @@ import com.davidcrespo.onewallet.domain.model.market.MarketAsset
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import kotlinx.coroutines.withContext
 
-class GetMarketAssetsUseCase(
+class GetUSMarketAssetsUseCase(
     private val repository: FinancialRepository,
     private val dispatcher: DispatcherProvider
 ) {
@@ -16,12 +16,12 @@ class GetMarketAssetsUseCase(
 
     suspend operator fun invoke(
         isCrypto: Boolean = false
-    ): Result<List<Pair<Char, List<MarketAsset>>>> {
+    ): Result<List<Pair<String, List<MarketAsset>>>> {
         val marketAssets = if (isCrypto) {
             val allowedCurrencies = setOf("EUR", "USD", "USDC", "USDT")
             repository.getCryptosSymbols(allowedCurrencies)
         } else {
-            repository.getStocksSymbols("US")
+            repository.getStocksSymbols(US_COUNTRY)
         }
 
         return marketAssets.mapCatching { assets ->
@@ -30,22 +30,26 @@ class GetMarketAssetsUseCase(
 
                 val favorites = ArrayList<MarketAsset>()
                 val assetsByInitial =
-                    linkedMapOf<Char, MutableList<MarketAsset>>() // keeps insertion order
+                    linkedMapOf<String, MutableList<MarketAsset>>() // keeps insertion order
 
                 for (asset in sorted) {
                     if (asset.symbol in FAVORITE_SYMBOLS) {
                         favorites += asset
                     }
 
-                    val initial = asset.symbol.firstOrNull() ?: '#'
+                    val initial = asset.symbol.firstOrNull().toString().takeIf { it.isNotEmpty() } ?: "#"
                     assetsByInitial.getOrPut(initial) { ArrayList() }.add(asset)
                 }
 
                 buildList {
-                    add('★' to favorites)
+                    add("★" to favorites)
                     assetsByInitial.forEach { (k, v) -> add(k to v) }
                 }
             }
         }
+    }
+
+    companion object GetUSMarketAssetsUseCase {
+        private const val US_COUNTRY = "US"
     }
 }

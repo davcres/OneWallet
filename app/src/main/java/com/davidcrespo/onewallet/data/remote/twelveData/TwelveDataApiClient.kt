@@ -13,7 +13,7 @@ class TwelveDataApiClient(private val client: HttpClient) {
         return client.get(TwelveDataApiConfig.GetRate.PATH) {
             parameter(TwelveDataApiConfig.GetRate.FROM_TO, TwelveDataApiConfig.GetRate.USD_EUR)
             parameter(TwelveDataApiConfig.GetRate.AMOUNT, 1)
-            parameter(TwelveDataApiConfig.GetRate.API_KEY, BuildConfig.TWELVE_DATA_API_KEY)
+            parameter(TwelveDataApiConfig.API_KEY, BuildConfig.TWELVE_DATA_API_KEY)
         }.body()
     }
 }

@@ -37,7 +37,7 @@ class CurrencyCacheImpl(
 
     override fun getSelectedCurrency(): Currency {
         val currencyName = sharedPreferences.getString(CURRENCY, null)
-        return runCatching { Currency.valueOf(currencyName.orEmpty()) }
+        return runCatching { Currency.from(currencyName.orEmpty()) }
             .getOrDefault(Currency.EUR)
     }
 
