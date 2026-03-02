@@ -163,11 +163,12 @@ class PortfolioViewModel(
                         ) ?: item
                     }
 
-                    getInvestmentPriceUseCase.invoke(
+                    getInvestmentPriceUseCase(
                         symbol = symbol,
                         type = item.type,
                         name = item.name,
-                        selectedCurrency = state.selectedCurrency
+                        selectedCurrency = state.selectedCurrency,
+                        investmentCurrency = item.originalCurrency
                     )
                         .map { api ->
                             val withPrice = item.copy(

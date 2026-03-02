@@ -68,7 +68,7 @@ class InvestingApiClient(private val client: HttpClient) {
             name = name,
             price = value,
             previousPrice = if (diff != null) value - diff else 0.0,
-            currency = if (!currency.isNullOrEmpty()) Currency.valueOf(currency) else Currency.USD,
+            currency = if (!currency.isNullOrEmpty()) Currency.from(currency) else Currency.USD,
             type = InvestmentType.FUND,
             quantity = 0.0,
             year = 0,

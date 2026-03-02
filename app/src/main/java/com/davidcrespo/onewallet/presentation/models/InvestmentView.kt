@@ -81,7 +81,7 @@ fun String.toInvestmentView(): InvestmentView {
         displayPreviousPrice = parts[4].toDoubleOrNull() ?: 0.0,
         originalPrice = parts[5].toDoubleOrNull() ?: 0.0,
         originalPreviousPrice = parts[6].toDoubleOrNull() ?: 0.0,
-        originalCurrency = Currency.valueOf(parts[7]),
+        originalCurrency = Currency.from(parts[7]),
         changePercent = parts[8].toDoubleOrNull() ?: 0.0,
         type = InvestmentType.valueOf(parts[9]),
         year = parts[10].toIntOrNull() ?: 0,

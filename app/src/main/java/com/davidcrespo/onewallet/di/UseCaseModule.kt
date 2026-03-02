@@ -2,7 +2,8 @@ package com.davidcrespo.onewallet.di
 
 import com.davidcrespo.onewallet.domain.usecase.historical.GetMonthlyHistoryUseCase
 import com.davidcrespo.onewallet.domain.usecase.market.AddMarketAssetToPortfolioUseCase
-import com.davidcrespo.onewallet.domain.usecase.market.GetMarketAssetsUseCase
+import com.davidcrespo.onewallet.domain.usecase.market.GetGlobalMarketAssetsUseCase
+import com.davidcrespo.onewallet.domain.usecase.market.GetUSMarketAssetsUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.AddInvestmentToPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetInvestmentPriceUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
@@ -13,7 +14,8 @@ import org.koin.dsl.module
 
 val useCaseModule = module {
     single { GetInvestmentPriceUseCase(get()) }
-    single { GetMarketAssetsUseCase(get(), get()) }
+    single { GetUSMarketAssetsUseCase(get(), get()) }
+    single { GetGlobalMarketAssetsUseCase(get(), get()) }
     single { GetUsdEurUseCase(get()) }
 
     single { GetPortfolioItemsUseCase(get()) }

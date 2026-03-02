@@ -64,10 +64,7 @@ class QueFondosApiClient(private val client: HttpClient) {
         // 4) Divisa
         val currencyText = priceAndCurrencyText.lastOrNull()
 
-        val currency = if (!currencyText.isNullOrEmpty())
-            Currency.valueOf(currencyText)
-        else
-            Currency.EUR
+        val currency = Currency.from(currencyText, Currency.EUR)
 
         return InvestmentDto(
             symbol = isin,

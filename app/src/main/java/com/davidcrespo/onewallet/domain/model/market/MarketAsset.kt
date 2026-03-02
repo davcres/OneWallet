@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.domain.model.market
 
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.GlobalMarketRegion
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 
@@ -10,7 +11,8 @@ data class MarketAsset(
     val currency: Currency,
     val type: InvestmentType,
     val description: String?,
-    val figi: String?,
+    val figi: String? = null,
+    val region: GlobalMarketRegion? = null,
     val stockType: String?
 )
 

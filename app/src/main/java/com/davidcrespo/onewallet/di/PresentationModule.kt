@@ -1,7 +1,8 @@
 package com.davidcrespo.onewallet.di
 
 import com.davidcrespo.onewallet.presentation.historical.HistoricalViewModel
-import com.davidcrespo.onewallet.presentation.market.MarketViewModel
+import com.davidcrespo.onewallet.presentation.market.globalMarket.GlobalMarketViewModel
+import com.davidcrespo.onewallet.presentation.market.usMarket.UsMarketViewModel
 import com.davidcrespo.onewallet.presentation.onboarding.OnboardingViewModel
 import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
 import com.davidcrespo.onewallet.presentation.portfolio.PortfolioViewModel
@@ -15,6 +16,7 @@ val presentationModule = module {
     viewModelOf(::SplashViewModel)
     viewModelOf(::OnboardingViewModel)
     viewModelOf(::PortfolioViewModel)
-    viewModelOf(::MarketViewModel)
+    viewModelOf(::UsMarketViewModel)
+    viewModelOf(::GlobalMarketViewModel)
     viewModelOf(::HistoricalViewModel)
 }

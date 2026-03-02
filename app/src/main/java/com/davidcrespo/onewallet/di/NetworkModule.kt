@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.di
 
 import android.util.Log
+import com.davidcrespo.onewallet.data.remote.alphaVantage.AlphaVantageApiConfig
 import com.davidcrespo.onewallet.data.remote.binance.BinanceApiConfig
 import com.davidcrespo.onewallet.data.remote.extraEtf.ExtraEtfApiConfig
 import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubApiConfig
@@ -19,6 +20,7 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val networkModule = module {
@@ -62,9 +64,39 @@ val networkModule = module {
         base.config {
             defaultRequest {
                 url(FinnhubApiConfig.BASE_URL)
-                url.parameters.append(FinnhubApiConfig.GetSymbols.TOKEN, apiKey)
+                url.parameters.append(FinnhubApiConfig.TOKEN, apiKey)
             }
         }
+    }
+
+    // Alpha Vantage client
+    single(named("ALPHA_VANTAGE_JSON")) {
+        Json {
+            prettyPrint = false
+            isLenient = true
+            ignoreUnknownKeys = true
+        }
+    }
+    single(named("ALPHA_VANTAGE_HTTP_CLIENT")) {
+        val base = get<HttpClient>()
+
+        base.config {
+            defaultRequest {
+                url(AlphaVantageApiConfig.BASE_URL)
+            }
+        }
+    }
+    single(ALPHA_VANTAGE) {
+        AlphaVantageClient(
+            client = get(named("ALPHA_VANTAGE_HTTP_CLIENT")),
+            json = get(named("ALPHA_VANTAGE_JSON")),
+            apiKeys = listOf(
+                get(ALPHA_VANTAGE_KEY),
+                get(ALPHA_VANTAGE_KEY_2),
+                get(ALPHA_VANTAGE_KEY_3),
+            ),
+            context = get()
+        )
     }
 
     // TwelveData client
@@ -75,7 +107,7 @@ val networkModule = module {
         base.config {
             defaultRequest {
                 url(TwelveDataApiConfig.BASE_URL)
-                url.parameters.append(TwelveDataApiConfig.GetRate.API_KEY, apiKey)
+                url.parameters.append(TwelveDataApiConfig.API_KEY, apiKey)
             }
         }
     }

@@ -12,10 +12,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.TextField
+import com.davidcrespo.onewallet.domain.model.investment.MarketType
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 
 @Composable
 fun MarketSearchBar(
     isCrypto: Boolean,
+    marketType: MarketType,
     query: String,
     onQueryChange: (String) -> Unit,
     onSearch: (String) -> Unit,
@@ -23,12 +26,13 @@ fun MarketSearchBar(
 ) {
     TextField(
         value = query,
-        onValueChange = { input ->
-            val query = input.filter { it.isLetterOrDigit() }
-            onQueryChange(query)
-        },
+        onValueChange = onQueryChange,
         icon = Icons.Outlined.Search,
-        placeholder = if (isCrypto) stringResource(R.string.search_crypto_placeholder) else stringResource(R.string.search_stock_placeholder),
+        placeholder = when {
+            isCrypto -> stringResource(R.string.search_crypto_placeholder)
+            marketType == MarketType.US -> stringResource(R.string.search_us_stock_placeholder)
+            else -> stringResource(R.string.search_global_stock_placeholder)
+        },
         cornerRadius = 999.dp,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(
@@ -41,10 +45,13 @@ fun MarketSearchBar(
 @Preview
 @Composable
 private fun MarketSearchBarPreview() {
-    MarketSearchBar(
-        isCrypto = false,
-        query = "",
-        onQueryChange = {},
-        onSearch = {}
-    )
+    OneWalletTheme {
+        MarketSearchBar(
+            isCrypto = false,
+            marketType = MarketType.GLOBAL,
+            query = "",
+            onQueryChange = {},
+            onSearch = {}
+        )
+    }
 }

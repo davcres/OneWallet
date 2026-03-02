@@ -14,7 +14,10 @@ sealed interface Route : NavKey {
     data object Portfolio : Route
 
     @Serializable
-    data class Market(val isCrypto: Boolean) : Route
+    data class UsMarket(val isCrypto: Boolean) : Route
+
+    @Serializable
+    data object GlobalMarket : Route
 
     @Serializable
     data class Historical(val isBalanceVisible: Boolean) : Route

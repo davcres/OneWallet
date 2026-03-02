@@ -50,7 +50,7 @@ class PortfolioWidget : GlanceAppWidget() {
         provideContent {
             val state = currentState<Preferences>()
             val items = stringToPortfolio(state[PortfolioPrefsKeys.items].orEmpty())
-            val currency = Currency.valueOf(state[PortfolioPrefsKeys.currency] ?: Currency.EUR.name)
+            val currency = Currency.from(state[PortfolioPrefsKeys.currency] ?: Currency.EUR.name)
             val usdEurRate = state[PortfolioPrefsKeys.usdEurRate] ?: 1.0
 
             val currencyConverter = CurrencyConverter()

@@ -16,5 +16,5 @@ class RoomConverters {
     fun currencyToString(value: Currency): String = value.name
 
     @TypeConverter
-    fun stringToCurrency(value: String): Currency = Currency.valueOf(value)
+    fun stringToCurrency(value: String): Currency = Currency.from(value)
 }

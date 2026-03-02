@@ -55,7 +55,7 @@ fun <T> OWAnimatedList(
         snapshotFlow { state.layoutInfo.visibleItemsInfo.map { it.index } } // index de cada item visible
             .collect { firstVisibleItems ->
                 if (!hasInitialVisibleIndex) {
-                    initialVisibleIndex = firstVisibleItems.take(firstVisibleItems.size - 1)
+                    initialVisibleIndex = firstVisibleItems.take(firstVisibleItems.size - 1) // viene 1 mas de lo que deberia
                 }
             }
     }
