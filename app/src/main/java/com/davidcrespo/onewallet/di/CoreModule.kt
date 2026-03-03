@@ -17,6 +17,8 @@ val coreModule = module {
     single(ALPHA_VANTAGE_KEY) { BuildConfig.ALPHA_VANTAGE_API_KEY }
     single(ALPHA_VANTAGE_KEY_2) { BuildConfig.ALPHA_VANTAGE_API_KEY_2 }
     single(ALPHA_VANTAGE_KEY_3) { BuildConfig.ALPHA_VANTAGE_API_KEY_3 }
+    single(MARKETSTACK_KEY) { BuildConfig.MARKETSTACK_API_KEY }
+    single(MARKETSTACK_KEY_2) { BuildConfig.MARKETSTACK_API_KEY_2 }
     single(TWELVE_DATA_KEY) { BuildConfig.TWELVE_DATA_API_KEY }
     single(TELEGRAM_API_KEY) { BuildConfig.TELEGRAM_API_KEY }
     single(TELEGRAM_CHAT_ID) { BuildConfig.TELEGRAM_CHAT_ID }

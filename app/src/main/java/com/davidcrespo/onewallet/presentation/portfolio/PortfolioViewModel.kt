@@ -179,7 +179,10 @@ class PortfolioViewModel(
                             )
                             currencyConverter.convert(withPrice, selectedCurrency, usdEurRate)
                         }
-                        .getOrElse { item }
+                        .getOrElse {
+                            it.printStackTrace()
+                            item
+                        }
                 }
             }.awaitAll()
         }

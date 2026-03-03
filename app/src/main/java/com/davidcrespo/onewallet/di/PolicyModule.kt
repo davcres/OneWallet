@@ -13,7 +13,7 @@ val policyModule = module {
     single {
         if (BuildConfig.DEBUG) {
             CachePolicy(
-                stockHours = 24 * 7,
+                stockHours = 0,//24 * 7,
                 cryptoHours = 1,
                 fundHours = 2,
                 etfHours = 2,

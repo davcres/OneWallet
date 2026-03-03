@@ -12,6 +12,8 @@ import com.davidcrespo.onewallet.data.remote.investing.InvestingApiClient
 import com.davidcrespo.onewallet.data.remote.investing.InvestingDataSource
 import com.davidcrespo.onewallet.data.remote.justEtf.JustEtfApiClient
 import com.davidcrespo.onewallet.data.remote.justEtf.JustEtfDataSource
+import com.davidcrespo.onewallet.data.remote.marketstack.MarketstackApiClient
+import com.davidcrespo.onewallet.data.remote.marketstack.MarketstackDataSource
 import com.davidcrespo.onewallet.data.remote.quefondos.QueFondosApiClient
 import com.davidcrespo.onewallet.data.remote.quefondos.QueFondosDataSource
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiClient
@@ -25,7 +27,12 @@ val dataSourceModule = module {
     single { FinnhubApiClient(get(FINNHUB)) }
     single {
         AlphaVantageApiClient(
-            get<AlphaVantageClient>(ALPHA_VANTAGE)
+            get<AlphaVantageHttpClient>(ALPHA_VANTAGE)
+        )
+    }
+    single {
+        MarketstackApiClient(
+            get<MarketstackHttpClient>(MARKETSTACK)
         )
     }
     single { TwelveDataApiClient(get(TWELVE_DATA)) }
@@ -38,6 +45,7 @@ val dataSourceModule = module {
 
     single { FinnhubDataSource(get()) }
     single { AlphaVantageDataSource(get()) }
+    single { MarketstackDataSource(get()) }
     single { TwelveDataDataSource(get()) }
     single { BinanceDataSource(get()) }
     single { InvestingDataSource(get()) }
