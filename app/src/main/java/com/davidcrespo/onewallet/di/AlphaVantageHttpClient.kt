@@ -12,7 +12,10 @@ import io.ktor.client.statement.bodyAsText
 import kotlinx.serialization.json.Json
 import kotlin.math.abs
 
-class AlphaVantageClient(
+/**
+ * Custom HTTP Client with API key rotation.
+ */
+class AlphaVantageHttpClient(
     val client: HttpClient,
     val json: Json,
     val apiKeys: List<String>,

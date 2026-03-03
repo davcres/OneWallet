@@ -28,6 +28,7 @@ class QueFondosApiClient(private val client: HttpClient) {
             }.bodyAsText()
             return parseQueFondosHtmlFund(isin, type, html)
         }.getOrElse {
+            it.printStackTrace()
             return null
         }
     }

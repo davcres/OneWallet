@@ -37,6 +37,18 @@ val alphaVantageApiKey3: String = (rootProject.extra["ALPHA_VANTAGE_API_KEY_3"] 
         "ALPHA_VANTAGE_API_KEY_3 not set. " +
                 "Add it to secrets.properties (root) or as env var ALPHA_VANTAGE_API_KEY_3"
     )
+val marketstackApiKey: String = (rootProject.extra["MARKETSTACK_API_KEY"] as? String)
+    ?: System.getenv("MARKETSTACK_API_KEY")
+    ?: throw GradleException(
+        "MARKETSTACK_API_KEY not set. " +
+                "Add it to secrets.properties (root) or as env var MARKETSTACK_API_KEY"
+    )
+val marketstackApiKey2: String = (rootProject.extra["MARKETSTACK_API_KEY_2"] as? String)
+    ?: System.getenv("MARKETSTACK_API_KEY_2")
+    ?: throw GradleException(
+        "MARKETSTACK_API_KEY_2 not set. " +
+                "Add it to secrets.properties (root) or as env var MARKETSTACK_API_KEY_2"
+    )
 val twelveDataApiKey: String = (rootProject.extra["TWELVE_DATA_API_KEY"] as? String)
     ?: System.getenv("TWELVE_DATA_API_KEY")
     ?: throw GradleException(
@@ -75,6 +87,8 @@ android {
         buildConfigField("String", "ALPHA_VANTAGE_API_KEY", "\"$alphaVantageApiKey\"")
         buildConfigField("String", "ALPHA_VANTAGE_API_KEY_2", "\"$alphaVantageApiKey2\"")
         buildConfigField("String", "ALPHA_VANTAGE_API_KEY_3", "\"$alphaVantageApiKey3\"")
+        buildConfigField("String", "MARKETSTACK_API_KEY", "\"$marketstackApiKey\"")
+        buildConfigField("String", "MARKETSTACK_API_KEY_2", "\"$marketstackApiKey2\"")
         buildConfigField("String", "TWELVE_DATA_API_KEY", "\"$twelveDataApiKey\"")
         buildConfigField("String", "TELEGRAM_API_KEY", "\"$telegramApiKey\"")
         buildConfigField("String", "TELEGRAM_CHAT_ID", "\"$telegramChatId\"")

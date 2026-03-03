@@ -7,6 +7,7 @@ import com.davidcrespo.onewallet.data.remote.extraEtf.ExtraEtfApiConfig
 import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubApiConfig
 import com.davidcrespo.onewallet.data.remote.investing.InvestingApiConfig
 import com.davidcrespo.onewallet.data.remote.justEtf.JustEtfApiConfig
+import com.davidcrespo.onewallet.data.remote.marketstack.MarketstackApiConfig
 import com.davidcrespo.onewallet.data.remote.quefondos.QueFondosApiConfig
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiConfig
 import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiConfig
@@ -87,13 +88,42 @@ val networkModule = module {
         }
     }
     single(ALPHA_VANTAGE) {
-        AlphaVantageClient(
+        AlphaVantageHttpClient(
             client = get(named("ALPHA_VANTAGE_HTTP_CLIENT")),
             json = get(named("ALPHA_VANTAGE_JSON")),
             apiKeys = listOf(
                 get(ALPHA_VANTAGE_KEY),
                 get(ALPHA_VANTAGE_KEY_2),
                 get(ALPHA_VANTAGE_KEY_3),
+            ),
+            context = get()
+        )
+    }
+
+    // Marketstack client
+    single(named("MARKETSTACK_JSON")) {
+        Json {
+            prettyPrint = false
+            isLenient = true
+            ignoreUnknownKeys = true
+        }
+    }
+    single(named("MARKETSTACK_HTTP_CLIENT")) {
+        val base = get<HttpClient>()
+
+        base.config {
+            defaultRequest {
+                url(MarketstackApiConfig.BASE_URL)
+            }
+        }
+    }
+    single(MARKETSTACK) {
+        MarketstackHttpClient(
+            client = get(named("MARKETSTACK_HTTP_CLIENT")),
+            json = get(named("MARKETSTACK_JSON")),
+            apiKeys = listOf(
+                get(MARKETSTACK_KEY),
+                get(MARKETSTACK_KEY_2),
             ),
             context = get()
         )

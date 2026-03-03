@@ -26,6 +26,7 @@ class InvestingApiClient(private val client: HttpClient) {
 
             return parseInvestingHtmlFund(isin, html)
         }.getOrElse {
+            it.printStackTrace()
             return null
         }
     }

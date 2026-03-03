@@ -2,10 +2,10 @@ package com.davidcrespo.onewallet.data.remote.alphaVantage
 
 import com.davidcrespo.onewallet.data.remote.alphaVantage.models.MarketStockResponseList
 import com.davidcrespo.onewallet.data.remote.alphaVantage.models.StockPriceResponseObject
-import com.davidcrespo.onewallet.di.AlphaVantageClient
+import com.davidcrespo.onewallet.di.AlphaVantageHttpClient
 import io.ktor.client.request.parameter
 
-class AlphaVantageApiClient(private val client: AlphaVantageClient) {
+class AlphaVantageApiClient(private val client: AlphaVantageHttpClient) {
 
     suspend fun getStocksSymbolsByQuery(query: String): MarketStockResponseList {
         return client.get(AlphaVantageApiConfig.GetSymbolsByQuery.PATH) {

@@ -8,10 +8,10 @@ import com.davidcrespo.onewallet.domain.model.investment.Currency
 class AlphaVantageDataSource(private val alphaVantageApiClient: AlphaVantageApiClient) {
 
     suspend fun getStocksSymbolsByQuery(query: String): List<MarketStockResponse> {
-        return alphaVantageApiClient.getStocksSymbolsByQuery(query).bestMatches
+        return alphaVantageApiClient.getStocksSymbolsByQuery(query).bestMatches.orEmpty()
     }
 
-    suspend fun getStockPrice(symbol: String, name: String, currency: Currency): InvestmentDto {
-        return alphaVantageApiClient.getStockPrice(symbol).globalQuote.toInvestDto(symbol, name, currency)
+    suspend fun getStockPrice(symbol: String, name: String, currency: Currency): InvestmentDto? {
+        return alphaVantageApiClient.getStockPrice(symbol).globalQuote?.toInvestDto(symbol, name, currency)
     }
 }
