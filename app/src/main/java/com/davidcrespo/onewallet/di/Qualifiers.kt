@@ -5,6 +5,7 @@ import org.koin.core.qualifier.named
 val FINNHUB = named("FINNHUB")
 val ALPHA_VANTAGE = named("ALPHA_VANTAGE")
 val MARKETSTACK = named("MARKETSTACK")
+val YAHOO_FINANCE = named("YAHOO_FINANCE")
 val TWELVE_DATA = named("TWELVE_DATA")
 val BINANCE = named("BINANCE")
 val INVESTING = named("INVESTING")

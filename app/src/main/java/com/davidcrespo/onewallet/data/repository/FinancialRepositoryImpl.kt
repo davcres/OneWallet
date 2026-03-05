@@ -25,6 +25,8 @@ import com.davidcrespo.onewallet.data.remote.quefondos.QueFondosDataSource
 import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiConfig.GetRate.USD_EUR
 import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.twelveData.models.toDomain
+import com.davidcrespo.onewallet.data.remote.yahooFinance.YahooFinanceDataSource
+import com.davidcrespo.onewallet.data.remote.yahooFinance.models.toDomain
 import com.davidcrespo.onewallet.domain.cache.CachePolicy
 import com.davidcrespo.onewallet.domain.di.DispatcherProvider
 import com.davidcrespo.onewallet.domain.logging.Telemetry
@@ -42,6 +44,7 @@ class FinancialRepositoryImpl(
     private val finnhubDataSource: FinnhubDataSource,
     private val alphaVantageDataSource: AlphaVantageDataSource,
     private val marketstackDataSource: MarketstackDataSource,
+    private val yahooFinanceDataSource: YahooFinanceDataSource,
     private val binanceDataSource: BinanceDataSource,
     private val investingDataSource: InvestingDataSource,
     private val queFondosDataSource: QueFondosDataSource,
@@ -104,7 +107,8 @@ class FinancialRepositoryImpl(
                         ?: throw IllegalStateException("No se pudo obtener el precio del fondo")
                 }
                 MarketType.GLOBAL -> {
-                    tryFetch(symbol, "Finnhub") { finnhubDataSource.getStockPrice(symbol, name) }
+                    tryFetch(symbol, "Yahoo Finance") { yahooFinanceDataSource.getStockPrice(symbol, name) }
+                        ?: tryFetch(symbol, "Finnhub") { finnhubDataSource.getStockPrice(symbol, name) }
                         ?: tryFetch(symbol, "Alpha Vantage") { alphaVantageDataSource.getStockPrice(symbol, name, currency ?: Currency.USD) }
                         ?: tryFetch(symbol, "Marketstack") { marketstackDataSource.getStockPrice(symbol, name) }
                         ?: throw IllegalStateException("No se pudo obtener el precio del fondo")
@@ -159,26 +163,33 @@ class FinancialRepositoryImpl(
     override suspend fun getStocksSymbolsByQuery(query: String): Result<List<MarketAsset>> =
         withContext(dispatcher.io) {
             runCatching {
-                val response = alphaVantageDataSource.getStocksSymbolsByQuery(query)
-                telemetry.log("(Alpha Vantage) get symbols from remote $query - ${response.size}")
+                val response = yahooFinanceDataSource.getStocksSymbolsByQuery(query)
+                telemetry.log("(Yahoo Finance) get symbols from remote $query - ${response.size}")
 
-                val filtered = response.filter { asset ->
-                    Currency.entries.any { currencies ->
-                        asset.currency.equals(currencies.text, ignoreCase = true)
-                    }
-                }
-
-                filtered.map { it.toDomain() }
-
-                if (filtered.isNotEmpty()) {
-                    Result.success(filtered.map { it.toDomain() })
+                if (response.isNotEmpty()) {
+                    Result.success(response.map { it.toDomain() })
                 } else {
-                    val response = marketstackDataSource.getStocksSymbolsByQuery(query)
-                    telemetry.log("(Marketstack) get symbols from remote $query - ${response.size}")
+                    val response = alphaVantageDataSource.getStocksSymbolsByQuery(query)
+                    telemetry.log("(Alpha Vantage) get symbols from remote $query - ${response.size}")
 
-                    val filtered = response.distinctBy { it.ticker }
+                    val filtered = response.filter { asset ->//TODO***
+                        Currency.entries.any { currencies ->
+                            asset.currency.equals(currencies.text, ignoreCase = true)
+                        }
+                    }
 
-                    Result.success(filtered.map { it.toDomain() })
+                    filtered.map { it.toDomain() }
+
+                    if (filtered.isNotEmpty()) {
+                        Result.success(filtered.map { it.toDomain() })
+                    } else {
+                        val response = marketstackDataSource.getStocksSymbolsByQuery(query)
+                        telemetry.log("(Marketstack) get symbols from remote $query - ${response.size}")
+
+                        val filtered = response.distinctBy { it.ticker }
+
+                        Result.success(filtered.map { it.toDomain() })
+                    }
                 }
             }.getOrElse {
                 it.printStackTrace()

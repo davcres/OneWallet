@@ -39,6 +39,7 @@ fun SplashRoot(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel) {
+        viewModel.handleIntent(SplashIntent.LoadMarkets)
         viewModel.handleIntent(SplashIntent.IsOnboardingCompleted)
     }
 

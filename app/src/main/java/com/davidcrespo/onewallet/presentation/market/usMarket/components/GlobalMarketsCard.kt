@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.Button
 import com.davidcrespo.onewallet.core.composables.auxiliar.ButtonStyle
-import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButtonAutoCloseable
 import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBackground
 import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBorder
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
@@ -99,7 +99,7 @@ fun GlobalMarketsCard(
         colors = CardDefaults.cardColors(containerColor = ItemBackground)
     ) {
         Box(Modifier.fillMaxWidth()) {
-            OWIconButton(
+            OWIconButtonAutoCloseable(
                 imageVector = Icons.Outlined.Close,
                 onClick = onClose,
                 contentDescription = stringResource(R.string.close_cd),

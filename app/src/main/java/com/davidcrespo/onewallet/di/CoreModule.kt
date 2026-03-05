@@ -2,6 +2,7 @@ package com.davidcrespo.onewallet.di
 
 import android.content.Context
 import com.davidcrespo.onewallet.BuildConfig
+import com.davidcrespo.onewallet.domain.di.AppCoroutineScope
 import com.davidcrespo.onewallet.domain.di.DispatcherProvider
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -24,4 +25,5 @@ val coreModule = module {
     single(TELEGRAM_CHAT_ID) { BuildConfig.TELEGRAM_CHAT_ID }
 
     single<DispatcherProvider> { DispatcherProviderImpl() }
+    single { AppCoroutineScope(get()) }
 }

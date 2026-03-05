@@ -5,6 +5,7 @@ import com.davidcrespo.onewallet.data.remote.marketstack.models.StockPriceRespon
 import com.davidcrespo.onewallet.di.MarketstackHttpClient
 import io.ktor.client.request.parameter
 
+// https://marketstack.com/stock_api.php?offset=0&exchange=&search=baba (SIN API KEY)
 class MarketstackApiClient(private val client: MarketstackHttpClient) {
 
     suspend fun getStocksSymbolsByQuery(query: String): MarketStockResponseList {
