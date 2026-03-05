@@ -11,7 +11,7 @@ import org.koin.dsl.module
 val repositoryModule = module {
     single<FinancialRepository> {
         FinancialRepositoryImpl(
-            get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()
+            get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()
         )
     }
     single<PortfolioRepository> { PortfolioRepositoryImpl(get(), get()) }

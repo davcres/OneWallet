@@ -11,6 +11,7 @@ import com.davidcrespo.onewallet.data.remote.marketstack.MarketstackApiConfig
 import com.davidcrespo.onewallet.data.remote.quefondos.QueFondosApiConfig
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiConfig
 import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiConfig
+import com.davidcrespo.onewallet.data.remote.yahooFinance.YahooFinanceApiConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpTimeout
@@ -129,6 +130,18 @@ val networkModule = module {
         )
     }
 
+    // Yahoo Finance client
+    single(YAHOO_FINANCE) {
+        val base = get<HttpClient>()
+
+        base.config {
+            defaultRequest {
+                url(YahooFinanceApiConfig.BASE_URL)
+                headers.append("User-Agent", "Mozilla/5.0") // To make it appear as if it's a request from a browser
+            }
+        }
+    }
+
     // TwelveData client
     single(TWELVE_DATA) {
         val base = get<HttpClient>()
@@ -152,14 +165,20 @@ val networkModule = module {
     // Investing client
     single(INVESTING) {
         get<HttpClient>().config {
-            defaultRequest { url(InvestingApiConfig.BASE_URL) }
+            defaultRequest {
+                url(InvestingApiConfig.BASE_URL)
+                headers.append("User-Agent", "Mozilla/5.0") // To make it appear as if it's a request from a browser
+            }
         }
     }
 
     // QueFondos client
     single(QUE_FONDOS) {
         get<HttpClient>().config {
-            defaultRequest { url(QueFondosApiConfig.BASE_URL) }
+            defaultRequest {
+                url(QueFondosApiConfig.BASE_URL)
+                headers.append("User-Agent", "Mozilla/5.0") // To make it appear as if it's a request from a browser
+            }
         }
     }
 

@@ -1,13 +1,18 @@
 package com.davidcrespo.onewallet.presentation.splash
 
 import androidx.lifecycle.ViewModel
+import com.davidcrespo.onewallet.domain.di.AppCoroutineScope
 import com.davidcrespo.onewallet.domain.repository.OnboardingRepository
+import com.davidcrespo.onewallet.domain.usecase.market.GetUSMarketAssetsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class SplashViewModel(
-    private val onboardingRepository: OnboardingRepository
+    private val appScope: AppCoroutineScope,
+    private val onboardingRepository: OnboardingRepository,
+    private val getMarketAssetsUseCase: GetUSMarketAssetsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SplashUiState())
@@ -15,6 +20,7 @@ class SplashViewModel(
 
     fun handleIntent(intent: SplashIntent) {
         when (intent) {
+            is SplashIntent.LoadMarkets -> loadMarkets()
             is SplashIntent.IsOnboardingCompleted -> isOnboardingCompleted()
         }
     }
@@ -25,6 +31,13 @@ class SplashViewModel(
             it.copy(
                 onboardingCompleted = isOnboardingCompleted
             )
+        }
+    }
+
+    private fun loadMarkets() {
+        appScope.scope.launch {
+            launch { runCatching { getMarketAssetsUseCase(false) } }
+            launch { runCatching { getMarketAssetsUseCase(true) } }
         }
     }
 }

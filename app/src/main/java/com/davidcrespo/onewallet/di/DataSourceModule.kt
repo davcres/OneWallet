@@ -20,6 +20,8 @@ import com.davidcrespo.onewallet.data.remote.telegram.TelegramApiClient
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramDataSource
 import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiClient
 import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataDataSource
+import com.davidcrespo.onewallet.data.remote.yahooFinance.YahooFinanceApiClient
+import com.davidcrespo.onewallet.data.remote.yahooFinance.YahooFinanceDataSource
 import org.koin.dsl.module
 
 val dataSourceModule = module {
@@ -35,6 +37,7 @@ val dataSourceModule = module {
             get<MarketstackHttpClient>(MARKETSTACK)
         )
     }
+    single { YahooFinanceApiClient(get(YAHOO_FINANCE)) }
     single { TwelveDataApiClient(get(TWELVE_DATA)) }
     single { BinanceApiClient(get(BINANCE)) }
     single { InvestingApiClient(get(INVESTING)) }
@@ -46,6 +49,7 @@ val dataSourceModule = module {
     single { FinnhubDataSource(get()) }
     single { AlphaVantageDataSource(get()) }
     single { MarketstackDataSource(get()) }
+    single { YahooFinanceDataSource(get()) }
     single { TwelveDataDataSource(get()) }
     single { BinanceDataSource(get()) }
     single { InvestingDataSource(get()) }

@@ -8,5 +8,6 @@ data class SplashUiState(
 )
 
 sealed interface SplashIntent {
+    data object LoadMarkets : SplashIntent
     data object IsOnboardingCompleted : SplashIntent
 }
