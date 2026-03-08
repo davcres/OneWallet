@@ -1,7 +1,7 @@
 package com.davidcrespo.onewallet.data.remote.justEtf.models
 
+import com.davidcrespo.onewallet.data.remote.dto.CurrencyDto
 import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -25,7 +25,7 @@ data class ValueWithLocalized(
     val localized: String?
 )
 
-fun JustEtfDetailResponse.toInvestDto(currency: Currency): InvestmentDto {
+fun JustEtfDetailResponse.toInvestDto(currency: CurrencyDto): InvestmentDto {
     val etf = etfs?.firstOrNull()
 
     return InvestmentDto(

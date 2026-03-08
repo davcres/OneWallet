@@ -1,7 +1,6 @@
 package com.davidcrespo.onewallet.data.local.database.portfolio.entities
 
 import androidx.room.Entity
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import kotlinx.serialization.Serializable
@@ -14,13 +13,13 @@ data class InvestmentEntity(
     val quantity: Double,
     val price: Double,
     val previousPrice: Double? = null,
-    val currency: Currency,
+    val currency: CurrencyEntity,
     val type: InvestmentType,
     val year: Int,
     val month: Int
 ) {
     override fun toString(): String {
-        return "$symbol|$name|$quantity|$price|$previousPrice|$currency|$type|$year|$month"
+        return "$symbol|$name|$quantity|$price|$previousPrice|${currency.code}|$type|$year|$month"
     }
 }
 
@@ -30,7 +29,7 @@ fun Investment.toEntity(): InvestmentEntity = InvestmentEntity(
     quantity = quantity,
     price = price,
     previousPrice = previousPrice,
-    currency = currency,
+    currency = currency.toEntity(),
     type = type,
     year = year,
     month = month
@@ -42,7 +41,7 @@ fun InvestmentEntity.toDomain(): Investment = Investment(
     quantity = quantity,
     price = price,
     previousPrice = previousPrice ?: 0.0,
-    currency = currency,
+    currency = currency.toDomain(),
     type = type,
     year = year,
     month = month
@@ -56,7 +55,7 @@ fun String.toInvestmentEntity(): InvestmentEntity {
         quantity = parts[2].toDoubleOrNull() ?: 0.0,
         price = parts[3].toDoubleOrNull() ?: 0.0,
         previousPrice = parts[4].toDoubleOrNull() ?: 0.0,
-        currency = Currency.from(parts[5]),
+        currency = CurrencyEntity(parts[5]),
         type = InvestmentType.valueOf(parts[6]),
         year = parts[7].toIntOrNull() ?: 0,
         month = parts[8].toIntOrNull() ?: 0,

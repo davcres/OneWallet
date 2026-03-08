@@ -1,7 +1,7 @@
 package com.davidcrespo.onewallet.data.remote.alphaVantage.models
 
+import com.davidcrespo.onewallet.data.remote.dto.CurrencyDto
 import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -45,7 +45,7 @@ data class StockPriceResponse(
     val changePercent: String? = null
 )
 
-fun StockPriceResponse.toInvestDto(symbol: String, name: String, currency: Currency) = InvestmentDto(
+fun StockPriceResponse.toInvestDto(symbol: String, name: String, currency: CurrencyDto) = InvestmentDto(
     symbol = symbol,
     name = name,
     quantity = 0.0,

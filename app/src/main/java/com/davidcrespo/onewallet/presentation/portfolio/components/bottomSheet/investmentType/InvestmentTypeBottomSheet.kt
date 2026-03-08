@@ -32,7 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
@@ -40,6 +40,7 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestm
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.bottomSheet.SheetHandle
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -50,7 +51,7 @@ import kotlinx.coroutines.launch
 fun InvestmentTypeBottomSheet(
     type: InvestmentType,
     investments: ImmutableList<InvestmentView>,
-    currency: Currency,
+    currency: CurrencyView,
     visible: Boolean,
     onDismiss: () -> Unit,
     isBalanceVisible: Boolean,
@@ -96,7 +97,7 @@ fun InvestmentTypeBottomSheet(
 private fun SheetContent(
     type: InvestmentType,
     investments: ImmutableList<InvestmentView>,
-    currency: Currency,
+    currency: CurrencyView,
     onClose: () -> Unit,
     maxSheetHeight: Dp = Dp.Unspecified,
     isBalanceVisible: Boolean = true,
@@ -170,7 +171,7 @@ private fun Header(
 @Composable
 fun ItemsByTypeList(
     items: ImmutableList<InvestmentView>,
-    currency: Currency,
+    currency: CurrencyView,
     modifier: Modifier = Modifier,
     isBalanceVisible: Boolean,
 ) {
@@ -208,14 +209,14 @@ private fun InvestmentTypeBottomSheetPreview() {
                     displayPreviousPrice = 140.0,
                     originalPrice = 150.0,
                     originalPreviousPrice = 140.0,
-                    originalCurrency = Currency.EUR,
+                    originalCurrency = CurrencyView.get(EUR),
                     changePercent = 10.0,
                     type = InvestmentType.STOCK,
                     month = 0,
                     year = 0
                 )
             ),
-            currency = Currency.EUR,
+            currency = CurrencyView.get(EUR),
             visible = true,
             onDismiss = {},
             isBalanceVisible = true

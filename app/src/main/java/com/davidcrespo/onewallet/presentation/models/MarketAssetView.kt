@@ -1,7 +1,6 @@
 package com.davidcrespo.onewallet.presentation.models
 
 import androidx.compose.runtime.Immutable
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.GlobalMarketRegion
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.market.MarketAsset
@@ -10,7 +9,7 @@ import com.davidcrespo.onewallet.domain.model.market.MarketAsset
 data class MarketAssetView(
     val symbol: String,
     val price: Double,
-    val currency: Currency,
+    val currency: CurrencyView,
     val type: InvestmentType,
     val description: String?,
     val figi: String?,
@@ -19,14 +18,14 @@ data class MarketAssetView(
 ) {
 
     override fun toString(): String {
-        return "$symbol|$price|$currency|$type|${description.orEmpty()}|${figi.orEmpty()}|$region|${stockType.orEmpty()}"
+        return "$symbol|$price|${currency.code}|$type|${description.orEmpty()}|${figi.orEmpty()}|$region|${stockType.orEmpty()}"
     }
 }
 
 fun MarketAsset.toUI() = MarketAssetView(
     symbol = symbol,
     price = price,
-    currency = currency,
+    currency = currency.toUI(),
     type = type,
     description = description,
     figi = figi,
@@ -37,7 +36,7 @@ fun MarketAsset.toUI() = MarketAssetView(
 fun MarketAssetView.toDomain() = MarketAsset(
     symbol = symbol,
     price = price,
-    currency = currency,
+    currency = currency.toDomain(),
     type = type,
     description = description,
     figi = figi,
@@ -51,7 +50,7 @@ fun String.toMarketAssetView(): MarketAssetView {
     return MarketAssetView(
         symbol = parts[0],
         price = parts[1].toDoubleOrNull() ?: 0.0,
-        currency = Currency.from(parts[2]),
+        currency = CurrencyView.get(parts[2]),
         type = InvestmentType.valueOf(parts[3]),
         description = emptyToNull(parts[4]),
         figi = emptyToNull(parts[5]),

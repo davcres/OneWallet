@@ -26,11 +26,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.GlobalMarketRegion
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.MarketType
+import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.MarketAssetView
 
 @Composable
@@ -77,7 +79,7 @@ fun MarketListItem(
                 }
             } else if (marketAsset.type == InvestmentType.CRYPTO) {
                 Text(
-                    text = if (marketAsset.currency == Currency.USD) "$${marketAsset.price}" else "${marketAsset.price} €",
+                    text = if (marketAsset.currency.code == EUR) "${marketAsset.price} €" else "$${marketAsset.price}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -111,8 +113,8 @@ private fun MarketListItemPreview() {
                 symbol = "AAPL",
                 price = 0.0,
                 description = "Apple Inc.",
-                type = InvestmentType.STOCK,
-                currency = Currency.USD,
+                type = InvestmentType.CRYPTO,
+                currency = CurrencyView.get(USD),
                 figi = null,
                 region = GlobalMarketRegion.SPAIN,
                 stockType = "STOCK"

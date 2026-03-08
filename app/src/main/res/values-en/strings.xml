@@ -96,7 +96,7 @@
     <string name="global_markets_card_description">This list only shows US stocks, but you can trade stocks from London, Tokyo, or any global exchange. You will just have to type the ticker or company name.</string>
     <string name="global_markets_card_button">Go to Global Markets</string>
     <string name="global_markets_card_button_cd">On this screen you can only search for US stocks. Press the button to access the search engine for stocks in other countries.</string>
-    <string name="global_markets_only_usd_eur">Please note that we are just starting out and to ensure the highest quality of the data displayed, we can currently only provide stocks denominated in US Dollars or Euros. We apologize for any inconvenience and are working to expand our offering.</string>
+    <string name="global_markets_warning">Please note that we are just starting out and to ensure the highest quality of the data displayed, there may be stocks we do not have access to. We apologize for any inconvenience and are working to expand our offering.</string>
     <string name="global_markets_no_results">Sorry, we didn\'t find any stocks that match your search.</string>
     <string name="global_markets_try_again">Try Again</string>
 

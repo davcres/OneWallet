@@ -1,11 +1,11 @@
 package com.davidcrespo.onewallet.presentation.portfolio.allocation.mapper
 
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
 
 fun ItemsByTypeView.toAllocationInvestmentView(
-    currency: Currency,
+    currency: CurrencyView,
     displayName: String
 ): InvestmentView {
     val totalPreviousValue = items.sumOf { it.quantity * it.displayPreviousPrice }

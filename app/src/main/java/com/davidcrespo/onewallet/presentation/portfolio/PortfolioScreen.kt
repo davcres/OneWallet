@@ -362,7 +362,6 @@ private fun PortfolioScreenPreview() {
             uiState = PortfolioUiState(
                 portfolioItems = persistentListOf(),
                 symbolsWithPrice = persistentListOf("AAPL"),
-                usdEurRate = 1.0,
                 totalBalance = 10.0,
                 previousBalance = 9.0,
                 editingItem = null,

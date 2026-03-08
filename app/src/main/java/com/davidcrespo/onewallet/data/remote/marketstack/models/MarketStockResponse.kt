@@ -3,6 +3,7 @@ package com.davidcrespo.onewallet.data.remote.marketstack.models
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.GlobalMarketRegion
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.UNKNOWN
 import com.davidcrespo.onewallet.domain.model.market.MarketAsset
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -65,7 +66,7 @@ fun MarketStockResponse.toDomain(): MarketAsset {
     return MarketAsset(
         symbol = ticker.orEmpty(),
         price = 0.0,
-        currency = Currency.USD,
+        currency = Currency(UNKNOWN),
         type = InvestmentType.STOCK,
         description = name,
         region = GlobalMarketRegion.from(stockExchange?.mic),

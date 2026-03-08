@@ -43,14 +43,18 @@ data class MarketStockResponse(
     val matchScore: String? = null
 )
 
-fun MarketStockResponse.toDomain(): MarketAsset {
-    return MarketAsset(
-        symbol = symbol.orEmpty(),
-        price = 0.0,
-        currency = Currency.from(currency),
-        type = InvestmentType.STOCK,
-        description = name,
-        region = GlobalMarketRegion.from(region),
-        stockType = type
-    )
+fun MarketStockResponse.toDomain(): MarketAsset? {
+    return if (currency?.isNotEmpty() == true) {
+        MarketAsset(
+            symbol = symbol.orEmpty(),
+            price = 0.0,
+            currency = Currency(currency),
+            type = InvestmentType.STOCK,
+            description = name,
+            region = GlobalMarketRegion.from(region),
+            stockType = type
+        )
+    } else {
+        null
+    }
 }

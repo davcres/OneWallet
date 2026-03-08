@@ -18,15 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWCurrencyPrice
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 
 @Composable
 fun TrendDisplay(
     value: Double,
     text: String = "",
     showPercentage: Boolean,
-    currency: Currency,
+    currency: CurrencyView,
     style: TextStyle = MaterialTheme.typography.bodyMedium
 ) {
     Row(

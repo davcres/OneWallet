@@ -9,8 +9,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.collections.immutable.ImmutableList
 
@@ -18,7 +18,7 @@ import kotlinx.collections.immutable.ImmutableList
 @Composable
 fun HistoricalList(
     items: ImmutableList<ImmutableList<InvestmentView>>,
-    currency: Currency,
+    currency: CurrencyView,
     onClick: (ImmutableList<InvestmentView>) -> Unit,
     isBalanceVisible: Boolean,
     modifier: Modifier = Modifier,

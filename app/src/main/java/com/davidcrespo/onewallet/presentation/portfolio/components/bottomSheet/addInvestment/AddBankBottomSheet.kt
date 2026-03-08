@@ -46,21 +46,22 @@ import com.davidcrespo.onewallet.core.composables.auxiliar.ButtonStyle
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.shakeClickEffect
 import com.davidcrespo.onewallet.core.extensions.applyIf
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.bottomSheet.SheetHandle
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddBankBottomSheet(
     visible: Boolean,
-    currency: Currency,
+    currency: CurrencyView,
     isBank: Boolean,
     onDismiss: () -> Unit,
-    onAddBank: (String, Double, Currency) -> Unit
+    onAddBank: (String, Double, CurrencyView) -> Unit
 ) {
     if (!visible) return
 
@@ -91,10 +92,10 @@ fun AddBankBottomSheet(
 // ---------- UI ----------
 @Composable
 private fun SheetContent(
-    currency: Currency,
+    currency: CurrencyView,
     isBank: Boolean,
     onClose: () -> Unit,
-    onAddBank: (String, Double, Currency) -> Unit
+    onAddBank: (String, Double, CurrencyView) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -156,10 +157,10 @@ private fun Header(isBank: Boolean, onClose: () -> Unit) {
 
 @Composable
 private fun Form(
-    currency: Currency,
+    currency: CurrencyView,
     isBank: Boolean,
     onClose: () -> Unit,
-    onAddBank: (String, Double, Currency) -> Unit
+    onAddBank: (String, Double, CurrencyView) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
@@ -203,7 +204,7 @@ private fun Form(
                     quantity = normalized
                 }
             },
-            icon = if (currency == Currency.USD) Icons.Filled.AttachMoney else Icons.Filled.Euro,
+            icon = if (currency.code == EUR) Icons.Filled.Euro else Icons.Filled.AttachMoney,
             placeholder = "0.0",
             cornerRadius = 16.dp,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -249,7 +250,7 @@ private fun AddBankBottomSheetPreview() {
     OneWalletTheme {
         AddBankBottomSheet(
             visible = true,
-            currency = Currency.EUR,
+            currency = CurrencyView.get(EUR),
             isBank = true,
             onDismiss = {},
             onAddBank = { _, _, _ -> },

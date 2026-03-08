@@ -38,10 +38,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBackground
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.delay
@@ -53,7 +54,7 @@ import java.util.Locale
 fun HistoricalMonthCard(
     item: ImmutableList<InvestmentView>,
     previousItem: ImmutableList<InvestmentView>? = null,
-    currency: Currency,
+    currency: CurrencyView,
     onClick: () -> Unit,
     isBalanceVisible: Boolean,
     modifier: Modifier = Modifier
@@ -158,8 +159,8 @@ private fun GhostContent() {
     Column(
         modifier = Modifier.alpha(0f)
     ) {
-        PriceDisplay(value = 0.0, currency = Currency.EUR)
+        PriceDisplay(value = 0.0, currency = CurrencyView.get(EUR))
         Spacer(modifier = Modifier.height(8.dp))
-        TrendDisplay(value = 1.0, showPercentage = false, currency = Currency.EUR)
+        TrendDisplay(value = 1.0, showPercentage = false, currency = CurrencyView.get(EUR))
     }
 }

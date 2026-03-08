@@ -1,8 +1,9 @@
 package com.davidcrespo.onewallet.data.remote.marketstack.models
 
+import com.davidcrespo.onewallet.data.remote.dto.CurrencyDto
 import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.UNKNOWN
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -81,7 +82,7 @@ fun StockPriceResponseList.toInvestDto(symbol: String, name: String) = Investmen
     quantity = 0.0,
     price = data.firstOrNull()?.close ?: 0.0,
     previousPrice = data.lastOrNull()?.close ?: 0.0,
-    currency = data.firstOrNull()?.priceCurrency?.let { Currency.from(it) } ?: Currency.USD,
+    currency = data.firstOrNull()?.priceCurrency?.let { CurrencyDto(it) } ?: CurrencyDto(UNKNOWN),
     type = InvestmentType.STOCK,
     year = 0,
     month = 0
