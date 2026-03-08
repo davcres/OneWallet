@@ -4,7 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.davidcrespo.onewallet.data.remote.binance.models.MarketCryptoResponse
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.domain.model.market.MarketAsset
 import kotlinx.serialization.Serializable
 
@@ -18,7 +20,11 @@ data class CryptoMarketEntity(
 fun CryptoMarketEntity.toDomain() = MarketAsset(
     symbol = symbol,
     price = price,
-    currency = if (symbol.endsWith("EUR")) Currency.EUR else Currency.USD,
+    currency = when {
+        symbol.endsWith(EUR) -> Currency(EUR)
+        symbol.endsWith(USD) -> Currency(USD)
+        else -> Currency(USD)
+    },
     type = InvestmentType.CRYPTO,
     description = null,
     figi = null,

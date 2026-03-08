@@ -23,35 +23,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.AnimatedCounter
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 
 @Composable
 fun OWCurrencyPrice(
     price: Double,
-    currency: Currency,
+    currency: CurrencyView,
     fontSize: TextUnit,
     textColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     modifier: Modifier = Modifier,
     shouldAnimate: Boolean = true
 ) {
-    val usdWidth by animateDpAsState(targetValue = if (currency == Currency.USD) fontSize.value.dp/2 else 0.dp, label = "usdWidth")
-    val eurWidth by animateDpAsState(targetValue = if (currency == Currency.EUR) fontSize.value.dp/2 else 0.dp, label = "eurWidth")
-    val usdSpacer by animateDpAsState(targetValue = if (currency == Currency.USD) 4.dp else 0.dp, label = "usdSpacer")
-    val eurSpacer by animateDpAsState(targetValue = if (currency == Currency.EUR) 4.dp else 0.dp, label = "eurSpacer")
+    val usdWidth by animateDpAsState(targetValue = if (currency.code != EUR) fontSize.value.dp/2 else 0.dp, label = "usdWidth")
+    val eurWidth by animateDpAsState(targetValue = if (currency.code == EUR) fontSize.value.dp/2 else 0.dp, label = "eurWidth")
+    val usdSpacer by animateDpAsState(targetValue = if (currency.code != EUR) 4.dp else 0.dp, label = "usdSpacer")
+    val eurSpacer by animateDpAsState(targetValue = if (currency.code == EUR) 4.dp else 0.dp, label = "eurSpacer")
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
         androidx.compose.animation.AnimatedVisibility(
-            visible = currency == Currency.USD,
+            visible = currency.code != EUR,
             enter = fadeIn(tween(150)) + slideInHorizontally { -it },
             exit = fadeOut(tween(150)) + slideOutHorizontally { -it },
             modifier = Modifier.width(usdWidth)
         ) {
             Text(
-                "$",
+                currency.symbol,
                 fontSize = fontSize,
                 fontWeight = FontWeight.Bold,
                 color = textColor,
@@ -72,13 +73,13 @@ fun OWCurrencyPrice(
         Spacer(Modifier.width(eurSpacer))
 
         androidx.compose.animation.AnimatedVisibility(
-            visible = currency == Currency.EUR,
+            visible = currency.code == EUR,
             enter = fadeIn(tween(150)) + slideInHorizontally { it },
             exit = fadeOut(tween(150)) + slideOutHorizontally { it },
             modifier = Modifier.width(eurWidth)
         ) {
             Text(
-                "€",
+                currency.symbol,
                 fontSize = fontSize,
                 fontWeight = FontWeight.Bold,
                 color = textColor,
@@ -94,7 +95,7 @@ private fun OWCurrencyPricePreview() {
     OneWalletTheme {
         OWCurrencyPrice(
             price = 100.0,
-            currency = Currency.EUR,
+            currency = CurrencyView.get(EUR),
             fontSize = MaterialTheme.typography.bodyLarge.fontSize,
             textColor = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)

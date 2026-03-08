@@ -94,7 +94,7 @@
     <string name="global_markets_card_description">En esta lista solo se muestran acciones de Estados Unidos, pero puedes operar con acciones de Londres, Tokio o cualquier bolsa internacional. Solo tienes que escribir el símbolo o el nombre de la empresa.</string>
     <string name="global_markets_card_button">Ir a Mercados Globales</string>
     <string name="global_markets_card_button_cd">En esta pantalla solo podrás buscar acciones de Estados unidos, pulsa el botón para acceder al buscador de acciones de otros países.</string>
-    <string name="global_markets_only_usd_eur">Ten en cuenta que estamos empezando y para garantizar la máxima calidad de los datos mostrados, por el momento solo podemos proporcionar acciones que estén en Dólares o Euros. Lamentamos las molestias ocasionadas y estamos trabajando para ampliar nuestra oferta.</string>
+    <string name="global_markets_warning">Ten en cuenta que estamos empezando y para garantizar la máxima calidad de los datos mostrados, puede haber acciones a las que no tengamos acceso. Lamentamos las molestias ocasionadas y estamos trabajando para ampliar nuestra oferta.</string>
     <string name="global_markets_no_results">Lo sentimos, no hemos encontrado ninguna acción que coincida con tu búsqueda.</string>
     <string name="global_markets_try_again">Intentar de nuevo</string>
 

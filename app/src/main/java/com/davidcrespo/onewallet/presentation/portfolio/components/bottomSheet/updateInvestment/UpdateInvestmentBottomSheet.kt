@@ -57,7 +57,7 @@ import com.davidcrespo.onewallet.core.composables.auxiliar.ButtonStyle
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.shakeClickEffect
 import com.davidcrespo.onewallet.core.extensions.applyIf
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.hasIsin
 import com.davidcrespo.onewallet.domain.model.investment.isManual
@@ -67,6 +67,7 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconBut
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.bottomSheet.SheetHandle
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.coroutines.launch
 
@@ -74,7 +75,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun UpdateInvestmentBottomSheet(
     investment: InvestmentView,
-    currency: Currency,
+    currency: CurrencyView,
     visible: Boolean,
     onDismiss: () -> Unit,
     onEditInvestment: (newQuantity: Double) -> Unit,
@@ -125,7 +126,7 @@ fun UpdateInvestmentBottomSheet(
 @Composable
 private fun SheetContent(
     investment: InvestmentView,
-    currency: Currency,
+    currency: CurrencyView,
     onClose: () -> Unit,
     onEditQuantity: (Double) -> Unit,
     onQuantityError: (String) -> Unit,
@@ -232,7 +233,7 @@ private fun Header(investment: InvestmentView, onClose: () -> Unit, snackbarHost
 @Composable
 private fun CurrentHolding(
     investment: InvestmentView,
-    currency: Currency,
+    currency: CurrencyView,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -311,7 +312,7 @@ private fun CurrentHolding(
 @Composable
 private fun Form(
     investment: InvestmentView,
-    currency: Currency,
+    currency: CurrencyView,
     onClose: () -> Unit,
     onEditQuantity: (newQuantity: Double) -> Unit,
     onError: (String) -> Unit
@@ -467,13 +468,13 @@ private fun UpdateInvestmentBottomSheetPreview() {
                 displayPreviousPrice = 140.0,
                 originalPrice = 150.0,
                 originalPreviousPrice = 140.0,
-                originalCurrency = Currency.EUR,
+                originalCurrency = CurrencyView.get(EUR),
                 changePercent = 10.0,
                 type = InvestmentType.STOCK,
                 month = 0,
                 year = 0
             ),
-            currency = Currency.EUR,
+            currency = CurrencyView.get(EUR),
             visible = true,
             onDismiss = {},
             onEditInvestment = { _ -> },

@@ -7,8 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.charts.models.AssetSlice
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.composables.AllocationList
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.composables.Graphic
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.mapper.toAllocationInvestmentView
@@ -21,7 +21,7 @@ fun AllocationTab(
     itemsByType: ImmutableList<ItemsByTypeView>,
     totalBalance: Double,
     previousBalance: Double,
-    currency: Currency,
+    currency: CurrencyView,
     onSelect: (InvestmentType) -> Unit,
     modifier: Modifier = Modifier,
     isBalanceVisible: Boolean = true,

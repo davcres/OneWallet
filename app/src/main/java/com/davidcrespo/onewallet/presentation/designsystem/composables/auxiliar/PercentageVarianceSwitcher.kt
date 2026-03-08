@@ -12,14 +12,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import androidx.compose.ui.tooling.preview.Preview
+import com.davidcrespo.onewallet.domain.model.investment.EUR
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import kotlinx.coroutines.delay
 
 @Composable
 fun PercentageVarianceSwitcher(
     currentPrice: Double,
     previousPrice: Double,
-    currency: Currency
+    currency: CurrencyView
 ) {
     var showPercentageState by remember { mutableStateOf(true) }
 
@@ -47,5 +50,17 @@ fun PercentageVarianceSwitcher(
             val variance = currentPrice - previousPrice
             TrendDisplay(value = variance, showPercentage = false, currency = currency)
         }
+    }
+}
+
+@Preview
+@Composable
+private fun PercentageVarianceSwitcherPreview() {
+    OneWalletTheme {
+        PercentageVarianceSwitcher(
+            currentPrice = 100.0,
+            previousPrice = 95.0,
+            currency = CurrencyView.get(EUR)
+        )
     }
 }

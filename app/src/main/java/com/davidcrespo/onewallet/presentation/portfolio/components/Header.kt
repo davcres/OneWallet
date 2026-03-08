@@ -21,15 +21,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import java.time.LocalTime
 
 @Composable
 fun Header(
-    currency: Currency,
+    currency: CurrencyView,
     onCurrencyChange: () -> Unit,
     navigateToHistorical: () -> Unit,
     modifier: Modifier = Modifier
@@ -55,15 +58,15 @@ fun Header(
         }
 
         AnimatedContent(
-            targetState = currency == Currency.USD,
+            targetState = currency.code == EUR,
             transitionSpec = {
                 (slideInVertically { height -> height } + fadeIn())
                     .togetherWith(slideOutVertically { height -> -height } + fadeOut())
             },
             label = "currency"
-        ) { showUSD ->
+        ) { showEUR ->
             OWIconButton(
-                imageVector = if (showUSD) Icons.Filled.AttachMoney else Icons.Filled.Euro,
+                imageVector = if (showEUR) Icons.Filled.Euro else Icons.Filled.AttachMoney,
                 onClick = onCurrencyChange,
                 contentDescription = stringResource(R.string.currency_selector_cd)
             )
@@ -75,6 +78,18 @@ fun Header(
             imageVector = Icons.Filled.AutoGraph,
             onClick = navigateToHistorical,
             contentDescription = stringResource(R.string.history_cd)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun HeaderPreview() {
+    OneWalletTheme {
+        Header(
+            currency = CurrencyView.get(EUR),
+            onCurrencyChange = {},
+            navigateToHistorical = {}
         )
     }
 }

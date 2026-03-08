@@ -1,8 +1,10 @@
 package com.davidcrespo.onewallet.data.remote.binance.models
 
+import com.davidcrespo.onewallet.data.remote.dto.CurrencyDto
 import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.USD
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,7 +20,11 @@ fun CryptoPriceResponse.toInvestDto() = InvestmentDto(
     quantity = 0.0,
     price = lastPrice.toDoubleOrNull() ?: 0.0,
     previousPrice = prevClosePrice.toDoubleOrNull() ?: 0.0,
-    currency = if (symbol.endsWith("EUR")) Currency.EUR else Currency.USD,
+    currency = when {
+        symbol.endsWith(EUR) -> CurrencyDto(EUR)
+        symbol.endsWith(USD) -> CurrencyDto(USD)
+        else -> CurrencyDto(USD)
+    },
     type = InvestmentType.CRYPTO,
     year = 0,
     month = 0

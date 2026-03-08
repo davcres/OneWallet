@@ -10,12 +10,12 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.davidcrespo.onewallet.R
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.widget.utils.formatPrice
 import kotlin.math.roundToInt
 
 @Composable
-fun TotalBalance(balance: Double, currency: Currency) {
+fun TotalBalance(balance: Double, currency: CurrencyView) {
     Column(
         horizontalAlignment = Alignment.Start,
         verticalAlignment = Alignment.CenterVertically

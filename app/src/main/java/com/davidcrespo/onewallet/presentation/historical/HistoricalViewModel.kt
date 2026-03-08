@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.davidcrespo.onewallet.core.extensions.orEmpty
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.usecase.historical.GetMonthlyHistoryUseCase
-import com.davidcrespo.onewallet.domain.usecase.portfolio.GetUsdEurUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class HistoricalViewModel(
     private val getMonthlyHistoryUseCase: GetMonthlyHistoryUseCase,
     private val financialRepository: FinancialRepository,
-    private val getUsdEurUseCase: GetUsdEurUseCase,
+    private val getCurrencyRateUseCase: GetCurrencyRateUseCase,
     private val currencyConverter: CurrencyConverter
 ) : ViewModel() {
 
@@ -41,7 +41,6 @@ class HistoricalViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             getSelectedCurrency()
-            getUsdEurRate()
             getMonthlyHistory()
             _uiState.update { it.copy(isLoading = false) }
         }
@@ -50,13 +49,39 @@ class HistoricalViewModel(
     private suspend fun getMonthlyHistory() {
         val state = _uiState.value
         val selectedCurrency = state.selectedCurrency
-        val usdEurRate = state.usdEurRate
         getMonthlyHistoryUseCase()
             .onSuccess { historyList ->
                 val grouped: ImmutableList<ImmutableList<InvestmentView>> =
                     historyList
                         .map { it.toUI() }
-                        .map { currencyConverter.convert(it, selectedCurrency, usdEurRate) }
+                        .map { investment ->
+                            val rate = getCurrencyRateUseCase(
+                                from = investment.originalCurrency.code,
+                                to = selectedCurrency.code
+                            ).fold(
+                                onSuccess = { it },
+                                onFailure = { 1.0 }
+                            )
+
+                            val priceConverted = currencyConverter.convert(
+                                amount = investment.originalPrice,
+                                from = investment.originalCurrency.code,
+                                to = selectedCurrency.code,
+                                rate = rate
+                            )
+
+                            val previousPriceConverted = currencyConverter.convert(
+                                amount = investment.originalPreviousPrice,
+                                from = investment.originalCurrency.code,
+                                to = selectedCurrency.code,
+                                rate = rate
+                            )
+
+                            investment.copy(
+                                displayPrice = priceConverted,
+                                displayPreviousPrice = previousPriceConverted
+                            )
+                        }
                         .groupBy { it.year to it.month }
                         .values
                         .map { it.toImmutableList() }
@@ -126,17 +151,8 @@ class HistoricalViewModel(
         val selectedCurrency = financialRepository.getSelectedCurrency()
         _uiState.update {
             it.copy(
-                selectedCurrency = selectedCurrency
+                selectedCurrency = selectedCurrency.toUI()
             )
         }
-    }
-
-    private suspend fun getUsdEurRate() {
-        getUsdEurUseCase()
-            .onSuccess { rate ->
-                _uiState.update { it.copy(usdEurRate = rate) }
-            }.onFailure {
-                _uiState.update { it.copy(usdEurRate = 1.0) }
-            }
     }
 }

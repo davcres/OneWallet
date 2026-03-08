@@ -1,8 +1,9 @@
 package com.davidcrespo.onewallet.data.remote.yahooFinance.models
 
+import com.davidcrespo.onewallet.data.remote.dto.CurrencyDto
 import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.USD
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -61,7 +62,7 @@ fun StockPriceResponseMeta.toInvestDto(symbol: String, name: String) = Investmen
     quantity = 0.0,
     price = regularMarketPrice ?: 0.0,
     previousPrice = chartPreviousClose ?: 0.0,
-    currency = Currency.from(currency),
+    currency = CurrencyDto(currency ?: USD),
     type = InvestmentType.STOCK,
     year = 0,
     month = 0

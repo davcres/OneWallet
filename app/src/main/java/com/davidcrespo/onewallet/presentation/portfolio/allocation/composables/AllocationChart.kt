@@ -17,9 +17,9 @@ import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.charts.composables.ChartLegend
 import com.davidcrespo.onewallet.core.composables.charts.composables.ChartSequentialAnimation
 import com.davidcrespo.onewallet.core.composables.charts.models.AssetSlice
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWBalance
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import kotlinx.collections.immutable.ImmutableList
 
 val BigChartSize = 250.dp
@@ -32,7 +32,7 @@ fun Graphic(
     portfolioItems: ImmutableList<AssetSlice>,
     totalBalance: Double,
     previousBalance: Double,
-    currency: Currency,
+    currency: CurrencyView,
     isBalanceVisible: Boolean,
     isExpanded: Boolean,
     modifier: Modifier = Modifier,

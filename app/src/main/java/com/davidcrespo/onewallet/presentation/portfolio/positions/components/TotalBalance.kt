@@ -22,15 +22,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWBalance
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.designsystem.theme.cardGlowBrush
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 
 @Composable
 fun TotalBalance(
-    currency: Currency,
+    currency: CurrencyView,
     totalBalance: Double,
     previousBalance: Double,
     changeBalanceVisibility: () -> Unit,
@@ -85,7 +86,7 @@ fun TotalBalance(
 private fun TotalBalancePreview() {
     OneWalletTheme {
         TotalBalance(
-            currency = Currency.EUR,
+            currency = CurrencyView.get(EUR),
             totalBalance = 110.0,
             previousBalance = 100.0,
             changeBalanceVisibility = {},

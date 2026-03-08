@@ -1,8 +1,9 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
 import androidx.compose.runtime.Immutable
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
 import kotlinx.collections.immutable.ImmutableList
@@ -13,8 +14,7 @@ data class PortfolioUiState(
     val portfolioItems: ImmutableList<InvestmentView> = persistentListOf(),
     val portfolioItemsByType: ImmutableList<ItemsByTypeView> = persistentListOf(),
     val symbolsWithPrice: ImmutableList<String> = persistentListOf(),
-    val selectedCurrency: Currency = Currency.EUR,
-    val usdEurRate: Double = 1.0,
+    val selectedCurrency: CurrencyView = CurrencyView.get(EUR),
     val totalBalance: Double = 0.0,
     val previousBalance: Double = 0.0,
     val editingItem: InvestmentView? = null,
@@ -45,11 +45,11 @@ sealed interface PortfolioIntent {
     data object ShowEtfDialog : PortfolioIntent
     data object DismissEtfDialog : PortfolioIntent
 
-    data class AddBankItem(val name: String, val quantity: Double, val currency: Currency) : PortfolioIntent
+    data class AddBankItem(val name: String, val quantity: Double, val currency: CurrencyView) : PortfolioIntent
     data object ShowBankDialog : PortfolioIntent
     data object DismissBankDialog : PortfolioIntent
 
-    data class AddOtherItem(val name: String, val quantity: Double, val currency: Currency) : PortfolioIntent
+    data class AddOtherItem(val name: String, val quantity: Double, val currency: CurrencyView) : PortfolioIntent
     data object ShowOtherDialog : PortfolioIntent
     data object DismissOtherDialog : PortfolioIntent
 

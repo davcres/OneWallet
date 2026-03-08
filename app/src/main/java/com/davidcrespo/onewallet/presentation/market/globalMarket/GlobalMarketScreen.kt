@@ -161,7 +161,7 @@ private fun GlobalMarketScreen(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Text(
-                            text = stringResource(R.string.global_markets_only_usd_eur),
+                            text = stringResource(R.string.global_markets_warning),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
@@ -203,7 +203,7 @@ private fun GlobalMarketScreen(
                             visible = uiState.marketAssets == null || uiState.marketAssets.firstOrNull()?.second?.isEmpty() == true
                         ) {
                             Text(
-                                text = stringResource(R.string.global_markets_only_usd_eur),
+                                text = stringResource(R.string.global_markets_warning),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 textAlign = TextAlign.Center,

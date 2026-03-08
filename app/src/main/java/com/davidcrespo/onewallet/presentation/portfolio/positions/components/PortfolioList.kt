@@ -28,10 +28,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.collections.immutable.ImmutableList
 
@@ -40,7 +40,7 @@ import kotlinx.collections.immutable.ImmutableList
 fun PortfolioList(
     header: @Composable () -> Unit,
     items: ImmutableList<InvestmentView>,
-    currency: Currency,
+    currency: CurrencyView,
     onRemove: (InvestmentView) -> Unit,
     onEdit: (InvestmentView) -> Unit,
     isBalanceVisible: Boolean,

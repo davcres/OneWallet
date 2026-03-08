@@ -1,9 +1,10 @@
 package com.davidcrespo.onewallet.data.remote.investing
 
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
+import com.davidcrespo.onewallet.data.remote.dto.CurrencyDto
 import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.USD
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
@@ -69,7 +70,7 @@ class InvestingApiClient(private val client: HttpClient) {
             name = name,
             price = value,
             previousPrice = if (diff != null) value - diff else 0.0,
-            currency = if (!currency.isNullOrEmpty()) Currency.from(currency) else Currency.USD,
+            currency = if (!currency.isNullOrEmpty()) CurrencyDto(currency) else CurrencyDto(USD),
             type = InvestmentType.FUND,
             quantity = 0.0,
             year = 0,

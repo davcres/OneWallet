@@ -19,7 +19,7 @@ interface FinancialRepository {
     suspend fun getStocksSymbols(exchange: String): Result<List<MarketAsset>>
     suspend fun getStocksSymbolsByQuery(query: String): Result<List<MarketAsset>>
     suspend fun getCryptosSymbols(allowedCurrencies: Set<String>): Result<List<MarketAsset>>
-    suspend fun getUsdEur(): Result<Rate>
+    suspend fun getRate(from: String, to: String): Result<Rate>
 
     fun getSelectedCurrency(): Currency
     fun setSelectedCurrency(currency: Currency)
