@@ -7,11 +7,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWCurrencyPrice
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 
 @Composable
-fun PriceDisplay(value: Double, currency: Currency, modifier: Modifier = Modifier) {
+fun PriceDisplay(value: Double, currency: CurrencyView, modifier: Modifier = Modifier) {
     Surface(
         shape = RoundedCornerShape(8.dp),
         color = MaterialTheme.colorScheme.primaryContainer,

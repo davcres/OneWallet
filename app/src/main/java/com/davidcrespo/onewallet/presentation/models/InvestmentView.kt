@@ -2,7 +2,6 @@ package com.davidcrespo.onewallet.presentation.models
 
 import androidx.compose.runtime.Immutable
 import com.davidcrespo.onewallet.R
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 
@@ -15,7 +14,7 @@ data class InvestmentView(
     val displayPreviousPrice: Double,
     val originalPrice: Double,
     val originalPreviousPrice: Double,
-    val originalCurrency: Currency,
+    val originalCurrency: CurrencyView,
     val changePercent: Double,
     val type: InvestmentType,
     val month: Int,
@@ -32,7 +31,7 @@ data class InvestmentView(
         }
 
     override fun toString(): String {
-        return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|$originalCurrency|$changePercent|$type|$year|$month"
+        return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|${originalCurrency.code}|$changePercent|$type|$year|$month"
     }
 }
 
@@ -49,7 +48,7 @@ fun Investment.toUI(): InvestmentView {
         displayPreviousPrice = previousPrice,
         originalPrice = price,
         originalPreviousPrice = previousPrice,
-        originalCurrency = currency,
+        originalCurrency = currency.toUI(),
         changePercent = changePercent,
         type = type,
         month = month,
@@ -64,7 +63,7 @@ fun InvestmentView.toDomain(): Investment {
         quantity = quantity,
         price = originalPrice,
         previousPrice = originalPreviousPrice,
-        currency = originalCurrency,
+        currency = originalCurrency.toDomain(),
         type = type,
         year = year,
         month = month
@@ -81,7 +80,7 @@ fun String.toInvestmentView(): InvestmentView {
         displayPreviousPrice = parts[4].toDoubleOrNull() ?: 0.0,
         originalPrice = parts[5].toDoubleOrNull() ?: 0.0,
         originalPreviousPrice = parts[6].toDoubleOrNull() ?: 0.0,
-        originalCurrency = Currency.valueOf(parts[7]),
+        originalCurrency = CurrencyView.get(parts[7]),
         changePercent = parts[8].toDoubleOrNull() ?: 0.0,
         type = InvestmentType.valueOf(parts[9]),
         year = parts[10].toIntOrNull() ?: 0,

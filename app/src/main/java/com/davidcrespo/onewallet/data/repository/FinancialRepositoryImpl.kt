@@ -7,26 +7,37 @@ import com.davidcrespo.onewallet.data.local.database.market.entities.toCryptoEnt
 import com.davidcrespo.onewallet.data.local.database.market.entities.toDomain
 import com.davidcrespo.onewallet.data.local.database.market.entities.toStockEntity
 import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toDomain
+import com.davidcrespo.onewallet.data.remote.alphaVantage.AlphaVantageDataSource
+import com.davidcrespo.onewallet.data.remote.alphaVantage.models.toDomain
 import com.davidcrespo.onewallet.data.remote.binance.BinanceDataSource
 import com.davidcrespo.onewallet.data.remote.binance.models.toDomain
+import com.davidcrespo.onewallet.data.remote.dto.CurrencyDto
 import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
 import com.davidcrespo.onewallet.data.remote.dto.toDomain
+import com.davidcrespo.onewallet.data.remote.dto.toDto
 import com.davidcrespo.onewallet.data.remote.dto.toEntity
 import com.davidcrespo.onewallet.data.remote.extraEtf.ExtraEtfDataSource
 import com.davidcrespo.onewallet.data.remote.finnhub.FinnhubDataSource
 import com.davidcrespo.onewallet.data.remote.finnhub.models.toDomain
 import com.davidcrespo.onewallet.data.remote.investing.InvestingDataSource
 import com.davidcrespo.onewallet.data.remote.justEtf.JustEtfDataSource
+import com.davidcrespo.onewallet.data.remote.marketstack.MarketstackDataSource
+import com.davidcrespo.onewallet.data.remote.marketstack.models.toDomain
 import com.davidcrespo.onewallet.data.remote.quefondos.QueFondosDataSource
-import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiConfig.GetRate.USD_EUR
 import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.twelveData.models.toDomain
+import com.davidcrespo.onewallet.data.remote.yahooFinance.YahooFinanceDataSource
+import com.davidcrespo.onewallet.data.remote.yahooFinance.models.toDomain
 import com.davidcrespo.onewallet.domain.cache.CachePolicy
 import com.davidcrespo.onewallet.domain.di.DispatcherProvider
 import com.davidcrespo.onewallet.domain.logging.Telemetry
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.MarketType
+import com.davidcrespo.onewallet.domain.model.investment.UNKNOWN
+import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.domain.model.market.MarketAsset
 import com.davidcrespo.onewallet.domain.model.rate.Rate
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
@@ -35,6 +46,9 @@ import kotlinx.coroutines.withContext
 class FinancialRepositoryImpl(
     private val twelveDataDataSource: TwelveDataDataSource,
     private val finnhubDataSource: FinnhubDataSource,
+    private val alphaVantageDataSource: AlphaVantageDataSource,
+    private val marketstackDataSource: MarketstackDataSource,
+    private val yahooFinanceDataSource: YahooFinanceDataSource,
     private val binanceDataSource: BinanceDataSource,
     private val investingDataSource: InvestingDataSource,
     private val queFondosDataSource: QueFondosDataSource,
@@ -52,11 +66,13 @@ class FinancialRepositoryImpl(
         symbol: String,
         type: InvestmentType,
         name: String,
-        selectedCurrency: Currency?
+        selectedCurrency: Currency?,
+        marketType: MarketType?,
+        investmentCurrency: Currency?
     ): Result<Investment> {
         return withContext(dispatcher.io) {
             when (type) {
-                InvestmentType.STOCK -> getStockPrice(symbol, name)
+                InvestmentType.STOCK -> getStockPrice(symbol, name, marketType, investmentCurrency)
                 InvestmentType.CRYPTO -> getCryptoPrice(symbol)
                 InvestmentType.FUND -> getFundPrice(symbol)
                 InvestmentType.ETF -> getEtfPrice(symbol, selectedCurrency)
@@ -81,21 +97,28 @@ class FinancialRepositoryImpl(
         }
     }
 
-    private suspend fun getStockPrice(symbol: String, name: String): Result<Investment> {
-        return runCatching {
+    private suspend fun getStockPrice(symbol: String, name: String, marketType: MarketType?, currency: Currency?): Result<Investment> =
+        runCatching {
             symbolCache.getCachedInvestmentIfValid(symbol, cachePolicy.stockHours)
                 ?.toDomain()
                 ?.let { return@runCatching it }
 
-            val dto = finnhubDataSource.getStockPrice(symbol, name)
-            val valid = dto.takeIf { it.isValidPrice() }
-                ?: throw IllegalStateException("No se pudo obtener el precio de $symbol")
+            val country = marketType ?: MarketType.GLOBAL
 
-            telemetry.log("(Finnhub) get $symbol from remote ${valid.price} ${valid.currency}")
-            symbolCache.setCachedInvestment(valid.toEntity())
-            valid.toDomain()
+            when (country) {
+                MarketType.US -> {
+                    tryFetch(symbol, "Finnhub") { finnhubDataSource.getStockPrice(symbol, name) }
+                        ?: throw IllegalStateException("No se pudo obtener el precio del fondo")
+                }
+                MarketType.GLOBAL -> {
+                    tryFetch(symbol, "Yahoo Finance") { yahooFinanceDataSource.getStockPrice(symbol, name) }
+                        ?: tryFetch(symbol, "Finnhub") { finnhubDataSource.getStockPrice(symbol, name) }
+                        ?: tryFetch(symbol, "Alpha Vantage") { alphaVantageDataSource.getStockPrice(symbol, name, currency?.toDto() ?: CurrencyDto(USD)) }
+                        ?: tryFetch(symbol, "Marketstack") { marketstackDataSource.getStockPrice(symbol, name) }
+                        ?: throw IllegalStateException("No se pudo obtener el precio del fondo")
+                }
+            }
         }
-    }
 
     private suspend fun getFundPrice(isin: String): Result<Investment> =
         runCatching {
@@ -114,7 +137,7 @@ class FinancialRepositoryImpl(
                 ?.toDomain()
                 ?.let { return@runCatching it }
 
-            val currency = selectedCurrency ?: Currency.EUR
+            val currency = selectedCurrency?.toDto() ?: CurrencyDto(EUR)
 
             tryFetch(isin, "JustETF.com (detail)") { justEtfDataSource.getEtfDetail(isin, currency) }
                 ?: tryFetch(isin, "ExtraETF.com") { extraEtfDataSource.getEtfPrice(isin) }
@@ -141,6 +164,41 @@ class FinancialRepositoryImpl(
             }
         }
 
+    override suspend fun getStocksSymbolsByQuery(query: String): Result<List<MarketAsset>> =
+        withContext(dispatcher.io) {
+            runCatching {
+                val response = yahooFinanceDataSource.getStocksSymbolsByQuery(query)
+                telemetry.log("(Yahoo Finance) get symbols from remote $query - ${response.size}")
+
+                if (false&&response.isNotEmpty()) {
+                    Result.success(response.map { it.toDomain() })
+                } else {
+                    val response = alphaVantageDataSource.getStocksSymbolsByQuery(query)
+                    telemetry.log("(Alpha Vantage) get symbols from remote $query - ${response.size}")
+
+                    if (response.isNotEmpty()) {
+                        Result.success(response.mapNotNull { it.toDomain() })
+                    } else {
+                        val response = marketstackDataSource.getStocksSymbolsByQuery(query)
+                        telemetry.log("(Marketstack) get symbols from remote $query - ${response.size}")
+
+                        val filtered = response.distinctBy { it.ticker }
+
+                        Result.success(filtered.map { it.toDomain() })
+                    }
+                }
+            }.getOrElse {
+                it.printStackTrace()
+
+                val response = marketstackDataSource.getStocksSymbolsByQuery(query)
+                telemetry.log("(Marketstack) get symbols from remote $query - ${response.size}")
+
+                val filtered = response.distinctBy { it.ticker }
+
+                Result.success(filtered.map { it.toDomain() })
+            }
+        }
+
     override suspend fun getCryptosSymbols(allowedCurrencies: Set<String>): Result<List<MarketAsset>> =
         withContext(dispatcher.io) {
             runCatching {
@@ -164,15 +222,19 @@ class FinancialRepositoryImpl(
             }
         }
 
-    override suspend fun getUsdEur(): Result<Rate> =
+    override suspend fun getRate(from: String, to: String): Result<Rate> =
         withContext(dispatcher.io) {
             runCatching {
-                val cached = currencyCache.getCachedRateIfValid(USD_EUR, cachePolicy.rateHours)
+                if (from == to || from == UNKNOWN || to == UNKNOWN) {
+                    return@runCatching Rate("$from/$to", 1.0)
+                }
+                val rateSymbol = "$from/$to"
+                val cached = currencyCache.getCachedRateIfValid(rateSymbol, cachePolicy.rateHours)
                 if (cached != null) {
-                    Rate(USD_EUR, cached)
+                    Rate(rateSymbol, cached)
                 } else {
-                    val rate = twelveDataDataSource.getUsdEur()
-                    telemetry.log("(TwelveData) get USD/EUR from remote ${rate.rate}")
+                    val rate = twelveDataDataSource.getRate(from, to)
+                    telemetry.log("(TwelveData) get $from/$to from remote ${rate.rate}")
                     currencyCache.setCachedRate(rate.symbol, rate.rate)
                     rate.toDomain()
                 }
@@ -181,7 +243,7 @@ class FinancialRepositoryImpl(
 
     override fun getSelectedCurrency(): Currency =
         runCatching { currencyCache.getSelectedCurrency() }
-            .getOrDefault(Currency.EUR)
+            .getOrDefault(Currency(EUR))
 
     override fun setSelectedCurrency(currency: Currency) {
         currencyCache.setSelectedCurrency(currency)
@@ -193,12 +255,17 @@ class FinancialRepositoryImpl(
         validateName: Boolean = true,
         fetch: suspend () -> InvestmentDto?
     ): Investment? {
-        val inv = fetch()
-        val valid = inv?.takeIf { if (validateName) { it.isValidName() && it.isValidPrice() } else { it.isValidPrice()} }
-        if (valid != null) {
-            telemetry.log("$source get $isin succeed ${valid.price} ${valid.currency}")
-            symbolCache.setCachedInvestment(valid.toEntity())
+        return runCatching {
+            val inv = fetch()
+            val valid = inv?.takeIf { if (validateName) { it.isValidName() && it.isValidPrice() } else { it.isValidPrice()} }
+            if (valid != null) {
+                telemetry.log("$source get $isin succeed ${valid.price} ${valid.currency.code}")
+                symbolCache.setCachedInvestment(valid.toEntity())
+            }
+            valid?.toDomain()
+        }.getOrElse {
+            it.printStackTrace()
+            null
         }
-        return valid?.toDomain()
     }
 }

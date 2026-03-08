@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.positions.components.PortfolioList
 import com.davidcrespo.onewallet.presentation.portfolio.positions.components.TotalBalance
@@ -20,7 +20,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun PositionsTab(
-    currency: Currency,
+    currency: CurrencyView,
     totalBalance: Double,
     previousBalance: Double,
     portfolioItems: ImmutableList<InvestmentView>,

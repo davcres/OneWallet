@@ -2,8 +2,9 @@ package com.davidcrespo.onewallet.data.local.database.market.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.davidcrespo.onewallet.data.local.database.portfolio.entities.CurrencyEntity
+import com.davidcrespo.onewallet.data.local.database.portfolio.entities.toDomain
 import com.davidcrespo.onewallet.data.remote.finnhub.models.MarketStockResponse
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.market.MarketAsset
 import kotlinx.serialization.Serializable
@@ -13,7 +14,7 @@ import kotlinx.serialization.Serializable
 data class StockMarketEntity(
     @PrimaryKey val symbol: String,
     val description: String?,
-    val currency: Currency,
+    val currency: CurrencyEntity,
     val figi: String?,
     val type: String?
 )
@@ -22,7 +23,7 @@ fun StockMarketEntity.toDomain(): MarketAsset =
     MarketAsset(
         symbol = symbol,
         price = 0.0,
-        currency = currency,
+        currency = currency.toDomain(),
         type = InvestmentType.STOCK,
         description = description,
         figi = figi,
@@ -33,7 +34,7 @@ fun MarketStockResponse.toStockEntity(): StockMarketEntity? {
     return if (currency.isNotEmpty()) {
         StockMarketEntity(
             symbol = symbol,
-            currency = Currency.USD,
+            currency = CurrencyEntity(currency),
             type = type,
             description = description,
             figi = figi,

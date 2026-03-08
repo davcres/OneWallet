@@ -2,9 +2,11 @@ package com.davidcrespo.onewallet.data.remote.extraEtf.models
 
 import com.davidcrespo.onewallet.core.extensions.isYesterday
 import com.davidcrespo.onewallet.core.extensions.toLocalDate
+import com.davidcrespo.onewallet.data.remote.dto.CurrencyDto
 import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.UNKNOWN
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -53,7 +55,7 @@ fun ExtraEtfResponse.toInvestDto(): InvestmentDto {
         quantity = 0.0,
         price = etf?.lastQuote?.mid ?: etf?.nav ?: 0.0,
         previousPrice = previousDay?.closePrice ?: 0.0,
-        currency = if (!currency.isNullOrEmpty()) Currency.valueOf(currency) else Currency.EUR,
+        currency = if (!currency.isNullOrEmpty()) CurrencyDto(currency) else CurrencyDto(UNKNOWN),
         type = InvestmentType.ETF,
         year = 0,
         month = 0

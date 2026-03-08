@@ -40,15 +40,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import kotlinx.coroutines.delay
 
 @Composable
 fun OWBalance(
-    currency: Currency,
+    currency: CurrencyView,
     balance: Double,
     previousBalance: Double,
     isBalanceVisible: Boolean,
@@ -215,7 +216,7 @@ private data class BalanceSize(
 private fun OWBalancePreview() {
     OneWalletTheme {
         OWBalance(
-            currency = Currency.EUR,
+            currency = CurrencyView.get(EUR),
             balance = 110.0,
             previousBalance = 100.0,
             isBalanceVisible = true,

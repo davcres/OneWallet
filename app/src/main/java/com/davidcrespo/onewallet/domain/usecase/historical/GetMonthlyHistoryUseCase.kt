@@ -12,6 +12,7 @@ class GetMonthlyHistoryUseCase(
             portfolioRepository.getMonthsPortfolio()
             )
         }.getOrElse {
+            it.printStackTrace()
             Result.failure(it)
         }
     }

@@ -81,12 +81,24 @@
 
     <!-- Market -->
     <string name="add_crypto_title">Add Crypto</string>
-    <string name="add_stocks_title">Add Stocks</string>
+    <string name="add_us_stocks_title">Add US Stocks</string>
+    <string name="add_global_stocks_title">Add International Stocks</string>
     <string name="add_count_action">Add (%d)</string>
     <string name="search_crypto_placeholder">Search crypto</string>
-    <string name="search_stock_placeholder">Search symbol, name or figi</string>
+    <string name="search_us_stock_placeholder">Search symbol, name or figi</string>
+    <string name="search_global_stock_placeholder">Search symbol or name</string>
     <string name="unselect_asset_cd">Unselect Asset</string>
     <string name="select_asset_cd">Select Asset</string>
+
+    <!-- Global Market -->
+    <string name="global_markets_request_limit">Due to high demand, our API has taken a break, but don\'t worry, it will be back in full force tomorrow.</string>
+    <string name="global_markets_card_title">Looking for international markets?</string>
+    <string name="global_markets_card_description">This list only shows US stocks, but you can trade stocks from London, Tokyo, or any global exchange. You will just have to type the ticker or company name.</string>
+    <string name="global_markets_card_button">Go to Global Markets</string>
+    <string name="global_markets_card_button_cd">On this screen you can only search for US stocks. Press the button to access the search engine for stocks in other countries.</string>
+    <string name="global_markets_warning">Please note that we are just starting out and to ensure the highest quality of the data displayed, there may be stocks we do not have access to. We apologize for any inconvenience and are working to expand our offering.</string>
+    <string name="global_markets_no_results">Sorry, we didn\'t find any stocks that match your search.</string>
+    <string name="global_markets_try_again">Try Again</string>
 
     <!-- Historical -->
     <string name="historical_monthly_title">Monthly History</string>

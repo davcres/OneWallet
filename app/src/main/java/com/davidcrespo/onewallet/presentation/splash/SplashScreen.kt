@@ -27,8 +27,8 @@ import com.davidcrespo.onewallet.R
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
-const val START_ANIMATION = 0.65f
-const val ANIMATION_DURATION = 400
+private const val START_ANIMATION = 0.65f
+private const val ANIMATION_DURATION = 400
 
 @Composable
 fun SplashRoot(
@@ -39,6 +39,7 @@ fun SplashRoot(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel) {
+        viewModel.handleIntent(SplashIntent.LoadMarkets)
         viewModel.handleIntent(SplashIntent.IsOnboardingCompleted)
     }
 

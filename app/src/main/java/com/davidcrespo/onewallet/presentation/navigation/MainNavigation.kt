@@ -13,7 +13,8 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.davidcrespo.onewallet.presentation.historical.HistoricalRoot
-import com.davidcrespo.onewallet.presentation.market.MarketRoot
+import com.davidcrespo.onewallet.presentation.market.globalMarket.GlobalMarketRoot
+import com.davidcrespo.onewallet.presentation.market.usMarket.UsMarketRoot
 import com.davidcrespo.onewallet.presentation.onboarding.OnboardingRoot
 import com.davidcrespo.onewallet.presentation.portfolio.PortfolioRoot
 import com.davidcrespo.onewallet.presentation.splash.SplashRoot
@@ -72,15 +73,27 @@ fun MainNavigation(
                         backStack.add(Route.Historical(isBalanceVisible = isBalanceVisible))
                     },
                     navigateToMarket = { isCrypto ->
-                        backStack.add(Route.Market(isCrypto = isCrypto))
+                        backStack.add(Route.UsMarket(isCrypto = isCrypto))
                     },
                     modifier = Modifier.padding(contentPadding)
                 )
             }
 
-            entry<Route.Market> {
-                MarketRoot(
+            entry<Route.UsMarket> {
+                UsMarketRoot(
                     isCrypto = it.isCrypto,
+                    navigateToGlobalMarket = {
+                        backStack.add(Route.GlobalMarket)
+                    },
+                    onBack = {
+                        if (backStack.size > 1) backStack.removeLastOrNull()
+                    },
+                    modifier = Modifier.padding(contentPadding)
+                )
+            }
+
+            entry<Route.GlobalMarket> {
+                GlobalMarketRoot(
                     onBack = {
                         if (backStack.size > 1) backStack.removeLastOrNull()
                     },

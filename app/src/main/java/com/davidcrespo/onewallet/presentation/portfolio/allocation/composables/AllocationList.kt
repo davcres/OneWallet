@@ -8,11 +8,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.collections.immutable.ImmutableList
 
@@ -21,7 +21,7 @@ import kotlinx.collections.immutable.ImmutableList
 fun AllocationList(
     header: @Composable () -> Unit,
     items: ImmutableList<InvestmentView>,
-    currency: Currency,
+    currency: CurrencyView,
     onSelect: (InvestmentType) -> Unit,
     modifier: Modifier = Modifier,
     isBalanceVisible: Boolean = true,

@@ -3,18 +3,20 @@ package com.davidcrespo.onewallet.presentation.portfolio
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.davidcrespo.onewallet.domain.model.investment.Currency
-import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.UNKNOWN
+import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.domain.model.investment.isManual
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.usecase.portfolio.AddInvestmentToPortfolioUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetInvestmentPriceUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
-import com.davidcrespo.onewallet.domain.usecase.portfolio.GetUsdEurUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUseCase
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toDomain
 import com.davidcrespo.onewallet.presentation.models.toUI
@@ -34,7 +36,7 @@ import kotlinx.coroutines.supervisorScope
 import java.time.LocalDate
 
 class PortfolioViewModel(
-    private val getUsdEurUseCase: GetUsdEurUseCase,
+    private val getCurrencyRateUseCase: GetCurrencyRateUseCase,
     private val getPortfolioItemsUseCase: GetPortfolioItemsUseCase,
     private val getInvestmentPriceUseCase: GetInvestmentPriceUseCase,
     private val saveMonthlyPortfolioUseCase: SaveMonthlyPortfolioUseCase,
@@ -94,19 +96,9 @@ class PortfolioViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             getSelectedCurrency()
-            getUsdEurRate()
             getPortfolioItems()
             _uiState.update { it.copy(isLoading = false) }
         }
-    }
-
-    private suspend fun getUsdEurRate() {
-        getUsdEurUseCase()
-            .onSuccess { rate ->
-                _uiState.update { it.copy(usdEurRate = rate) }
-            }.onFailure {
-                _uiState.update { it.copy(usdEurRate = 1.0) }
-            }
     }
 
     private suspend fun getPortfolioItems() {
@@ -142,7 +134,6 @@ class PortfolioViewModel(
         // Take a stable snapshot
         val state = _uiState.value
         val selectedCurrency = state.selectedCurrency
-        val usdEurRate = state.usdEurRate
         val alreadyPriced = state.symbolsWithPrice.toSet()
         val existingBySymbol = state.portfolioItems.associateBy { it.symbol }
 
@@ -163,27 +154,82 @@ class PortfolioViewModel(
                         ) ?: item
                     }
 
-                    getInvestmentPriceUseCase.invoke(
+                    getInvestmentPriceUseCase(
                         symbol = symbol,
                         type = item.type,
                         name = item.name,
-                        selectedCurrency = state.selectedCurrency
-                    )
-                        .map { api ->
-                            val withPrice = item.copy(
-                                displayPrice = api.price,
-                                displayPreviousPrice = api.previousPrice,
-                                originalPrice = api.price,
-                                originalPreviousPrice = api.previousPrice
+                        selectedCurrency = state.selectedCurrency.toDomain(),
+                        investmentCurrency = item.originalCurrency.toDomain()
+                    ).fold(
+                        onSuccess = { api ->
+                            val currency = item.originalCurrency.takeIf { it.code != UNKNOWN } ?: api.currency.toUI()
+                            val rate = getCurrencyRateUseCase(
+                                from = currency.code,
+                                to = selectedCurrency.code
+                            ).fold(
+                                onSuccess = { it },
+                                onFailure = { 1.0 }
                             )
-                            currencyConverter.convert(withPrice, selectedCurrency, usdEurRate)
+
+                            val priceConverted = currencyConverter.convert(
+                                amount = api.price,
+                                from = currency.code,
+                                to = selectedCurrency.code,
+                                rate = rate
+                            )
+
+                            val previousPriceConverted = currencyConverter.convert(
+                                amount = api.previousPrice,
+                                from = currency.code,
+                                to = selectedCurrency.code,
+                                rate = rate
+                            )
+
+                            item.copy(
+                                originalCurrency = currency,
+                                originalPrice = api.price,
+                                originalPreviousPrice = api.previousPrice,
+                                displayPrice = priceConverted,
+                                displayPreviousPrice = previousPriceConverted
+                            )
+                        },
+                        onFailure = { error ->
+                            error.printStackTrace()
+                            item
                         }
-                        .getOrElse { item }
+                    )
                 }
             }.awaitAll()
         }
 
-        val updatedManualItems = manualItems.map { currencyConverter.convert(it, selectedCurrency, usdEurRate) }
+        val updatedManualItems = manualItems.map { manualItem ->
+            val rate = getCurrencyRateUseCase(
+                from = manualItem.originalCurrency.code,
+                to = selectedCurrency.code
+            ).fold(
+                onSuccess = { it },
+                onFailure = { 1.0 }
+            )
+
+            val priceConverted = currencyConverter.convert(
+                amount = manualItem.originalPrice,
+                from = manualItem.originalCurrency.code,
+                to = selectedCurrency.code,
+                rate = rate
+            )
+
+            val previousPriceConverted = currencyConverter.convert(
+                amount = manualItem.originalPreviousPrice,
+                from = manualItem.originalCurrency.code,
+                to = selectedCurrency.code,
+                rate = rate
+            )
+
+            manualItem.copy(
+                displayPrice = priceConverted,
+                displayPreviousPrice = previousPriceConverted
+            )
+        }
 
         val finalList = (updatedManualItems + updatedMarketItems).distinctBy { it.symbol }.toImmutableList()
         val newlyPricedSymbols = updatedMarketItems.map { it.symbol }.toSet()
@@ -263,7 +309,7 @@ class PortfolioViewModel(
             getInvestmentPriceUseCase(
                 symbol = isin,
                 type = InvestmentType.ETF,
-                selectedCurrency = uiState.value.selectedCurrency
+                selectedCurrency = uiState.value.selectedCurrency.toDomain()
             )
                 .onSuccess { investment ->
                     val now = LocalDate.now()
@@ -285,48 +331,54 @@ class PortfolioViewModel(
         }
     }
 
-    private fun addBankItem(name: String, quantity: Double, currency: Currency) {
+    private fun addBankItem(name: String, quantity: Double, currency: CurrencyView) {
         viewModelScope.launch {
             val now = LocalDate.now()
             val year = now.year
             val month = now.monthValue
 
-            val bank = Investment(
+            val bank = InvestmentView(
                 symbol = name,
                 name = name,
                 quantity = quantity,
-                price = 1.0,
-                previousPrice = 0.0,
-                currency = currency,
+                originalPrice = 1.0,
+                originalPreviousPrice = 0.0,
+                originalCurrency = currency,
                 type = InvestmentType.BANK,
                 year = year,
-                month = month
+                month = month,
+                displayPrice = 0.0,
+                displayPreviousPrice = 0.0,
+                changePercent = 0.0
             )
 
-            addInvestmentToPortfolioUseCase(bank)
+            addInvestmentToPortfolioUseCase(bank.toDomain())
             _uiState.update { it.copy(isBankDialogVisible = false) }
         }
     }
 
-    private fun addOtherItem(name: String, quantity: Double, currency: Currency) {
+    private fun addOtherItem(name: String, quantity: Double, currency: CurrencyView) {
         viewModelScope.launch {
             val now = LocalDate.now()
             val year = now.year
             val month = now.monthValue
 
-            val other = Investment(
+            val other = InvestmentView(
                 symbol = name,
                 name = name,
                 quantity = quantity,
-                price = 1.0,
-                previousPrice = 0.0,
-                currency = currency,
+                originalPrice = 1.0,
+                originalPreviousPrice = 0.0,
+                originalCurrency = currency,
                 type = InvestmentType.OTHER,
                 year = year,
-                month = month
+                month = month,
+                displayPrice = 0.0,
+                displayPreviousPrice = 0.0,
+                changePercent = 0.0
             )
 
-            addInvestmentToPortfolioUseCase(other)
+            addInvestmentToPortfolioUseCase(other.toDomain())
             _uiState.update { it.copy(isOtherDialogVisible = false) }
         }
     }
@@ -359,7 +411,7 @@ class PortfolioViewModel(
         val selectedCurrency = financialRepository.getSelectedCurrency()
         _uiState.update {
             it.copy(
-                selectedCurrency = selectedCurrency
+                selectedCurrency = selectedCurrency.toUI()
             )
         }
     }
@@ -368,18 +420,47 @@ class PortfolioViewModel(
         viewModelScope.launch {
             val state = _uiState.value
             val selectedCurrency = state.selectedCurrency
-            val usdEurRate = state.usdEurRate
-            val newSelectedCurrency  = if (selectedCurrency == Currency.EUR)
-                Currency.USD
+            val portfolioItems = state.portfolioItems
+            val newSelectedCurrency = if (selectedCurrency.code == EUR)
+                CurrencyView.get(USD)
             else
-                Currency.EUR
+                CurrencyView.get(EUR)
 
-            financialRepository.setSelectedCurrency(newSelectedCurrency)
+            financialRepository.setSelectedCurrency(newSelectedCurrency.toDomain())
+
+            val portfolioItemsConverted = portfolioItems.map { item ->
+                val rate = getCurrencyRateUseCase(
+                    from = item.originalCurrency.code,
+                    to = newSelectedCurrency.code
+                ).fold(
+                    onSuccess = { it },
+                    onFailure = { 1.0 }
+                )
+
+                val priceConverted = currencyConverter.convert(
+                    amount = item.originalPrice,
+                    from = item.originalCurrency.code,
+                    to = newSelectedCurrency.code,
+                    rate = rate
+                )
+
+                val previousPriceConverted = currencyConverter.convert(
+                    amount = item.originalPreviousPrice,
+                    from = item.originalCurrency.code,
+                    to = newSelectedCurrency.code,
+                    rate = rate
+                )
+
+                item.copy(
+                    displayPrice = priceConverted,
+                    displayPreviousPrice = previousPriceConverted
+                )
+            }
 
             _uiState.update {
                 it.copy(
                     selectedCurrency = newSelectedCurrency,
-                    portfolioItems = it.portfolioItems.map { currencyConverter.convert(it, newSelectedCurrency, usdEurRate) }.toImmutableList()
+                    portfolioItems = portfolioItemsConverted.toImmutableList()
                 )
             }
 

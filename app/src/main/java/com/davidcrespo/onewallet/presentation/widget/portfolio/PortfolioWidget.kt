@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.glance.GlanceId
@@ -30,9 +29,10 @@ import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import com.davidcrespo.onewallet.MainActivity
 import com.davidcrespo.onewallet.R
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toInvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
@@ -49,20 +49,37 @@ class PortfolioWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val state = currentState<Preferences>()
-            val items = stringToPortfolio(state[PortfolioPrefsKeys.items].orEmpty())
-            val currency = Currency.valueOf(state[PortfolioPrefsKeys.currency] ?: Currency.EUR.name)
-            val usdEurRate = state[PortfolioPrefsKeys.usdEurRate] ?: 1.0
-
+            val stocks = stringToPortfolio(state[PortfolioPrefsKeys.stocks].orEmpty())
+            val selectedCurrency = CurrencyView.get(state[PortfolioPrefsKeys.selectedCurrency] ?: EUR)
+            val rates = stringToRates(state[PortfolioPrefsKeys.rates].orEmpty())
             val currencyConverter = CurrencyConverter()
-            val itemsConverted = items.map {
-                currencyConverter.convert(it, currency, usdEurRate)
-            }
+
+            val stocksConverted = stocks
+                .map { investment ->
+                    val rate =
+                        rates["${investment.originalCurrency.code}/${selectedCurrency.code}"] ?: 1.0
+                    investment.copy(
+                        displayPrice = currencyConverter.convert(
+                            investment.originalPrice,
+                            investment.originalCurrency.code,
+                            selectedCurrency.code,
+                            rate
+                        ),
+                        displayPreviousPrice = currencyConverter.convert(
+                            investment.originalPreviousPrice,
+                            investment.originalCurrency.code,
+                            selectedCurrency.code,
+                            rate
+                        )
+                    )
+                }
+                .sortedByDescending { it.displayPrice * it.quantity }
 
             GlanceTheme(colors = WidgetColors) {
                 PortfolioWidgetContent(
-                    balance = itemsConverted.sumOf { it.quantity * it.displayPrice },
-                    items = itemsConverted.toImmutableList(),
-                    currency = currency
+                    balance = stocksConverted.sumOf { it.quantity * it.displayPrice },
+                    items = stocksConverted.toImmutableList(),
+                    currency = selectedCurrency
                 )
             }
         }
@@ -72,7 +89,7 @@ class PortfolioWidget : GlanceAppWidget() {
     fun PortfolioWidgetContent(
         balance: Double,
         items: ImmutableList<InvestmentView>,
-        currency: Currency
+        currency: CurrencyView
     ) {
         Column(
             modifier = GlanceModifier
@@ -125,7 +142,7 @@ class PortfolioWidget : GlanceAppWidget() {
     @Composable
     private fun ItemsList(
         items: ImmutableList<InvestmentView>,
-        currency: Currency,
+        currency: CurrencyView,
         onClick: Action
     ) {
         LazyColumn(
@@ -154,12 +171,18 @@ class PortfolioWidget : GlanceAppWidget() {
             item.toInvestmentView()
         }
     }
+
+    private fun stringToRates(items: Set<String>): Map<String, Double> =
+        items.associate { item ->
+            val (pair, rate) = item.split('|')
+            pair to (rate.toDoubleOrNull() ?: 1.0)
+        }
 }
 
 object PortfolioPrefsKeys {
-    val items = stringSetPreferencesKey("items")
-    val currency = stringPreferencesKey("currency")
-    val usdEurRate = doublePreferencesKey("usdEurRate")
+    val stocks = stringSetPreferencesKey("stocks")
+    val selectedCurrency = stringPreferencesKey("currency")
+    val rates = stringSetPreferencesKey("rates")
 }
 
 @Preview
@@ -169,7 +192,7 @@ private fun PortfolioWidgetPreview() {
         PortfolioWidget().PortfolioWidgetContent(
             balance = 100000.0,
             items = persistentListOf(),
-            currency = Currency.EUR
+            currency = CurrencyView.get(EUR)
         )
     }
 }

@@ -1,10 +1,10 @@
-package com.davidcrespo.onewallet.presentation.market
+package com.davidcrespo.onewallet.presentation.market.usMarket
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davidcrespo.onewallet.domain.usecase.market.AddMarketAssetToPortfolioUseCase
-import com.davidcrespo.onewallet.domain.usecase.market.GetMarketAssetsUseCase
+import com.davidcrespo.onewallet.domain.usecase.market.GetUSMarketAssetsUseCase
 import com.davidcrespo.onewallet.presentation.models.MarketAssetView
 import com.davidcrespo.onewallet.presentation.models.toDomain
 import com.davidcrespo.onewallet.presentation.models.toMarketAssetView
@@ -19,15 +19,15 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MarketViewModel(
+class UsMarketViewModel(
     private val savedStateHandle: SavedStateHandle,
-    private val getMarketAssetsUseCase: GetMarketAssetsUseCase,
+    private val getUSMarketAssetsUseCase: GetUSMarketAssetsUseCase,
     private val addMarketAssetToPortfolioUseCase: AddMarketAssetToPortfolioUseCase,
 ) : ViewModel() {
 
     private val restoredAssetsToSave = savedStateHandle.get<String>("assetsToSaveToPortfolio")?.split(",")
 
-    private val _uiState = MutableStateFlow(MarketUiState(
+    private val _uiState = MutableStateFlow(UsMarketUiState(
         searchQuery = savedStateHandle["searchQuery"] ?: "",
         assetsToSaveToPortfolio = restoredAssetsToSave?.map { stringAsset ->
             stringAsset.toMarketAssetView()
@@ -41,23 +41,26 @@ class MarketViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = MarketUiState()
+            initialValue = UsMarketUiState()
         )
 
-    fun handleIntent(intent: MarketIntent) {
+    fun handleIntent(intent: UsMarketIntent) {
         when (intent) {
-            is MarketIntent.LoadInitialData -> getSymbols(intent.isCrypto)
-            is MarketIntent.SearchQueryChanged -> updateSearchQuery(intent.query)
-            is MarketIntent.AddOneAsset -> addOneAsset(intent.marketAsset)
-            is MarketIntent.SelectAsset -> selectAsset(intent.marketAsset)
-            is MarketIntent.SaveAssetsSelected -> saveAssetsSelected()
+            is UsMarketIntent.LoadInitialData -> getSymbols(intent.isCrypto)
+            is UsMarketIntent.SearchQueryChanged -> updateSearchQuery(intent.query)
+            is UsMarketIntent.AddOneAsset -> addOneAsset(intent.marketAsset)
+            is UsMarketIntent.SelectAsset -> selectAsset(intent.marketAsset)
+            is UsMarketIntent.SaveAssetsSelected -> saveAssetsSelected()
+            is UsMarketIntent.CloseGlobalMarketCard -> closeGlobalMarketCard()
+
+            is UsMarketIntent.OpenGlobalMarket -> {}
         }
     }
 
     private fun getSymbols(isCrypto: Boolean) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            getMarketAssetsUseCase(isCrypto)
+            getUSMarketAssetsUseCase(isCrypto)
                 .onSuccess { marketAssets ->
                     val marketAssetsView =
                         marketAssets
@@ -70,7 +73,8 @@ class MarketViewModel(
                             marketAssets = marketAssetsView,
                             filteredAssets = marketAssetsView,
                             isCrypto = isCrypto,
-                            isLoading = false
+                            isLoading = false,
+                            showGlobalMarketsCard = true
                         )
                     }
                 }.onFailure {
@@ -78,7 +82,8 @@ class MarketViewModel(
                         it.copy(
                             marketAssets = persistentListOf(),
                             filteredAssets = persistentListOf(),
-                            isLoading = false
+                            isLoading = false,
+                            showGlobalMarketsCard = true
                         )
                     }
                 }
@@ -138,10 +143,10 @@ class MarketViewModel(
     }
 
     private fun filterAssets(
-        allAssets: ImmutableList<Pair<Char, ImmutableList<MarketAssetView>>>,
+        allAssets: ImmutableList<Pair<String, ImmutableList<MarketAssetView>>>,
         query: String
-    ): ImmutableList<Pair<Char, ImmutableList<MarketAssetView>>> {
-        val filtered: ImmutableList<Pair<Char, ImmutableList<MarketAssetView>>> =
+    ): ImmutableList<Pair<String, ImmutableList<MarketAssetView>>> {
+        val filtered: ImmutableList<Pair<String, ImmutableList<MarketAssetView>>> =
             if (query.isBlank()) {
                 allAssets
             } else {
@@ -155,5 +160,13 @@ class MarketViewModel(
             }.toImmutableList()
 
         return filtered
+    }
+
+    private fun closeGlobalMarketCard() {
+        _uiState.update {
+            it.copy(
+                showGlobalMarketsCard = false,
+            )
+        }
     }
 }

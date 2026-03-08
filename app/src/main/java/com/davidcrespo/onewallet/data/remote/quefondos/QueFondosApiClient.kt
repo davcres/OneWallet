@@ -2,8 +2,9 @@ package com.davidcrespo.onewallet.data.remote.quefondos
 
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
 import com.davidcrespo.onewallet.core.extensions.round
+import com.davidcrespo.onewallet.data.remote.dto.CurrencyDto
 import com.davidcrespo.onewallet.data.remote.dto.InvestmentDto
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
@@ -28,6 +29,7 @@ class QueFondosApiClient(private val client: HttpClient) {
             }.bodyAsText()
             return parseQueFondosHtmlFund(isin, type, html)
         }.getOrElse {
+            it.printStackTrace()
             return null
         }
     }
@@ -64,10 +66,7 @@ class QueFondosApiClient(private val client: HttpClient) {
         // 4) Divisa
         val currencyText = priceAndCurrencyText.lastOrNull()
 
-        val currency = if (!currencyText.isNullOrEmpty())
-            Currency.valueOf(currencyText)
-        else
-            Currency.EUR
+        val currency = CurrencyDto(currencyText ?: EUR)
 
         return InvestmentDto(
             symbol = isin,

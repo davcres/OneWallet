@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.presentation.market.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.AddCircleOutline
@@ -17,18 +19,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
+import com.davidcrespo.onewallet.domain.model.investment.GlobalMarketRegion
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.MarketType
+import com.davidcrespo.onewallet.domain.model.investment.USD
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.MarketAssetView
 
 @Composable
 fun MarketListItem(
+    marketType: MarketType,
     marketAsset: MarketAssetView,
     isSelected: Boolean,
     addOneAsset: () -> Unit,
@@ -43,6 +52,16 @@ fun MarketListItem(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        if (marketType == MarketType.GLOBAL && marketAsset.region != null) {
+            Image(
+                painter = painterResource(marketAsset.region.flagRes),
+                contentDescription = null,
+                modifier = Modifier.size(40.dp)
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+        }
+
         Column {
             Text(
                 text = marketAsset.symbol,
@@ -60,7 +79,7 @@ fun MarketListItem(
                 }
             } else if (marketAsset.type == InvestmentType.CRYPTO) {
                 Text(
-                    text = if (marketAsset.currency == Currency.USD) "$${marketAsset.price}" else "${marketAsset.price} €",
+                    text = if (marketAsset.currency.code == EUR) "${marketAsset.price} €" else "$${marketAsset.price}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -87,18 +106,22 @@ fun MarketListItem(
 @Preview
 @Composable
 private fun MarketListItemPreview() {
-    MarketListItem(
-        marketAsset = MarketAssetView(
-            symbol = "AAPL",
-            price = 0.0,
-            description = "Apple Inc.",
-            type = InvestmentType.STOCK,
-            currency = Currency.USD,
-            figi = null,
-            stockType = "STOCK"
-        ),
-        isSelected = false,
-        addOneAsset = {},
-        selectAsset = {}
-    )
+    OneWalletTheme {
+        MarketListItem(
+            marketType = MarketType.GLOBAL,
+            marketAsset = MarketAssetView(
+                symbol = "AAPL",
+                price = 0.0,
+                description = "Apple Inc.",
+                type = InvestmentType.CRYPTO,
+                currency = CurrencyView.get(USD),
+                figi = null,
+                region = GlobalMarketRegion.SPAIN,
+                stockType = "STOCK"
+            ),
+            isSelected = false,
+            addOneAsset = {},
+            selectAsset = {}
+        )
+    }
 }

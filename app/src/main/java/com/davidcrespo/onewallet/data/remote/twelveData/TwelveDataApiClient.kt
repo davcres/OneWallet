@@ -9,11 +9,11 @@ import io.ktor.client.request.parameter
 
 class TwelveDataApiClient(private val client: HttpClient) {
 
-    suspend fun getUsdEur(): RateResponse {
+    suspend fun getRate(from: String, to: String): RateResponse {
         return client.get(TwelveDataApiConfig.GetRate.PATH) {
-            parameter(TwelveDataApiConfig.GetRate.FROM_TO, TwelveDataApiConfig.GetRate.USD_EUR)
+            parameter(TwelveDataApiConfig.GetRate.FROM_TO, "$from/$to")
             parameter(TwelveDataApiConfig.GetRate.AMOUNT, 1)
-            parameter(TwelveDataApiConfig.GetRate.API_KEY, BuildConfig.TWELVE_DATA_API_KEY)
+            parameter(TwelveDataApiConfig.API_KEY, BuildConfig.TWELVE_DATA_API_KEY)
         }.body()
     }
 }

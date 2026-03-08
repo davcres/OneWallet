@@ -1,7 +1,8 @@
 package com.davidcrespo.onewallet.presentation.historical
 
 import androidx.compose.runtime.Immutable
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -13,8 +14,7 @@ data class HistoricalUiState(
     val selectedPreviousMonth: ImmutableList<InvestmentView>? = null,
     val selectedInvestment: InvestmentView? = null,
     val selectedPreviousInvestment: InvestmentView? = null,
-    val selectedCurrency: Currency = Currency.EUR,
-    val usdEurRate: Double = 1.0,
+    val selectedCurrency: CurrencyView = CurrencyView.get(EUR),
     val isLoading: Boolean = false
 )
 

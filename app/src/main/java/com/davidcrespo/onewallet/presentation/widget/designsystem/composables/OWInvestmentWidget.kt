@@ -24,9 +24,9 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.davidcrespo.onewallet.R
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.widget.utils.formatPrice
 import com.davidcrespo.onewallet.presentation.widget.utils.formatTrendPercent
@@ -35,7 +35,7 @@ import com.davidcrespo.onewallet.presentation.widget.utils.trendColor
 @Composable
 fun OWInvestmentWidget(
     item: InvestmentView,
-    currency: Currency,
+    currency: CurrencyView,
     previousMonthItem: InvestmentView? = null,
     section: SectionType,
     showPercentageInsteadOfVariance: Boolean = true,

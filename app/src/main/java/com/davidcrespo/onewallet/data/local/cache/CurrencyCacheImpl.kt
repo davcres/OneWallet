@@ -3,6 +3,7 @@ package com.davidcrespo.onewallet.data.local.cache
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import java.time.Clock
 import java.util.concurrent.TimeUnit
 
@@ -37,13 +38,13 @@ class CurrencyCacheImpl(
 
     override fun getSelectedCurrency(): Currency {
         val currencyName = sharedPreferences.getString(CURRENCY, null)
-        return runCatching { Currency.valueOf(currencyName.orEmpty()) }
-            .getOrDefault(Currency.EUR)
+        return runCatching { Currency(currencyName ?: EUR) }
+            .getOrDefault(Currency(EUR))
     }
 
     override fun setSelectedCurrency(currency: Currency) {
         sharedPreferences.edit {
-            putString(CURRENCY, currency.name)
+            putString(CURRENCY, currency.code)
         }
     }
 

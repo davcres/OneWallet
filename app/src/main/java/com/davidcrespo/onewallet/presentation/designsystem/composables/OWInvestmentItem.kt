@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.AutoScrollingText
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
-import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PercentageVarianceSwitcher
@@ -42,12 +42,13 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.
 import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBackground
 import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBorder
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 
 @Composable
 fun OWInvestmentItem(
     item: InvestmentView,
-    currency: Currency,
+    currency: CurrencyView,
     previousMonthItem: InvestmentView? = null,
     section: SectionType,
     onClick: (InvestmentView) -> Unit,
@@ -166,9 +167,9 @@ private fun GhostContent() {
         modifier = Modifier.alpha(0f)
     ) {
         Spacer(modifier = Modifier.height(4.dp))
-        PriceDisplay(value = 0.0, currency = Currency.EUR)
+        PriceDisplay(value = 0.0, currency = CurrencyView.get(EUR))
         Spacer(modifier = Modifier.height(8.dp))
-        TrendDisplay(value = 1.0, text = "0.00 %", false, Currency.EUR)
+        TrendDisplay(value = 1.0, text = "0.00 %", false, CurrencyView.get(EUR))
     }
 }
 
@@ -185,13 +186,13 @@ private fun OWInvestmentItemPreview() {
                 displayPreviousPrice = 140.0,
                 originalPrice = 150.0,
                 originalPreviousPrice = 140.0,
-                originalCurrency = Currency.EUR,
+                originalCurrency = CurrencyView.get(EUR),
                 changePercent = 10.0,
                 type = InvestmentType.STOCK,
                 month = 0,
                 year = 0
             ),
-            currency = Currency.EUR,
+            currency = CurrencyView.get(EUR),
             section = SectionType.PORTFOLIO,
             onClick = {},
             isBalanceVisible = true
