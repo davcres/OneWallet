@@ -173,6 +173,7 @@ dependencies {
 
     // Lottie
     implementation(libs.lottie.compose)
+    implementation(libs.okio) // Avoid old Okio 1.17.6 referenced by Lottie, which triggers R8 missing javax.annotation.Nullable
 
     // Splash Screen
     implementation(libs.core.splashscreen)
