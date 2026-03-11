@@ -173,6 +173,7 @@ enum class GlobalMarketRegion(
             "Spain" to SPAIN,
             "Madrid" to SPAIN,
             "MCE" to SPAIN,
+            "XMCE" to SPAIN,
             "Barcelona" to SPAIN,
 
             // 🇨🇭Switzerland
@@ -213,7 +214,9 @@ enum class GlobalMarketRegion(
             "NYM" to UNITED_STATES,
             "NY Mercantile" to UNITED_STATES,
             "NYQ" to UNITED_STATES,
+            "XNAS" to UNITED_STATES,
             "NYSE" to UNITED_STATES,
+            "XNYS" to UNITED_STATES,
             "NYSE American" to UNITED_STATES,
             "NYSEArca" to UNITED_STATES,
             "OTCM" to UNITED_STATES,
@@ -228,9 +231,14 @@ enum class GlobalMarketRegion(
 
 
         fun from(value: String?): GlobalMarketRegion {
-            val normalized = value?.trim()?.lowercase()
+            val normalized = value?.trim() ?: return GLOBAL
+            
+            // Try match by name first (case-insensitive)
+            entries.firstOrNull { it.name.equals(normalized, ignoreCase = true) }?.let { return it }
+
+            val normalizedLower = normalized.lowercase()
             return aliasMap.entries
-                .firstOrNull { it.key.lowercase() == normalized }
+                .firstOrNull { it.key.lowercase() == normalizedLower }
                 ?.value
                 ?: GLOBAL
         }

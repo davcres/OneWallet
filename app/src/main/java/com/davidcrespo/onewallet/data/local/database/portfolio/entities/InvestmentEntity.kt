@@ -54,7 +54,7 @@ fun String.toInvestmentEntity(): InvestmentEntity {
         name = parts[1],
         quantity = parts[2].toDoubleOrNull() ?: 0.0,
         price = parts[3].toDoubleOrNull() ?: 0.0,
-        previousPrice = parts[4].toDoubleOrNull() ?: 0.0,
+        previousPrice = parts[4].toDoubleOrNull(),
         currency = CurrencyEntity(parts[5]),
         type = InvestmentType.valueOf(parts[6]),
         year = parts[7].toIntOrNull() ?: 0,

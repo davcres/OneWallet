@@ -20,6 +20,9 @@ glance = "1.1.1"
 navigation3 = "1.0.0"
 navigation3-viewmodel = "2.10.0"
 workRuntimeKtx = "2.11.0"
+mockk = "1.13.13"
+turbine = "1.1.0"
+coroutinesTest = "1.10.1"
 
 [libraries]
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
@@ -58,6 +61,12 @@ navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", ver
 navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" } # Jetpack Navigation3 UI helpers (BottomNavigationView, NavigationView).
 navigation3-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "navigation3-viewmodel" } # Jetpack Navigation3 integration with ViewModel (ViewModelStore support).
 work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" } # Jetpack Navigation3 integration with ViewModel (ViewModelStore support).
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
+koin-test-junit4 = { group = "io.insert-koin", name = "koin-test-junit4", version.ref = "koin" }
 
 [bundles]
 koin = [
@@ -76,6 +85,15 @@ navigation = [
     "navigation3-runtime",
     "navigation3-ui",
     "navigation3-viewmodel",
+]
+
+unit-testing = [
+    "junit",
+    "mockk",
+    "turbine",
+    "kotlinx-coroutines-test",
+    "koin-test",
+    "koin-test-junit4"
 ]
 
 [plugins]
