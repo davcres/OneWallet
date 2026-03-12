@@ -40,6 +40,7 @@ fun MarketAssetView.toDomain() = MarketAsset(
     type = type,
     description = description,
     figi = figi,
+    region = region,
     stockType = stockType
 )
 
@@ -54,7 +55,7 @@ fun String.toMarketAssetView(): MarketAssetView {
         type = InvestmentType.valueOf(parts[3]),
         description = emptyToNull(parts[4]),
         figi = emptyToNull(parts[5]),
-        region = GlobalMarketRegion.from(parts[6]),
+        region = if (parts[6] == "null") null else GlobalMarketRegion.from(parts[6]),
         stockType = emptyToNull(parts[7]),
     )
 }

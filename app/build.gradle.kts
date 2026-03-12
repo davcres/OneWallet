@@ -120,6 +120,18 @@ android {
     }
     testOptions {
         animationsDisabled = true
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
+
+    // Need to exclude it to maintain JUnit 4 for UI Tests (Standard for compose tests) having JUnit 5 for Unit Tests
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "/META-INF/LICENSE-notice.md"
+        }
     }
 }
 
@@ -141,8 +153,12 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    testImplementation(libs.junit)
+    // Testing
+    testImplementation(libs.bundles.unit.testing)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.mockk.android)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
@@ -171,6 +187,7 @@ dependencies {
 
     // Lottie
     implementation(libs.lottie.compose)
+    implementation(libs.okio) // Avoid old Okio 1.17.6 referenced by Lottie, which triggers R8 missing javax.annotation.Nullable
 
     // Splash Screen
     implementation(libs.core.splashscreen)
