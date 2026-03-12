@@ -35,7 +35,7 @@ class GetGlobalMarketAssetsUseCaseTest {
     }
 
     @Test
-    fun `cuando la busqueda es exitosa, devuelve los assets agrupados bajo el simbolo de busqueda`() = runTest {
+    fun `cuando la busqueda es exitosa, devuelve los assets agrupados bajo el simbolo de busqueda`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val query = "AAPL"
         val assets = listOf(
@@ -55,7 +55,7 @@ class GetGlobalMarketAssetsUseCaseTest {
     }
 
     @Test
-    fun `cuando el repositorio falla, el UseCase propaga el error`() = runTest {
+    fun `cuando el repositorio falla, el UseCase propaga el error`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val query = "FAIL"
         val exception = Exception("API Error")

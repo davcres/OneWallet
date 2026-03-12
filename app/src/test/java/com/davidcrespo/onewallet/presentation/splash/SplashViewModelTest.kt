@@ -50,7 +50,7 @@ class SplashViewModelTest {
     }
 
     @Test
-    fun `cuando se recibe IsOnboardingCompleted, actualiza el estado con el valor del repositorio`() = runTest {
+    fun `cuando se recibe IsOnboardingCompleted, actualiza el estado con el valor del repositorio`() = runTest(mainDispatcherExtension.testDispatcher) {
         every { onboardingRepository.isOnboardingCompleted() } returns true
         
         viewModel.uiState.test {
@@ -64,7 +64,7 @@ class SplashViewModelTest {
     }
 
     @Test
-    fun `cuando se recibe LoadMarkets, se llama al UseCase para precargar stocks y crypto`() = runTest {
+    fun `cuando se recibe LoadMarkets, se llama al UseCase para precargar stocks y crypto`() = runTest(mainDispatcherExtension.testDispatcher) {
         viewModel.handleIntent(SplashIntent.LoadMarkets)
         
         // Verificamos que se llame con false (stocks) y true (crypto)

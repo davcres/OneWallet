@@ -51,7 +51,7 @@ class GlobalMarketViewModelTest {
     }
 
     @Test
-    fun `al iniciar el ViewModel, carga la query de busqueda desde el SavedStateHandle`() = runTest {
+    fun `al iniciar el ViewModel, carga la query de busqueda desde el SavedStateHandle`() = runTest(mainDispatcherExtension.testDispatcher) {
         savedStateHandle["searchQuery"] = "Tesla"
         createViewModel()
         
@@ -61,7 +61,7 @@ class GlobalMarketViewModelTest {
     }
 
     @Test
-    fun `cuando cambia la query de busqueda, se actualiza el estado`() = runTest {
+    fun `cuando cambia la query de busqueda, se actualiza el estado`() = runTest(mainDispatcherExtension.testDispatcher) {
         createViewModel()
         
         viewModel.uiState.test {
@@ -73,7 +73,7 @@ class GlobalMarketViewModelTest {
     }
 
     @Test
-    fun `cuando se realiza una busqueda por query, se actualiza el estado con los resultados`() = runTest {
+    fun `cuando se realiza una busqueda por query, se actualiza el estado con los resultados`() = runTest(mainDispatcherExtension.testDispatcher) {
         val asset = MarketAsset(
             symbol = "NVDA",
             price = 500.0,
@@ -97,7 +97,7 @@ class GlobalMarketViewModelTest {
     }
 
     @Test
-    fun `cuando falla la busqueda por query, se muestra el error de limite de peticiones`() = runTest {
+    fun `cuando falla la busqueda por query, se muestra el error de limite de peticiones`() = runTest(mainDispatcherExtension.testDispatcher) {
         coEvery { getGlobalMarketAssetsUseCase(any()) } returns Result.failure(Exception("API Error"))
         
         createViewModel()
@@ -112,7 +112,7 @@ class GlobalMarketViewModelTest {
     }
 
     @Test
-    fun `cuando se añade un asset individualmente, se guarda y se navega hacia atras`() = runTest {
+    fun `cuando se añade un asset individualmente, se guarda y se navega hacia atras`() = runTest(mainDispatcherExtension.testDispatcher) {
         val asset = MarketAsset("TSLA", 200.0, Currency(EUR), InvestmentType.STOCK, "Tesla", stockType = "Common").toUI()
         createViewModel()
         
@@ -127,7 +127,7 @@ class GlobalMarketViewModelTest {
     }
 
     @Test
-    fun `cuando se selecciona un asset, se añade o quita de la lista de seleccionados`() = runTest {
+    fun `cuando se selecciona un asset, se añade o quita de la lista de seleccionados`() = runTest(mainDispatcherExtension.testDispatcher) {
         val asset = MarketAsset("AMZN", 100.0, Currency(EUR), InvestmentType.STOCK, "Amazon", stockType = "Common").toUI()
         createViewModel()
         
@@ -145,7 +145,7 @@ class GlobalMarketViewModelTest {
     }
 
     @Test
-    fun `cuando se guardan los assets seleccionados, se llama al UseCase por cada uno y se navega hacia atras`() = runTest {
+    fun `cuando se guardan los assets seleccionados, se llama al UseCase por cada uno y se navega hacia atras`() = runTest(mainDispatcherExtension.testDispatcher) {
         val asset1 = MarketAsset("AAPL", 150.0, Currency(EUR), InvestmentType.STOCK, "Apple", stockType = "Common").toUI()
         val asset2 = MarketAsset("GOOGL", 2800.0, Currency(EUR), InvestmentType.STOCK, "Google", stockType = "Common").toUI()
         
@@ -170,7 +170,7 @@ class GlobalMarketViewModelTest {
     }
 
     @Test
-    fun `cuando se reintenta la busqueda, se limpia el estado`() = runTest {
+    fun `cuando se reintenta la busqueda, se limpia el estado`() = runTest(mainDispatcherExtension.testDispatcher) {
         createViewModel()
         viewModel.handleIntent(GlobalMarketIntent.OnQueryChange("Old Query"))
         

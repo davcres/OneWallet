@@ -54,7 +54,7 @@ class HistoricalViewModelTest {
     }
 
     @Test
-    fun `al cargar datos iniciales, el estado agrupa las inversiones por mes`() = runTest {
+    fun `al cargar datos iniciales, el estado agrupa las inversiones por mes`() = runTest(mainDispatcherExtension.testDispatcher) {
         val asset1 = Investment("AAPL", "Apple", 10.0, 150.0, 0.0, Currency(EUR), InvestmentType.STOCK, 2024, 3)
         val asset2 = Investment("MSFT", "Microsoft", 5.0, 300.0, 0.0, Currency(EUR), InvestmentType.STOCK, 2024, 2)
         
@@ -78,7 +78,7 @@ class HistoricalViewModelTest {
     }
 
     @Test
-    fun `cuando se selecciona un mes, se extrae el detalle y el mes previo`() = runTest {
+    fun `cuando se selecciona un mes, se extrae el detalle y el mes previo`() = runTest(mainDispatcherExtension.testDispatcher) {
         val marchAsset = Investment("AAPL", "Apple", 10.0, 150.0, 0.0, Currency(EUR), InvestmentType.STOCK, 2024, 3)
         val febAsset = Investment("MSFT", "Microsoft", 5.0, 300.0, 0.0, Currency(EUR), InvestmentType.STOCK, 2024, 2)
         
@@ -114,7 +114,7 @@ class HistoricalViewModelTest {
     }
 
     @Test
-    fun `test completo de seleccion de inversion con comparativa de mes previo`() = runTest {
+    fun `test completo de seleccion de inversion con comparativa de mes previo`() = runTest(mainDispatcherExtension.testDispatcher) {
         val marchAsset = Investment("AAPL", "Apple", 10.0, 150.0, 0.0, Currency(EUR), InvestmentType.STOCK, 2024, 3)
         val febAsset = Investment("AAPL", "Apple", 10.0, 140.0, 0.0, Currency(EUR), InvestmentType.STOCK, 2024, 2)
         
@@ -153,7 +153,7 @@ class HistoricalViewModelTest {
     }
 
     @Test
-    fun `cuando se hace dismiss, se limpian las selecciones`() = runTest {
+    fun `cuando se hace dismiss, se limpian las selecciones`() = runTest(mainDispatcherExtension.testDispatcher) {
         val asset = Investment("AAPL", "Apple", 10.0, 150.0, 0.0, Currency(EUR), InvestmentType.STOCK, 2024, 3)
         coEvery { getMonthlyHistoryUseCase() } returns Result.success(listOf(asset))
         every { financialRepository.getSelectedCurrency() } returns Currency(EUR)

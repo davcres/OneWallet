@@ -54,7 +54,7 @@ class UsMarketViewModelTest {
     }
 
     @Test
-    fun `al iniciar el ViewModel, carga la query de busqueda desde el SavedStateHandle`() = runTest {
+    fun `al iniciar el ViewModel, carga la query de busqueda desde el SavedStateHandle`() = runTest(mainDispatcherExtension.testDispatcher) {
         savedStateHandle["searchQuery"] = "Apple"
         createViewModel()
         
@@ -64,7 +64,7 @@ class UsMarketViewModelTest {
     }
 
     @Test
-    fun `cuando se recibe LoadInitialData, se actualiza el estado con los assets cargados`() = runTest {
+    fun `cuando se recibe LoadInitialData, se actualiza el estado con los assets cargados`() = runTest(mainDispatcherExtension.testDispatcher) {
         val asset = MarketAsset(
             symbol = "AAPL",
             price = 150.0,
@@ -88,7 +88,7 @@ class UsMarketViewModelTest {
     }
 
     @Test
-    fun `cuando cambia la query de busqueda, se filtran los assets correctamente`() = runTest {
+    fun `cuando cambia la query de busqueda, se filtran los assets correctamente`() = runTest(mainDispatcherExtension.testDispatcher) {
         val asset1 = MarketAsset("AAPL", 150.0, Currency(EUR), InvestmentType.STOCK, "Apple Inc", stockType = "Common Stock")
         val asset2 = MarketAsset("MSFT", 300.0, Currency(EUR), InvestmentType.STOCK, "Microsoft", stockType = "Common Stock")
         val mockAssets = listOf(
@@ -112,7 +112,7 @@ class UsMarketViewModelTest {
     }
 
     @Test
-    fun `cuando se selecciona un asset, se añade a la lista de seleccionados`() = runTest {
+    fun `cuando se selecciona un asset, se añade a la lista de seleccionados`() = runTest(mainDispatcherExtension.testDispatcher) {
         val asset = MarketAsset("AAPL", 150.0, Currency(EUR), InvestmentType.STOCK, "Apple Inc", stockType = "Common Stock").toUI()
         createViewModel()
         
@@ -127,7 +127,7 @@ class UsMarketViewModelTest {
     }
 
     @Test
-    fun `cuando se selecciona un asset ya seleccionado, se elimina de la lista`() = runTest {
+    fun `cuando se selecciona un asset ya seleccionado, se elimina de la lista`() = runTest(mainDispatcherExtension.testDispatcher) {
         val asset = MarketAsset("AAPL", 150.0, Currency(EUR), InvestmentType.STOCK, "Apple Inc", stockType = "Common Stock").toUI()
         createViewModel()
         
@@ -145,7 +145,7 @@ class UsMarketViewModelTest {
     }
 
     @Test
-    fun `cuando se guarda la seleccion, se llama al UseCase por cada asset y se navega hacia atras`() = runTest {
+    fun `cuando se guarda la seleccion, se llama al UseCase por cada asset y se navega hacia atras`() = runTest(mainDispatcherExtension.testDispatcher) {
         val asset1 = MarketAsset("AAPL", 150.0, Currency(EUR), InvestmentType.STOCK, "Apple Inc", stockType = "Common Stock").toUI()
         val asset2 = MarketAsset("MSFT", 300.0, Currency(EUR), InvestmentType.STOCK, "Microsoft", stockType = "Common Stock").toUI()
         
@@ -171,7 +171,7 @@ class UsMarketViewModelTest {
     }
 
     @Test
-    fun `al cerrar la card de mercado global, showGlobalMarketsCard pasa a ser false`() = runTest {
+    fun `al cerrar la card de mercado global, showGlobalMarketsCard pasa a ser false`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Primero cargamos datos para que showGlobalMarketsCard sea true
         coEvery { getUSMarketAssetsUseCase(any()) } returns Result.success(emptyList())
         createViewModel()

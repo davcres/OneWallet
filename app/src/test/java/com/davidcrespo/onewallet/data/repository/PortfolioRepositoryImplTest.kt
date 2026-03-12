@@ -48,7 +48,7 @@ class PortfolioRepositoryImplTest {
     }
 
     @Test
-    fun `cuando pide los items del portfolio, los mapea de entidad a dominio correctamente`() = runTest {
+    fun `cuando pide los items del portfolio, los mapea de entidad a dominio correctamente`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val entity = InvestmentEntity(
             symbol = "AAPL",
@@ -75,7 +75,7 @@ class PortfolioRepositoryImplTest {
     }
 
     @Test
-    fun `cuando añade un item, mapea de dominio a entidad antes de llamar al DAO`() = runTest {
+    fun `cuando añade un item, mapea de dominio a entidad antes de llamar al DAO`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val domainInvestment = Investment(
             symbol = "BTC",
@@ -97,7 +97,7 @@ class PortfolioRepositoryImplTest {
     }
 
     @Test
-    fun `cuando borra un item, llama al DAO con los parametros correctos`() = runTest {
+    fun `cuando borra un item, llama al DAO con los parametros correctos`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val domainInvestment = Investment(
             symbol = "MSFT",
@@ -119,7 +119,7 @@ class PortfolioRepositoryImplTest {
     }
 
     @Test
-    fun `cuando actualiza el portfolio del mes, mapea la lista completa al DAO`() = runTest {
+    fun `cuando actualiza el portfolio del mes, mapea la lista completa al DAO`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val investment = Investment(
             symbol = "AMZN",
@@ -142,7 +142,7 @@ class PortfolioRepositoryImplTest {
     }
 
     @Test
-    fun `cuando borra el portfolio del mes, delega la llamada al DAO`() = runTest {
+    fun `cuando borra el portfolio del mes, delega la llamada al DAO`() = runTest(mainDispatcherExtension.testDispatcher) {
         // When
         repository.deleteMonthPortfolio(2026, 3)
 
@@ -151,7 +151,7 @@ class PortfolioRepositoryImplTest {
     }
 
     @Test
-    fun `cuando obtiene el historial mensual, mapea la lista de entidades a dominio`() = runTest {
+    fun `cuando obtiene el historial mensual, mapea la lista de entidades a dominio`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val entity = InvestmentEntity(
             symbol = "TSLA",

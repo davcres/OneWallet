@@ -93,7 +93,7 @@ class FinancialRepositoryImplTest {
     }
 
     @Test
-    fun `cuando hay cache valida de crypto, devuelve los datos de cache sin llamar a red`() = runTest {
+    fun `cuando hay cache valida de crypto, devuelve los datos de cache sin llamar a red`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val symbol = "BTCEUR"
         val cachedEntity = InvestmentEntity(
@@ -118,7 +118,7 @@ class FinancialRepositoryImplTest {
     }
 
     @Test
-    fun `cuando no hay cache de crypto, descarga de red y guarda en cache`() = runTest {
+    fun `cuando no hay cache de crypto, descarga de red y guarda en cache`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val symbol = "BTCEUR"
         val dto = InvestmentDto(
@@ -145,7 +145,7 @@ class FinancialRepositoryImplTest {
     }
 
     @Test
-    fun `cuando falla la primera fuente de Stocks, intenta con la siguiente (Cascada)`() = runTest {
+    fun `cuando falla la primera fuente de Stocks, intenta con la siguiente (Cascada)`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val symbol = "AAPL"
         every { symbolCache.getCachedInvestmentIfValid(any(), any()) } returns null
@@ -168,7 +168,7 @@ class FinancialRepositoryImplTest {
     }
 
     @Test
-    fun `cuando todas las fuentes de Stocks fallan, devuelve Result failure`() = runTest {
+    fun `cuando todas las fuentes de Stocks fallan, devuelve Result failure`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val symbol = "FAIL"
         every { symbolCache.getCachedInvestmentIfValid(any(), any()) } returns null

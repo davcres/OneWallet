@@ -87,7 +87,7 @@ class PortfolioViewModelTest {
     }
 
     @Test
-    fun `al iniciar el ViewModel, el estado carga la moneda seleccionada y una lista vacia`() = runTest {
+    fun `al iniciar el ViewModel, el estado carga la moneda seleccionada y una lista vacia`() = runTest(mainDispatcherExtension.testDispatcher) {
         createViewModel()
         
         viewModel.uiState.test {
@@ -98,7 +98,7 @@ class PortfolioViewModelTest {
     }
 
     @Test
-    fun `cuando se recibe ShowFundDialog, el estado actualiza isFundDialogVisible a true`() = runTest {
+    fun `cuando se recibe ShowFundDialog, el estado actualiza isFundDialogVisible a true`() = runTest(mainDispatcherExtension.testDispatcher) {
         createViewModel()
         
         viewModel.uiState.test {
@@ -112,7 +112,7 @@ class PortfolioViewModelTest {
     }
 
     @Test
-    fun `cuando se recibe DismissFundDialog, el estado actualiza isFundDialogVisible a false`() = runTest {
+    fun `cuando se recibe DismissFundDialog, el estado actualiza isFundDialogVisible a false`() = runTest(mainDispatcherExtension.testDispatcher) {
         createViewModel()
         
         viewModel.uiState.test {
@@ -128,7 +128,7 @@ class PortfolioViewModelTest {
     }
 
     @Test
-    fun `cuando GetPortfolioItems emite items, el estado se actualiza con los items procesados`() = runTest {
+    fun `cuando GetPortfolioItems emite items, el estado se actualiza con los items procesados`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Datos de prueba
         val mockInvestment = Investment(
             symbol = "VTI",

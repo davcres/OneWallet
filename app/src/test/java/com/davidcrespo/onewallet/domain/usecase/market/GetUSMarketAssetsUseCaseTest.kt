@@ -10,7 +10,6 @@ import com.davidcrespo.onewallet.util.TestDispatcherProvider
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -35,7 +34,7 @@ class GetUSMarketAssetsUseCaseTest {
     }
 
     @Test
-    fun `cuando pide stocks, los agrupa por inicial y añade favoritos en la seccion especial`() = runTest {
+    fun `cuando pide stocks, los agrupa por inicial y añade favoritos en la seccion especial`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val asset1 = MarketAsset("AAPL", 150.0, Currency(EUR), InvestmentType.STOCK, "Apple", stockType = "Common")
         val asset2 = MarketAsset("AMZN", 130.0, Currency(EUR), InvestmentType.STOCK, "Amazon", stockType = "Common")
@@ -72,7 +71,7 @@ class GetUSMarketAssetsUseCaseTest {
     }
 
     @Test
-    fun `cuando pide crypto, llama al repositorio con las monedas permitidas`() = runTest {
+    fun `cuando pide crypto, llama al repositorio con las monedas permitidas`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val allowedCurrencies = setOf("EUR", "USD", "USDC", "USDT")
         coEvery { repository.getCryptosSymbols(allowedCurrencies) } returns Result.success(emptyList())
@@ -88,7 +87,7 @@ class GetUSMarketAssetsUseCaseTest {
     }
 
     @Test
-    fun `los assets dentro de cada grupo estan ordenados alfabeticamente`() = runTest {
+    fun `los assets dentro de cada grupo estan ordenados alfabeticamente`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val assetZ = MarketAsset("Z-Corp", 10.0, Currency(EUR), InvestmentType.STOCK, "Z", stockType = "Common")
         val assetA = MarketAsset("AAPL", 150.0, Currency(EUR), InvestmentType.STOCK, "Apple", stockType = "Common")
