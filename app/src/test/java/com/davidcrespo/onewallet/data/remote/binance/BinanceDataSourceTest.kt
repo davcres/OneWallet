@@ -7,8 +7,8 @@ import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class BinanceDataSourceTest {
 

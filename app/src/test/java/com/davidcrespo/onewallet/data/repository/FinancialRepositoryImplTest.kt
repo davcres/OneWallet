@@ -22,7 +22,7 @@ import com.davidcrespo.onewallet.domain.logging.Telemetry
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.MarketType
-import com.davidcrespo.onewallet.util.MainDispatcherRule
+import com.davidcrespo.onewallet.util.MainDispatcherExtension
 import com.davidcrespo.onewallet.util.TestDispatcherProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -31,20 +31,20 @@ import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FinancialRepositoryImplTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    @RegisterExtension
+    val mainDispatcherExtension = MainDispatcherExtension()
 
-    private val dispatcherProvider = TestDispatcherProvider(mainDispatcherRule.testDispatcher)
+    private val dispatcherProvider = TestDispatcherProvider(mainDispatcherExtension.testDispatcher)
 
     private val twelveDataDataSource = mockk<TwelveDataDataSource>(relaxed = true)
     private val finnhubDataSource = mockk<FinnhubDataSource>(relaxed = true)
@@ -65,7 +65,7 @@ class FinancialRepositoryImplTest {
 
     private lateinit var repository: FinancialRepositoryImpl
 
-    @Before
+    @BeforeEach
     fun setUp() {
         repository = FinancialRepositoryImpl(
             twelveDataDataSource,
@@ -87,7 +87,7 @@ class FinancialRepositoryImplTest {
         )
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         unmockkAll()
     }

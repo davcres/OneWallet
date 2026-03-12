@@ -10,27 +10,26 @@ import com.davidcrespo.onewallet.domain.model.market.MarketAsset
 import com.davidcrespo.onewallet.domain.usecase.market.AddMarketAssetToPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.market.GetGlobalMarketAssetsUseCase
 import com.davidcrespo.onewallet.presentation.models.toUI
-import com.davidcrespo.onewallet.util.MainDispatcherRule
+import com.davidcrespo.onewallet.util.MainDispatcherExtension
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GlobalMarketViewModelTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    @RegisterExtension
+    val mainDispatcherExtension = MainDispatcherExtension()
 
     private val getGlobalMarketAssetsUseCase = mockk<GetGlobalMarketAssetsUseCase>(relaxed = true)
     private val addMarketAssetToPortfolioUseCase = mockk<AddMarketAssetToPortfolioUseCase>(relaxed = true)
@@ -46,7 +45,7 @@ class GlobalMarketViewModelTest {
         )
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         unmockkAll()
     }

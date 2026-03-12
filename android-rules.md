@@ -109,11 +109,13 @@ sealed interface {ProjectName}Error {
 *   Each Composable Panel must have a 'Content' version containing only the State and Events (lambdas), to facilitate the creation of Previews without the need to mock the ViewModel. The 'Content' composable is called by a 'Root' composable which makes the initial calls to the ViewModel and obtains its state.
 
 ### Testing
-*   **Dependencies** Use MockK and JUnit5 for business logic tests. Use Jetpack Compose Tests for UI tests and robolectric for running them without emulator. Create also screenshot tests with roborazzi.
+*   **Dependencies** Use MockK and JUnit5 for business logic tests. Use Jetpack Compose Tests with JUnit 4 for UI tests and robolectric for running them without emulator. Create also screenshot tests with roborazzi.
 *   **Domain:** 100% unit test coverage for Use Cases (fast, pure Kotlin).
 *   **Data:** Unit test Repositories and Mappers using mocks (Mockk).
 *   **Presentation:** Unit test ViewModels (verify State updates and Effects). UI Tests (Compose Test Rule) for critical flows.
 *   Every time a new class is created or modified, ensure that the old tests passes and are updated with the new changes, and create test class if necessary.
+*   Every time a new composable is created or modified, ensure that the old tests passes and are updated with the new changes, and create compose test and screenshot tests if necessary.
+*   Share the same TestDispatcher instance across your tests and the DispatcherProvider. This ensures that both Dispatchers.Main (which the extension handles) and your background dispatchers (IO, Default) are perfectly synchronized. For that, use MainDispatcherExtension and TestDispatcherProvider.
 
 ### Naming Conventions
 *   **Use Cases:** `Verb` + `Noun` + `UseCase` (e.g., `LoginUserUseCase`).

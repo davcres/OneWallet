@@ -4,9 +4,9 @@ import android.content.SharedPreferences
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class OnboardingRepositoryImplTest {
 
@@ -14,7 +14,7 @@ class OnboardingRepositoryImplTest {
     private val editor = mockk<SharedPreferences.Editor>(relaxed = true)
     private lateinit var repository: OnboardingRepositoryImpl
 
-    @Before
+    @BeforeEach
     fun setUp() {
         // Configuramos el mock para que devuelva el editor cuando se llame a edit()
         every { sharedPreferences.edit() } returns editor

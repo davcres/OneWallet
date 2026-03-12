@@ -8,17 +8,17 @@ import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class GetInvestmentPriceUseCaseTest {
 
     private val repository = mockk<FinancialRepository>()
     private lateinit var useCase: GetInvestmentPriceUseCase
 
-    @Before
+    @BeforeEach
     fun setUp() {
         useCase = GetInvestmentPriceUseCase(repository)
     }

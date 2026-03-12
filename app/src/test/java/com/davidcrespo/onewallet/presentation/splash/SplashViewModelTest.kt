@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.davidcrespo.onewallet.domain.di.AppCoroutineScope
 import com.davidcrespo.onewallet.domain.repository.OnboardingRepository
 import com.davidcrespo.onewallet.domain.usecase.market.GetUSMarketAssetsUseCase
-import com.davidcrespo.onewallet.util.MainDispatcherRule
+import com.davidcrespo.onewallet.util.MainDispatcherExtension
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -12,18 +12,19 @@ import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SplashViewModelTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    @RegisterExtension
+    val mainDispatcherExtension = MainDispatcherExtension()
 
     private val appCoroutineScope = mockk<AppCoroutineScope>(relaxed = true)
     private val onboardingRepository = mockk<OnboardingRepository>(relaxed = true)
@@ -31,10 +32,10 @@ class SplashViewModelTest {
 
     private lateinit var viewModel: SplashViewModel
 
-    @Before
+    @BeforeEach
     fun setUp() {
         // El scope interno del AppCoroutineScope debe usar nuestro dispatcher de test
-        every { appCoroutineScope.scope } returns CoroutineScope(mainDispatcherRule.testDispatcher)
+        every { appCoroutineScope.scope } returns CoroutineScope(mainDispatcherExtension.testDispatcher)
         
         viewModel = SplashViewModel(
             appCoroutineScope,
@@ -43,7 +44,7 @@ class SplashViewModelTest {
         )
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         unmockkAll()
     }

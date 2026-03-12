@@ -3,8 +3,8 @@ package com.davidcrespo.onewallet.data.remote.justEtf.models
 import com.davidcrespo.onewallet.data.remote.dto.CurrencyDto
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class JustEtfResponseTest {
 

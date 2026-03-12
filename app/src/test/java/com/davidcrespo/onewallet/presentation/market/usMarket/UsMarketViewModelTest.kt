@@ -9,26 +9,26 @@ import com.davidcrespo.onewallet.domain.model.market.MarketAsset
 import com.davidcrespo.onewallet.domain.usecase.market.AddMarketAssetToPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.market.GetUSMarketAssetsUseCase
 import com.davidcrespo.onewallet.presentation.models.toUI
-import com.davidcrespo.onewallet.util.MainDispatcherRule
+import com.davidcrespo.onewallet.util.MainDispatcherExtension
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UsMarketViewModelTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    @RegisterExtension
+    val mainDispatcherExtension = MainDispatcherExtension()
 
     private val getUSMarketAssetsUseCase = mockk<GetUSMarketAssetsUseCase>(relaxed = true)
     private val addMarketAssetToPortfolioUseCase = mockk<AddMarketAssetToPortfolioUseCase>(relaxed = true)
@@ -36,7 +36,7 @@ class UsMarketViewModelTest {
 
     private lateinit var viewModel: UsMarketViewModel
 
-    @Before
+    @BeforeEach
     fun setUp() {
     }
 
@@ -48,7 +48,7 @@ class UsMarketViewModelTest {
         )
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         unmockkAll()
     }

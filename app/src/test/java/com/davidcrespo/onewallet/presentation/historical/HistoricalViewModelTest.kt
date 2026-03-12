@@ -10,28 +10,27 @@ import com.davidcrespo.onewallet.domain.usecase.historical.GetMonthlyHistoryUseC
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
 import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
-import com.davidcrespo.onewallet.util.MainDispatcherRule
+import com.davidcrespo.onewallet.util.MainDispatcherExtension
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HistoricalViewModelTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    @RegisterExtension
+    val mainDispatcherExtension = MainDispatcherExtension()
 
     private val getMonthlyHistoryUseCase = mockk<GetMonthlyHistoryUseCase>(relaxed = true)
     private val financialRepository = mockk<FinancialRepository>(relaxed = true)
@@ -49,7 +48,7 @@ class HistoricalViewModelTest {
         )
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         unmockkAll()
     }

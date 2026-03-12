@@ -11,9 +11,9 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class RemovePortfolioItemUseCaseTest {
@@ -22,14 +22,14 @@ class RemovePortfolioItemUseCaseTest {
     private lateinit var useCase: RemovePortfolioItemUseCase
     private val fixedDate = LocalDate.of(2026, 3, 10)
 
-    @Before
+    @BeforeEach
     fun setUp() {
         mockkStatic(LocalDate::class)
         every { LocalDate.now() } returns fixedDate
         useCase = RemovePortfolioItemUseCase(portfolioRepository)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         unmockkAll()
     }

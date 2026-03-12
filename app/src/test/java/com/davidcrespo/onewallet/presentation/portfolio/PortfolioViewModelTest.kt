@@ -15,8 +15,7 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCa
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUseCase
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
-import com.davidcrespo.onewallet.util.MainDispatcherRule
-import com.davidcrespo.onewallet.util.TestDispatcherProvider
+import com.davidcrespo.onewallet.util.MainDispatcherExtension
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -25,18 +24,18 @@ import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PortfolioViewModelTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    @RegisterExtension
+    val mainDispatcherExtension = MainDispatcherExtension()
 
     // Mocks de dependencias (todos relaxed para evitar fallos por falta de mocks)
     private val getCurrencyRateUseCase = mockk<GetCurrencyRateUseCase>(relaxed = true)
@@ -51,7 +50,7 @@ class PortfolioViewModelTest {
 
     private lateinit var viewModel: PortfolioViewModel
 
-    @Before
+    @BeforeEach
     fun setUp() {
         // Mocking WidgetsRefreshWorker para evitar errores de WorkManager
         mockkObject(WidgetsRefreshWorker.Companion)
@@ -82,7 +81,7 @@ class PortfolioViewModelTest {
         }
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         unmockkAll()
     }

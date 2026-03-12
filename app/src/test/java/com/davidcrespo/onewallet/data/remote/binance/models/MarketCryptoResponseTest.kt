@@ -4,8 +4,9 @@ import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.USD
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Test
 
 class MarketCryptoResponseTest {
 
@@ -59,7 +60,7 @@ class MarketCryptoResponseTest {
         assertEquals(Currency(USD), domain.currency)
     }
 
-    @Test(expected = NumberFormatException::class)
+    @Test
     fun `toDomain lanza excepcion si el precio no es un numero valido`() {
         // Given
         val response = MarketCryptoResponse(
@@ -67,9 +68,9 @@ class MarketCryptoResponseTest {
             price = "invalid"
         )
 
-        // When
-        response.toDomain()
-        
-        // Then (exception expected)
+        // When & Then
+        assertThrows(NumberFormatException::class.java) {
+            response.toDomain()
+        }
     }
 }

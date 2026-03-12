@@ -9,7 +9,7 @@ import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
-import com.davidcrespo.onewallet.util.MainDispatcherRule
+import com.davidcrespo.onewallet.util.MainDispatcherExtension
 import com.davidcrespo.onewallet.util.TestDispatcherProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -18,30 +18,31 @@ import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PortfolioRepositoryImplTest {
 
-    @get:Rule
-    val mainDispatcherRule = MainDispatcherRule()
+    @RegisterExtension
+    val mainDispatcherExtension = MainDispatcherExtension()
 
-    private val dispatcherProvider = TestDispatcherProvider(mainDispatcherRule.testDispatcher)
+    private val dispatcherProvider = TestDispatcherProvider(mainDispatcherExtension.testDispatcher)
 
     private val dao = mockk<PortfolioDao>(relaxed = true)
     private lateinit var repository: PortfolioRepositoryImpl
 
-    @Before
+    @BeforeEach
     fun setUp() {
         repository = PortfolioRepositoryImpl(dao, dispatcherProvider)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         unmockkAll()
     }
