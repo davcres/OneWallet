@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.historical.composables
+package com.davidcrespo.onewallet.presentation.history.composables
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box

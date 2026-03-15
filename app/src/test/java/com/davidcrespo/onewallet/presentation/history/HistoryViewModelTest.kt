@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.historical
+package com.davidcrespo.onewallet.presentation.history
 
 import app.cash.turbine.test
 import com.davidcrespo.onewallet.domain.model.investment.Currency
@@ -6,7 +6,7 @@ import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
-import com.davidcrespo.onewallet.domain.usecase.historical.GetMonthlyHistoryUseCase
+import com.davidcrespo.onewallet.domain.usecase.history.GetMonthlyHistoryUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
 import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
@@ -22,12 +22,11 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class HistoricalViewModelTest {
+class HistoryViewModelTest {
 
     @RegisterExtension
     val mainDispatcherExtension = MainDispatcherExtension()
@@ -37,10 +36,10 @@ class HistoricalViewModelTest {
     private val getCurrencyRateUseCase = mockk<GetCurrencyRateUseCase>(relaxed = true)
     private val currencyConverter = CurrencyConverter()
 
-    private lateinit var viewModel: HistoricalViewModel
+    private lateinit var viewModel: HistoryViewModel
 
     private fun createViewModel() {
-        viewModel = HistoricalViewModel(
+        viewModel = HistoryViewModel(
             getMonthlyHistoryUseCase,
             financialRepository,
             getCurrencyRateUseCase,
@@ -63,7 +62,7 @@ class HistoricalViewModelTest {
         coEvery { getCurrencyRateUseCase(any(), any()) } returns Result.success(1.0)
         
         createViewModel()
-        viewModel.handleIntent(HistoricalIntent.LoadInitialData)
+        viewModel.handleIntent(HistoryIntent.LoadInitialData)
         
         viewModel.uiState.test {
             // Buscamos un estado que no este cargando y tenga historia
@@ -87,7 +86,7 @@ class HistoricalViewModelTest {
         coEvery { getCurrencyRateUseCase(any(), any()) } returns Result.success(1.0)
 
         createViewModel()
-        viewModel.handleIntent(HistoricalIntent.LoadInitialData)
+        viewModel.handleIntent(HistoryIntent.LoadInitialData)
         
         viewModel.uiState.test {
             // Esperamos a que cargue
@@ -96,7 +95,7 @@ class HistoricalViewModelTest {
                 state = awaitItem()
             }
             
-            viewModel.handleIntent(HistoricalIntent.SelectMonth(2024, 3))
+            viewModel.handleIntent(HistoryIntent.SelectMonth(2024, 3))
             
             // Buscamos el estado con la seleccion
             state = awaitItem()
@@ -123,7 +122,7 @@ class HistoricalViewModelTest {
         coEvery { getCurrencyRateUseCase(any(), any()) } returns Result.success(1.0)
 
         createViewModel()
-        viewModel.handleIntent(HistoricalIntent.LoadInitialData)
+        viewModel.handleIntent(HistoryIntent.LoadInitialData)
         
         viewModel.uiState.test {
             // Esperamos a que cargue
@@ -132,14 +131,14 @@ class HistoricalViewModelTest {
                 state = awaitItem()
             }
             
-            viewModel.handleIntent(HistoricalIntent.SelectMonth(2024, 3))
+            viewModel.handleIntent(HistoryIntent.SelectMonth(2024, 3))
             state = awaitItem()
             while (state.selectedMonthDetail == null) {
                 state = awaitItem()
             }
             
             val marchAssetUI = state.selectedMonthDetail!![0]
-            viewModel.handleIntent(HistoricalIntent.SelectInvestment(marchAssetUI))
+            viewModel.handleIntent(HistoryIntent.SelectInvestment(marchAssetUI))
             
             state = awaitItem()
             while (state.selectedInvestment == null) {
@@ -160,7 +159,7 @@ class HistoricalViewModelTest {
         coEvery { getCurrencyRateUseCase(any(), any()) } returns Result.success(1.0)
 
         createViewModel()
-        viewModel.handleIntent(HistoricalIntent.LoadInitialData)
+        viewModel.handleIntent(HistoryIntent.LoadInitialData)
         
         viewModel.uiState.test {
             // Esperamos a que cargue
@@ -170,27 +169,27 @@ class HistoricalViewModelTest {
             }
             
             // Seleccionamos algo primero
-            viewModel.handleIntent(HistoricalIntent.SelectMonth(2024, 3))
+            viewModel.handleIntent(HistoryIntent.SelectMonth(2024, 3))
             state = awaitItem()
             while (state.selectedMonthDetail == null) {
                 state = awaitItem()
             }
             
             // Ahora si hacemos dismiss
-            viewModel.handleIntent(HistoricalIntent.DismissBottomSheet)
+            viewModel.handleIntent(HistoryIntent.DismissBottomSheet)
             state = awaitItem()
             assertNull(state.selectedMonthDetail)
             assertNull(state.selectedPreviousMonth)
             
             // Seleccionamos inversion
             val marchAssetUI = asset.toUI()
-            viewModel.handleIntent(HistoricalIntent.SelectInvestment(marchAssetUI))
+            viewModel.handleIntent(HistoryIntent.SelectInvestment(marchAssetUI))
             state = awaitItem()
             while (state.selectedInvestment == null) {
                 state = awaitItem()
             }
             
-            viewModel.handleIntent(HistoricalIntent.DismissInvestmentDetail)
+            viewModel.handleIntent(HistoryIntent.DismissInvestmentDetail)
             state = awaitItem()
             assertNull(state.selectedInvestment)
         }

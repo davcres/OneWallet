@@ -19,7 +19,4 @@ sealed interface Route : NavKey {
 
     @Serializable
     data object GlobalMarket : Route
-
-    @Serializable
-    data class Historical(val isBalanceVisible: Boolean) : Route
 }

@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.historical.composables
+package com.davidcrespo.onewallet.presentation.history.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,7 +16,7 @@ import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoricalList(
+fun HistoryList(
     items: ImmutableList<ImmutableList<InvestmentView>>,
     currency: CurrencyView,
     onClick: (ImmutableList<InvestmentView>) -> Unit,
@@ -31,12 +31,12 @@ fun HistoricalList(
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 32.dp),
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        itemContent = { modifier, historicalItem, index ->
-            HistoricalMonthCard(
-                item = historicalItem,
+        itemContent = { modifier, historyItem, index ->
+            HistoryMonthCard(
+                item = historyItem,
                 previousItem = items.getOrNull(index + 1),
                 currency = currency,
-                onClick = { onClick(historicalItem) },
+                onClick = { onClick(historyItem) },
                 isBalanceVisible = isBalanceVisible,
                 modifier = modifier
             )

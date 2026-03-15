@@ -118,7 +118,7 @@ fun OWInvestmentItem(
                 Column(horizontalAlignment = Alignment.End) {
                     val showPercentage = item.type.isMarket()
                     val totalValue = when (section) {
-                        SectionType.PORTFOLIO, SectionType.HISTORICAL -> item.quantity * item.displayPrice
+                        SectionType.PORTFOLIO, SectionType.HISTORY -> item.quantity * item.displayPrice
                         SectionType.PRICES, SectionType.ALLOCATION -> item.displayPrice
                     }
 
@@ -133,7 +133,7 @@ fun OWInvestmentItem(
                         }
                         val previousPrice = when (section) {
                             SectionType.PORTFOLIO -> item.displayPreviousPrice * item.quantity
-                            SectionType.HISTORICAL -> previousMonthItem?.displayPrice ?: 0.0
+                            SectionType.HISTORY -> previousMonthItem?.displayPrice ?: 0.0
                             else -> item.displayPreviousPrice
                         }
 

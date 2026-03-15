@@ -3,6 +3,6 @@ package com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar
 enum class SectionType {
     PORTFOLIO,
     PRICES,
-    HISTORICAL,
+    HISTORY,
     ALLOCATION
 }

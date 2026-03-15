@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.historical.composables
+package com.davidcrespo.onewallet.presentation.history.composables
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -50,7 +50,7 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
-fun HistoricalMonthCard(
+fun HistoryMonthCard(
     item: ImmutableList<InvestmentView>,
     previousItem: ImmutableList<InvestmentView>? = null,
     currency: CurrencyView,

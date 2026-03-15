@@ -21,13 +21,13 @@
     <string name="greeting_morning">Buenos días</string>
     <string name="greeting_afternoon">Buenas tardes</string>
     <string name="greeting_evening">Buenas noches</string>
-    <string name="portfolio_summary">Resumen de tu Portafolio</string>
+    <string name="tab_positions_title">Activos de tu cartera</string>
     <string name="currency_selector_cd">Selector de moneda</string>
     <string name="ui_mode_cd">Selector del tema de la interfaz. Tema actual %1$s. Pulsa para cambiar a tema %2$s</string>
+    <string name="tab_positions">Cartera</string>
     <string name="tab_allocation">Distribución</string>
-    <string name="tab_positions">Mi cartera</string>
     <string name="tab_prices">Cotización</string>
-    <string name="tab_historical">Histórico</string>
+    <string name="tab_history">Histórico</string>
     <string name="add_new_fund_title">Añadir nuevo fondo</string>
     <string name="add_new_etf_title">Añadir nuevo ETF</string>
     <string name="close_cd">Cerrar</string>
@@ -74,9 +74,14 @@
     <string name="estimated_new_value">Nuevo valor estimado</string>
     <string name="cancel_edit_investment_cd">Pulsa para no editar la cantidad</string>
     <string name="error_quantity_empty">Introduce una cantidad válida.</string>
-
     <string name="delete_action">Eliminar</string>
     <string name="delete_investment_message">¿Estás seguro de que quieres eliminar esta inversión de tu cartera?</string>
+
+    <!-- Allocation -->
+    <string name="tab_allocation_title">Distribución por tipo de activo</string>
+
+    <!-- Prices -->
+    <string name="tab_prices_title">Precio por unidad</string>
 
     <!-- Market -->
     <string name="add_crypto_title">Añadir Criptomoneda</string>
@@ -99,8 +104,8 @@
     <string name="global_markets_no_results">Lo sentimos, no hemos encontrado ninguna acción que coincida con tu búsqueda.</string>
     <string name="global_markets_try_again">Intentar de nuevo</string>
 
-    <!-- Historical -->
-    <string name="historical_monthly_title">Historial Mensual</string>
+    <!-- History -->
+    <string name="history_monthly_title">Historial Mensual</string>
     <string name="back_cd">Atrás</string>
     <string name="investments_of_month_fmt">Inversiones de %1$s %2$d</string>
     <string name="shares_in_portfolio_label">Unidades en cartera</string>

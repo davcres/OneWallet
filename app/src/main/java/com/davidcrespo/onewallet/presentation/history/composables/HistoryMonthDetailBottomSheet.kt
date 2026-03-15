@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.historical.composables
+package com.davidcrespo.onewallet.presentation.history.composables
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -50,7 +50,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoricalMonthDetailBottomSheet(
+fun HistoryMonthDetailBottomSheet(
     investments: ImmutableList<InvestmentView>,
     previousInvestments: ImmutableList<InvestmentView>,
     currency: CurrencyView,
@@ -144,13 +144,13 @@ private fun SheetContent(
                 .fillMaxWidth()
                 .weight(1f, fill = false),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            itemContent = { modifier, historicalItem, index ->
-                val previousMonthItem = previousInvestments.find { it.symbol == historicalItem.symbol }
+            itemContent = { modifier, historyItem, index ->
+                val previousMonthItem = previousInvestments.find { it.symbol == historyItem.symbol }
                 OWInvestmentItem(
-                    item = historicalItem,
+                    item = historyItem,
                     currency = currency,
                     previousMonthItem = previousMonthItem,
-                    section = SectionType.HISTORICAL,
+                    section = SectionType.HISTORY,
                     onClick = { onClickInvestment(it) },
                     modifier = modifier,
                     isBalanceVisible = isBalanceVisible

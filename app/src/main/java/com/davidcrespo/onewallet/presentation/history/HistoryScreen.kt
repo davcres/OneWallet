@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.historical
+package com.davidcrespo.onewallet.presentation.history
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -19,24 +19,24 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davidcrespo.onewallet.core.composables.modifiers.privacyBlur
 import com.davidcrespo.onewallet.core.extensions.orEmpty
-import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalInvestmentDetailBottomSheet
-import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalList
-import com.davidcrespo.onewallet.presentation.historical.composables.HistoricalMonthDetailBottomSheet
+import com.davidcrespo.onewallet.presentation.history.composables.HistoryInvestmentDetailBottomSheet
+import com.davidcrespo.onewallet.presentation.history.composables.HistoryList
+import com.davidcrespo.onewallet.presentation.history.composables.HistoryMonthDetailBottomSheet
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun HistoricalTab(
+fun HistoryTab(
     isBalanceVisible: Boolean,
     modifier: Modifier = Modifier,
-    viewModel: HistoricalViewModel = koinViewModel()
+    viewModel: HistoryViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(viewModel) {
-        viewModel.handleIntent(HistoricalIntent.LoadInitialData)
+        viewModel.handleIntent(HistoryIntent.LoadInitialData)
     }
 
-    HistoricalScreen(
+    HistoryScreen(
         uiState = uiState,
         onAction = viewModel::handleIntent,
         isBalanceVisible = isBalanceVisible,
@@ -45,9 +45,9 @@ fun HistoricalTab(
 }
 
 @Composable
-private fun HistoricalScreen(
-    uiState: HistoricalUiState,
-    onAction: (HistoricalIntent) -> Unit,
+private fun HistoryScreen(
+    uiState: HistoryUiState,
+    onAction: (HistoryIntent) -> Unit,
     isBalanceVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -84,12 +84,12 @@ private fun HistoricalScreen(
                 )
             }
             else -> {
-                HistoricalList(
+                HistoryList(
                     items = uiState.history,
                     currency = uiState.selectedCurrency,
                     onClick = {
                         onAction(
-                            HistoricalIntent.SelectMonth(
+                            HistoryIntent.SelectMonth(
                                 it.first().year,
                                 it.first().month
                             )
@@ -106,23 +106,23 @@ private fun HistoricalScreen(
                     )
                 }
 
-                HistoricalMonthDetailBottomSheet(
+                HistoryMonthDetailBottomSheet(
                     investments = uiState.selectedMonthDetail.orEmpty(),
                     previousInvestments = uiState.selectedPreviousMonth.orEmpty(),
                     currency = uiState.selectedCurrency,
                     visible = uiState.selectedMonthDetail != null,
-                    onClickInvestment = { onAction(HistoricalIntent.SelectInvestment(it)) },
-                    onDismiss = { onAction(HistoricalIntent.DismissBottomSheet) },
+                    onClickInvestment = { onAction(HistoryIntent.SelectInvestment(it)) },
+                    onDismiss = { onAction(HistoryIntent.DismissBottomSheet) },
                     hideBackground = uiState.selectedInvestment != null,
                     isBalanceVisible = isBalanceVisible
                 )
 
                 uiState.selectedInvestment?.let {
-                    HistoricalInvestmentDetailBottomSheet(
+                    HistoryInvestmentDetailBottomSheet(
                         visible = true,
                         investment = it,
                         previousMonthInvestment = uiState.selectedPreviousInvestment,
-                        onDismiss = { onAction(HistoricalIntent.DismissInvestmentDetail) }
+                        onDismiss = { onAction(HistoryIntent.DismissInvestmentDetail) }
                     )
                 }
             }

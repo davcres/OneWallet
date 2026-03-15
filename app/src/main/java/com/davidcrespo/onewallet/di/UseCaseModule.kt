@@ -2,7 +2,7 @@ package com.davidcrespo.onewallet.di
 
 import com.davidcrespo.onewallet.domain.usecase.appRoot.GetThemeUseCase
 import com.davidcrespo.onewallet.domain.usecase.appRoot.SetThemeUseCase
-import com.davidcrespo.onewallet.domain.usecase.historical.GetMonthlyHistoryUseCase
+import com.davidcrespo.onewallet.domain.usecase.history.GetMonthlyHistoryUseCase
 import com.davidcrespo.onewallet.domain.usecase.market.AddMarketAssetToPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.market.GetGlobalMarketAssetsUseCase
 import com.davidcrespo.onewallet.domain.usecase.market.GetUSMarketAssetsUseCase

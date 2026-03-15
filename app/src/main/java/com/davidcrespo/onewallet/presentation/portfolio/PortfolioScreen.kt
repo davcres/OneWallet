@@ -50,7 +50,7 @@ import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWFloatingActionButton
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWShakeListener
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
-import com.davidcrespo.onewallet.presentation.historical.HistoricalTab
+import com.davidcrespo.onewallet.presentation.history.HistoryTab
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.AllocationTab
@@ -209,7 +209,7 @@ private fun PortfolioScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Header(
-                    text = stringResource(selectedTab.title),
+                    text = stringResource(selectedTab.description),
                     currency = uiState.selectedCurrency,
                     themeMode = uiState.themeMode,
                     onCurrencyChange = { onAction(PortfolioIntent.ChangeCurrency) },
@@ -268,7 +268,7 @@ private fun PortfolioScreen(
                                         isBalanceVisible = isBalanceVisible,
                                         isActivePage = true
                                     )
-                                    PortfolioTabs.HISTORICAL -> HistoricalTab(
+                                    PortfolioTabs.HISTORY -> HistoryTab(
                                         isBalanceVisible = isBalanceVisible,
                                         modifier = Modifier.fillMaxSize()
                                     )

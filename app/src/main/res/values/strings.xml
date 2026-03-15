@@ -23,13 +23,13 @@
     <string name="greeting_morning">Good morning</string>
     <string name="greeting_afternoon">Good afternoon</string>
     <string name="greeting_evening">Good evening</string>
-    <string name="portfolio_summary">Portfolio Summary</string>
+    <string name="tab_positions_title">Your Assets</string>
     <string name="currency_selector_cd">Currency selector</string>
     <string name="ui_mode_cd">UI theme selector. Current theme: %1$s. Click to change to theme %2$s</string>
+    <string name="tab_positions">Portfolio</string>
     <string name="tab_allocation">Allocation</string>
-    <string name="tab_positions">My Portfolio</string>
     <string name="tab_prices">Prices</string>
-    <string name="tab_historical">Historical</string>
+    <string name="tab_history">History</string>
     <string name="add_new_fund_title">Add New Fund</string>
     <string name="add_new_etf_title">Add New ETF</string>
     <string name="close_cd">Close</string>
@@ -76,9 +76,14 @@
     <string name="estimated_new_value">Estimated new value</string>
     <string name="cancel_edit_investment_cd">Tap to not edit the quantity</string>
     <string name="error_quantity_empty">Enter a valid amount.</string>
-
     <string name="delete_action">Delete</string>
     <string name="delete_investment_message">Are you sure you want to delete this investment from your portfolio?</string>
+
+    <!-- Allocation -->
+    <string name="tab_allocation_title">Allocation by asset type</string>
+
+    <!-- Prices -->
+    <string name="tab_prices_title">Price per unit</string>
 
     <!-- Market -->
     <string name="add_crypto_title">Add Crypto</string>
@@ -101,8 +106,8 @@
     <string name="global_markets_no_results">Sorry, we didn\'t find any stocks that match your search.</string>
     <string name="global_markets_try_again">Try Again</string>
 
-    <!-- Historical -->
-    <string name="historical_monthly_title">Monthly History</string>
+    <!-- History -->
+    <string name="history_monthly_title">Monthly History</string>
     <string name="back_cd">Back</string>
     <string name="investments_of_month_fmt">Investments of %1$s %2$d</string>
     <string name="shares_in_portfolio_label">Shares in portfolio</string>
