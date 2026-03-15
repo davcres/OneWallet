@@ -24,7 +24,7 @@ class ThemeRepositoryImpl(
     }
 
     private fun getSavedTheme(): ThemeMode {
-        return when (sharedPreferences.getString(THEME_PREFERENCE_KEY, null)) {
+        return when (sharedPreferences.getString(THEME_PREFERENCE_KEY, ThemeMode.DARK.name)) {
             ThemeMode.DARK.name -> ThemeMode.DARK
             ThemeMode.LIGHT.name -> ThemeMode.LIGHT
             else -> ThemeMode.SYSTEM
