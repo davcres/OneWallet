@@ -18,18 +18,22 @@ import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.presentation.widget.GetWidgetCallback
 
 @Composable
-fun Reload(modifier: GlanceModifier = GlanceModifier) {
+fun Reload(
+    isDarkTheme: Boolean,
+    modifier: GlanceModifier = GlanceModifier
+) {
+    val background = if (isDarkTheme) R.drawable.widget_round_background_dark else R.drawable.widget_round_background_light
     Box(
         modifier = modifier
             .size(30.dp)
-            .background(ImageProvider(R.drawable.widget_round_background))
+            .background(ImageProvider(background))
             .clickable(actionRunCallback<GetWidgetCallback>()),
         contentAlignment = Alignment.Center
     ) {
         Image(
             provider = ImageProvider(R.drawable.ic_refresh),
             contentDescription = LocalContext.current.getString(R.string.reload_cd),
-            colorFilter = ColorFilter.tint(GlanceTheme.colors.primary)
+            colorFilter = ColorFilter.tint(GlanceTheme.colors.onSecondary)
         )
     }
 }

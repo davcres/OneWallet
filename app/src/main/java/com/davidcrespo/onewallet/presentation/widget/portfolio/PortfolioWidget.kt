@@ -11,6 +11,7 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
 import androidx.glance.action.Action
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
@@ -48,6 +49,11 @@ class PortfolioWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
+            val context = LocalContext.current
+
+            val isDarkTheme = true
+                // (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
             val state = currentState<Preferences>()
             val stocks = stringToPortfolio(state[PortfolioPrefsKeys.stocks].orEmpty())
             val selectedCurrency = CurrencyView.get(state[PortfolioPrefsKeys.selectedCurrency] ?: EUR)
@@ -77,6 +83,7 @@ class PortfolioWidget : GlanceAppWidget() {
 
             GlanceTheme(colors = WidgetColors) {
                 PortfolioWidgetContent(
+                    isDarkTheme = isDarkTheme,
                     balance = stocksConverted.sumOf { it.quantity * it.displayPrice },
                     items = stocksConverted.toImmutableList(),
                     currency = selectedCurrency
@@ -87,14 +94,21 @@ class PortfolioWidget : GlanceAppWidget() {
 
     @Composable
     fun PortfolioWidgetContent(
+        isDarkTheme: Boolean,
         balance: Double,
         items: ImmutableList<InvestmentView>,
         currency: CurrencyView
     ) {
+        val background = if (isDarkTheme) {
+            R.drawable.widget_gradient_background_dark
+        } else {
+            R.drawable.widget_gradient_background_light
+        }
+
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
-                .background(ImageProvider(R.drawable.widget_gradient_background))
+                .background(ImageProvider(background))
                 .clickable(actionStartActivity<MainActivity>())
                 .padding(16.dp)
         ) {
@@ -108,7 +122,7 @@ class PortfolioWidget : GlanceAppWidget() {
 
                     Spacer(modifier = GlanceModifier.height(16.dp))
 
-                    Reload()
+                    Reload(isDarkTheme)
                 }
             } else {
                 Column(
@@ -124,7 +138,7 @@ class PortfolioWidget : GlanceAppWidget() {
 
                         Spacer(modifier = GlanceModifier.defaultWeight())
 
-                        Reload()
+                        Reload(isDarkTheme)
                     }
 
                     Spacer(modifier = GlanceModifier.height(12.dp))
@@ -132,7 +146,8 @@ class PortfolioWidget : GlanceAppWidget() {
                     ItemsList(
                         items = items,
                         currency = currency,
-                        onClick = actionStartActivity<MainActivity>()
+                        onClick = actionStartActivity<MainActivity>(),
+                        isDarkTheme = isDarkTheme
                     )
                 }
             }
@@ -143,7 +158,8 @@ class PortfolioWidget : GlanceAppWidget() {
     private fun ItemsList(
         items: ImmutableList<InvestmentView>,
         currency: CurrencyView,
-        onClick: Action
+        onClick: Action,
+        isDarkTheme: Boolean,
     ) {
         LazyColumn(
             modifier = GlanceModifier.fillMaxWidth()
@@ -157,7 +173,8 @@ class PortfolioWidget : GlanceAppWidget() {
                     OWInvestmentWidget(
                         item = items[it],
                         currency = currency,
-                        section = SectionType.PORTFOLIO
+                        section = SectionType.PORTFOLIO,
+                        isDarkTheme = isDarkTheme
                     )
 
                     Spacer(modifier = GlanceModifier.height(12.dp))
@@ -190,6 +207,7 @@ object PortfolioPrefsKeys {
 private fun PortfolioWidgetPreview() {
     OneWalletTheme {
         PortfolioWidget().PortfolioWidgetContent(
+            isDarkTheme = true,
             balance = 100000.0,
             items = persistentListOf(),
             currency = CurrencyView.get(EUR)

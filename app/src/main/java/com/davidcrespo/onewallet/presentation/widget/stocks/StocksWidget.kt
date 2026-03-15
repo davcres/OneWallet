@@ -52,6 +52,11 @@ class StocksWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
+            val context = LocalContext.current
+
+            val isDarkTheme = true
+                // (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
             val state = currentState<Preferences>()
             val stocks = stringToPortfolio(state[StocksPrefsKeys.stocks].orEmpty())
             val selectedCurrency = CurrencyView.get(state[StocksPrefsKeys.selectedCurrency] ?: EUR)
@@ -81,6 +86,7 @@ class StocksWidget : GlanceAppWidget() {
 
             GlanceTheme(colors = WidgetColors) {
                 StocksWidgetContent(
+                    isDarkTheme = isDarkTheme,
                     stocks = stocksConverted.toImmutableList(),
                     currency = selectedCurrency
                 )
@@ -90,14 +96,20 @@ class StocksWidget : GlanceAppWidget() {
 
     @Composable
     fun StocksWidgetContent(
+        isDarkTheme: Boolean,
         stocks: ImmutableList<InvestmentView>,
         currency: CurrencyView
     ) {
+        val background = if (isDarkTheme) {
+            R.drawable.widget_gradient_background_dark
+        } else {
+            R.drawable.widget_gradient_background_light
+        }
 
         Column(
             modifier = GlanceModifier
                 .fillMaxSize()
-                .background(ImageProvider(R.drawable.widget_gradient_background))
+                .background(ImageProvider(background))
                 .clickable(actionStartActivity<MainActivity>())
                 .padding(16.dp)
         ) {
@@ -111,7 +123,7 @@ class StocksWidget : GlanceAppWidget() {
 
                     Spacer(modifier = GlanceModifier.height(16.dp))
 
-                    Reload()
+                    Reload(isDarkTheme)
                 }
             } else {
                 Column(
@@ -127,7 +139,7 @@ class StocksWidget : GlanceAppWidget() {
 
                         Spacer(modifier = GlanceModifier.defaultWeight())
 
-                        Reload()
+                        Reload(isDarkTheme)
                     }
 
                     Spacer(modifier = GlanceModifier.height(12.dp))
@@ -135,7 +147,8 @@ class StocksWidget : GlanceAppWidget() {
                     StockList(
                         items = stocks,
                         currency = currency,
-                        onClick = actionStartActivity<MainActivity>()
+                        onClick = actionStartActivity<MainActivity>(),
+                        isDarkTheme = isDarkTheme
                     )
                 }
             }
@@ -147,7 +160,7 @@ class StocksWidget : GlanceAppWidget() {
         Text(
             text = LocalContext.current.getString(R.string.asset_prices_title),
             style = TextStyle(
-                color = GlanceTheme.colors.onSurface,
+                color = GlanceTheme.colors.onSecondary,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -158,7 +171,8 @@ class StocksWidget : GlanceAppWidget() {
     private fun StockList(
         items: ImmutableList<InvestmentView>,
         currency: CurrencyView,
-        onClick: Action
+        onClick: Action,
+        isDarkTheme: Boolean
     ) {
         LazyColumn(
             modifier = GlanceModifier.fillMaxWidth()
@@ -172,7 +186,8 @@ class StocksWidget : GlanceAppWidget() {
                     OWInvestmentWidget(
                         item = items[it],
                         currency = currency,
-                        section = SectionType.PRICES
+                        section = SectionType.PRICES,
+                        isDarkTheme = isDarkTheme
                     )
 
                     Spacer(modifier = GlanceModifier.height(12.dp))
@@ -206,7 +221,8 @@ private fun StocksWidgetPreview() {
     OneWalletTheme {
         StocksWidget().StocksWidgetContent(
             stocks = persistentListOf(),
-            currency = CurrencyView.get(EUR)
+            currency = CurrencyView.get(EUR),
+            isDarkTheme = true
         )
     }
 }

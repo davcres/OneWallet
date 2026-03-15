@@ -23,7 +23,7 @@ fun TotalBalance(balance: Double, currency: CurrencyView) {
         Text(
             text = LocalContext.current.getString(R.string.total_balance),
             style = TextStyle(
-                color = GlanceTheme.colors.onSurface,
+                color = GlanceTheme.colors.onSecondary,
                 fontSize = 16.sp
             )
         )
@@ -34,7 +34,7 @@ fun TotalBalance(balance: Double, currency: CurrencyView) {
             else
                 formatPrice(balance, currency, false),
             style = TextStyle(
-                color = GlanceTheme.colors.onPrimaryContainer,
+                color = GlanceTheme.colors.onSecondary,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold
             ),
