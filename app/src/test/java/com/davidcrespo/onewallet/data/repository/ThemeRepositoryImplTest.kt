@@ -25,7 +25,7 @@ class ThemeRepositoryImplTest {
 
     @Test
     fun `initial emission should be DARK when saved theme is DARK`() = runTest {
-        every { sharedPreferences.getString("app_theme", null) } returns ThemeMode.DARK.name
+        every { sharedPreferences.getString("app_theme", any()) } returns ThemeMode.DARK.name
         repository = ThemeRepositoryImpl(sharedPreferences)
 
         repository.themeModeFlow.test {
@@ -35,7 +35,7 @@ class ThemeRepositoryImplTest {
 
     @Test
     fun `initial emission should be LIGHT when saved theme is LIGHT`() = runTest {
-        every { sharedPreferences.getString("app_theme", null) } returns ThemeMode.LIGHT.name
+        every { sharedPreferences.getString("app_theme", any()) } returns ThemeMode.LIGHT.name
         repository = ThemeRepositoryImpl(sharedPreferences)
 
         repository.themeModeFlow.test {
@@ -44,29 +44,30 @@ class ThemeRepositoryImplTest {
     }
 
     @Test
-    fun `initial emission should be SYSTEM when no theme is saved`() = runTest {
-        every { sharedPreferences.getString("app_theme", null) } returns null
+    fun `initial emission should be DARK when no theme is saved (default)`() = runTest {
+        // Al no haber nada, el repo recibe el default "DARK" que él mismo pide
+        every { sharedPreferences.getString("app_theme", any()) } returns ThemeMode.DARK.name
         repository = ThemeRepositoryImpl(sharedPreferences)
 
         repository.themeModeFlow.test {
-            assertEquals(ThemeMode.SYSTEM, awaitItem())
+            assertEquals(ThemeMode.DARK, awaitItem())
         }
     }
 
     @Test
     fun `setThemeMode should save to SharedPreferences and emit new value`() = runTest {
-        every { sharedPreferences.getString("app_theme", null) } returns null
+        every { sharedPreferences.getString("app_theme", any()) } returns ThemeMode.DARK.name
         repository = ThemeRepositoryImpl(sharedPreferences)
 
         repository.themeModeFlow.test {
-            assertEquals(ThemeMode.SYSTEM, awaitItem()) // Initial
+            assertEquals(ThemeMode.DARK, awaitItem()) // Initial default
 
-            repository.setThemeMode(ThemeMode.DARK)
+            repository.setThemeMode(ThemeMode.LIGHT)
             
-            assertEquals(ThemeMode.DARK, awaitItem()) // New value
+            assertEquals(ThemeMode.LIGHT, awaitItem()) // New value
             
             verify { 
-                editor.putString("app_theme", ThemeMode.DARK.name)
+                editor.putString("app_theme", ThemeMode.LIGHT.name)
                 editor.apply()
             }
         }
