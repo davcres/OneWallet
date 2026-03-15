@@ -8,7 +8,7 @@ val OnPrimaryLight = Color(0xFFFFFFFF)
 val PrimaryContainerLight = Color(0xFFE2E8F0)
 val OnPrimaryContainerLight = Color(0xFF0F172A)
 
-val SecondaryLight = Color(0xFF2563EB) // Sapphire Blue - Trust and authority
+val SecondaryLight = Color(0xFF0F172A) // Sapphire Blue - Trust and authority
 val OnSecondaryLight = Color(0xFFFFFFFF)
 val SecondaryContainerLight = Color(0xFFDBEAFE)
 val OnSecondaryContainerLight = Color(0xFF1E40AF)
@@ -30,6 +30,10 @@ val OnSurfaceVariantLight = Color(0xFF475569)
 val OutlineLight = Color(0xFFE2E8F0) // Subtle separators
 val OutlineVariantLight = Color(0xFFF1F5F9)
 
+val InverseSurfaceLight = Color(0xFF0F172A) // Midnight Navy for inverse elements
+val InverseOnSurfaceLight = Color(0xFFF1F5F9)
+val InversePrimaryLight = Color(0xFF60A5FA) // Vibrant Sky/Sapphire Blue
+
 
 // Dark Colors
 // Accent
@@ -41,8 +45,8 @@ val OnMintContainer = Color(0xFFD8FFE9)
 
 
 // Secondary
-val SecondaryGreen = Color(0xFF22C55E)
-val OnSecondaryGreen = Color(0xFF052112)
+val SecondaryGreen = Color(0xFF001F1A)
+val OnSecondaryGreen = Color(0xFF35F28F)
 
 val SecondaryContainer = Color(0xFF143224)
 val OnSecondaryContainer = Color(0xFFCFF7DE)

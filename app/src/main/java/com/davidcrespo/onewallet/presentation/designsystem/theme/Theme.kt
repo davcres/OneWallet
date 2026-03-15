@@ -92,6 +92,11 @@ val LightScheme = lightColorScheme(
     outline = OutlineLight,
     outlineVariant = OutlineVariantLight,
 
+    // Inverse
+    inverseSurface = InverseSurfaceLight,
+    inverseOnSurface = InverseOnSurfaceLight,
+    inversePrimary = InversePrimaryLight,
+
     surfaceTint = PrimaryLight,
     scrim = Color.Black.copy(alpha = 0.32f)
 )
