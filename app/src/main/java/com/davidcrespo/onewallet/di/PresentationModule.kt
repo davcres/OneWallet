@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.di
 
+import com.davidcrespo.onewallet.MainViewModel
 import com.davidcrespo.onewallet.presentation.historical.HistoricalViewModel
 import com.davidcrespo.onewallet.presentation.market.globalMarket.GlobalMarketViewModel
 import com.davidcrespo.onewallet.presentation.market.usMarket.UsMarketViewModel
@@ -13,6 +14,7 @@ import org.koin.dsl.module
 val presentationModule = module {
     single { CurrencyConverter() }
 
+    viewModelOf(::MainViewModel)
     viewModelOf(::SplashViewModel)
     viewModelOf(::OnboardingViewModel)
     viewModelOf(::PortfolioViewModel)

@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.AutoGraph
+import androidx.compose.material.icons.filled.BrightnessAuto
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Euro
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
+import com.davidcrespo.onewallet.core.models.ThemeMode
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
@@ -32,9 +35,11 @@ import java.time.LocalTime
 
 @Composable
 fun Header(
+    text: String,
     currency: CurrencyView,
+    themeMode: ThemeMode,
     onCurrencyChange: () -> Unit,
-    navigateToHistorical: () -> Unit,
+    onChangeUIMode: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -50,11 +55,20 @@ fun Header(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Text(
-                text = stringResource(R.string.portfolio_summary),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
+            AnimatedContent(
+                targetState = text,
+                transitionSpec = {
+                    (slideInVertically { height -> height } + fadeIn())
+                        .togetherWith(slideOutVertically { height -> -height } + fadeOut())
+                },
+                label = "section"
+            ) { text ->
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
         }
 
         AnimatedContent(
@@ -74,11 +88,29 @@ fun Header(
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        OWIconButton(
-            imageVector = Icons.Filled.AutoGraph,
-            onClick = navigateToHistorical,
-            contentDescription = stringResource(R.string.history_cd)
-        )
+        AnimatedContent(
+            targetState = themeMode,
+            transitionSpec = {
+                (slideInVertically { height -> height } + fadeIn())
+                    .togetherWith(slideOutVertically { height -> -height } + fadeOut())
+            },
+            label = "uiMode"
+        ) { currentTheme ->
+            val nextTheme = when (currentTheme) {
+                ThemeMode.LIGHT -> ThemeMode.DARK
+                ThemeMode.DARK -> ThemeMode.SYSTEM
+                ThemeMode.SYSTEM -> ThemeMode.LIGHT
+            }
+            OWIconButton(
+                imageVector = when(currentTheme) {
+                    ThemeMode.LIGHT -> Icons.Filled.LightMode
+                    ThemeMode.DARK -> Icons.Filled.DarkMode
+                    ThemeMode.SYSTEM -> Icons.Filled.BrightnessAuto
+                },
+                onClick = { onChangeUIMode(nextTheme) },
+                contentDescription = stringResource(R.string.ui_mode_cd, currentTheme.name, nextTheme.name)
+            )
+        }
     }
 }
 
@@ -87,14 +119,16 @@ fun Header(
 private fun HeaderPreview() {
     OneWalletTheme {
         Header(
+            text = "Resumen de tu portfolio",
             currency = CurrencyView.get(EUR),
+            themeMode = ThemeMode.LIGHT,
             onCurrencyChange = {},
-            navigateToHistorical = {}
+            onChangeUIMode = {}
         )
     }
 }
 
-fun greetingByTime(): Int {
+private fun greetingByTime(): Int {
     val hour = LocalTime.now().hour
 
     return when (hour) {

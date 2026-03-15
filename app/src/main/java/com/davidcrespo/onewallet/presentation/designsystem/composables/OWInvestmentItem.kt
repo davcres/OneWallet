@@ -39,8 +39,6 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
-import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBackground
-import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBorder
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
@@ -62,9 +60,9 @@ fun OWInvestmentItem(
             .fillMaxWidth()
             .bounceClick(),
         shape = CircleShape,
-        border = BorderStroke(1.dp, ItemBorder),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onTertiaryContainer),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = ItemBackground),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
         onClick = { onClick(item) }
     ) {
         Row(

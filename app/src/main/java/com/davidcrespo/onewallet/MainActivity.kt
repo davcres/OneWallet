@@ -2,45 +2,39 @@ package com.davidcrespo.onewallet
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.navigation.MainNavigation
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel by viewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
 
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(Color.Transparent.toArgb()),
-            navigationBarStyle = SystemBarStyle.dark(Color.Transparent.toArgb())
-        )
+        enableEdgeToEdge()
 
         setContent {
-            OneWalletTheme {
+            val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
+
+            OneWalletTheme(themeMode) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Scaffold(
-                        modifier = Modifier.fillMaxSize(),
-                        containerColor = Color.Transparent
-                    ) { innerPadding ->
-                        MainNavigation(
-                            contentPadding = innerPadding
-                        )
-                    }
+                    MainNavigation()
                 }
             }
         }

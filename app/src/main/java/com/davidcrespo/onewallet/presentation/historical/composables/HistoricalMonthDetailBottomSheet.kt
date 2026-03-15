@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.privacyBlur
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
@@ -108,8 +107,6 @@ fun HistoricalMonthDetailBottomSheet(
                     maxSheetHeight = maxSheetHeight,
                     isBalanceVisible = isBalanceVisible
                 )
-
-                Spacer(Modifier.height(80.dp))
             }
         }
     }
@@ -142,6 +139,7 @@ private fun SheetContent(
         OWAnimatedList(
             items = investments,
             key = { it.symbol },
+            contentPadding = PaddingValues(bottom = 32.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f, fill = false),

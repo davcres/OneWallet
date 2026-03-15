@@ -3,9 +3,11 @@ package com.davidcrespo.onewallet.di
 import com.davidcrespo.onewallet.data.repository.FinancialRepositoryImpl
 import com.davidcrespo.onewallet.data.repository.OnboardingRepositoryImpl
 import com.davidcrespo.onewallet.data.repository.PortfolioRepositoryImpl
+import com.davidcrespo.onewallet.data.repository.ThemeRepositoryImpl
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.repository.OnboardingRepository
 import com.davidcrespo.onewallet.domain.repository.PortfolioRepository
+import com.davidcrespo.onewallet.domain.repository.ThemeRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -16,4 +18,5 @@ val repositoryModule = module {
     }
     single<PortfolioRepository> { PortfolioRepositoryImpl(get(), get()) }
     single<OnboardingRepository> { OnboardingRepositoryImpl(get()) }
+    single<ThemeRepository> { ThemeRepositoryImpl(get()) }
 }

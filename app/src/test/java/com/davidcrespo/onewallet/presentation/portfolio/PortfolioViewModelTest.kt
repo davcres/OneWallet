@@ -3,11 +3,14 @@ package com.davidcrespo.onewallet.presentation.portfolio
 import android.content.Context
 import androidx.work.WorkManager
 import app.cash.turbine.test
+import com.davidcrespo.onewallet.core.models.ThemeMode
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
+import com.davidcrespo.onewallet.domain.usecase.appRoot.GetThemeUseCase
+import com.davidcrespo.onewallet.domain.usecase.appRoot.SetThemeUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.AddInvestmentToPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetInvestmentPriceUseCase
@@ -17,11 +20,13 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUs
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 import com.davidcrespo.onewallet.util.MainDispatcherExtension
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
@@ -45,6 +50,9 @@ class PortfolioViewModelTest {
     private val addInvestmentToPortfolioUseCase = mockk<AddInvestmentToPortfolioUseCase>(relaxed = true)
     private val removePortfolioItemUseCase = mockk<RemovePortfolioItemUseCase>(relaxed = true)
     private val financialRepository = mockk<FinancialRepository>(relaxed = true)
+    private val getThemeUseCase = mockk<GetThemeUseCase>(relaxed = true)
+    private val setThemeUseCase = mockk<SetThemeUseCase>(relaxed = true)
+    private val themeFlow = MutableStateFlow(ThemeMode.SYSTEM)
     private val currencyConverter = CurrencyConverter()
     private val context = mockk<Context>(relaxed = true)
 
@@ -59,6 +67,7 @@ class PortfolioViewModelTest {
         // Configuración mínima para que el init no explote
         every { financialRepository.getSelectedCurrency() } returns Currency(EUR)
         every { getPortfolioItemsUseCase.invoke() } returns flowOf(emptyList())
+        every { getThemeUseCase.invoke() } returns themeFlow
         coEvery { getCurrencyRateUseCase.invoke(any(), any()) } returns Result.success(1.0)
     }
 
@@ -73,6 +82,8 @@ class PortfolioViewModelTest {
                 removePortfolioItemUseCase,
                 financialRepository,
                 currencyConverter,
+                getThemeUseCase,
+                setThemeUseCase,
                 context
             )
         } catch (e: Throwable) {
@@ -84,6 +95,41 @@ class PortfolioViewModelTest {
     @AfterEach
     fun tearDown() {
         unmockkAll()
+        themeFlow.value = ThemeMode.SYSTEM
+    }
+
+    @Test
+    fun `al iniciar el ViewModel, el estado carga el tema por defecto SYSTEM`() = runTest(mainDispatcherExtension.testDispatcher) {
+        createViewModel()
+        
+        viewModel.uiState.test {
+            val initialState = awaitItem()
+            assertEquals(ThemeMode.SYSTEM, initialState.themeMode)
+        }
+    }
+
+    @Test
+    fun `cuando GetThemeUseCase emite un nuevo tema, el estado se actualiza`() = runTest(mainDispatcherExtension.testDispatcher) {
+        createViewModel()
+        
+        viewModel.uiState.test {
+            assertEquals(ThemeMode.SYSTEM, awaitItem().themeMode)
+            
+            themeFlow.value = ThemeMode.DARK
+            assertEquals(ThemeMode.DARK, awaitItem().themeMode)
+            
+            themeFlow.value = ThemeMode.LIGHT
+            assertEquals(ThemeMode.LIGHT, awaitItem().themeMode)
+        }
+    }
+
+    @Test
+    fun `cuando se recibe ToggleTheme, se llama a SetThemeUseCase con el tema correspondiente`() = runTest(mainDispatcherExtension.testDispatcher) {
+        createViewModel()
+        
+        viewModel.handleIntent(PortfolioIntent.ToggleTheme(ThemeMode.DARK))
+        
+        coVerify { setThemeUseCase(ThemeMode.DARK) }
     }
 
     @Test

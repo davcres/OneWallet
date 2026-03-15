@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.presentation.navigation
 
 import androidx.navigation3.runtime.NavKey
+import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTabs
 import kotlinx.serialization.Serializable
 
 sealed interface Route : NavKey {
@@ -11,7 +12,7 @@ sealed interface Route : NavKey {
     data object Onboarding : Route
 
     @Serializable
-    data object Portfolio : Route
+    data class Portfolio(val tab: PortfolioTabs = PortfolioTabs.POSITIONS) : Route
 
     @Serializable
     data class UsMarket(val isCrypto: Boolean) : Route

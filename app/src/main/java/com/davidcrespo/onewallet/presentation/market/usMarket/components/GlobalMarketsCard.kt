@@ -32,7 +32,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,8 +43,6 @@ import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.Button
 import com.davidcrespo.onewallet.core.composables.auxiliar.ButtonStyle
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButtonAutoCloseable
-import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBackground
-import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBorder
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -94,9 +91,9 @@ fun GlobalMarketsCard(
                 }
             ),
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, ItemBorder),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onTertiaryContainer),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = ItemBackground)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
     ) {
         Box(Modifier.fillMaxWidth()) {
             OWIconButtonAutoCloseable(
@@ -137,7 +134,7 @@ fun GlobalMarketsCard(
                     text = stringResource(R.string.global_markets_card_title),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                 )
 
