@@ -1,10 +1,10 @@
-package com.davidcrespo.onewallet.presentation.historical
+package com.davidcrespo.onewallet.presentation.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davidcrespo.onewallet.core.extensions.orEmpty
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
-import com.davidcrespo.onewallet.domain.usecase.historical.GetMonthlyHistoryUseCase
+import com.davidcrespo.onewallet.domain.usecase.history.GetMonthlyHistoryUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toUI
@@ -17,23 +17,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HistoricalViewModel(
+class HistoryViewModel(
     private val getMonthlyHistoryUseCase: GetMonthlyHistoryUseCase,
     private val financialRepository: FinancialRepository,
     private val getCurrencyRateUseCase: GetCurrencyRateUseCase,
     private val currencyConverter: CurrencyConverter
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HistoricalUiState())
+    private val _uiState = MutableStateFlow(HistoryUiState())
     val uiState = _uiState.asStateFlow()
 
-    fun handleIntent(intent: HistoricalIntent) {
+    fun handleIntent(intent: HistoryIntent) {
         when (intent) {
-            is HistoricalIntent.LoadInitialData -> loadInitialData()
-            is HistoricalIntent.SelectMonth -> selectMonth(intent.year, intent.month)
-            is HistoricalIntent.SelectInvestment -> selectInvestment(intent.investment)
-            is HistoricalIntent.DismissBottomSheet -> dismissBottomSheet()
-            is HistoricalIntent.DismissInvestmentDetail -> dismissInvestmentDetail()
+            is HistoryIntent.LoadInitialData -> loadInitialData()
+            is HistoryIntent.SelectMonth -> selectMonth(intent.year, intent.month)
+            is HistoryIntent.SelectInvestment -> selectInvestment(intent.investment)
+            is HistoryIntent.DismissBottomSheet -> dismissBottomSheet()
+            is HistoryIntent.DismissInvestmentDetail -> dismissInvestmentDetail()
         }
     }
 

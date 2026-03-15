@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.historical.composables
+package com.davidcrespo.onewallet.presentation.history.composables
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.privacyBlur
-import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem
@@ -51,7 +50,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoricalMonthDetailBottomSheet(
+fun HistoryMonthDetailBottomSheet(
     investments: ImmutableList<InvestmentView>,
     previousInvestments: ImmutableList<InvestmentView>,
     currency: CurrencyView,
@@ -108,8 +107,6 @@ fun HistoricalMonthDetailBottomSheet(
                     maxSheetHeight = maxSheetHeight,
                     isBalanceVisible = isBalanceVisible
                 )
-
-                Spacer(Modifier.height(80.dp))
             }
         }
     }
@@ -142,17 +139,18 @@ private fun SheetContent(
         OWAnimatedList(
             items = investments,
             key = { it.symbol },
+            contentPadding = PaddingValues(bottom = 32.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f, fill = false),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            itemContent = { modifier, historicalItem, index ->
-                val previousMonthItem = previousInvestments.find { it.symbol == historicalItem.symbol }
+            itemContent = { modifier, historyItem, index ->
+                val previousMonthItem = previousInvestments.find { it.symbol == historyItem.symbol }
                 OWInvestmentItem(
-                    item = historicalItem,
+                    item = historyItem,
                     currency = currency,
                     previousMonthItem = previousMonthItem,
-                    section = SectionType.HISTORICAL,
+                    section = SectionType.HISTORY,
                     onClick = { onClickInvestment(it) },
                     modifier = modifier,
                     isBalanceVisible = isBalanceVisible

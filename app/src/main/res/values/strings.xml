@@ -1,136 +1,142 @@
 <resources>
-    <string name="app_name">OneWallet Portafolio</string>
+    <string name="app_name">OneWallet Portfolio</string>
+    <string name="widget_portfolio_description">Check your portfolio values</string>
+    <string name="widget_stocks_description">Track your assets in real time</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_1_title">Bienvenido a OneWallet</string>
-    <string name="onboarding_1_description">Controla todas tus inversiones en un solo lugar. Simple y rápido.</string>
-    <string name="onboarding_2_title">Seguimiento de tus inversiones en tiempo real</string>
-    <string name="onboarding_2_description">Obtén datos de mercado actualizados sobre acciones, fondos, ETFs y criptomonedas.</string>
-    <string name="onboarding_3_title">Analiza tu evolución mensual</string>
-    <string name="onboarding_3_description">Consulta el rendimiento de tu cartera para ver como evoluciona mes a mes con datos históricos.</string>
-    <string name="onboarding_4_title">Tus datos son solo tuyos</string>
-    <string name="onboarding_4_description">Todos tus datos se almacenan localmente en tu dispositivo. Sin nube, sin seguimiento.</string>
-    <string name="onboarding_5_title">Tus finanzas simplificadas</string>
-    <string name="onboarding_5_description">¿Empezamos?</string>
-    <string name="onboarding_button_next">Siguiente</string>
-    <string name="onboarding_button_get_started">Empezar ahora</string>
+    <string name="onboarding_1_title">Welcome to OneWallet</string>
+    <string name="onboarding_1_description">Manage all your investments in one place. Simple, fast, and secure.</string>
+    <string name="onboarding_2_title">Track Real-time</string>
+    <string name="onboarding_2_description">Get up-to-date market data for stocks, funds, ETFs, and cryptocurrencies.</string>
+    <string name="onboarding_3_title">Analyze your monthly evolution</string>
+    <string name="onboarding_3_description">Visualize your portfolio performance with detailed charts and historical data.</string>
+    <string name="onboarding_4_title">Your Data is Yours</string>
+    <string name="onboarding_4_description">All your data is stored locally on your device. No cloud, no tracking.</string>
+    <string name="onboarding_5_title">Your finances made simple</string>
+    <string name="onboarding_5_description">Shall we get started?</string>
+    <string name="onboarding_button_next">Next</string>
+    <string name="onboarding_button_get_started">Get started</string>
 
     <!-- Portfolio -->
-    <string name="empty_investments_title">Aún no has añadido ninguna inversión</string>
-    <string name="empty_investments_description">Haz click en el botón + para llevar el control de tus inversiones.</string>
-    <string name="greeting_morning">Buenos días</string>
-    <string name="greeting_afternoon">Buenas tardes</string>
-    <string name="greeting_evening">Buenas noches</string>
-    <string name="portfolio_summary">Resumen de tu Portafolio</string>
-    <string name="currency_selector_cd">Selector de moneda</string>
-    <string name="history_cd">Historial</string>
-    <string name="tab_allocation">Distribución</string>
-    <string name="tab_portfolio">Mi cartera</string>
-    <string name="tab_prices">Cotización</string>
-    <string name="add_new_fund_title">Añadir nuevo fondo</string>
-    <string name="add_new_etf_title">Añadir nuevo ETF</string>
-    <string name="close_cd">Cerrar</string>
+    <string name="empty_investments_title">You haven\'t added any investment yet</string>
+    <string name="empty_investments_description">Click the + button to track your investments.</string>
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="tab_positions_title">Your Assets</string>
+    <string name="currency_selector_cd">Currency selector</string>
+    <string name="ui_mode_cd">UI theme selector. Current theme: %1$s. Click to change to theme %2$s</string>
+    <string name="tab_positions">Portfolio</string>
+    <string name="tab_allocation">Allocation</string>
+    <string name="tab_prices">Prices</string>
+    <string name="tab_history">History</string>
+    <string name="add_new_fund_title">Add New Fund</string>
+    <string name="add_new_etf_title">Add New ETF</string>
+    <string name="close_cd">Close</string>
     <string name="isin_label">ISIN</string>
-    <string name="isin_helper_text">Número de identificación de valores internacionales</string>
-    <string name="quantity_shares_label">Número de Participaciones</string>
-    <string name="cancel_action">Cancelar</string>
-    <string name="cancel_add_fund_cd">Pulsa para no añadir ningún fondo</string>
-    <string name="add_action">Añadir</string>
-    <string name="add_fund_cd">Añade un nuevo fondo a tu cartera</string>
-    <string name="error_isin_empty">Introduce un ISIN para añadirlo a tu cartera.</string>
-    <string name="error_isin_invalid">Introduce un ISIN válido para añadirlo a tu cartera.\n12 caracteres y letras mayúsculas: ES12345ABCD0</string>
-    <string name="add_investment_title">Añadir Inversión</string>
-    <string name="add_investment_subtitle">Selecciona el tipo de activo a seguir</string>
-    <string name="asset_stock">Acciones</string>
-    <string name="asset_stock_subtitle">Inversión en empresas</string>
-    <string name="asset_crypto">Criptomonedas</string>
-    <string name="asset_crypto_subtitle">Bitcoin, Ethereum y otros criptoactivos</string>
-    <string name="asset_fund">Fondos</string>
-    <string name="asset_fund_subtitle">Fondos gestionados e indexados</string>
+    <string name="isin_helper_text">International Securities Identification Number</string>
+    <string name="quantity_shares_label">Number of Shares</string>
+    <string name="cancel_action">Cancel</string>
+    <string name="cancel_add_fund_cd">Tap to not add any fund</string>
+    <string name="add_action">Add</string>
+    <string name="add_fund_cd">Add a new fund to your portfolio</string>
+    <string name="error_isin_empty">Enter an ISIN to add it to your portfolio.</string>
+    <string name="error_isin_invalid">Enter a valid ISIN to add it to your wallet.\n12 characters and uppercase letters: ES12345ABCD0</string>
+    <string name="add_investment_title">Add Investment</string>
+    <string name="add_investment_subtitle">Select the asset type to track</string>
+    <string name="asset_stock">Stocks</string>
+    <string name="asset_stock_subtitle">Stocks &amp; Equity</string>
+    <string name="asset_crypto">Crypto</string>
+    <string name="asset_crypto_subtitle">Bitcoin, Ethereum, and other crypto assets</string>
+    <string name="asset_fund">Funds</string>
+    <string name="asset_fund_subtitle">Managed and index funds</string>
     <string name="asset_etf">ETF</string>
-    <string name="asset_etf_subtitle">Fondos cotizados e índices</string>
-    <string name="asset_bank">Cuenta bancaria</string>
-    <string name="asset_bank_subtitle">Efectivo, ahorros y depósitos</string>
-    <string name="asset_other">Otro</string>
-    <string name="asset_other_subtitle">Cualquier otro tipo de activo que quieras añadir a tu cartera</string>
-    <string name="add_bank_title">Añadir Saldo / Depósito</string>
-    <string name="bank_name_label">Nombre del Banco / Depósito:</string>
-    <string name="bank_name_placeholder">ej: Banco Santander</string>
-    <string name="add_other_title">Añadir Inversión</string>
-    <string name="other_name_label">Nombre de la inversión:</string>
-    <string name="other_name_placeholder">ej: Chalet Ibiza</string>
-    <string name="total_money_label">Total dinero:</string>
-    <string name="add_bank_cd">Añade un nuevo saldo / depósito a tu cartera</string>
-    <string name="update_quantity_action">Actualizar</string>
-    <string name="fund_fetch_error">Desafortunadamente no hemos podido obtener el fondo.\nPrueba con otro ISIN.</string>
-    <string name="etf_fetch_error">Desafortunadamente no hemos podido obtener el ETF.\nPrueba con otro ISIN.</string>
-    <string name="current_holding_label">Acciones actualmente</string>
-    <string name="current_holding">%.2f Acciones</string>
-    <string name="total_value">Valor total</string>
-    <string name="new_quantity_market">Introduce la nueva cantidad de acciones</string>
-    <string name="new_quantity_manual">Introduce el nuevo saldo</string>
-    <string name="new_quantity_manual_info">Usa la moneda original de la inversión (%s)</string>
-    <string name="estimated_new_value">Nuevo valor estimado</string>
-    <string name="cancel_edit_investment_cd">Pulsa para no editar la cantidad</string>
-    <string name="error_quantity_empty">Introduce una cantidad válida.</string>
+    <string name="asset_etf_subtitle">Exchange-traded funds and indices</string>
+    <string name="asset_bank">Bank</string>
+    <string name="asset_bank_subtitle">Cash, savings, &amp; deposits</string>
+    <string name="asset_other">Other</string>
+    <string name="asset_other_subtitle">Any other type of asset you want to add to your portfolio</string>
+    <string name="add_bank_title">Add Cash / Deposit</string>
+    <string name="bank_name_label">Bank / Deposit Name:</string>
+    <string name="bank_name_placeholder">e.g. Bank of America</string>
+    <string name="add_other_title">Add Asset</string>
+    <string name="other_name_label">Asset name:</string>
+    <string name="other_name_placeholder">e.g. Luxury villa in Ibiza</string>
+    <string name="total_money_label">Total money:</string>
+    <string name="add_bank_cd">Add a new cash / deposit to your portfolio</string>
+    <string name="update_quantity_action">Update</string>
+    <string name="fund_fetch_error">Unfortunately we couldn\'t fetch the fund.\nTry another ISIN.</string>
+    <string name="etf_fetch_error">Unfortunately we couldn\'t fetch the ETF.\nTry another ISIN.</string>
+    <string name="current_holding_label">Current holding</string>
+    <string name="current_holding">%.2f Shares</string>
+    <string name="total_value">Total value</string>
+    <string name="new_quantity_market">Enter new quantity of shares</string>
+    <string name="new_quantity_manual">Enter the new balance</string>
+    <string name="new_quantity_manual_info">Use the original investment currency (%s)</string>
+    <string name="estimated_new_value">Estimated new value</string>
+    <string name="cancel_edit_investment_cd">Tap to not edit the quantity</string>
+    <string name="error_quantity_empty">Enter a valid amount.</string>
+    <string name="delete_action">Delete</string>
+    <string name="delete_investment_message">Are you sure you want to delete this investment from your portfolio?</string>
 
-    <string name="delete_action">Eliminar</string>
-    <string name="delete_investment_message">¿Estás seguro de que quieres eliminar esta inversión de tu cartera?</string>
+    <!-- Allocation -->
+    <string name="tab_allocation_title">Allocation by asset type</string>
+
+    <!-- Prices -->
+    <string name="tab_prices_title">Price per unit</string>
 
     <!-- Market -->
-    <string name="add_crypto_title">Añadir Criptomoneda</string>
-    <string name="add_us_stocks_title">Añadir Acciones de EEUU</string>
-    <string name="add_global_stocks_title">Añadir Acciones Internacionales</string>
-    <string name="add_count_action">Añadir (%d)</string>
-    <string name="search_crypto_placeholder">Buscar criptomoneda</string>
-    <string name="search_us_stock_placeholder">Buscar símbolo, nombre o figi</string>
-    <string name="search_global_stock_placeholder">Buscar símbolo o nombre</string>
-    <string name="unselect_asset_cd">Deseleccionar activo</string>
-    <string name="select_asset_cd">Seleccionar activo</string>
+    <string name="add_crypto_title">Add Crypto</string>
+    <string name="add_us_stocks_title">Add US Stocks</string>
+    <string name="add_global_stocks_title">Add International Stocks</string>
+    <string name="add_count_action">Add (%d)</string>
+    <string name="search_crypto_placeholder">Search crypto</string>
+    <string name="search_us_stock_placeholder">Search symbol, name or figi</string>
+    <string name="search_global_stock_placeholder">Search symbol or name</string>
+    <string name="unselect_asset_cd">Unselect Asset</string>
+    <string name="select_asset_cd">Select Asset</string>
 
     <!-- Global Market -->
-    <string name="global_markets_request_limit">Se han buscado tantas acciones que nuestra API ha pedido vacaciones, pero no te preocupes, mañana volverá a estar a tope.</string>
-    <string name="global_markets_card_title">¿Buscas acciones internacionales?</string>
-    <string name="global_markets_card_description">En esta lista solo se muestran acciones de Estados Unidos, pero puedes operar con acciones de Londres, Tokio o cualquier bolsa internacional. Solo tienes que escribir el símbolo o el nombre de la empresa.</string>
-    <string name="global_markets_card_button">Ir a Mercados Globales</string>
-    <string name="global_markets_card_button_cd">En esta pantalla solo podrás buscar acciones de Estados unidos, pulsa el botón para acceder al buscador de acciones de otros países.</string>
-    <string name="global_markets_warning">Ten en cuenta que estamos empezando y para garantizar la máxima calidad de los datos mostrados, puede haber acciones a las que no tengamos acceso. Lamentamos las molestias ocasionadas y estamos trabajando para ampliar nuestra oferta.</string>
-    <string name="global_markets_no_results">Lo sentimos, no hemos encontrado ninguna acción que coincida con tu búsqueda.</string>
-    <string name="global_markets_try_again">Intentar de nuevo</string>
+    <string name="global_markets_request_limit">Due to high demand, our API has taken a break, but don\'t worry, it will be back in full force tomorrow.</string>
+    <string name="global_markets_card_title">Looking for international markets?</string>
+    <string name="global_markets_card_description">This list only shows US stocks, but you can trade stocks from London, Tokyo, or any global exchange. You will just have to type the ticker or company name.</string>
+    <string name="global_markets_card_button">Go to Global Markets</string>
+    <string name="global_markets_card_button_cd">On this screen you can only search for US stocks. Press the button to access the search engine for stocks in other countries.</string>
+    <string name="global_markets_warning">Please note that we are just starting out and to ensure the highest quality of the data displayed, there may be stocks we do not have access to. We apologize for any inconvenience and are working to expand our offering.</string>
+    <string name="global_markets_no_results">Sorry, we didn\'t find any stocks that match your search.</string>
+    <string name="global_markets_try_again">Try Again</string>
 
-    <!-- Historical -->
-    <string name="historical_monthly_title">Historial Mensual</string>
-    <string name="back_cd">Atrás</string>
-    <string name="investments_of_month_fmt">Inversiones de %1$s %2$d</string>
-    <string name="shares_in_portfolio_label">Unidades en cartera</string>
-    <string name="price_per_share_label">Precio por unidad</string>
-    <string name="total_value_label">Valor total</string>
-    <string name="pl_month_label">P/L (Mes)</string>
-    <string name="percentage_icon_cd">Icono de porcentaje</string>
+    <!-- History -->
+    <string name="history_monthly_title">Monthly History</string>
+    <string name="back_cd">Back</string>
+    <string name="investments_of_month_fmt">Investments of %1$s %2$d</string>
+    <string name="shares_in_portfolio_label">Shares in portfolio</string>
+    <string name="price_per_share_label">Price per share</string>
+    <string name="total_value_label">Total value</string>
+    <string name="pl_month_label">P/L (Month)</string>
+    <string name="percentage_icon_cd">Percentage Icon</string>
 
     <!-- Core -->
-    <string name="clear_cd">Borrar inversión</string>
-    <string name="clear_text_cd">Borrar texto</string>
-    <string name="copiable_text_snackbar">Copiado al portapapeles</string>
-    <string name="copiable_text_cd">Copiar</string>
-    <string name="reload_cd">Recargar</string>
+    <string name="clear_cd">Delete investment</string>
+    <string name="clear_text_cd">Clear text</string>
+    <string name="copiable_text_snackbar">Copied to clipboard</string>
+    <string name="copiable_text_cd">Copy</string>
 
-    <string name="total_balance">Balance Total</string>
-    <string name="hide_balance_cd">Ocultar balance</string>
-    <string name="show_balance_cd">Mostrar balance</string>
+    <string name="total_balance">Total Balance</string>
+    <string name="hide_balance_cd">Hide balance</string>
+    <string name="show_balance_cd">Show balance</string>
     <string-array name="rich_phrases">
-        <item>Demasiado dinero para mostrarlo sin gafas de sol.</item>
-        <item>A Hacienda le gusta esto.</item>
-        <item>Eres rico, ¿para qué quieres saber si has ganado 5€ más?</item>
-        <item>Con esto te dejan entrar al Época sin hacer cola.</item>
-        <item>Seguro que te puedes permitir hacerle un bizum al humilde desarrollador de la app.</item>
-        <item>¿Seguro que no has añadido ceros de más? Te dejo un momento para reflexionar.</item>
-        <item>Deja algo para los demás Javito.</item>
+        <item>Too much money to look at without sunglasses.</item>
+        <item>The IRS likes this.</item>
+        <item>You\'re rich, why care about 5€ more?</item>
+        <item>This gets you VIP access anywhere.</item>
+        <item>You can definitely afford a tip for the humble developer.</item>
+        <item>Are you sure you didn\'t add too many zeros? Reflect on it.</item>
+        <item>Leave some for the rest of us, Javito.</item>
     </string-array>
-    <string name="your_investments">Tus inversiones</string>
+    <string name="your_investments">Your investments</string>
 
     <!-- Widget -->
-    <string name="widget_portfolio_description">Consulta los valores de tu cartera</string>
-    <string name="widget_stocks_description">Sigue la cotización de tus activos en tiempo real</string>
-    <string name="asset_prices_title">Precios de Mercado</string>
+    <string name="reload_cd">Reload</string>
+    <string name="asset_prices_title">Market Prices</string>
 </resources>

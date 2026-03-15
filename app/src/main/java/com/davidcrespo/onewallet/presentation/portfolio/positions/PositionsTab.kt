@@ -10,13 +10,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.USD
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.positions.components.PortfolioList
 import com.davidcrespo.onewallet.presentation.portfolio.positions.components.TotalBalance
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun PositionsTab(
@@ -37,7 +42,9 @@ fun PositionsTab(
                     currency = currency,
                     totalBalance = totalBalance,
                     previousBalance = previousBalance,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                     isExpanded = true,
                     changeBalanceVisibility = changeBalanceVisibility,
                     isBalanceVisible = isBalanceVisible,
@@ -61,4 +68,36 @@ fun PositionsTab(
         isBalanceVisible = isBalanceVisible,
         shouldAnimate = isActivePage
     )
+}
+
+@Preview
+@Composable
+private fun PositionsTabPreview() {
+    OneWalletTheme {
+        PositionsTab(
+            currency = CurrencyView.get(USD),
+            totalBalance = 10.0,
+            previousBalance = 9.0,
+            portfolioItems = persistentListOf(
+                InvestmentView(
+                    symbol = "AAPL",
+                    name = "Apple",
+                    quantity = 10.0,
+                    type = InvestmentType.STOCK,
+                    originalCurrency = CurrencyView.get(USD),
+                    originalPrice = 150.0,
+                    originalPreviousPrice = 140.0,
+                    displayPrice = 150.0,
+                    displayPreviousPrice = 140.0,
+                    changePercent = 0.0,
+                    month = 0,
+                    year = 0
+                )
+            ),
+            onRemoveItem = {},
+            onEditQuantity = {},
+            changeBalanceVisibility = {},
+            isBalanceVisible = true
+        )
+    }
 }

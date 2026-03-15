@@ -178,7 +178,7 @@ fun ItemsByTypeList(
     OWAnimatedList(
         items = items,
         key = { it.symbol },
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 32.dp),
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         itemContent = { modifier, priceItem, index ->

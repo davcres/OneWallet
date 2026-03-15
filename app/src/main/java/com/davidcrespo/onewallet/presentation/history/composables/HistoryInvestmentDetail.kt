@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.presentation.historical.composables
+package com.davidcrespo.onewallet.presentation.history.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -53,7 +53,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoricalInvestmentDetailBottomSheet(
+fun HistoryInvestmentDetailBottomSheet(
     visible: Boolean,
     investment: InvestmentView,
     previousMonthInvestment: InvestmentView?,

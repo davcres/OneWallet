@@ -39,8 +39,6 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PriceDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
-import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBackground
-import com.davidcrespo.onewallet.presentation.designsystem.theme.ItemBorder
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
@@ -62,9 +60,9 @@ fun OWInvestmentItem(
             .fillMaxWidth()
             .bounceClick(),
         shape = CircleShape,
-        border = BorderStroke(1.dp, ItemBorder),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.onTertiaryContainer),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = ItemBackground),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
         onClick = { onClick(item) }
     ) {
         Row(
@@ -120,7 +118,7 @@ fun OWInvestmentItem(
                 Column(horizontalAlignment = Alignment.End) {
                     val showPercentage = item.type.isMarket()
                     val totalValue = when (section) {
-                        SectionType.PORTFOLIO, SectionType.HISTORICAL -> item.quantity * item.displayPrice
+                        SectionType.PORTFOLIO, SectionType.HISTORY -> item.quantity * item.displayPrice
                         SectionType.PRICES, SectionType.ALLOCATION -> item.displayPrice
                     }
 
@@ -135,7 +133,7 @@ fun OWInvestmentItem(
                         }
                         val previousPrice = when (section) {
                             SectionType.PORTFOLIO -> item.displayPreviousPrice * item.quantity
-                            SectionType.HISTORICAL -> previousMonthItem?.displayPrice ?: 0.0
+                            SectionType.HISTORY -> previousMonthItem?.displayPrice ?: 0.0
                             else -> item.displayPreviousPrice
                         }
 

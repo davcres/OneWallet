@@ -39,18 +39,19 @@ fun OWInvestmentWidget(
     previousMonthItem: InvestmentView? = null,
     section: SectionType,
     showPercentageInsteadOfVariance: Boolean = true,
+    isDarkTheme: Boolean,
     modifier: GlanceModifier = GlanceModifier,
 ) {
     val showTrend = item.type.isMarket()
     val totalValue = when (section) {
-        SectionType.PORTFOLIO, SectionType.HISTORICAL -> item.quantity * item.displayPrice
+        SectionType.PORTFOLIO, SectionType.HISTORY -> item.quantity * item.displayPrice
         SectionType.PRICES, SectionType.ALLOCATION -> item.displayPrice
     }
-
+    val background = if (isDarkTheme) Color(0xFF1b2620) else Color(0xFFE8F5EC)
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFF1b2620))
+            .background(background)
             .padding(horizontal = 16.dp, vertical = 12.dp)
             .cornerRadius(999.dp),
         contentAlignment = Alignment.CenterStart
@@ -60,17 +61,18 @@ fun OWInvestmentWidget(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Icono circular (simulado: box con background + padding)
+            val background = if (isDarkTheme) R.drawable.widget_round_background_dark else R.drawable.widget_round_background_light
             Box(
                 modifier = GlanceModifier
                     .size(40.dp)
-                    .background(ImageProvider(R.drawable.widget_round_background))
+                    .background(ImageProvider(background))
                     .padding(8.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
                     provider = ImageProvider(item.getIconRes()),
                     contentDescription = null,
-                    colorFilter = ColorFilter.tint(GlanceTheme.colors.primary)
+                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onSecondary)
                 )
             }
 
@@ -82,7 +84,7 @@ fun OWInvestmentWidget(
                     text = item.name.takeIf { it.isNotBlank() } ?: item.symbol,
                     maxLines = 1,
                     style = TextStyle(
-                        color = GlanceTheme.colors.onPrimaryContainer,
+                        color = GlanceTheme.colors.onSecondary,
                         fontWeight = FontWeight.Bold
                     )
                 )
@@ -92,7 +94,7 @@ fun OWInvestmentWidget(
                     Text(
                         text = item.symbol,
                         maxLines = 1,
-                        style = TextStyle(color = GlanceTheme.colors.onPrimaryContainer)
+                        style = TextStyle(color = GlanceTheme.colors.onSecondary)
                     )
                 }
             }
@@ -107,7 +109,7 @@ fun OWInvestmentWidget(
                 Text(
                     text = formatPrice(totalValue, currency, false),
                     maxLines = 1,
-                    style = TextStyle(color = GlanceTheme.colors.primary, fontWeight = FontWeight.Bold)
+                    style = TextStyle(color = GlanceTheme.colors.onSecondary, fontWeight = FontWeight.Bold)
                 )
 
                 if (showTrend) {
@@ -119,7 +121,7 @@ fun OWInvestmentWidget(
                     }
                     val previousPrice = when (section) {
                         SectionType.PORTFOLIO -> item.displayPreviousPrice * item.quantity
-                        SectionType.HISTORICAL -> previousMonthItem?.displayPrice ?: 0.0
+                        SectionType.HISTORY -> previousMonthItem?.displayPrice ?: 0.0
                         else -> item.displayPreviousPrice
                     }
 

@@ -26,7 +26,7 @@ import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWBalance
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
-import com.davidcrespo.onewallet.presentation.designsystem.theme.cardGlowBrush
+import com.davidcrespo.onewallet.presentation.designsystem.theme.gradients
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
 
 @Composable
@@ -48,7 +48,7 @@ fun TotalBalance(
         Box(
             modifier = Modifier
                 .background(
-                    brush = cardGlowBrush(),
+                    brush = MaterialTheme.gradients.cardGlow,
                     shape = RoundedCornerShape(32.dp)
                 )
                 .fillMaxWidth()

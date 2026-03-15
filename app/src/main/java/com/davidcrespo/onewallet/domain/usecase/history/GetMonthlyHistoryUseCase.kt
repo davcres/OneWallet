@@ -1,4 +1,4 @@
-package com.davidcrespo.onewallet.domain.usecase.historical
+package com.davidcrespo.onewallet.domain.usecase.history
 
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.repository.PortfolioRepository

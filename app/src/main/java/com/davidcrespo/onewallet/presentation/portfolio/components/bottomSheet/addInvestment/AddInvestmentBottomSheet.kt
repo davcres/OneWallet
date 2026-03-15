@@ -8,12 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -36,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
+import com.davidcrespo.onewallet.core.composables.EqualHeightGrid
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
@@ -90,15 +87,12 @@ private fun SheetContent(
 
         Spacer(Modifier.height(16.dp))
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 240.dp)
+        EqualHeightGrid(
+            columns = 2,
+            spacing = 14.dp,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            items(InvestmentType.entries) { item ->
+            InvestmentType.entries.forEach { item ->
                 AssetTypeCard(
                     title = stringResource(item.titleRes),
                     subtitle = stringResource(item.subtitleRes),
@@ -111,6 +105,8 @@ private fun SheetContent(
         Spacer(Modifier.height(18.dp))
     }
 }
+
+
 
 @Composable
 private fun Header(onClose: () -> Unit) {
@@ -144,6 +140,7 @@ private fun AssetTypeCard(
     title: String,
     subtitle: String,
     icon: ImageVector,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(16.dp)
@@ -153,8 +150,7 @@ private fun AssetTypeCard(
         color = MaterialTheme.colorScheme.onTertiary,
         tonalElevation = 0.dp,
         shadowElevation = 0.dp,
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .bounceClick(),
         onClick = onClick
     ) {

@@ -1,5 +1,7 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -11,23 +13,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,31 +44,34 @@ import com.davidcrespo.onewallet.core.composables.ErrorBanner
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.pulse
 import com.davidcrespo.onewallet.core.composables.modifiers.privacyBlur
 import com.davidcrespo.onewallet.core.extensions.applyIf
+import com.davidcrespo.onewallet.core.models.ThemeMode
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWFloatingActionButton
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWShakeListener
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.history.HistoryTab
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
+import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.AllocationTab
 import com.davidcrespo.onewallet.presentation.portfolio.components.EmptyInvestments
 import com.davidcrespo.onewallet.presentation.portfolio.components.Header
-import com.davidcrespo.onewallet.presentation.portfolio.components.SegmentedTabs
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddBankBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddFundBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.deleteInvestment.DeleteInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.investmentType.InvestmentTypeBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.updateInvestment.UpdateInvestmentBottomSheet
-import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTab
+import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTabs
 import com.davidcrespo.onewallet.presentation.portfolio.positions.PositionsTab
 import com.davidcrespo.onewallet.presentation.portfolio.prices.PricesTab
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PortfolioRoot(
-    navigateToHistorical: (isBalanceVisible: Boolean) -> Unit,
+    initialTab: PortfolioTabs,
     navigateToMarket: (isCrypto: Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PortfolioViewModel = koinViewModel()
@@ -76,9 +85,9 @@ fun PortfolioRoot(
 
     PortfolioScreen(
         uiState = uiState,
+        initialTab = initialTab,
         onAction = { action ->
-            when(action) {
-                is PortfolioIntent.NavigateToHistorical -> navigateToHistorical(action.isBalanceVisible)
+            when (action) {
                 is PortfolioIntent.NavigateToMarket -> navigateToMarket(action.isCrypto)
                 else -> viewModel.handleIntent(action)
             }
@@ -90,12 +99,12 @@ fun PortfolioRoot(
 @Composable
 private fun PortfolioScreen(
     uiState: PortfolioUiState,
+    initialTab: PortfolioTabs,
     onAction: (PortfolioIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val tabs = remember { PortfolioTab.entries }
-    val pagerState = rememberPagerState(initialPage = 1) { tabs.size }
-    val scope = rememberCoroutineScope()
+    val tabs = remember { PortfolioTabs.entries }
+    var selectedTab by rememberSaveable(initialTab) { mutableStateOf(initialTab) }
     var isBalanceVisible by rememberSaveable { mutableStateOf(true) }
     var fabButtonExpanded by remember { mutableStateOf(false) }
     val stateHolder = rememberSaveableStateHolder()
@@ -139,7 +148,52 @@ private fun PortfolioScreen(
             )
         },
         floatingActionButtonPosition = FabPosition.End,
-        modifier = Modifier.fillMaxSize()
+        bottomBar = {
+            if (uiState.portfolioItems.isNotEmpty()) {
+                Column {
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        thickness = 0.5.dp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f)
+                    )
+                    NavigationBar(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                    ) {
+                        tabs.forEach { tab ->
+                            val selected = selectedTab == tab
+                            val animatedScale by animateFloatAsState(
+                                targetValue = if (selected) 1.2f else 1f,
+                                animationSpec = tween(300, easing = LinearEasing),
+                                label = "nav_item_scale"
+                            )
+                            NavigationBarItem(
+                                selected = selected,
+                                onClick = { selectedTab = tab },
+                                icon = {
+                                    Icon(
+                                        imageVector = tab.icon,
+                                        contentDescription = stringResource(tab.title),
+                                        modifier = Modifier.scale(animatedScale)
+                                    )
+                                },
+                                label = {
+                                    Text(
+                                        text = stringResource(tab.title),
+                                        modifier = Modifier.scale(animatedScale)
+                                    )
+                                },
+                                colors = NavigationBarItemDefaults.colors(
+                                    indicatorColor = Color.Transparent,
+                                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                                    selectedTextColor = MaterialTheme.colorScheme.primary
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        modifier = modifier.fillMaxSize()
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -150,14 +204,16 @@ private fun PortfolioScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(vertical = 16.dp),
+                    .padding(top = 16.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Header(
+                    text = stringResource(selectedTab.description),
                     currency = uiState.selectedCurrency,
+                    themeMode = uiState.themeMode,
                     onCurrencyChange = { onAction(PortfolioIntent.ChangeCurrency) },
-                    navigateToHistorical = { onAction(PortfolioIntent.NavigateToHistorical(isBalanceVisible)) },
+                    onChangeUIMode = { onAction(PortfolioIntent.ToggleTheme(it)) },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
 
@@ -177,33 +233,14 @@ private fun PortfolioScreen(
                         )
                     }
                     else -> {
-                        SegmentedTabs(
-                            selectedIndex = pagerState.currentPage,
-                            titles = tabs.toImmutableList(),
-                            onSelected = { scope.launch { pagerState.animateScrollToPage(it) } },
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        )
-
-                        HorizontalPager(
-                            state = pagerState,
-                            modifier = Modifier.fillMaxSize(),
-                            beyondViewportPageCount = 1
-                        ) { page ->
-                            val tab = tabs[page]
-                            val isActivePage = pagerState.targetPage == page || pagerState.currentPage == page
+                        Crossfade(
+                            targetState = selectedTab,
+                            label = "tab_switch",
+                            modifier = Modifier.weight(1f)
+                        ) { tab ->
                             stateHolder.SaveableStateProvider(key = tab) {
                                 when (tab) {
-                                    PortfolioTab.ALLOCATION -> AllocationTab(
-                                        itemsByType = uiState.portfolioItemsByType,
-                                        totalBalance = uiState.totalBalance,
-                                        previousBalance = uiState.previousBalance,
-                                        currency = uiState.selectedCurrency,
-                                        onSelect = { onAction(PortfolioIntent.SelectInvestmentType(it)) },
-                                        modifier = Modifier.fillMaxSize(),
-                                        isBalanceVisible = isBalanceVisible,
-                                        isActivePage = isActivePage
-                                    )
-                                    PortfolioTab.PORTFOLIO -> PositionsTab(
+                                    PortfolioTabs.POSITIONS -> PositionsTab(
                                         currency = uiState.selectedCurrency,
                                         totalBalance = uiState.totalBalance,
                                         previousBalance = uiState.previousBalance,
@@ -212,14 +249,28 @@ private fun PortfolioScreen(
                                         onEditQuantity = { onAction(PortfolioIntent.EditQuantity(it)) },
                                         changeBalanceVisibility = { isBalanceVisible = !isBalanceVisible },
                                         isBalanceVisible = isBalanceVisible,
-                                        isActivePage = isActivePage
+                                        isActivePage = true
                                     )
-                                    PortfolioTab.PRICES -> PricesTab(
+                                    PortfolioTabs.ALLOCATION -> AllocationTab(
+                                        itemsByType = uiState.portfolioItemsByType,
+                                        totalBalance = uiState.totalBalance,
+                                        previousBalance = uiState.previousBalance,
+                                        currency = uiState.selectedCurrency,
+                                        onSelect = { onAction(PortfolioIntent.SelectInvestmentType(it)) },
+                                        modifier = Modifier.fillMaxSize(),
+                                        isBalanceVisible = isBalanceVisible,
+                                        isActivePage = true
+                                    )
+                                    PortfolioTabs.PRICES -> PricesTab(
                                         currency = uiState.selectedCurrency,
                                         portfolioItems = uiState.portfolioItems,
                                         modifier = Modifier.fillMaxSize(),
                                         isBalanceVisible = isBalanceVisible,
-                                        isActivePage = isActivePage
+                                        isActivePage = true
+                                    )
+                                    PortfolioTabs.HISTORY -> HistoryTab(
+                                        isBalanceVisible = isBalanceVisible,
+                                        modifier = Modifier.fillMaxSize()
                                     )
                                 }
                             }
@@ -360,7 +411,22 @@ private fun PortfolioScreenPreview() {
     OneWalletTheme {
         PortfolioScreen(
             uiState = PortfolioUiState(
-                portfolioItems = persistentListOf(),
+                portfolioItems = persistentListOf(
+                    InvestmentView(
+                        symbol = "AAPL",
+                        name = "Apple",
+                        quantity = 10.0,
+                        type = InvestmentType.STOCK,
+                        originalCurrency = CurrencyView.get(USD),
+                        originalPrice = 150.0,
+                        originalPreviousPrice = 140.0,
+                        displayPrice = 150.0,
+                        displayPreviousPrice = 140.0,
+                        changePercent = 0.0,
+                        month = 0,
+                        year = 0
+                    )
+                ),
                 symbolsWithPrice = persistentListOf("AAPL"),
                 totalBalance = 10.0,
                 previousBalance = 9.0,
@@ -368,8 +434,10 @@ private fun PortfolioScreenPreview() {
                 isFundDialogVisible = false,
                 isBankDialogVisible = false,
                 isLoading = false,
+                themeMode = ThemeMode.LIGHT,
                 error = null
             ),
+            initialTab = PortfolioTabs.POSITIONS,
             onAction = {}
         )
     }

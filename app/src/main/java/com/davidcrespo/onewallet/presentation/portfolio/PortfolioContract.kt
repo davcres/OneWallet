@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
 import androidx.compose.runtime.Immutable
+import com.davidcrespo.onewallet.core.models.ThemeMode
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
@@ -25,12 +26,14 @@ data class PortfolioUiState(
     val isOtherDialogVisible: Boolean = false,
     val typeDetail: InvestmentType? = null,
     val isLoading: Boolean = true,
+    val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val error: String? = null
 )
 
 sealed interface PortfolioIntent {
     data object UpdateBalance : PortfolioIntent
     data object ChangeCurrency : PortfolioIntent
+    data class ToggleTheme(val themeMode: ThemeMode) : PortfolioIntent
 
     data class EditQuantity(val item: InvestmentView?) : PortfolioIntent
     data class UpdateQuantity(val item: InvestmentView, val quantity: Double) : PortfolioIntent
@@ -56,7 +59,6 @@ sealed interface PortfolioIntent {
     data class SetError(val error: String) : PortfolioIntent
     data object ClearError : PortfolioIntent
 
-    data class NavigateToHistorical(val isBalanceVisible: Boolean) : PortfolioIntent
     data class NavigateToMarket(val isCrypto: Boolean) : PortfolioIntent
 
     data object GetItemsByType : PortfolioIntent

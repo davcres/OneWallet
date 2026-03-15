@@ -3,6 +3,7 @@ package com.davidcrespo.onewallet.presentation.portfolio
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.davidcrespo.onewallet.core.models.ThemeMode
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.UNKNOWN
@@ -10,6 +11,8 @@ import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.domain.model.investment.isManual
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
+import com.davidcrespo.onewallet.domain.usecase.appRoot.GetThemeUseCase
+import com.davidcrespo.onewallet.domain.usecase.appRoot.SetThemeUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.AddInvestmentToPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetInvestmentPriceUseCase
@@ -27,13 +30,19 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import java.time.LocalDate
+
+private const val SUBSCRIPTION_DURATION = 5_000L
 
 class PortfolioViewModel(
     private val getCurrencyRateUseCase: GetCurrencyRateUseCase,
@@ -44,16 +53,29 @@ class PortfolioViewModel(
     private val removePortfolioItemUseCase: RemovePortfolioItemUseCase,
     private val financialRepository: FinancialRepository,
     private val currencyConverter: CurrencyConverter,
+    private val getThemeUseCase: GetThemeUseCase,
+    private val setThemeUseCase: SetThemeUseCase,
     private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(PortfolioUiState())
-    val uiState = _uiState.asStateFlow()
+    val uiState: StateFlow<PortfolioUiState> =
+        combine(
+            _uiState,
+            getThemeUseCase().distinctUntilChanged()
+        ) { state, themeMode ->
+            state.copy(themeMode = themeMode)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(SUBSCRIPTION_DURATION),
+            initialValue = _uiState.value
+        )
 
     fun handleIntent(intent: PortfolioIntent) {
         when (intent) {
             is PortfolioIntent.UpdateBalance -> setTotalBalance()
             is PortfolioIntent.ChangeCurrency -> changeCurrency()
+            is PortfolioIntent.ToggleTheme -> toggleTheme(intent.themeMode)
 
             is PortfolioIntent.EditQuantity -> _uiState.update { it.copy(editingItem = intent.item) }
             is PortfolioIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity)
@@ -79,7 +101,6 @@ class PortfolioViewModel(
             is PortfolioIntent.SetError -> _uiState.update { it.copy(error = intent.error) }
             is PortfolioIntent.ClearError -> _uiState.update { it.copy(error = null) }
 
-            is PortfolioIntent.NavigateToHistorical -> {}
             is PortfolioIntent.NavigateToMarket -> {}
 
             is PortfolioIntent.GetItemsByType -> getItemsByType()
@@ -483,6 +504,12 @@ class PortfolioViewModel(
                     .toImmutableList()
 
             _uiState.update { it.copy(portfolioItemsByType = groups) }
+        }
+    }
+
+    private fun toggleTheme(mode: ThemeMode) {
+        viewModelScope.launch {
+            setThemeUseCase(mode)
         }
     }
 }

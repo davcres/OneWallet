@@ -54,7 +54,7 @@ fun PortfolioList(
             items = items,
             key = { it.symbol },
             state = state,
-            contentPadding = PaddingValues(horizontal = 16.dp),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 32.dp),
             modifier = modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             itemContent = { modifier, portfolioItem, index ->

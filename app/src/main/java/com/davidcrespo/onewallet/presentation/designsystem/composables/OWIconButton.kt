@@ -23,12 +23,12 @@ fun OWIconButton(
         modifier = modifier
             .bounceClick()
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.onTertiary)
+            .background(MaterialTheme.colorScheme.secondary)
     ) {
         Icon(
             imageVector = imageVector,
             contentDescription = contentDescription,
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.onSecondary
         )
     }
 }
