@@ -191,4 +191,8 @@ dependencies {
 
     // Splash Screen
     implementation(libs.core.splashscreen)
+
+    // Onboarding
+    implementation(libs.onboarding)
+
 }

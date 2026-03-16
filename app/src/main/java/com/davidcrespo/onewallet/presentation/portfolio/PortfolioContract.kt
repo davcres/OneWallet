@@ -7,6 +7,7 @@ import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
+import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTabs
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -64,4 +65,6 @@ sealed interface PortfolioIntent {
     data object GetItemsByType : PortfolioIntent
     data class SelectInvestmentType(val type: InvestmentType?) : PortfolioIntent
     data object DismissInvestmentType : PortfolioIntent
+
+    data class OnNewTab(val tab: PortfolioTabs) : PortfolioIntent
 }

@@ -9,9 +9,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FabPosition
@@ -35,7 +37,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -65,9 +69,20 @@ import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.u
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTabs
 import com.davidcrespo.onewallet.presentation.portfolio.positions.PositionsTab
 import com.davidcrespo.onewallet.presentation.portfolio.prices.PricesTab
+import com.pseudoankit.coachmark.LocalCoachMarkScope
+import com.pseudoankit.coachmark.UnifyCoachmark
+import com.pseudoankit.coachmark.model.HighlightedViewConfig
+import com.pseudoankit.coachmark.model.OverlayClickEvent
+import com.pseudoankit.coachmark.model.ToolTipPlacement
+import com.pseudoankit.coachmark.overlay.DimOverlayEffect
+import com.pseudoankit.coachmark.scope.enableCoachMark
+import com.pseudoankit.coachmark.shape.Arrow
+import com.pseudoankit.coachmark.shape.Balloon
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
+import kotlin.math.abs
 
 @Composable
 fun PortfolioRoot(
@@ -77,34 +92,55 @@ fun PortfolioRoot(
     viewModel: PortfolioViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var selectedTab by rememberSaveable(initialTab) { mutableStateOf(initialTab) }
 
     LaunchedEffect(uiState.portfolioItems) {
         viewModel.handleIntent(PortfolioIntent.UpdateBalance)
         viewModel.handleIntent(PortfolioIntent.GetItemsByType)
     }
 
-    PortfolioScreen(
-        uiState = uiState,
-        initialTab = initialTab,
-        onAction = { action ->
-            when (action) {
-                is PortfolioIntent.NavigateToMarket -> navigateToMarket(action.isCrypto)
-                else -> viewModel.handleIntent(action)
+    UnifyCoachmark(
+        overlayEffect = DimOverlayEffect(Color.Black.copy(alpha = .5f)),
+        onOverlayClicked = {
+            val nextTab = when (selectedTab) {
+                PortfolioTabs.POSITIONS -> PortfolioTabs.ALLOCATION
+                PortfolioTabs.ALLOCATION -> PortfolioTabs.PRICES
+                PortfolioTabs.PRICES -> PortfolioTabs.HISTORY
+                PortfolioTabs.HISTORY -> PortfolioTabs.POSITIONS
             }
-        },
-        modifier = modifier
-    )
+            selectedTab = nextTab
+            OverlayClickEvent.GoNext
+        }
+    ) {
+        LaunchedEffect(uiState.portfolioItems) {
+            delay(2000)
+            if (uiState.portfolioItems.isNotEmpty()) {
+                show(*PortfolioTabs.entries.toTypedArray())
+            }
+        }
+
+        PortfolioScreen(
+            uiState = uiState,
+            selectedTab = selectedTab,
+            onAction = { action ->
+                when (action) {
+                    is PortfolioIntent.OnNewTab -> selectedTab = action.tab
+                    is PortfolioIntent.NavigateToMarket -> navigateToMarket(action.isCrypto)
+                    else -> viewModel.handleIntent(action)
+                }
+            },
+            modifier = modifier
+        )
+    }
 }
 
 @Composable
 private fun PortfolioScreen(
     uiState: PortfolioUiState,
-    initialTab: PortfolioTabs,
+    selectedTab: PortfolioTabs,
     onAction: (PortfolioIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val tabs = remember { PortfolioTabs.entries }
-    var selectedTab by rememberSaveable(initialTab) { mutableStateOf(initialTab) }
     var isBalanceVisible by rememberSaveable { mutableStateOf(true) }
     var fabButtonExpanded by remember { mutableStateOf(false) }
     val stateHolder = rememberSaveableStateHolder()
@@ -159,7 +195,7 @@ private fun PortfolioScreen(
                     NavigationBar(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer
                     ) {
-                        tabs.forEach { tab ->
+                        PortfolioTabs.entries.forEach { tab ->
                             val selected = selectedTab == tab
                             val animatedScale by animateFloatAsState(
                                 targetValue = if (selected) 1.2f else 1f,
@@ -168,7 +204,7 @@ private fun PortfolioScreen(
                             )
                             NavigationBarItem(
                                 selected = selected,
-                                onClick = { selectedTab = tab },
+                                onClick = { onAction(PortfolioIntent.OnNewTab(tab)) },
                                 icon = {
                                     Icon(
                                         imageVector = tab.icon,
@@ -186,7 +222,57 @@ private fun PortfolioScreen(
                                     indicatorColor = Color.Transparent,
                                     selectedIconColor = MaterialTheme.colorScheme.primary,
                                     selectedTextColor = MaterialTheme.colorScheme.primary
-                                )
+                                ),
+                                modifier = Modifier
+                                    .enableCoachMark(
+                                        key = tab,
+                                        toolTipPlacement = ToolTipPlacement.Top,
+                                        highlightedViewConfig = HighlightedViewConfig(
+                                            shape = HighlightedViewConfig.Shape.Rect(100.dp),
+                                            padding = PaddingValues(0.dp)
+                                        ),
+                                        tooltip = {
+                                            val hOffset = when (tab) {
+                                                PortfolioTabs.POSITIONS -> 56.dp
+                                                PortfolioTabs.HISTORY -> (-56).dp
+                                                else -> 0.dp
+                                            }
+                                            // Modifier.layout para que el offset se aplique en la fase de medición
+                                            // antes de que se empiece a dibujar el componente
+                                            Box(modifier = Modifier.layout { measurable, constraints ->
+                                                val placeable = measurable.measure(constraints)
+                                                val offsetPx = hOffset.roundToPx()
+                                                // We expand the width to encompass the offset,
+                                                // ensuring the library sees the full area.
+                                                val expandedWidth = placeable.width + abs(offsetPx) * 2
+                                                layout(expandedWidth, placeable.height) {
+                                                    // Center the original balloon, then apply the offset.
+                                                    val x = (expandedWidth - placeable.width) / 2 + offsetPx
+                                                    placeable.place(x, 0)
+                                                }
+                                            }) {
+                                                Balloon(
+                                                    arrow = when (tab) {
+                                                        PortfolioTabs.POSITIONS -> Arrow.Bottom(bias = 0.2f)
+                                                        PortfolioTabs.HISTORY -> Arrow.Bottom(bias = 0.8f)
+                                                        else -> Arrow.Bottom()
+                                                    },
+                                                    modifier = Modifier.widthIn(max = 150.dp),
+                                                    bgColor = MaterialTheme.colorScheme.primaryContainer,
+                                                    cornerRadius = 16.dp,
+                                                    padding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+                                                ) {
+                                                    Text(
+                                                        text = stringResource(tab.tooltip),
+                                                        style = MaterialTheme.typography.bodyMedium,
+                                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                                        textAlign = TextAlign.Center
+                                                    )
+                                                }
+                                            }
+                                        },
+                                        coachMarkScope = LocalCoachMarkScope.current
+                                    )
                             )
                         }
                     }
@@ -437,8 +523,8 @@ private fun PortfolioScreenPreview() {
                 themeMode = ThemeMode.LIGHT,
                 error = null
             ),
-            initialTab = PortfolioTabs.POSITIONS,
-            onAction = {}
+            selectedTab = PortfolioTabs.POSITIONS,
+            onAction = {},
         )
     }
 }

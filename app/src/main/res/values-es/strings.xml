@@ -135,6 +135,12 @@
     </string-array>
     <string name="your_investments">Tus inversiones</string>
 
+    <!-- Tooltips -->
+    <string name="tooltip_positions">Consulta tus inversiones activas y el balance total.</string>
+    <string name="tooltip_allocation">Visualiza cómo se distribuye tu capital por tipo de activo.</string>
+    <string name="tooltip_prices">Sigue los precios de mercado en tiempo real para tus acciones y cripto.</string>
+    <string name="tooltip_history">Analiza la evolución de tu cartera con datos históricos mensuales.</string>
+
     <!-- Widget -->
     <string name="widget_portfolio_description">Consulta los valores de tu cartera</string>
     <string name="widget_stocks_description">Sigue la cotización de tus activos en tiempo real</string>

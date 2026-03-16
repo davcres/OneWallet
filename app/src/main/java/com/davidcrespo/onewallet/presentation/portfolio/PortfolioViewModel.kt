@@ -102,6 +102,7 @@ class PortfolioViewModel(
             is PortfolioIntent.ClearError -> _uiState.update { it.copy(error = null) }
 
             is PortfolioIntent.NavigateToMarket -> {}
+            is PortfolioIntent.OnNewTab -> {}
 
             is PortfolioIntent.GetItemsByType -> getItemsByType()
             is PortfolioIntent.SelectInvestmentType -> _uiState.update { it.copy(typeDetail = intent.type) }

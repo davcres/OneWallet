@@ -136,6 +136,12 @@
     </string-array>
     <string name="your_investments">Your investments</string>
 
+    <!-- Tooltips -->
+    <string name="tooltip_positions">Check your active investments and total balance.</string>
+    <string name="tooltip_allocation">Visualize how your capital is distributed by asset type.</string>
+    <string name="tooltip_prices">Track real-time market prices for your stocks and crypto.</string>
+    <string name="tooltip_history">Analyze your portfolio evolution with historical monthly data.</string>
+
     <!-- Widget -->
     <string name="reload_cd">Reload</string>
     <string name="asset_prices_title">Market Prices</string>
