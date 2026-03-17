@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -13,9 +14,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,6 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
@@ -33,6 +37,12 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestm
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioCoachmarks
+import com.pseudoankit.coachmark.LocalCoachMarkScope
+import com.pseudoankit.coachmark.model.ToolTipPlacement
+import com.pseudoankit.coachmark.scope.enableCoachMark
+import com.pseudoankit.coachmark.shape.Arrow
+import com.pseudoankit.coachmark.shape.Balloon
 import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,7 +65,29 @@ fun PortfolioList(
             key = { it.symbol },
             state = state,
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 32.dp),
-            modifier = modifier.fillMaxSize(),
+            modifier = modifier
+                .fillMaxSize()
+                .enableCoachMark(
+                    key = PortfolioCoachmarks.PORTFOLIO_LIST,
+                    toolTipPlacement = ToolTipPlacement.Top,
+                    tooltip = {
+                        Balloon(
+                            arrow = Arrow.Bottom(),
+                            modifier = Modifier.widthIn(max = 200.dp),
+                            bgColor = MaterialTheme.colorScheme.primaryContainer,
+                            cornerRadius = 16.dp,
+                            padding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+                        ) {
+                            Text(
+                                text = stringResource(PortfolioCoachmarks.PORTFOLIO_LIST.tooltip),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    },
+                    coachMarkScope = LocalCoachMarkScope.current
+                ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             itemContent = { modifier, portfolioItem, index ->
                 val density = LocalDensity.current

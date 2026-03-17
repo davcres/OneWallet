@@ -141,6 +141,12 @@
     <string name="tooltip_allocation">Visualize how your capital is distributed by asset type.</string>
     <string name="tooltip_prices">Track real-time market prices for your stocks and crypto.</string>
     <string name="tooltip_history">Analyze your portfolio evolution with historical monthly data.</string>
+    <string name="tooltip_total_balance">View your total portfolio balance and daily change.</string>
+    <string name="tooltip_portfolio_list">Track your individual assets and their performance.</string>
+    <string name="tooltip_allocation_graph">Visualize your assets distribution with this interactive chart.</string>
+    <string name="tooltip_prices_list">Track real-time market prices for your assets.</string>
+    <string name="tooltip_history_list">View your portfolio performance over time.</string>
+    <string name="tooltip_add_investment">Click to select an asset and start building your portfolio.</string>
 
     <!-- Widget -->
     <string name="reload_cd">Reload</string>

@@ -66,6 +66,7 @@ import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.a
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.deleteInvestment.DeleteInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.investmentType.InvestmentTypeBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.updateInvestment.UpdateInvestmentBottomSheet
+import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioCoachmarks
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTabs
 import com.davidcrespo.onewallet.presentation.portfolio.positions.PositionsTab
 import com.davidcrespo.onewallet.presentation.portfolio.prices.PricesTab
@@ -93,6 +94,7 @@ fun PortfolioRoot(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var selectedTab by rememberSaveable(initialTab) { mutableStateOf(initialTab) }
+    var coachmarkStep by rememberSaveable { mutableStateOf(0) }
 
     LaunchedEffect(uiState.portfolioItems) {
         viewModel.handleIntent(PortfolioIntent.UpdateBalance)
@@ -102,20 +104,27 @@ fun PortfolioRoot(
     UnifyCoachmark(
         overlayEffect = DimOverlayEffect(Color.Black.copy(alpha = .5f)),
         onOverlayClicked = {
-            val nextTab = when (selectedTab) {
-                PortfolioTabs.POSITIONS -> PortfolioTabs.ALLOCATION
-                PortfolioTabs.ALLOCATION -> PortfolioTabs.PRICES
-                PortfolioTabs.PRICES -> PortfolioTabs.HISTORY
-                PortfolioTabs.HISTORY -> PortfolioTabs.POSITIONS
+            coachmarkStep++
+            val nextStep = when (coachmarkStep) {
+                3 -> PortfolioTabs.ALLOCATION
+                5 -> PortfolioTabs.PRICES
+                7 -> PortfolioTabs.HISTORY
+                9 -> PortfolioTabs.POSITIONS
+                else -> null
             }
-            selectedTab = nextTab
+            nextStep?.let { selectedTab = it }
             OverlayClickEvent.GoNext
         }
     ) {
-        LaunchedEffect(uiState.portfolioItems) {
+        LaunchedEffect(uiState.portfolioItems, selectedTab) {
             delay(2000)
             if (uiState.portfolioItems.isNotEmpty()) {
-                show(*PortfolioTabs.entries.toTypedArray())
+                if (coachmarkStep == 9) {
+                    show(PortfolioCoachmarks.ADD_INVESTMENT)
+                } else {
+                    val onboardingTab = PortfolioCoachmarks.entries.toTypedArray().filter { it.tab == selectedTab && it != PortfolioCoachmarks.ADD_INVESTMENT }
+                    show(*onboardingTab.toTypedArray())
+                }
             }
         }
 
@@ -181,6 +190,27 @@ private fun PortfolioScreen(
                 onExpandedChange = { fabButtonExpanded = it },
                 modifier = Modifier
                     .applyIf(uiState.portfolioItems.isEmpty()) { pulse() }
+                    .enableCoachMark(
+                        key = PortfolioCoachmarks.ADD_INVESTMENT,
+                        toolTipPlacement = ToolTipPlacement.Start,
+                        tooltip = {
+                            Balloon(
+                                arrow = Arrow.End(),
+                                modifier = Modifier.widthIn(max = 200.dp),
+                                bgColor = MaterialTheme.colorScheme.primaryContainer,
+                                cornerRadius = 16.dp,
+                                padding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(PortfolioCoachmarks.ADD_INVESTMENT.tooltip),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        },
+                        coachMarkScope = LocalCoachMarkScope.current
+                    )
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -202,6 +232,14 @@ private fun PortfolioScreen(
                                 animationSpec = tween(300, easing = LinearEasing),
                                 label = "nav_item_scale"
                             )
+
+                            val coachmarkKey = when (tab) {
+                                PortfolioTabs.POSITIONS -> PortfolioCoachmarks.POSITIONS_TAB
+                                PortfolioTabs.ALLOCATION -> PortfolioCoachmarks.ALLOCATION_TAB
+                                PortfolioTabs.PRICES -> PortfolioCoachmarks.PRICES_TAB
+                                PortfolioTabs.HISTORY -> PortfolioCoachmarks.HISTORY_TAB
+                            }
+
                             NavigationBarItem(
                                 selected = selected,
                                 onClick = { onAction(PortfolioIntent.OnNewTab(tab)) },
@@ -225,7 +263,7 @@ private fun PortfolioScreen(
                                 ),
                                 modifier = Modifier
                                     .enableCoachMark(
-                                        key = tab,
+                                        key = coachmarkKey,
                                         toolTipPlacement = ToolTipPlacement.Top,
                                         highlightedViewConfig = HighlightedViewConfig(
                                             shape = HighlightedViewConfig.Shape.Rect(100.dp),
@@ -263,7 +301,7 @@ private fun PortfolioScreen(
                                                     padding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
                                                 ) {
                                                     Text(
-                                                        text = stringResource(tab.tooltip),
+                                                        text = stringResource(coachmarkKey.tooltip),
                                                         style = MaterialTheme.typography.bodyMedium,
                                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                                         textAlign = TextAlign.Center
@@ -315,7 +353,9 @@ private fun PortfolioScreen(
                     }
                     uiState.portfolioItems.isEmpty() -> {
                         EmptyInvestments(
-                            modifier = Modifier.fillMaxSize().padding(16.dp)
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
                         )
                     }
                     else -> {
