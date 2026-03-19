@@ -33,7 +33,9 @@ fun PositionsTab(
     onEditQuantity: (InvestmentView) -> Unit,
     changeBalanceVisibility: () -> Unit,
     isBalanceVisible: Boolean,
-    isActivePage: Boolean = true
+    isActivePage: Boolean = true,
+    isEditOnboardingActive: Boolean = false,
+    isDeleteOnboardingActive: Boolean = false
 ) {
     PortfolioList(
         header = {
@@ -66,7 +68,9 @@ fun PositionsTab(
         onRemove = onRemoveItem,
         onEdit = onEditQuantity,
         isBalanceVisible = isBalanceVisible,
-        shouldAnimate = isActivePage
+        shouldAnimate = isActivePage,
+        isEditOnboardingActive = isEditOnboardingActive,
+        isDeleteOnboardingActive = isDeleteOnboardingActive
     )
 }
 

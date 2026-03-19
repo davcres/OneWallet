@@ -52,13 +52,14 @@ fun OWInvestmentItem(
     onClick: (InvestmentView) -> Unit,
     isBalanceVisible: Boolean,
     onGloballyPositioned: (LayoutCoordinates) -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isPressed: Boolean = false
 ) {
     Card(
         modifier = modifier
             .onGloballyPositioned { onGloballyPositioned(it) }
             .fillMaxWidth()
-            .bounceClick(),
+            .bounceClick(isPressed),
         shape = CircleShape,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onTertiaryContainer),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),

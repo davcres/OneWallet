@@ -7,6 +7,7 @@ import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
+import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioCoachmarks
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTabs
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -21,6 +22,7 @@ data class PortfolioUiState(
     val previousBalance: Double = 0.0,
     val editingItem: InvestmentView? = null,
     val deletingItem: InvestmentView? = null,
+    val isAddInvestmentVisible: Boolean = false,
     val isFundDialogVisible: Boolean = false,
     val isEtfDialogVisible: Boolean = false,
     val isBankDialogVisible: Boolean = false,
@@ -28,18 +30,24 @@ data class PortfolioUiState(
     val typeDetail: InvestmentType? = null,
     val isLoading: Boolean = true,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
-    val error: String? = null
+    val error: String? = null,
+    val onboardingPlaylist: ImmutableList<PortfolioCoachmarks> = persistentListOf(),
+    val selectedTab: PortfolioTabs = PortfolioTabs.POSITIONS
 )
 
 sealed interface PortfolioIntent {
     data object UpdateBalance : PortfolioIntent
     data object ChangeCurrency : PortfolioIntent
+    data class SetTab(val tab: PortfolioTabs) : PortfolioIntent
     data class ToggleTheme(val themeMode: ThemeMode) : PortfolioIntent
 
     data class EditQuantity(val item: InvestmentView?) : PortfolioIntent
     data class UpdateQuantity(val item: InvestmentView, val quantity: Double) : PortfolioIntent
     data class RemoveItem(val item: InvestmentView) : PortfolioIntent
     data class ShowDeleteDialog(val item: InvestmentView?) : PortfolioIntent
+
+    data object ShowAddInvestment : PortfolioIntent
+    data object DismissAddInvestment : PortfolioIntent
 
     data class AddFundItem(val name: String, val quantity: Double) : PortfolioIntent
     data object ShowFundDialog : PortfolioIntent
@@ -66,5 +74,6 @@ sealed interface PortfolioIntent {
     data class SelectInvestmentType(val type: InvestmentType?) : PortfolioIntent
     data object DismissInvestmentType : PortfolioIntent
 
-    data class OnNewTab(val tab: PortfolioTabs) : PortfolioIntent
+    data object StartOnboarding : PortfolioIntent
+    data object NextOnboardingStep : PortfolioIntent
 }

@@ -15,9 +15,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.auxiliar.ButtonState
 
-fun Modifier.bounceClick() = composed {
+fun Modifier.bounceClick(isPressedForced: Boolean = false) = composed {
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
-    val scale by animateFloatAsState(if (buttonState == ButtonState.Pressed) 0.97f else 1f)
+    val isPressedActual = buttonState == ButtonState.Pressed
+    val scale by animateFloatAsState(if (isPressedForced) 0.95f else if (isPressedActual) 0.97f else 1f)
 
     this
         .graphicsLayer {

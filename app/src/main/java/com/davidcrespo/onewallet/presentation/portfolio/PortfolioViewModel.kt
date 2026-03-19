@@ -24,6 +24,8 @@ import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toDomain
 import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
+import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioCoachmarks
+import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTabs
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -75,12 +77,16 @@ class PortfolioViewModel(
         when (intent) {
             is PortfolioIntent.UpdateBalance -> setTotalBalance()
             is PortfolioIntent.ChangeCurrency -> changeCurrency()
+            is PortfolioIntent.SetTab -> _uiState.update { it.copy(selectedTab = intent.tab) }
             is PortfolioIntent.ToggleTheme -> toggleTheme(intent.themeMode)
 
             is PortfolioIntent.EditQuantity -> _uiState.update { it.copy(editingItem = intent.item) }
             is PortfolioIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity)
             is PortfolioIntent.RemoveItem -> removeItem(intent.item)
             is PortfolioIntent.ShowDeleteDialog -> _uiState.update { it.copy(deletingItem = intent.item) }
+
+            is PortfolioIntent.ShowAddInvestment -> _uiState.update { it.copy(isAddInvestmentVisible = true) }
+            is PortfolioIntent.DismissAddInvestment -> _uiState.update { it.copy(isAddInvestmentVisible = false) }
 
             is PortfolioIntent.AddFundItem -> addFundItem(intent.name, intent.quantity)
             is PortfolioIntent.ShowFundDialog -> _uiState.update { it.copy(isFundDialogVisible = true) }
@@ -102,11 +108,40 @@ class PortfolioViewModel(
             is PortfolioIntent.ClearError -> _uiState.update { it.copy(error = null) }
 
             is PortfolioIntent.NavigateToMarket -> {}
-            is PortfolioIntent.OnNewTab -> {}
 
             is PortfolioIntent.GetItemsByType -> getItemsByType()
             is PortfolioIntent.SelectInvestmentType -> _uiState.update { it.copy(typeDetail = intent.type) }
             is PortfolioIntent.DismissInvestmentType -> _uiState.update { it.copy(typeDetail = null) }
+
+            is PortfolioIntent.StartOnboarding -> startOnboarding()
+            is PortfolioIntent.NextOnboardingStep -> nextOnboardingStep()
+        }
+    }
+
+    private fun startOnboarding() {
+        _uiState.update { 
+            it.copy(onboardingPlaylist = PortfolioCoachmarks.entries.toImmutableList()) 
+        }
+    }
+
+    private fun nextOnboardingStep() {
+        _uiState.update { state ->
+            val currentPlaylist = state.onboardingPlaylist.toMutableList()
+            if (currentPlaylist.isEmpty()) return@update state
+
+            val justFinished = currentPlaylist.removeAt(0)
+            val next = currentPlaylist.firstOrNull()
+
+            if (next != null && next.tab != justFinished.tab) {
+                state.copy(
+                    selectedTab = next.tab,
+                    onboardingPlaylist = currentPlaylist.toImmutableList()
+                )
+            } else {
+                state.copy(
+                    onboardingPlaylist = currentPlaylist.toImmutableList()
+                )
+            }
         }
     }
 

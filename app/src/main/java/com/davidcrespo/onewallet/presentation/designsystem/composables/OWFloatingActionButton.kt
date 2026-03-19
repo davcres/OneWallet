@@ -26,10 +26,12 @@ import kotlin.math.max
 fun OWFloatingActionButton(
     expanded: Boolean,
     onExpandedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isPressedForced: Boolean = false
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
+    val isPressedActual by interactionSource.collectIsPressedAsState()
+    val pressed = isPressedActual || isPressedForced
 
     val rotation by animateFloatAsState(
         targetValue = if (expanded) 135f else 0f,
@@ -41,7 +43,7 @@ fun OWFloatingActionButton(
     )
 
     val pressedRotation by animateFloatAsState(
-        targetValue = if (isPressed) 315f else 0f,
+        targetValue = if (pressed) 315f else 0f,
         animationSpec = tween(
             durationMillis = 3000
         ),
@@ -54,7 +56,7 @@ fun OWFloatingActionButton(
         shape = CircleShape,
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
-        modifier = modifier.bounceClick()
+        modifier = modifier.bounceClick(pressed)
     ) {
         Icon(
             imageVector = Icons.Default.Add,

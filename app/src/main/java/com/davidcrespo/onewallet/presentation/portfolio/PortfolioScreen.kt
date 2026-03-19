@@ -93,47 +93,92 @@ fun PortfolioRoot(
     viewModel: PortfolioViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var selectedTab by rememberSaveable(initialTab) { mutableStateOf(initialTab) }
-    var coachmarkStep by rememberSaveable { mutableStateOf(0) }
 
     LaunchedEffect(uiState.portfolioItems) {
+        viewModel.handleIntent(PortfolioIntent.SetTab(initialTab))
         viewModel.handleIntent(PortfolioIntent.UpdateBalance)
         viewModel.handleIntent(PortfolioIntent.GetItemsByType)
     }
 
+    var coachMarkScope by remember { mutableStateOf<com.pseudoankit.coachmark.scope.CoachMarkScope?>(null) }
+
     UnifyCoachmark(
         overlayEffect = DimOverlayEffect(Color.Black.copy(alpha = .5f)),
         onOverlayClicked = {
-            coachmarkStep++
-            val nextStep = when (coachmarkStep) {
-                3 -> PortfolioTabs.ALLOCATION
-                5 -> PortfolioTabs.PRICES
-                7 -> PortfolioTabs.HISTORY
-                9 -> PortfolioTabs.POSITIONS
-                else -> null
+            val current = uiState.onboardingPlaylist.firstOrNull()
+            if (current == PortfolioCoachmarks.EDIT_INVESTMENT) {
+                uiState.portfolioItems.firstOrNull()?.let {
+                    viewModel.handleIntent(PortfolioIntent.EditQuantity(it))
+                    viewModel.handleIntent(PortfolioIntent.NextOnboardingStep)
+                    coachMarkScope?.hide()
+                }
+                OverlayClickEvent.None
+            } else if (current == PortfolioCoachmarks.DELETE_INVESTMENT) {
+                uiState.portfolioItems.firstOrNull()?.let {
+                    viewModel.handleIntent(PortfolioIntent.ShowDeleteDialog(it))
+                    viewModel.handleIntent(PortfolioIntent.NextOnboardingStep)
+                    coachMarkScope?.hide()
+                }
+                OverlayClickEvent.None
+            } else if (current == PortfolioCoachmarks.ADD_INVESTMENT) {
+                viewModel.handleIntent(PortfolioIntent.ShowAddInvestment)
+                viewModel.handleIntent(PortfolioIntent.NextOnboardingStep)
+                coachMarkScope?.hide()
+                OverlayClickEvent.None
+            } else if (uiState.editingItem == null && uiState.deletingItem == null && !uiState.isAddInvestmentVisible) {
+                viewModel.handleIntent(PortfolioIntent.NextOnboardingStep)
+                OverlayClickEvent.GoNext
+            } else {
+                OverlayClickEvent.None
             }
-            nextStep?.let { selectedTab = it }
-            OverlayClickEvent.GoNext
         }
     ) {
-        LaunchedEffect(uiState.portfolioItems, selectedTab) {
-            delay(2000)
-            if (uiState.portfolioItems.isNotEmpty()) {
-                if (coachmarkStep == 9) {
-                    show(PortfolioCoachmarks.ADD_INVESTMENT)
-                } else {
-                    val onboardingTab = PortfolioCoachmarks.entries.toTypedArray().filter { it.tab == selectedTab && it != PortfolioCoachmarks.ADD_INVESTMENT }
-                    show(*onboardingTab.toTypedArray())
+        coachMarkScope = this
+        // Initial trigger
+        LaunchedEffect(uiState.portfolioItems) {
+            if (uiState.portfolioItems.isNotEmpty() && uiState.onboardingPlaylist.isEmpty()) {
+                viewModel.handleIntent(PortfolioIntent.StartOnboarding)
+            }
+        }
+
+        // Trigger onboarding for each tab
+        LaunchedEffect(uiState.onboardingPlaylist.firstOrNull()?.tab) {
+            if (uiState.onboardingPlaylist.isNotEmpty()) {
+                val currentTabBatch = mutableListOf<PortfolioCoachmarks>()
+                for (item in uiState.onboardingPlaylist) {
+                    if (item.tab == uiState.selectedTab) {
+                        currentTabBatch.add(item)
+                        if (item == PortfolioCoachmarks.EDIT_INVESTMENT || item == PortfolioCoachmarks.DELETE_INVESTMENT || item == PortfolioCoachmarks.ADD_INVESTMENT) break
+                    } else break
                 }
+
+                if (currentTabBatch.isNotEmpty()) {
+                    delay(600)
+                    show(*currentTabBatch.toTypedArray())
+                }
+            }
+        }
+
+        // Resume onboarding after closing edit bottom sheet
+        LaunchedEffect(uiState.editingItem) {
+            if (uiState.editingItem == null && uiState.onboardingPlaylist.firstOrNull() == PortfolioCoachmarks.DELETE_INVESTMENT) {
+                delay(500) // Wait for bottom sheet to close
+                show(PortfolioCoachmarks.DELETE_INVESTMENT)
+            }
+        }
+
+        // Resume onboarding after closing delete bottom sheet
+        LaunchedEffect(uiState.deletingItem) {
+            if (uiState.deletingItem == null && uiState.onboardingPlaylist.firstOrNull() == PortfolioCoachmarks.ADD_INVESTMENT) {
+                delay(500) // Wait for bottom sheet to close
+                show(PortfolioCoachmarks.ADD_INVESTMENT)
             }
         }
 
         PortfolioScreen(
             uiState = uiState,
-            selectedTab = selectedTab,
             onAction = { action ->
                 when (action) {
-                    is PortfolioIntent.OnNewTab -> selectedTab = action.tab
                     is PortfolioIntent.NavigateToMarket -> navigateToMarket(action.isCrypto)
                     else -> viewModel.handleIntent(action)
                 }
@@ -146,12 +191,10 @@ fun PortfolioRoot(
 @Composable
 private fun PortfolioScreen(
     uiState: PortfolioUiState,
-    selectedTab: PortfolioTabs,
     onAction: (PortfolioIntent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isBalanceVisible by rememberSaveable { mutableStateOf(true) }
-    var fabButtonExpanded by remember { mutableStateOf(false) }
     val stateHolder = rememberSaveableStateHolder()
 
     val hideBackground =
@@ -159,10 +202,29 @@ private fun PortfolioScreen(
                 uiState.isEtfDialogVisible ||
                 uiState.isBankDialogVisible ||
                 uiState.isOtherDialogVisible ||
+                uiState.isAddInvestmentVisible ||
                 uiState.editingItem != null ||
                 uiState.deletingItem != null ||
-                uiState.typeDetail != null ||
-                fabButtonExpanded
+                uiState.typeDetail != null
+
+    val isEditOnboardingActive = uiState.onboardingPlaylist.firstOrNull() == PortfolioCoachmarks.EDIT_INVESTMENT && !hideBackground
+    val isDeleteOnboardingActive = uiState.onboardingPlaylist.firstOrNull() == PortfolioCoachmarks.DELETE_INVESTMENT && !hideBackground
+    val isAddOnboardingActive = uiState.onboardingPlaylist.firstOrNull() == PortfolioCoachmarks.ADD_INVESTMENT && !hideBackground
+
+    var isFabPressed by remember { mutableStateOf(false) }
+    LaunchedEffect(isAddOnboardingActive) {
+        if (isAddOnboardingActive) {
+            while (true) {
+                delay(1000)
+                isFabPressed = true
+                delay(3000)
+                isFabPressed = false
+                delay(2000)
+            }
+        } else {
+            isFabPressed = false
+        }
+    }
 
     val blurRadius by animateDpAsState(
         targetValue = if (hideBackground) 16.dp else 0.dp,
@@ -186,8 +248,9 @@ private fun PortfolioScreen(
     Scaffold(
         floatingActionButton = {
             OWFloatingActionButton(
-                expanded = fabButtonExpanded,
-                onExpandedChange = { fabButtonExpanded = it },
+                expanded = uiState.isAddInvestmentVisible,
+                onExpandedChange = { if (it) onAction(PortfolioIntent.ShowAddInvestment) else onAction(PortfolioIntent.DismissAddInvestment) },
+                isPressedForced = isFabPressed,
                 modifier = Modifier
                     .applyIf(uiState.portfolioItems.isEmpty()) { pulse() }
                     .enableCoachMark(
@@ -226,7 +289,7 @@ private fun PortfolioScreen(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer
                     ) {
                         PortfolioTabs.entries.forEach { tab ->
-                            val selected = selectedTab == tab
+                            val selected = uiState.selectedTab == tab
                             val animatedScale by animateFloatAsState(
                                 targetValue = if (selected) 1.2f else 1f,
                                 animationSpec = tween(300, easing = LinearEasing),
@@ -242,7 +305,7 @@ private fun PortfolioScreen(
 
                             NavigationBarItem(
                                 selected = selected,
-                                onClick = { onAction(PortfolioIntent.OnNewTab(tab)) },
+                                onClick = { onAction(PortfolioIntent.SetTab(tab)) },
                                 icon = {
                                     Icon(
                                         imageVector = tab.icon,
@@ -333,7 +396,7 @@ private fun PortfolioScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Header(
-                    text = stringResource(selectedTab.description),
+                    text = stringResource(uiState.selectedTab.description),
                     currency = uiState.selectedCurrency,
                     themeMode = uiState.themeMode,
                     onCurrencyChange = { onAction(PortfolioIntent.ChangeCurrency) },
@@ -360,7 +423,7 @@ private fun PortfolioScreen(
                     }
                     else -> {
                         Crossfade(
-                            targetState = selectedTab,
+                            targetState = uiState.selectedTab,
                             label = "tab_switch",
                             modifier = Modifier.weight(1f)
                         ) { tab ->
@@ -375,7 +438,9 @@ private fun PortfolioScreen(
                                         onEditQuantity = { onAction(PortfolioIntent.EditQuantity(it)) },
                                         changeBalanceVisibility = { isBalanceVisible = !isBalanceVisible },
                                         isBalanceVisible = isBalanceVisible,
-                                        isActivePage = true
+                                        isActivePage = true,
+                                        isEditOnboardingActive = isEditOnboardingActive,
+                                        isDeleteOnboardingActive = isDeleteOnboardingActive
                                     )
                                     PortfolioTabs.ALLOCATION -> AllocationTab(
                                         itemsByType = uiState.portfolioItemsByType,
@@ -414,10 +479,10 @@ private fun PortfolioScreen(
             )
         }
 
-        if (fabButtonExpanded) {
+        if (uiState.isAddInvestmentVisible) {
             AddInvestmentBottomSheet(
-                visible = fabButtonExpanded,
-                onDismiss = { fabButtonExpanded = false },
+                visible = uiState.isAddInvestmentVisible,
+                onDismiss = { onAction(PortfolioIntent.DismissAddInvestment) },
                 onAssetTypeClick = { asset ->
                     when (asset) {
                         InvestmentType.STOCK -> onAction(PortfolioIntent.NavigateToMarket(false))
@@ -427,7 +492,7 @@ private fun PortfolioScreen(
                         InvestmentType.BANK -> onAction(PortfolioIntent.ShowBankDialog)
                         InvestmentType.OTHER -> onAction(PortfolioIntent.ShowOtherDialog)
                     }
-                    fabButtonExpanded = false
+                    onAction(PortfolioIntent.DismissAddInvestment)
                 }
             )
         }
@@ -561,9 +626,9 @@ private fun PortfolioScreenPreview() {
                 isBankDialogVisible = false,
                 isLoading = false,
                 themeMode = ThemeMode.LIGHT,
-                error = null
+                error = null,
+                selectedTab = PortfolioTabs.POSITIONS
             ),
-            selectedTab = PortfolioTabs.POSITIONS,
             onAction = {},
         )
     }

@@ -145,6 +145,8 @@
     <string name="tooltip_allocation_graph">Visualiza la distribución de tus activos con este gráfico interactivo.</string>
     <string name="tooltip_prices_list">Sigue los precios de mercado en tiempo real para tus activos.</string>
     <string name="tooltip_history_list">Consulta el rendimiento de tu cartera a lo largo del tiempo.</string>
+    <string name="tooltip_edit_investment">Haz clic en un activo para cambiar lo que tienes invertido.</string>
+    <string name="tooltip_delete_investment">Desliza un activo hacia la izquierda para eliminarlo de tu cartera.</string>
     <string name="tooltip_add_investment">Haz clic para seleccionar un activo y empezar a crear tu cartera.</string>
 
     <!-- Widget -->
