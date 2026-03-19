@@ -6,6 +6,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -134,6 +136,44 @@ fun PortfolioRoot(
         }
     ) {
         coachMarkScope = this
+
+        val isAnySheetVisible = uiState.isFundDialogVisible ||
+                uiState.isEtfDialogVisible ||
+                uiState.isBankDialogVisible ||
+                uiState.isOtherDialogVisible ||
+                uiState.isAddInvestmentVisible ||
+                uiState.editingItem != null ||
+                uiState.deletingItem != null ||
+                uiState.typeDetail != null
+
+        val isOnboardingActive = uiState.onboardingPlaylist.isNotEmpty()
+
+        Box(modifier = modifier.fillMaxSize()) {
+            PortfolioScreen(
+                uiState = uiState,
+                onAction = { action ->
+                    when (action) {
+                        is PortfolioIntent.NavigateToMarket -> navigateToMarket(action.isCrypto)
+                        else -> viewModel.handleIntent(action)
+                    }
+                },
+                isInteractionEnabled = !isOnboardingActive || isAnySheetVisible
+            )
+
+            // Input blocker to prevent user from breaking onboarding during transitions
+            if (isOnboardingActive && !isAnySheetVisible) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {}
+                        )
+                )
+            }
+        }
+
         // Initial trigger
         LaunchedEffect(uiState.portfolioItems) {
             if (uiState.portfolioItems.isNotEmpty() && uiState.onboardingPlaylist.isEmpty()) {
@@ -174,17 +214,6 @@ fun PortfolioRoot(
                 show(PortfolioCoachmarks.ADD_INVESTMENT)
             }
         }
-
-        PortfolioScreen(
-            uiState = uiState,
-            onAction = { action ->
-                when (action) {
-                    is PortfolioIntent.NavigateToMarket -> navigateToMarket(action.isCrypto)
-                    else -> viewModel.handleIntent(action)
-                }
-            },
-            modifier = modifier
-        )
     }
 }
 
@@ -192,7 +221,8 @@ fun PortfolioRoot(
 private fun PortfolioScreen(
     uiState: PortfolioUiState,
     onAction: (PortfolioIntent) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isInteractionEnabled: Boolean = true
 ) {
     var isBalanceVisible by rememberSaveable { mutableStateOf(true) }
     val stateHolder = rememberSaveableStateHolder()
@@ -241,7 +271,7 @@ private fun PortfolioScreen(
 
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
         OWShakeListener(
-            onShake = { isBalanceVisible = !isBalanceVisible }
+            onShake = { if (isInteractionEnabled) isBalanceVisible = !isBalanceVisible }
         )
     }
 
@@ -305,7 +335,7 @@ private fun PortfolioScreen(
 
                             NavigationBarItem(
                                 selected = selected,
-                                onClick = { onAction(PortfolioIntent.SetTab(tab)) },
+                                onClick = { if (isInteractionEnabled) onAction(PortfolioIntent.SetTab(tab)) },
                                 icon = {
                                     Icon(
                                         imageVector = tab.icon,
@@ -399,8 +429,8 @@ private fun PortfolioScreen(
                     text = stringResource(uiState.selectedTab.description),
                     currency = uiState.selectedCurrency,
                     themeMode = uiState.themeMode,
-                    onCurrencyChange = { onAction(PortfolioIntent.ChangeCurrency) },
-                    onChangeUIMode = { onAction(PortfolioIntent.ToggleTheme(it)) },
+                    onCurrencyChange = { if (isInteractionEnabled) onAction(PortfolioIntent.ChangeCurrency) },
+                    onChangeUIMode = { if (isInteractionEnabled) onAction(PortfolioIntent.ToggleTheme(it)) },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
 
