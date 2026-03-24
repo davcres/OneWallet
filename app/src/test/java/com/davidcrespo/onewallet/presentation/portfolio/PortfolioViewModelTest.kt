@@ -204,6 +204,58 @@ class PortfolioViewModelTest {
             
             assertEquals(1, lastState.portfolioItems.size)
             assertEquals("VTI", lastState.portfolioItems[0].symbol)
+            
+            // Verificamos calculos automaticos
+            assertEquals(2000.0, lastState.totalBalance)
+            assertEquals(1950.0, lastState.previousBalance)
+            assertEquals(1, lastState.portfolioItemsByType.size)
+            assertEquals(InvestmentType.ETF, lastState.portfolioItemsByType[0].type)
+            assertEquals(2000.0, lastState.portfolioItemsByType[0].totalValue)
+        }
+    }
+
+    @Test
+    fun `cuando se recibe ChangeCurrency, se actualiza la moneda y se recalculan balances`() = runTest(mainDispatcherExtension.testDispatcher) {
+        val mockInvestment = Investment(
+            symbol = "VTI",
+            name = "Vanguard Total Stock Market",
+            quantity = 10.0,
+            price = 100.0,
+            previousPrice = 90.0,
+            currency = Currency(EUR),
+            type = InvestmentType.ETF,
+            year = 2024,
+            month = 3
+        )
+        
+        every { getPortfolioItemsUseCase.invoke() } returns flowOf(listOf(mockInvestment))
+        every { financialRepository.getSelectedCurrency() } returns Currency(EUR)
+        // EUR to USD rate = 1.1
+        coEvery { getCurrencyRateUseCase.invoke("EUR", "USD") } returns Result.success(1.1)
+        coEvery { getInvestmentPriceUseCase.invoke(any(), any(), any(), any(), any(), any()) } returns Result.success(mockInvestment)
+
+        createViewModel()
+
+        viewModel.uiState.test {
+            var state = awaitItem()
+            while (state.portfolioItems.isEmpty()) {
+                state = awaitItem()
+            }
+            
+            assertEquals(EUR, state.selectedCurrency.code)
+            assertEquals(1000.0, state.totalBalance)
+
+            viewModel.handleIntent(PortfolioIntent.ChangeCurrency)
+            
+            state = awaitItem()
+            while (state.selectedCurrency.code != com.davidcrespo.onewallet.domain.model.investment.USD) {
+                state = awaitItem()
+            }
+            
+            assertEquals(com.davidcrespo.onewallet.domain.model.investment.USD, state.selectedCurrency.code)
+            assertEquals(1100.0, state.totalBalance, 0.1)
+            assertEquals(990.0, state.previousBalance, 0.1)
+            assertEquals(1100.0, state.portfolioItemsByType[0].totalValue, 0.1)
         }
     }
 }

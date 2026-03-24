@@ -5,6 +5,7 @@ import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import com.davidcrespo.onewallet.domain.usecase.history.GetMonthlyHistoryUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 
@@ -37,6 +39,12 @@ class HistoryViewModelTest {
     private val currencyConverter = CurrencyConverter()
 
     private lateinit var viewModel: HistoryViewModel
+
+    @BeforeEach
+    fun setUp() {
+        // Default mocks
+        coEvery { getCurrencyRateUseCase(any(), any()) } returns Result.success(1.0)
+    }
 
     private fun createViewModel() {
         viewModel = HistoryViewModel(
@@ -59,7 +67,6 @@ class HistoryViewModelTest {
         
         coEvery { getMonthlyHistoryUseCase() } returns Result.success(listOf(asset1, asset2))
         every { financialRepository.getSelectedCurrency() } returns Currency(EUR)
-        coEvery { getCurrencyRateUseCase(any(), any()) } returns Result.success(1.0)
         
         createViewModel()
         viewModel.handleIntent(HistoryIntent.LoadInitialData)
@@ -77,13 +84,47 @@ class HistoryViewModelTest {
     }
 
     @Test
+    fun `cuando se recibe OnCurrencyChanged, se cambia la moneda y se refrescan los datos en memoria`() = runTest(mainDispatcherExtension.testDispatcher) {
+        val asset = Investment("AAPL", "Apple", 10.0, 100.0, 0.0, Currency(EUR), InvestmentType.STOCK, 2024, 3)
+        
+        coEvery { getMonthlyHistoryUseCase() } returns Result.success(listOf(asset))
+        every { financialRepository.getSelectedCurrency() } returns Currency(EUR)
+        
+        createViewModel()
+        viewModel.handleIntent(HistoryIntent.LoadInitialData)
+        
+        viewModel.uiState.test {
+            var state = awaitItem()
+            while (state.history.isEmpty()) {
+                state = awaitItem()
+            }
+            assertEquals(EUR, state.selectedCurrency.code)
+            assertEquals(100.0, state.history[0][0].displayPrice)
+
+            // Simulamos que la moneda ya ha cambiado en el repositorio
+            every { financialRepository.getSelectedCurrency() } returns Currency(USD)
+            // Mock rate for change
+            coEvery { getCurrencyRateUseCase("EUR", "USD") } returns Result.success(1.1)
+
+            viewModel.handleIntent(HistoryIntent.OnCurrencyChanged)
+            
+            state = awaitItem()
+            while (state.selectedCurrency.code != USD || state.history[0][0].displayPrice == 100.0) {
+                state = awaitItem()
+            }
+            
+            assertEquals(USD, state.selectedCurrency.code)
+            assertEquals(110.0, state.history[0][0].displayPrice, 0.1)
+        }
+    }
+
+    @Test
     fun `cuando se selecciona un mes, se extrae el detalle y el mes previo`() = runTest(mainDispatcherExtension.testDispatcher) {
         val marchAsset = Investment("AAPL", "Apple", 10.0, 150.0, 0.0, Currency(EUR), InvestmentType.STOCK, 2024, 3)
         val febAsset = Investment("MSFT", "Microsoft", 5.0, 300.0, 0.0, Currency(EUR), InvestmentType.STOCK, 2024, 2)
         
         coEvery { getMonthlyHistoryUseCase() } returns Result.success(listOf(marchAsset, febAsset))
         every { financialRepository.getSelectedCurrency() } returns Currency(EUR)
-        coEvery { getCurrencyRateUseCase(any(), any()) } returns Result.success(1.0)
 
         createViewModel()
         viewModel.handleIntent(HistoryIntent.LoadInitialData)
@@ -119,7 +160,6 @@ class HistoryViewModelTest {
         
         coEvery { getMonthlyHistoryUseCase() } returns Result.success(listOf(marchAsset, febAsset))
         every { financialRepository.getSelectedCurrency() } returns Currency(EUR)
-        coEvery { getCurrencyRateUseCase(any(), any()) } returns Result.success(1.0)
 
         createViewModel()
         viewModel.handleIntent(HistoryIntent.LoadInitialData)
@@ -156,7 +196,6 @@ class HistoryViewModelTest {
         val asset = Investment("AAPL", "Apple", 10.0, 150.0, 0.0, Currency(EUR), InvestmentType.STOCK, 2024, 3)
         coEvery { getMonthlyHistoryUseCase() } returns Result.success(listOf(asset))
         every { financialRepository.getSelectedCurrency() } returns Currency(EUR)
-        coEvery { getCurrencyRateUseCase(any(), any()) } returns Result.success(1.0)
 
         createViewModel()
         viewModel.handleIntent(HistoryIntent.LoadInitialData)
