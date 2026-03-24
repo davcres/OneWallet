@@ -20,6 +20,7 @@ data class HistoryUiState(
 
 sealed interface HistoryIntent {
     data object LoadInitialData : HistoryIntent
+    data object OnCurrencyChanged : HistoryIntent
     data class SelectMonth(val year: Int, val month: Int) : HistoryIntent
     data class SelectInvestment(val investment: InvestmentView) : HistoryIntent
     data object DismissBottomSheet : HistoryIntent

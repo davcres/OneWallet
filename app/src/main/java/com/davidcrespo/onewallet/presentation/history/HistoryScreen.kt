@@ -27,6 +27,7 @@ import com.davidcrespo.onewallet.core.extensions.orEmpty
 import com.davidcrespo.onewallet.presentation.history.composables.HistoryInvestmentDetailBottomSheet
 import com.davidcrespo.onewallet.presentation.history.composables.HistoryList
 import com.davidcrespo.onewallet.presentation.history.composables.HistoryMonthDetailBottomSheet
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioCoachmarks
 import com.pseudoankit.coachmark.LocalCoachMarkScope
 import com.pseudoankit.coachmark.model.ToolTipPlacement
@@ -37,6 +38,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HistoryTab(
+    currency: CurrencyView,
     isBalanceVisible: Boolean,
     modifier: Modifier = Modifier,
     viewModel: HistoryViewModel = koinViewModel()
@@ -45,6 +47,10 @@ fun HistoryTab(
 
     LaunchedEffect(viewModel) {
         viewModel.handleIntent(HistoryIntent.LoadInitialData)
+    }
+
+    LaunchedEffect(currency) {
+        viewModel.handleIntent(HistoryIntent.OnCurrencyChanged)
     }
 
     HistoryScreen(

@@ -488,6 +488,7 @@ private fun PortfolioScreen(
                                         isActivePage = true
                                     )
                                     PortfolioTabs.HISTORY -> HistoryTab(
+                                        currency = uiState.selectedCurrency,
                                         isBalanceVisible = isBalanceVisible,
                                         modifier = Modifier.fillMaxSize()
                                     )
