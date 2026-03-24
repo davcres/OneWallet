@@ -87,6 +87,11 @@ private fun OnboardingScreen(
             title = stringResource(R.string.onboarding_5_title),
             description = stringResource(R.string.onboarding_5_description),
             icon = R.drawable.onboarding_5
+        ),
+        OnboardingPage(
+            title = stringResource(R.string.onboarding_6_title),
+            description = stringResource(R.string.onboarding_6_description),
+            icon = R.drawable.onboarding_6
         )
     )
 

@@ -1,19 +1,19 @@
 <resources>
     <string name="app_name">OneWallet Portfolio</string>
-    <string name="widget_portfolio_description">Check your portfolio values</string>
-    <string name="widget_stocks_description">Track your assets in real time</string>
 
     <!-- Onboarding -->
     <string name="onboarding_1_title">Welcome to OneWallet</string>
     <string name="onboarding_1_description">Manage all your investments in one place. Simple, fast, and secure.</string>
     <string name="onboarding_2_title">Track Real-time</string>
     <string name="onboarding_2_description">Get up-to-date market data for stocks, funds, ETFs, and cryptocurrencies.</string>
-    <string name="onboarding_3_title">Analyze your monthly evolution</string>
-    <string name="onboarding_3_description">Visualize your portfolio performance with detailed charts and historical data.</string>
-    <string name="onboarding_4_title">Your Data is Yours</string>
-    <string name="onboarding_4_description">All your data is stored locally on your device. No cloud, no tracking.</string>
-    <string name="onboarding_5_title">Your finances made simple</string>
-    <string name="onboarding_5_description">Shall we get started?</string>
+    <string name="onboarding_3_title">Home Screen Widgets</string>
+    <string name="onboarding_3_description">Stay in control without opening the app. Use the Portfolio widget to view your balances and the Prices widget to follow the market in real time.</string>
+    <string name="onboarding_4_title">Analyze your monthly evolution</string>
+    <string name="onboarding_4_description">Visualize your portfolio performance with detailed charts and historical data.</string>
+    <string name="onboarding_5_title">Your Data is Yours</string>
+    <string name="onboarding_5_description">All your data is stored locally on your device. No cloud, no tracking.</string>
+    <string name="onboarding_6_title">Your finances made simple</string>
+    <string name="onboarding_6_description">Shall we get started?</string>
     <string name="onboarding_button_next">Next</string>
     <string name="onboarding_button_get_started">Get started</string>
 
@@ -151,6 +151,10 @@
     <string name="tooltip_add_investment">Click to select an asset and start building your portfolio.</string>
 
     <!-- Widget -->
-    <string name="reload_cd">Reload</string>
+    <string name="portfolio_widget">Portfolio Widget</string>
+    <string name="prices_widget">Prices Widget</string>
+    <string name="widget_portfolio_description">Check your portfolio values</string>
+    <string name="widget_stocks_description">Track your assets in real time</string>
     <string name="asset_prices_title">Market Prices</string>
+    <string name="reload_cd">Reload</string>
 </resources>

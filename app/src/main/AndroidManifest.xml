@@ -26,7 +26,7 @@
 
         <receiver android:name=".presentation.widget.portfolio.PortfolioWidgetReceiver"
             android:exported="true"
-            android:label="Portfolio Widget">
+            android:label="@string/portfolio_widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <!-- <action android:name="android.appwidget.action.APPWIDGET_ENABLED" /> --> <!-- Nos avisa cuando se añade el primer widget en el dispositivo -->
@@ -47,7 +47,7 @@
 
         <receiver android:name=".presentation.widget.stocks.StocksWidgetReceiver"
             android:exported="true"
-            android:label="Stocks Widget">
+            android:label="@string/prices_widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

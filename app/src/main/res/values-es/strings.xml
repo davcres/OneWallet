@@ -6,12 +6,14 @@
     <string name="onboarding_1_description">Controla todas tus inversiones en un solo lugar. Simple y rápido.</string>
     <string name="onboarding_2_title">Seguimiento de tus inversiones en tiempo real</string>
     <string name="onboarding_2_description">Obtén datos de mercado actualizados sobre acciones, fondos, ETFs y criptomonedas.</string>
-    <string name="onboarding_3_title">Analiza tu evolución mensual</string>
-    <string name="onboarding_3_description">Consulta el rendimiento de tu cartera para ver como evoluciona mes a mes con datos históricos.</string>
-    <string name="onboarding_4_title">Tus datos son solo tuyos</string>
-    <string name="onboarding_4_description">Todos tus datos se almacenan localmente en tu dispositivo. Sin nube, sin seguimiento.</string>
-    <string name="onboarding_5_title">Tus finanzas simplificadas</string>
-    <string name="onboarding_5_description">¿Empezamos?</string>
+    <string name="onboarding_3_title">Widgets en pantalla de inicio</string>
+    <string name="onboarding_3_description">Mantén el control sin abrir la app. Usa el widget de Portfolio para ver tus saldos y el de Cotización para seguir el mercado en tiempo real.</string>
+    <string name="onboarding_4_title">Analiza tu evolución mensual</string>
+    <string name="onboarding_4_description">Consulta el rendimiento de tu cartera para ver como evoluciona mes a mes con datos históricos.</string>
+    <string name="onboarding_5_title">Tus datos son solo tuyos</string>
+    <string name="onboarding_5_description">Todos tus datos se almacenan localmente en tu dispositivo. Sin nube, sin seguimiento.</string>
+    <string name="onboarding_6_title">Tus finanzas simplificadas</string>
+    <string name="onboarding_6_description">¿Empezamos?</string>
     <string name="onboarding_button_next">Siguiente</string>
     <string name="onboarding_button_get_started">Empezar ahora</string>
 
@@ -119,7 +121,6 @@
     <string name="clear_text_cd">Borrar texto</string>
     <string name="copiable_text_snackbar">Copiado al portapapeles</string>
     <string name="copiable_text_cd">Copiar</string>
-    <string name="reload_cd">Recargar</string>
 
     <string name="total_balance">Balance Total</string>
     <string name="hide_balance_cd">Ocultar balance</string>
@@ -150,7 +151,10 @@
     <string name="tooltip_add_investment">Haz clic para seleccionar un activo y empezar a crear tu cartera.</string>
 
     <!-- Widget -->
+    <string name="portfolio_widget">Widget de Portfolio</string>
+    <string name="prices_widget">Widget de Cotización</string>
     <string name="widget_portfolio_description">Consulta los valores de tu cartera</string>
     <string name="widget_stocks_description">Sigue la cotización de tus activos en tiempo real</string>
     <string name="asset_prices_title">Precios de Mercado</string>
+    <string name="reload_cd">Recargar</string>
 </resources>
