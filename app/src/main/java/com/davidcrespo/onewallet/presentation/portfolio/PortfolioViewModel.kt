@@ -75,7 +75,6 @@ class PortfolioViewModel(
 
     fun handleIntent(intent: PortfolioIntent) {
         when (intent) {
-            is PortfolioIntent.UpdateBalance -> setTotalBalance()
             is PortfolioIntent.ChangeCurrency -> changeCurrency()
             is PortfolioIntent.SetTab -> _uiState.update { it.copy(selectedTab = intent.tab) }
             is PortfolioIntent.ToggleTheme -> toggleTheme(intent.themeMode)
@@ -109,12 +108,12 @@ class PortfolioViewModel(
 
             is PortfolioIntent.NavigateToMarket -> {}
 
-            is PortfolioIntent.GetItemsByType -> getItemsByType()
             is PortfolioIntent.SelectInvestmentType -> _uiState.update { it.copy(typeDetail = intent.type) }
             is PortfolioIntent.DismissInvestmentType -> _uiState.update { it.copy(typeDetail = null) }
 
             is PortfolioIntent.StartOnboarding -> startOnboarding()
             is PortfolioIntent.NextOnboardingStep -> nextOnboardingStep()
+            else -> {}
         }
     }
 
@@ -181,6 +180,9 @@ class PortfolioViewModel(
                 _uiState.update {
                     it.copy(
                         portfolioItems = sorted,
+                        totalBalance = sorted.calculateTotalBalance(),
+                        previousBalance = sorted.calculatePreviousBalance(),
+                        portfolioItemsByType = sorted.calculateItemsByType(),
                         isLoading = false
                     )
                 }
@@ -295,6 +297,9 @@ class PortfolioViewModel(
         _uiState.update {
             it.copy(
                 portfolioItems = finalList,
+                totalBalance = finalList.calculateTotalBalance(),
+                previousBalance = finalList.calculatePreviousBalance(),
+                portfolioItemsByType = finalList.calculateItemsByType(),
                 symbolsWithPrice = newSymbolsWithPrice
             )
         }
@@ -305,26 +310,6 @@ class PortfolioViewModel(
         }
 
         return finalList
-    }
-
-    private fun setTotalBalance() {
-        val totalBalance = _uiState.value.portfolioItems.sumOf {
-            it.quantity * it.displayPrice
-        }
-        val previousBalance = _uiState.value.portfolioItems.sumOf {
-            if (it.type.isMarket()) {
-                it.quantity * it.displayPreviousPrice
-            } else {
-                it.quantity * it.displayPrice
-            }
-        }
-
-        _uiState.update {
-            it.copy(
-                totalBalance = totalBalance,
-                previousBalance = previousBalance
-            )
-        }
     }
 
     private suspend fun savePortfolio(itemsView: List<InvestmentView>) {
@@ -512,34 +497,19 @@ class PortfolioViewModel(
                     displayPrice = priceConverted,
                     displayPreviousPrice = previousPriceConverted
                 )
-            }
+            }.toImmutableList()
 
             _uiState.update {
                 it.copy(
                     selectedCurrency = newSelectedCurrency,
-                    portfolioItems = portfolioItemsConverted.toImmutableList()
+                    portfolioItems = portfolioItemsConverted,
+                    totalBalance = portfolioItemsConverted.calculateTotalBalance(),
+                    previousBalance = portfolioItemsConverted.calculatePreviousBalance(),
+                    portfolioItemsByType = portfolioItemsConverted.calculateItemsByType()
                 )
             }
 
             updateWidgets()
-        }
-    }
-
-    private fun getItemsByType() {
-        viewModelScope.launch {
-            val items = _uiState.value.portfolioItems
-
-            val groups: ImmutableList<ItemsByTypeView> =
-                items
-                    .groupBy { it.type }
-                    .map { (type, list) ->
-                        val total = list.sumOf { it.quantity * it.displayPrice }
-                        ItemsByTypeView(type, list.toImmutableList(), total)
-                    }
-                    .sortedByDescending { it.totalValue }
-                    .toImmutableList()
-
-            _uiState.update { it.copy(portfolioItemsByType = groups) }
         }
     }
 
@@ -548,4 +518,19 @@ class PortfolioViewModel(
             setThemeUseCase(mode)
         }
     }
+
+    private fun List<InvestmentView>.calculateTotalBalance(): Double = sumOf { it.quantity * it.displayPrice }
+
+    private fun List<InvestmentView>.calculatePreviousBalance(): Double = sumOf {
+        if (it.type.isMarket()) it.quantity * it.displayPreviousPrice else it.quantity * it.displayPrice
+    }
+
+    private fun List<InvestmentView>.calculateItemsByType(): ImmutableList<ItemsByTypeView> =
+        groupBy { it.type }
+            .map { (type, list) ->
+                val total = list.sumOf { it.quantity * it.displayPrice }
+                ItemsByTypeView(type, list.toImmutableList(), total)
+            }
+            .sortedByDescending { it.totalValue }
+            .toImmutableList()
 }

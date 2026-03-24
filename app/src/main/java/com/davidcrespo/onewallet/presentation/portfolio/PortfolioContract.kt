@@ -36,7 +36,6 @@ data class PortfolioUiState(
 )
 
 sealed interface PortfolioIntent {
-    data object UpdateBalance : PortfolioIntent
     data object ChangeCurrency : PortfolioIntent
     data class SetTab(val tab: PortfolioTabs) : PortfolioIntent
     data class ToggleTheme(val themeMode: ThemeMode) : PortfolioIntent
@@ -70,7 +69,6 @@ sealed interface PortfolioIntent {
 
     data class NavigateToMarket(val isCrypto: Boolean) : PortfolioIntent
 
-    data object GetItemsByType : PortfolioIntent
     data class SelectInvestmentType(val type: InvestmentType?) : PortfolioIntent
     data object DismissInvestmentType : PortfolioIntent
 

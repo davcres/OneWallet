@@ -96,10 +96,8 @@ fun PortfolioRoot(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(uiState.portfolioItems) {
+    LaunchedEffect(initialTab) {
         viewModel.handleIntent(PortfolioIntent.SetTab(initialTab))
-        viewModel.handleIntent(PortfolioIntent.UpdateBalance)
-        viewModel.handleIntent(PortfolioIntent.GetItemsByType)
     }
 
     var coachMarkScope by remember { mutableStateOf<com.pseudoankit.coachmark.scope.CoachMarkScope?>(null) }
