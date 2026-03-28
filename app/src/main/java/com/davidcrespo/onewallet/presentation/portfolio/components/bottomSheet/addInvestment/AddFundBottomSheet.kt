@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,6 +54,7 @@ import com.davidcrespo.onewallet.core.extensions.isValidIsin
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWLoader
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.bottomSheet.SheetHandle
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import kotlinx.coroutines.launch
@@ -61,6 +63,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddFundBottomSheet(
     visible: Boolean,
+    isLoading: Boolean,
     isFund: Boolean,
     onDismiss: () -> Unit,
     onAddFund: (String, Double) -> Unit,
@@ -85,6 +88,7 @@ fun AddFundBottomSheet(
                 .verticalScroll(rememberScrollState())
         ) {
             SheetContent(
+                isLoading = isLoading,
                 isFund = isFund,
                 onClose = {
                     scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
@@ -101,6 +105,7 @@ fun AddFundBottomSheet(
 // ---------- UI ----------
 @Composable
 private fun SheetContent(
+    isLoading: Boolean,
     isFund: Boolean,
     onClose: () -> Unit,
     onAddFund: (String, Double) -> Unit,
@@ -120,6 +125,18 @@ private fun SheetContent(
                 }
             }
     ) {
+        AnimatedVisibility(
+            visible = isLoading
+        ) {
+            Column {
+                Spacer(Modifier.height(16.dp))
+
+                OWLoader(
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+        }
+
         Spacer(Modifier.height(16.dp))
 
         Header(isFund = isFund, onClose = onClose)
@@ -288,6 +305,7 @@ private fun AddFundBottomSheetPreview() {
     OneWalletTheme {
         AddFundBottomSheet(
             visible = true,
+            isLoading = true,
             isFund = true,
             onDismiss = {},
             onAddFund = { _, _ -> },
