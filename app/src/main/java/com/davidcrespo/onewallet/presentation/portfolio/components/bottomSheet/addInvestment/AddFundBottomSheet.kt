@@ -203,6 +203,7 @@ private fun Form(
             value = isin,
             onValueChange = { input ->
                 isin = input
+                    .uppercase()
                     .filter { it.isLetterOrDigit() }
                     .take(12)
             },
