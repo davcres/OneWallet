@@ -186,6 +186,9 @@ private fun Form(
     onAddFund: (String, Double) -> Unit,
     onIsinError: (String?) -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     var isin by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
 
@@ -284,6 +287,9 @@ private fun Form(
                 contentDescription = stringResource(R.string.add_fund_cd),
                 style = ButtonStyle.PRIMARY,
                 onClick = {
+                    focusManager.clearFocus(force = true)
+                    keyboardController?.hide()
+
                     if (isin.isValidIsin()) {
                         onAddFund(isin, quantity)
                     } else if (isin.isEmpty()) {
