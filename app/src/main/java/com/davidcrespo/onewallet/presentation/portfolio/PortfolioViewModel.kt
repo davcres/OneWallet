@@ -11,6 +11,7 @@ import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.domain.model.investment.isManual
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
+import com.davidcrespo.onewallet.domain.repository.OnboardingRepository
 import com.davidcrespo.onewallet.domain.usecase.appRoot.GetThemeUseCase
 import com.davidcrespo.onewallet.domain.usecase.appRoot.SetThemeUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.AddInvestmentToPortfolioUseCase
@@ -25,7 +26,6 @@ import com.davidcrespo.onewallet.presentation.models.toDomain
 import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioCoachmarks
-import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTabs
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -57,6 +57,7 @@ class PortfolioViewModel(
     private val currencyConverter: CurrencyConverter,
     private val getThemeUseCase: GetThemeUseCase,
     private val setThemeUseCase: SetThemeUseCase,
+    private val onboardingRepository: OnboardingRepository,
     private val context: Context
 ) : ViewModel() {
 
@@ -118,6 +119,8 @@ class PortfolioViewModel(
     }
 
     private fun startOnboarding() {
+        if (onboardingRepository.isPortfolioOnboardingCompleted()) return
+
         _uiState.update { 
             it.copy(onboardingPlaylist = PortfolioCoachmarks.entries.toImmutableList()) 
         }
@@ -131,7 +134,13 @@ class PortfolioViewModel(
             val justFinished = currentPlaylist.removeAt(0)
             val next = currentPlaylist.firstOrNull()
 
-            if (next != null && next.tab != justFinished.tab) {
+            if (next == null) {
+                onboardingRepository.setPortfolioOnboardingCompleted(true)
+                state.copy(
+                    isOnboardingCompleted = true,
+                    onboardingPlaylist = currentPlaylist.toImmutableList()
+                )
+            } else if (next.tab != justFinished.tab) {
                 state.copy(
                     selectedTab = next.tab,
                     onboardingPlaylist = currentPlaylist.toImmutableList()
@@ -145,6 +154,9 @@ class PortfolioViewModel(
     }
 
     init {
+        _uiState.update { 
+            it.copy(isOnboardingCompleted = onboardingRepository.isPortfolioOnboardingCompleted()) 
+        }
         loadInitialData()
     }
 

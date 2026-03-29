@@ -33,6 +33,7 @@ data class PortfolioUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val error: String? = null,
     val onboardingPlaylist: ImmutableList<PortfolioCoachmarks> = persistentListOf(),
+    val isOnboardingCompleted: Boolean = false,
     val selectedTab: PortfolioTabs = PortfolioTabs.POSITIONS
 )
 

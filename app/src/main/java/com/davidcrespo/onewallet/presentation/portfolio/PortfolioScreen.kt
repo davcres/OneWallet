@@ -173,7 +173,7 @@ fun PortfolioRoot(
 
         // Initial trigger
         LaunchedEffect(uiState.portfolioItems) {
-            if (uiState.portfolioItems.isNotEmpty() && uiState.onboardingPlaylist.isEmpty()) {
+            if (uiState.portfolioItems.isNotEmpty() && uiState.onboardingPlaylist.isEmpty() && !uiState.isOnboardingCompleted) {
                 viewModel.handleIntent(PortfolioIntent.StartOnboarding)
             }
         }

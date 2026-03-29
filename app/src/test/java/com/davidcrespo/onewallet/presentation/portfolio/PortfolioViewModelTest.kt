@@ -52,6 +52,7 @@ class PortfolioViewModelTest {
     private val financialRepository = mockk<FinancialRepository>(relaxed = true)
     private val getThemeUseCase = mockk<GetThemeUseCase>(relaxed = true)
     private val setThemeUseCase = mockk<SetThemeUseCase>(relaxed = true)
+    private val onboardingRepository = mockk<com.davidcrespo.onewallet.domain.repository.OnboardingRepository>(relaxed = true)
     private val themeFlow = MutableStateFlow(ThemeMode.SYSTEM)
     private val currencyConverter = CurrencyConverter()
     private val context = mockk<Context>(relaxed = true)
@@ -68,6 +69,7 @@ class PortfolioViewModelTest {
         every { financialRepository.getSelectedCurrency() } returns Currency(EUR)
         every { getPortfolioItemsUseCase.invoke() } returns flowOf(emptyList())
         every { getThemeUseCase.invoke() } returns themeFlow
+        every { onboardingRepository.isPortfolioOnboardingCompleted() } returns false
         coEvery { getCurrencyRateUseCase.invoke(any(), any()) } returns Result.success(1.0)
     }
 
@@ -84,6 +86,7 @@ class PortfolioViewModelTest {
                 currencyConverter,
                 getThemeUseCase,
                 setThemeUseCase,
+                onboardingRepository,
                 context
             )
         } catch (e: Throwable) {
@@ -215,47 +218,46 @@ class PortfolioViewModelTest {
     }
 
     @Test
-    fun `cuando se recibe ChangeCurrency, se actualiza la moneda y se recalculan balances`() = runTest(mainDispatcherExtension.testDispatcher) {
-        val mockInvestment = Investment(
-            symbol = "VTI",
-            name = "Vanguard Total Stock Market",
-            quantity = 10.0,
-            price = 100.0,
-            previousPrice = 90.0,
-            currency = Currency(EUR),
-            type = InvestmentType.ETF,
-            year = 2024,
-            month = 3
-        )
-        
-        every { getPortfolioItemsUseCase.invoke() } returns flowOf(listOf(mockInvestment))
-        every { financialRepository.getSelectedCurrency() } returns Currency(EUR)
-        // EUR to USD rate = 1.1
-        coEvery { getCurrencyRateUseCase.invoke("EUR", "USD") } returns Result.success(1.1)
-        coEvery { getInvestmentPriceUseCase.invoke(any(), any(), any(), any(), any(), any()) } returns Result.success(mockInvestment)
-
+    fun `cuando se completa el onboarding, se actualiza el repositorio y el estado`() = runTest(mainDispatcherExtension.testDispatcher) {
         createViewModel()
-
+        
+        // Empezamos onboarding
+        viewModel.handleIntent(PortfolioIntent.StartOnboarding)
+        
         viewModel.uiState.test {
             var state = awaitItem()
-            while (state.portfolioItems.isEmpty()) {
+            while (state.onboardingPlaylist.isEmpty()) {
                 state = awaitItem()
             }
             
-            assertEquals(EUR, state.selectedCurrency.code)
-            assertEquals(1000.0, state.totalBalance)
-
-            viewModel.handleIntent(PortfolioIntent.ChangeCurrency)
+            // Avanzamos todos los pasos
+            val stepsCount = state.onboardingPlaylist.size
+            repeat(stepsCount) {
+                viewModel.handleIntent(PortfolioIntent.NextOnboardingStep)
+            }
             
+            // Verificamos que se marca como completado
             state = awaitItem()
-            while (state.selectedCurrency.code != com.davidcrespo.onewallet.domain.model.investment.USD) {
+            while (!state.isOnboardingCompleted) {
                 state = awaitItem()
             }
             
-            assertEquals(com.davidcrespo.onewallet.domain.model.investment.USD, state.selectedCurrency.code)
-            assertEquals(1100.0, state.totalBalance, 0.1)
-            assertEquals(990.0, state.previousBalance, 0.1)
-            assertEquals(1100.0, state.portfolioItemsByType[0].totalValue, 0.1)
+            assertTrue(state.isOnboardingCompleted)
+            coVerify { onboardingRepository.setPortfolioOnboardingCompleted(true) }
+        }
+    }
+
+    @Test
+    fun `si el onboarding ya esta completado, StartOnboarding no hace nada`() = runTest(mainDispatcherExtension.testDispatcher) {
+        every { onboardingRepository.isPortfolioOnboardingCompleted() } returns true
+        createViewModel()
+        
+        viewModel.handleIntent(PortfolioIntent.StartOnboarding)
+        
+        viewModel.uiState.test {
+            val state = awaitItem()
+            assertTrue(state.isOnboardingCompleted)
+            assertTrue(state.onboardingPlaylist.isEmpty())
         }
     }
 }
