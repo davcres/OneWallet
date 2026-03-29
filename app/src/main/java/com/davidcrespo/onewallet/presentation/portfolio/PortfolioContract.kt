@@ -29,6 +29,7 @@ data class PortfolioUiState(
     val isOtherDialogVisible: Boolean = false,
     val typeDetail: InvestmentType? = null,
     val isLoading: Boolean = true,
+    val isLoadingBottomSheet: Boolean = false,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val error: String? = null,
     val onboardingPlaylist: ImmutableList<PortfolioCoachmarks> = persistentListOf(),

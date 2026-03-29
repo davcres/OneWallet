@@ -15,10 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -38,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.domain.model.investment.MarketType
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWLoader
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.market.components.MarketListItem
 import com.davidcrespo.onewallet.presentation.market.components.MarketSearchBar
@@ -142,12 +141,8 @@ private fun UsMarketScreen(
             ) {
                 when {
                     uiState.isLoading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .wrapContentSize(),
-                            color = MaterialTheme.colorScheme.primary
+                        OWLoader(
+                            modifier = Modifier.weight(1f)
                         )
                     }
                     else -> {

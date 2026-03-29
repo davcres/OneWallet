@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,8 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Close
@@ -51,6 +54,7 @@ import com.davidcrespo.onewallet.core.extensions.isValidIsin
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWLoader
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.bottomSheet.SheetHandle
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import kotlinx.coroutines.launch
@@ -59,6 +63,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddFundBottomSheet(
     visible: Boolean,
+    isLoading: Boolean,
     isFund: Boolean,
     onDismiss: () -> Unit,
     onAddFund: (String, Double) -> Unit,
@@ -77,22 +82,30 @@ fun AddFundBottomSheet(
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         scrimColor = Color.Transparent // Disable default scrim (darker content out of bottom sheet) to see light error
     ) {
-        SheetContent(
-            isFund = isFund,
-            onClose = {
-                scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
-            },
-            onAddFund = { isin, quantity -> onAddFund(isin, quantity) },
-            onIsinError = onIsinError
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+        ) {
+            SheetContent(
+                isLoading = isLoading,
+                isFund = isFund,
+                onClose = {
+                    scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
+                },
+                onAddFund = { isin, quantity -> onAddFund(isin, quantity) },
+                onIsinError = onIsinError
+            )
 
-        Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(20.dp))
+        }
     }
 }
 
 // ---------- UI ----------
 @Composable
 private fun SheetContent(
+    isLoading: Boolean,
     isFund: Boolean,
     onClose: () -> Unit,
     onAddFund: (String, Double) -> Unit,
@@ -112,6 +125,18 @@ private fun SheetContent(
                 }
             }
     ) {
+        AnimatedVisibility(
+            visible = isLoading
+        ) {
+            Column {
+                Spacer(Modifier.height(16.dp))
+
+                OWLoader(
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+        }
+
         Spacer(Modifier.height(16.dp))
 
         Header(isFund = isFund, onClose = onClose)
@@ -161,6 +186,9 @@ private fun Form(
     onAddFund: (String, Double) -> Unit,
     onIsinError: (String?) -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     var isin by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
 
@@ -178,6 +206,7 @@ private fun Form(
             value = isin,
             onValueChange = { input ->
                 isin = input
+                    .uppercase()
                     .filter { it.isLetterOrDigit() }
                     .take(12)
             },
@@ -258,6 +287,9 @@ private fun Form(
                 contentDescription = stringResource(R.string.add_fund_cd),
                 style = ButtonStyle.PRIMARY,
                 onClick = {
+                    focusManager.clearFocus(force = true)
+                    keyboardController?.hide()
+
                     if (isin.isValidIsin()) {
                         onAddFund(isin, quantity)
                     } else if (isin.isEmpty()) {
@@ -280,6 +312,7 @@ private fun AddFundBottomSheetPreview() {
     OneWalletTheme {
         AddFundBottomSheet(
             visible = true,
+            isLoading = true,
             isFund = true,
             onDismiss = {},
             onAddFund = { _, _ -> },

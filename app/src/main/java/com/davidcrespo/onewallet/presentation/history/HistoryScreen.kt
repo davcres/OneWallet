@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davidcrespo.onewallet.core.composables.modifiers.privacyBlur
 import com.davidcrespo.onewallet.core.extensions.orEmpty
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWLoader
 import com.davidcrespo.onewallet.presentation.history.composables.HistoryInvestmentDetailBottomSheet
 import com.davidcrespo.onewallet.presentation.history.composables.HistoryList
 import com.davidcrespo.onewallet.presentation.history.composables.HistoryMonthDetailBottomSheet
@@ -92,12 +91,10 @@ private fun HistoryScreen(
     ) {
         when {
             uiState.isLoading -> {
-                CircularProgressIndicator(
+                OWLoader(
                     modifier = Modifier
                         .fillMaxSize()
-                        .wrapContentSize()
-                        .align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.primary
+                        .align(Alignment.Center)
                 )
             }
             else -> {

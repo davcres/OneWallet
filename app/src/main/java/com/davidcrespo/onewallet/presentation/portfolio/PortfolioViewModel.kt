@@ -325,6 +325,7 @@ class PortfolioViewModel(
 
     private fun addFundItem(isin: String, quantity: Double) {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingBottomSheet = true) }
             getInvestmentPriceUseCase(isin, InvestmentType.FUND)
                 .onSuccess { investment ->
                     val now = LocalDate.now()
@@ -338,16 +339,27 @@ class PortfolioViewModel(
                     )
 
                     addInvestmentToPortfolioUseCase(fund)
-                    _uiState.update { it.copy(isFundDialogVisible = false) }
+                    _uiState.update {
+                        it.copy(
+                            isLoadingBottomSheet = false,
+                            isFundDialogVisible = false
+                        )
+                    }
                 }
                 .onFailure {
-                    _uiState.update { it.copy(error = "Desafortunadamente no hemos podido obtener el fondo.\nPrueba con otro ISIN.") }
+                    _uiState.update {
+                        it.copy(
+                            isLoadingBottomSheet = false,
+                            error = "Desafortunadamente no hemos podido obtener el fondo.\nPrueba con otro ISIN."
+                        )
+                    }
                 }
         }
     }
 
     private fun addEtfItem(isin: String, quantity: Double) {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingBottomSheet = true) }
             getInvestmentPriceUseCase(
                 symbol = isin,
                 type = InvestmentType.ETF,
@@ -365,10 +377,20 @@ class PortfolioViewModel(
                     )
 
                     addInvestmentToPortfolioUseCase(etf)
-                    _uiState.update { it.copy(isEtfDialogVisible = false) }
+                    _uiState.update {
+                        it.copy(
+                            isLoadingBottomSheet = false,
+                            isEtfDialogVisible = false
+                        )
+                    }
                 }
                 .onFailure {
-                    _uiState.update { it.copy(error = "Desafortunadamente no hemos podido obtener el ETF.\nPrueba con otro ISIN.") }
+                    _uiState.update {
+                        it.copy(
+                            isLoadingBottomSheet = false,
+                            error = "Desafortunadamente no hemos podido obtener el ETF.\nPrueba con otro ISIN."
+                        )
+                    }
                 }
         }
     }

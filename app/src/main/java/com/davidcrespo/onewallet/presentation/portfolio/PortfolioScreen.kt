@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -54,6 +52,7 @@ import com.davidcrespo.onewallet.core.models.ThemeMode
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWFloatingActionButton
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWLoader
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWShakeListener
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.history.HistoryTab
@@ -434,12 +433,8 @@ private fun PortfolioScreen(
 
                 when {
                     uiState.isLoading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .wrapContentSize(),
-                            color = MaterialTheme.colorScheme.primary
+                        OWLoader(
+                            modifier = Modifier.weight(1f)
                         )
                     }
                     uiState.portfolioItems.isEmpty() -> {
@@ -581,6 +576,7 @@ private fun PortfolioScreen(
         // Add Fund Dialog
         AddFundBottomSheet(
             visible = uiState.isFundDialogVisible,
+            isLoading = uiState.isLoadingBottomSheet,
             isFund = true,
             onDismiss = { onAction(PortfolioIntent.DismissFundDialog) },
             onAddFund = { isin, quantity ->
@@ -594,6 +590,7 @@ private fun PortfolioScreen(
         // Add ETF Dialog
         AddFundBottomSheet(
             visible = uiState.isEtfDialogVisible,
+            isLoading = uiState.isLoadingBottomSheet,
             isFund = false,
             onDismiss = { onAction(PortfolioIntent.DismissEtfDialog) },
             onAddFund = { isin, quantity ->

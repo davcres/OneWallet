@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,14 +61,20 @@ fun AddInvestmentBottomSheet(
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         scrimColor = Color.Transparent, // Disable default scrim (darker content out of bottom sheet) to see light error
     ) {
-        SheetContent(
-            onClose = {
-                scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
-            },
-            onAssetTypeClick = { onAssetTypeClick(it) }
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+        ) {
+            SheetContent(
+                onClose = {
+                    scope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
+                },
+                onAssetTypeClick = { onAssetTypeClick(it) }
+            )
 
-        Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(20.dp))
+        }
     }
 }
 
