@@ -157,6 +157,7 @@ private fun HistoryScreen(
                         visible = true,
                         investment = it,
                         previousMonthInvestment = uiState.selectedPreviousInvestment,
+                        currency = uiState.selectedCurrency,
                         onDismiss = { onAction(HistoryIntent.DismissInvestmentDetail) }
                     )
                 }

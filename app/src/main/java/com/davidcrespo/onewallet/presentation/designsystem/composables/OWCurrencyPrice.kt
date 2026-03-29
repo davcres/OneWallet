@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ fun OWCurrencyPrice(
     price: Double,
     currency: CurrencyView,
     fontSize: TextUnit,
+    prefix: String = "",
     textColor: Color = MaterialTheme.colorScheme.onPrimaryContainer,
     modifier: Modifier = Modifier,
     shouldAnimate: Boolean = true
@@ -43,6 +45,7 @@ fun OWCurrencyPrice(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
         modifier = modifier
     ) {
         androidx.compose.animation.AnimatedVisibility(
@@ -64,6 +67,7 @@ fun OWCurrencyPrice(
 
         AnimatedCounter(
             targetValue = price,
+            prefix = prefix,
             fontSize = fontSize,
             fontWeight = FontWeight.Bold,
             color = textColor,

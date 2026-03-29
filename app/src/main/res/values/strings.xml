@@ -114,7 +114,6 @@
     <string name="price_per_share_label">Price per share</string>
     <string name="total_value_label">Total value</string>
     <string name="pl_month_label">P/L (Month)</string>
-    <string name="percentage_icon_cd">Percentage Icon</string>
 
     <!-- Core -->
     <string name="clear_cd">Delete investment</string>

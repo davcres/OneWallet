@@ -114,7 +114,6 @@
     <string name="price_per_share_label">Precio por unidad</string>
     <string name="total_value_label">Valor total</string>
     <string name="pl_month_label">P/L (Mes)</string>
-    <string name="percentage_icon_cd">Icono de porcentaje</string>
 
     <!-- Core -->
     <string name="clear_cd">Borrar inversión</string>
