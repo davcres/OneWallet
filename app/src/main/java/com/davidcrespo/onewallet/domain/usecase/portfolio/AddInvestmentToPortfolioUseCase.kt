@@ -7,4 +7,8 @@ class AddInvestmentToPortfolioUseCase(private val repository: PortfolioRepositor
     suspend operator fun invoke(investment: Investment) {
         repository.addOrUpdateItem(investment)
     }
+
+    suspend operator fun invoke(investments: List<Investment>) {
+        repository.addOrUpdateItems(investments)
+    }
 }

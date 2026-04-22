@@ -33,6 +33,11 @@ class PortfolioRepositoryImpl(
             dao.insertOrUpdate(investment.toEntity())
         }
 
+    override suspend fun addOrUpdateItems(investments: List<Investment>) =
+        withContext(dispatcher.io) {
+            dao.insertPortfolio(investments.map { it.toEntity() })
+        }
+
     override suspend fun removeItem(investment: Investment, year: Int, month: Int) =
         withContext(dispatcher.io) {
             dao.deleteInvestment(investment.symbol, year, month)

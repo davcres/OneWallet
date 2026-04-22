@@ -12,10 +12,12 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.GetInvestmentPriceUseC
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.SeedInitialPortfolioUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
     single { GetInvestmentPriceUseCase(get()) }
+    single { SeedInitialPortfolioUseCase(get(), get()) }
     single { GetUSMarketAssetsUseCase(get(), get()) }
     single { GetGlobalMarketAssetsUseCase(get(), get()) }
     single { GetCurrencyRateUseCase(get()) }

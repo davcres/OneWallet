@@ -1,7 +1,6 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
 import android.content.Context
-import androidx.work.WorkManager
 import app.cash.turbine.test
 import com.davidcrespo.onewallet.core.models.ThemeMode
 import com.davidcrespo.onewallet.domain.model.investment.Currency
