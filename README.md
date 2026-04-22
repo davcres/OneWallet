@@ -182,3 +182,11 @@ The report will be generated at `app/build/reports/detekt/detekt.html`.
 - **Ktor over Retrofit**: Used for its multiplatform potential and more modern DSL-based configuration.
 - **Glance for Widgets**: Leverages Compose-like syntax to build app widgets, ensuring UI consistency across the entire system.
 - **Manual vs Market Assets**: The system distinguishes between assets with automatic pricing (Stocks/Crypto) and manual entries (Bank/Other), providing a unified balance calculation through a specialized Use Case.
+
+## 🔜 Next Steps
+
+These are some of the planned next steps to further improve the quality, maintainability, and robustness of the project:
+
+- **Using Effects in MVI for one-shot events**: Introduce an **Effects** layer to handle ephemeral events that should not be persisted in the state, such as showing a `Snackbar`, triggering navigation, or emitting one-time UI messages. This prevents unintended re-execution of these events after recomposition or configuration changes, and keeps the `State` focused solely on representing the UI.
+
+- **Result model for error handling**: Consolidate a custom `Result` model to explicitly represent success and failure cases across the application. This enables more predictable and consistent error handling between layers, avoids relying on exceptions as the primary control flow mechanism, and improves both readability and testability of the business logic.
