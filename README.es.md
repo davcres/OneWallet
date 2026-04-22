@@ -19,7 +19,13 @@ OneWallet es una aplicación Android diseñada para gestionar y realizar el segu
 - **Edge-to-Edge**: Soporte completo para el dibujo de borde a borde de Android 15+, asegurando que la interfaz fluya sin problemas detrás de las barras del sistema para un aspecto inmersivo.
 - **Telemetría Personalizada**: Integración de un sistema de telemetría ligero y privado a través de la **API de Telegram** para el reporte de errores en tiempo real sin necesidad de SDKs de terceros como Firebase o Sentry.
 - **Soporte Offline**: Datos en caché y entrada manual de activos para un uso fluido sin internet.
-- **Integración Continua (CI)**: Pipeline totalmente automatizada que compila la app y ejecuta toda la suite de tests unitarios en cada push, asegurando la estabilidad y fiabilidad del código.
+- **Integración Continua y Cobertura**: Pipeline totalmente automatizado que compila la app y ejecuta toda la suite de tests unitarios en cada push. Incluye integración con **JaCoCo** para generar reportes detallados de cobertura de código, asegurando altos estándares de calidad.
+- **Git Hooks (DeteKt)**: 
+    - **Pre-commit**: Ejecuta automáticamente **DeteKt** sobre los archivos modificados para asegurar la calidad del código antes de cada commit.
+    - **Pre-push**: Realiza un análisis estático completo para evitar subir código con "smells" o violaciones arquitectónicas.
+- **Instalación Automatizada de Hooks**: Los Git hooks se instalan y actualizan automáticamente durante el proceso de compilación, asegurando que todos los colaboradores sigan los mismos estándares de calidad.
+- **Análisis Estático (Detekt)**: Cumplimiento estricto de los estándares de Kotlin mediante una configuración personalizada y un **sistema de Baseline**, lo que permite que el proyecto evolucione sin ser bloqueado por problemas heredados, asegurando que todo el código nuevo cumpla con los más altos niveles de calidad.
+
 
 ## 🛠 Stack Tecnológico y Arquitectura
 
@@ -56,7 +62,10 @@ graph TD
 - **Visuales**: Coil para iconos de activos, Material Icons Extended.
 - **Widgets**: Jetpack Glance (soporte para Material 3).
 - **Colecciones**: **Kotlinx Immutable Collections** para recomposición optimizada en Compose.
-- **Testing**: JUnit 5 (Jupyter), MockK, Turbine (para testing de Flow) y extensiones personalizadas de MainDispatcher.
+- **Testing**: JUnit 5 (Jupyter), MockK, Turbine (for testing de Flow) y extensiones personalizadas de MainDispatcher.
+- **Cobertura de Código**: **JaCoCo** con exclusiones personalizadas para código generado y componentes de UI.
+- **Análisis Estático**: **Detekt** con reglas personalizadas para Kotlin y Android.
+
 - **Sistema de Compilación**: Gradle Kotlin DSL, Version Catalog (libs.versions.toml).
 - **Desarrollo Asistido por IA**: Archivos de contexto personalizados (`GEMINI.md`, `android-rules.md`) para aprovechar los LLMs para un desarrollo más rápido, consistente y alineado arquitectónicamente.
 
@@ -133,6 +142,30 @@ Para ejecutar tests unitarios con reporte de cobertura (JaCoCo):
 ./gradlew testDebugUnitTestCoverage
 ```
 El reporte se generará en `app/build/reports/jacoco/testDebugUnitTestCoverage/html/index.html`.
+
+## 🧪 DeteKt
+Para lanzar el análisis de **Detekt** manualmente, tienes varias opciones dependiendo de lo que necesites:
+
+1. **Análisis completo (Toda la app)**: Comando básico que revisa todo el código basándose en las reglas configuradas.
+```bash
+./gradlew detekt
+```
+
+2. **Generar reporte HTML**: Para ver exactamente qué líneas están fallando con una interfaz amigable.
+```bash
+./gradlew detekt -Pdetekt.html.report=true
+```
+El reporte se generará en `app/build/reports/detekt/detekt.html`.
+
+3. **Actualizar el Baseline**: Si quieres "perdonar" nuevos fallos o limpiar la lista de errores actuales.
+```bash
+./gradlew detektBaseline
+```
+
+4. **Auto-corrección**: Solo para errores de estilo básicos (como espacios en blanco o importaciones).
+```bash
+./gradlew detekt --auto-correct
+```
 
 ## 📈 Decisiones de Diseño y Estándares Profesionales
 

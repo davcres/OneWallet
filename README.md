@@ -19,7 +19,12 @@ OneWallet is a comprehensive Android application designed to manage and track in
 - **Modern Edge-to-Edge**: Full support for Android 15+ edge-to-edge drawing, ensuring the UI seamlessly flows behind system bars for an immersive look.
 - **Custom Telemetry**: Integrated a lightweight, private telemetry system via **Telegram API** for real-time error reporting without the need for heavy third-party SDKs like Firebase or Sentry.
 - **Offline Support**: Cached data and manual asset entry for seamless use without internet.
-- **Continuous Integration (CI)**: Fully automated pipeline that compiles the app and executes the entire suite of unit tests on every push, ensuring code stability and reliability.
+- **Continuous Integration & Coverage**: Fully automated pipeline that compiles the app and executes the entire suite of unit tests on every push. It includes **JaCoCo** integration to generate detailed code coverage reports, ensuring high testing standards.
+- **Git Hooks (Quality Gates)**: 
+    - **Pre-commit**: Automatically runs **Detekt** on staged files to ensure code quality before every commit.
+    - **Pre-push**: Runs a full static analysis check to prevent pushing code with smells or architectural violations.
+- **Automated Hook Installation**: Git hooks are automatically installed/updated during the build process, ensuring all contributors follow the same quality standards.
+- **Static Analysis (Detekt)**: Strict adherence to Kotlin standards using a custom configuration and a **Baseline system**, allowing the project to evolve without being blocked by legacy issues while ensuring all new code meets the highest quality bars.
 
 ## 🛠 Tech Stack & Architecture
 
@@ -57,6 +62,8 @@ graph TD
 - **Widgets**: Jetpack Glance (Material 3 support).
 - **Collections**: **Kotlinx Immutable Collections** for optimized Compose recomposition.
 - **Testing**: JUnit 5 (Jupyter), MockK, Turbine (for Flow testing), and custom MainDispatcher extensions.
+- **Code Coverage**: **JaCoCo** with custom exclusions for generated code and UI components.
+- **Static Analysis**: **Detekt** with custom rules for Kotlin and Android.
 - **Build System**: Gradle Kotlin DSL, Version Catalog (libs.versions.toml).
 - **AI-Assisted Development**: Custom context files (`GEMINI.md`, `android-rules.md`) to leverage LLMs for faster, consistent, and architecturally-aligned development.
 
@@ -133,6 +140,30 @@ To run unit tests with coverage report (JaCoCo):
 ./gradlew testDebugUnitTestCoverage
 ```
 The report will be generated at `app/build/reports/jacoco/testDebugUnitTestCoverage/html/index.html`.
+
+## 🧪 DeteKt
+To launch the **Detekt** analysis manually, you have several options depending on your needs:
+
+1. **Full analysis (Whole app)**: Basic command that reviews all the code based on the configured rules.
+```bash
+./gradlew detekt
+```
+
+2. **Generate HTML report**: To see exactly which lines are failing with a friendly interface.
+```bash
+./gradlew detekt -Pdetekt.html.report=true
+```
+The report will be generated at `app/build/reports/detekt/detekt.html`.
+
+3. **Update the Baseline**: If you want to "pardon" new failures or clean up the current list of errors.
+```bash
+./gradlew detektBaseline
+```
+
+4. **Auto-correction**: Only for basic style errors (like white spaces or imports).
+```bash
+./gradlew detekt --auto-correct
+```
 
 ## 📈 Design Decisions & Professional Standards
 
