@@ -153,6 +153,12 @@
     <string name="onboarding_finished_description">You now know how OneWallet works. Let\'s delete these examples so you can start adding your real assets and take control of your investments.</string>
     <string name="onboarding_finished_button">Start now</string>
 
+    <!-- Portfolio Onboarding -->
+    <string name="portfolio_onboarding_title">Personalize your Experience</string>
+    <string name="portfolio_onboarding_description">To help you understand how the app works, we have prepared a small tutorial with 3 example investments to show you how to get the most out of OneWallet. It only takes a minute!</string>
+    <string name="portfolio_onboarding_start">Start tutorial</string>
+    <string name="portfolio_onboarding_skip">Skip tutorial</string>
+
     <!-- Widget -->
     <string name="portfolio_widget">Portfolio Widget</string>
     <string name="prices_widget">Prices Widget</string>

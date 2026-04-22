@@ -48,6 +48,7 @@ class PortfolioViewModelTest {
     private val saveMonthlyPortfolioUseCase = mockk<SaveMonthlyPortfolioUseCase>(relaxed = true)
     private val addInvestmentToPortfolioUseCase = mockk<AddInvestmentToPortfolioUseCase>(relaxed = true)
     private val removePortfolioItemUseCase = mockk<RemovePortfolioItemUseCase>(relaxed = true)
+    private val clearPortfolioUseCase = mockk<com.davidcrespo.onewallet.domain.usecase.portfolio.ClearPortfolioUseCase>(relaxed = true)
     private val financialRepository = mockk<FinancialRepository>(relaxed = true)
     private val getThemeUseCase = mockk<GetThemeUseCase>(relaxed = true)
     private val setThemeUseCase = mockk<SetThemeUseCase>(relaxed = true)
@@ -81,6 +82,7 @@ class PortfolioViewModelTest {
                 saveMonthlyPortfolioUseCase,
                 addInvestmentToPortfolioUseCase,
                 removePortfolioItemUseCase,
+                clearPortfolioUseCase,
                 financialRepository,
                 currencyConverter,
                 getThemeUseCase,
@@ -214,6 +216,15 @@ class PortfolioViewModelTest {
             assertEquals(InvestmentType.ETF, lastState.portfolioItemsByType[0].type)
             assertEquals(2000.0, lastState.portfolioItemsByType[0].totalValue)
         }
+    }
+
+    @Test
+    fun `cuando se recibe ClearPortfolio, se llama a clearPortfolioUseCase`() = runTest(mainDispatcherExtension.testDispatcher) {
+        createViewModel()
+        
+        viewModel.handleIntent(PortfolioIntent.ClearPortfolio)
+        
+        coVerify { clearPortfolioUseCase() }
     }
 
     @Test

@@ -15,6 +15,7 @@ import com.davidcrespo.onewallet.domain.repository.OnboardingRepository
 import com.davidcrespo.onewallet.domain.usecase.appRoot.GetThemeUseCase
 import com.davidcrespo.onewallet.domain.usecase.appRoot.SetThemeUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.AddInvestmentToPortfolioUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.ClearPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetInvestmentPriceUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
@@ -53,6 +54,7 @@ class PortfolioViewModel(
     private val saveMonthlyPortfolioUseCase: SaveMonthlyPortfolioUseCase,
     private val addInvestmentToPortfolioUseCase: AddInvestmentToPortfolioUseCase,
     private val removePortfolioItemUseCase: RemovePortfolioItemUseCase,
+    private val clearPortfolioUseCase: ClearPortfolioUseCase,
     private val financialRepository: FinancialRepository,
     private val currencyConverter: CurrencyConverter,
     private val getThemeUseCase: GetThemeUseCase,
@@ -123,9 +125,7 @@ class PortfolioViewModel(
 
     private fun clearPortfolio() {
         viewModelScope.launch {
-            _uiState.value.portfolioItems.forEach { item ->
-                removePortfolioItemUseCase(item.toDomain())
-            }
+            clearPortfolioUseCase()
         }
     }
 

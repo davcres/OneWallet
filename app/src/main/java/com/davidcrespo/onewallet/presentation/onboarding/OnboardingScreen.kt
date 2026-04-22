@@ -49,10 +49,6 @@ fun OnboardingRoot(
     modifier: Modifier = Modifier,
     viewModel: OnboardingViewModel = koinViewModel()
 ) {
-    LaunchedEffect(viewModel) {
-        viewModel.handleIntent(OnboardingIntent.SeedInitialPortfolio)
-    }
-
     OnboardingScreen(
         onFinish = {
             viewModel.handleIntent(OnboardingIntent.SetOnboardingCompleted)
