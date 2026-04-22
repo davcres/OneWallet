@@ -1,19 +1,19 @@
 <resources>
     <string name="app_name">OneWallet Portfolio</string>
-    <string name="widget_portfolio_description">Check your portfolio values</string>
-    <string name="widget_stocks_description">Track your assets in real time</string>
 
     <!-- Onboarding -->
     <string name="onboarding_1_title">Welcome to OneWallet</string>
     <string name="onboarding_1_description">Manage all your investments in one place. Simple, fast, and secure.</string>
     <string name="onboarding_2_title">Track Real-time</string>
     <string name="onboarding_2_description">Get up-to-date market data for stocks, funds, ETFs, and cryptocurrencies.</string>
-    <string name="onboarding_3_title">Analyze your monthly evolution</string>
-    <string name="onboarding_3_description">Visualize your portfolio performance with detailed charts and historical data.</string>
-    <string name="onboarding_4_title">Your Data is Yours</string>
-    <string name="onboarding_4_description">All your data is stored locally on your device. No cloud, no tracking.</string>
-    <string name="onboarding_5_title">Your finances made simple</string>
-    <string name="onboarding_5_description">Shall we get started?</string>
+    <string name="onboarding_3_title">Home Screen Widgets</string>
+    <string name="onboarding_3_description">Stay in control without opening the app. Use the Portfolio widget to view your balances and the Prices widget to follow the market in real time.</string>
+    <string name="onboarding_4_title">Analyze your monthly evolution</string>
+    <string name="onboarding_4_description">Visualize your portfolio performance with detailed charts and historical data.</string>
+    <string name="onboarding_5_title">Your Data is Yours</string>
+    <string name="onboarding_5_description">All your data is stored locally on your device. No cloud, no tracking.</string>
+    <string name="onboarding_6_title">Your finances made simple</string>
+    <string name="onboarding_6_description">Shall we get started?</string>
     <string name="onboarding_button_next">Next</string>
     <string name="onboarding_button_get_started">Get started</string>
 
@@ -114,7 +114,6 @@
     <string name="price_per_share_label">Price per share</string>
     <string name="total_value_label">Total value</string>
     <string name="pl_month_label">P/L (Month)</string>
-    <string name="percentage_icon_cd">Percentage Icon</string>
 
     <!-- Core -->
     <string name="clear_cd">Delete investment</string>
@@ -136,7 +135,35 @@
     </string-array>
     <string name="your_investments">Your investments</string>
 
+    <!-- Tooltips -->
+    <string name="tooltip_positions">Check your active investments and total balance.</string>
+    <string name="tooltip_allocation">Visualize how your capital is distributed by asset type.</string>
+    <string name="tooltip_prices">Track real-time market prices for your assets.</string>
+    <string name="tooltip_history">Analyze your portfolio evolution with historical monthly data.</string>
+    <string name="tooltip_total_balance">View your total portfolio balance and daily change.</string>
+    <string name="tooltip_portfolio_list">Track your individual assets and their performance compared to the previous day.</string>
+    <string name="tooltip_allocation_graph">Visualize your assets distribution with this interactive chart.</string>
+    <string name="tooltip_prices_list">You can see its current price and its variation compared to the previous day.</string>
+    <string name="tooltip_history_list">View your portfolio performance over time.</string>
+    <string name="tooltip_edit_investment">Click on an asset to change the amount you have invested.</string>
+    <string name="tooltip_delete_investment">Swipe an asset to the left to remove it from your portfolio</string>
+    <string name="tooltip_add_investment">Click to select an asset and start building your portfolio.</string>
+
+    <string name="onboarding_finished_title">Tutorial completed!</string>
+    <string name="onboarding_finished_description">You now know how OneWallet works. Let\'s delete these examples so you can start adding your real assets and take control of your investments.</string>
+    <string name="onboarding_finished_button">Start now</string>
+
+    <!-- Portfolio Onboarding -->
+    <string name="portfolio_onboarding_title">Personalize your Experience</string>
+    <string name="portfolio_onboarding_description">To help you understand how the app works, we have prepared a small tutorial with 3 example investments to show you how to get the most out of OneWallet. It only takes a minute!</string>
+    <string name="portfolio_onboarding_start">Start tutorial</string>
+    <string name="portfolio_onboarding_skip">Skip tutorial</string>
+
     <!-- Widget -->
-    <string name="reload_cd">Reload</string>
+    <string name="portfolio_widget">Portfolio Widget</string>
+    <string name="prices_widget">Prices Widget</string>
+    <string name="widget_portfolio_description">Check your portfolio values</string>
+    <string name="widget_stocks_description">Track your assets in real time</string>
     <string name="asset_prices_title">Market Prices</string>
+    <string name="reload_cd">Reload</string>
 </resources>

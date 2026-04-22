@@ -27,9 +27,11 @@ class SplashViewModel(
 
     private fun isOnboardingCompleted() {
         val isOnboardingCompleted = onboardingRepository.isOnboardingCompleted()
+        val isPortfolioOnboardingCompleted = onboardingRepository.isPortfolioOnboardingCompleted()
         _uiState.update {
             it.copy(
-                onboardingCompleted = isOnboardingCompleted
+                onboardingCompleted = isOnboardingCompleted,
+                portfolioOnboardingCompleted = isPortfolioOnboardingCompleted
             )
         }
     }

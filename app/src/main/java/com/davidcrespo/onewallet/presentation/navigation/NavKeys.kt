@@ -12,6 +12,9 @@ sealed interface Route : NavKey {
     data object Onboarding : Route
 
     @Serializable
+    data object PortfolioOnboarding : Route
+
+    @Serializable
     data class Portfolio(val tab: PortfolioTabs = PortfolioTabs.POSITIONS) : Route
 
     @Serializable

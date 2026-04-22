@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.presentation.designsystem.theme.Error
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OnError
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
@@ -130,10 +131,12 @@ fun ErrorBanner(
 @Preview
 @Composable
 private fun ErrorBannerPreview() {
-    ErrorBanner(
-        message = "Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente.",
-        autoCloseable = false,
-        showCloseIcon = true,
-        onErrorDismiss = {}
-    )
+    OneWalletTheme {
+        ErrorBanner(
+            message = "Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente.",
+            autoCloseable = false,
+            showCloseIcon = true,
+            onErrorDismiss = {}
+        )
+    }
 }

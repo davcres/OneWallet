@@ -30,6 +30,10 @@ class HistoryViewModel(
     fun handleIntent(intent: HistoryIntent) {
         when (intent) {
             is HistoryIntent.LoadInitialData -> loadInitialData()
+            is HistoryIntent.OnCurrencyChanged -> {
+                getSelectedCurrency()
+                onCurrencyChanged()
+            }
             is HistoryIntent.SelectMonth -> selectMonth(intent.year, intent.month)
             is HistoryIntent.SelectInvestment -> selectInvestment(intent.investment)
             is HistoryIntent.DismissBottomSheet -> dismissBottomSheet()
@@ -153,6 +157,75 @@ class HistoryViewModel(
             it.copy(
                 selectedCurrency = selectedCurrency.toUI()
             )
+        }
+    }
+
+    private fun onCurrencyChanged() {
+        viewModelScope.launch {
+            val state = _uiState.value
+            val newSelectedCurrency = state.selectedCurrency
+            val history = state.history
+
+            val historyConverted = history.map { monthlyList ->
+                monthlyList.map { investment ->
+                    val rate = getCurrencyRateUseCase(
+                        from = investment.originalCurrency.code,
+                        to = newSelectedCurrency.code
+                    ).fold(
+                        onSuccess = { it },
+                        onFailure = { 1.0 }
+                    )
+
+                    val priceConverted = currencyConverter.convert(
+                        amount = investment.originalPrice,
+                        from = investment.originalCurrency.code,
+                        to = newSelectedCurrency.code,
+                        rate = rate
+                    )
+
+                    val previousPriceConverted = currencyConverter.convert(
+                        amount = investment.originalPreviousPrice,
+                        from = investment.originalCurrency.code,
+                        to = newSelectedCurrency.code,
+                        rate = rate
+                    )
+
+                    investment.copy(
+                        displayPrice = priceConverted,
+                        displayPreviousPrice = previousPriceConverted
+                    )
+                }.toImmutableList()
+            }.toImmutableList()
+
+            _uiState.update { state ->
+                val selectedMonthDetailConverted = state.selectedMonthDetail?.let { current ->
+                    current.firstOrNull()?.let { first ->
+                        historyConverted.firstOrNull { it.firstOrNull()?.let { m -> m.year == first.year && m.month == first.month } == true }
+                            ?.sortedByDescending { it.quantity * it.displayPrice }?.toImmutableList()
+                    }
+                }
+
+                val index = selectedMonthDetailConverted?.let { historyConverted.indexOf(it) } ?: -1
+                val selectedPreviousMonthConverted = if (index != -1 && index + 1 < historyConverted.size) {
+                    historyConverted[index + 1]
+                } else null
+
+                val selectedInvestmentConverted = state.selectedInvestment?.let { oldInv ->
+                    selectedMonthDetailConverted?.find { it.symbol == oldInv.symbol }
+                }
+
+                val selectedPreviousInvestmentConverted = selectedInvestmentConverted?.let { newInv ->
+                    selectedPreviousMonthConverted?.find { it.symbol == newInv.symbol }
+                }
+
+                state.copy(
+                    history = historyConverted,
+                    selectedMonthDetail = selectedMonthDetailConverted,
+                    selectedPreviousMonth = selectedPreviousMonthConverted,
+                    selectedInvestment = selectedInvestmentConverted,
+                    selectedPreviousInvestment = selectedPreviousInvestmentConverted
+                )
+            }
         }
     }
 }

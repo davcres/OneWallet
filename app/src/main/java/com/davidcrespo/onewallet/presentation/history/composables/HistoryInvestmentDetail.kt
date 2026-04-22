@@ -38,16 +38,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.CopiableText
 import com.davidcrespo.onewallet.core.composables.DashedDivider
 import com.davidcrespo.onewallet.core.models.Quadruple
+import com.davidcrespo.onewallet.domain.model.investment.EUR
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.domain.model.investment.hasIsin
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
+import com.davidcrespo.onewallet.presentation.designsystem.composables.OWCurrencyPrice
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.bottomSheet.SheetHandle
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import kotlinx.coroutines.launch
 
@@ -57,6 +64,7 @@ fun HistoryInvestmentDetailBottomSheet(
     visible: Boolean,
     investment: InvestmentView,
     previousMonthInvestment: InvestmentView?,
+    currency: CurrencyView,
     onDismiss: () -> Unit
 ) {
     if (!visible) return
@@ -78,6 +86,7 @@ fun HistoryInvestmentDetailBottomSheet(
                 SheetContent(
                     investment = investment,
                     previousMonthInvestment = previousMonthInvestment,
+                    currency = currency,
                     onClose = {
                         scope.launch { sheetState.hide() }
                             .invokeOnCompletion { onDismiss() }
@@ -103,6 +112,7 @@ fun HistoryInvestmentDetailBottomSheet(
 private fun SheetContent(
     investment: InvestmentView,
     previousMonthInvestment: InvestmentView?,
+    currency: CurrencyView,
     onClose: () -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
@@ -234,11 +244,12 @@ private fun SheetContent(
                         textAlign = TextAlign.Center
                     )
 
-                    Text(
-                        text = "%.2f €".format(investment.displayPrice),
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center
+                    OWCurrencyPrice(
+                        price = investment.displayPrice,
+                        currency = currency,
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        textColor = MaterialTheme.typography.titleLarge.color,
+                        modifier = Modifier.weight(1f)
                     )
                 }
 
@@ -271,11 +282,12 @@ private fun SheetContent(
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = "%.2f €".format(investment.quantity * investment.displayPrice),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
+                OWCurrencyPrice(
+                    price = investment.quantity * investment.displayPrice,
+                    currency = currency,
+                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                    textColor = MaterialTheme.typography.titleLarge.color,
+                    modifier = Modifier.weight(1f)
                 )
 
                 if (previousMonthInvestment != null && previousMonthInvestment.displayPrice > 0.0) {
@@ -293,7 +305,7 @@ private fun SheetContent(
                             ) {
                                 Icon(
                                     imageVector = percentageIcon,
-                                    contentDescription = stringResource(R.string.percentage_icon_cd),
+                                    contentDescription = null,
                                     tint = percentageColor
                                 )
 
@@ -333,15 +345,56 @@ private fun SheetContent(
                         (investment.displayPrice * investment.quantity) - (previousMonthInvestment.displayPrice * previousMonthInvestment.quantity)
                     }
 
-                    Text(
-                        text = "$prefix%.2f €".format(variance),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = percentageColor,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center
+                    OWCurrencyPrice(
+                        price = variance,
+                        prefix = prefix,
+                        currency = currency,
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        textColor = percentageColor,
+                        modifier = Modifier.weight(1f)
                     )
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun HistoryInvestmentDetailBottomSheetPreview() {
+    OneWalletTheme {
+        HistoryInvestmentDetailBottomSheet(
+            visible = true,
+            investment = InvestmentView(
+                symbol = "AAPL",
+                name = "Apple",
+                quantity = 10.0,
+                type = InvestmentType.STOCK,
+                originalCurrency = CurrencyView.get(USD),
+                originalPrice = 150.0,
+                originalPreviousPrice = 140.0,
+                displayPrice = 150.0,
+                displayPreviousPrice = 140.0,
+                changePercent = 0.0,
+                month = 0,
+                year = 0
+            ),
+            previousMonthInvestment = InvestmentView(
+                symbol = "AAPL",
+                name = "Apple",
+                quantity = 10.0,
+                type = InvestmentType.STOCK,
+                originalCurrency = CurrencyView.get(USD),
+                originalPrice = 150.0,
+                originalPreviousPrice = 140.0,
+                displayPrice = 150.0,
+                displayPreviousPrice = 140.0,
+                changePercent = 0.0,
+                month = 0,
+                year = 0
+            ),
+            currency = CurrencyView.get(EUR),
+            onDismiss = {}
+        )
     }
 }

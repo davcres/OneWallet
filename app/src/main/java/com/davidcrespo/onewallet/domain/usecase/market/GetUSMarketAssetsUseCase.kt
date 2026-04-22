@@ -49,7 +49,7 @@ class GetUSMarketAssetsUseCase(
         }
     }
 
-    companion object GetUSMarketAssetsUseCase {
+    companion object {
         private const val US_COUNTRY = "US"
     }
 }

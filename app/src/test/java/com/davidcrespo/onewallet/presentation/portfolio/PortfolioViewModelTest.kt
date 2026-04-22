@@ -1,7 +1,6 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
 import android.content.Context
-import androidx.work.WorkManager
 import app.cash.turbine.test
 import com.davidcrespo.onewallet.core.models.ThemeMode
 import com.davidcrespo.onewallet.domain.model.investment.Currency
@@ -49,9 +48,11 @@ class PortfolioViewModelTest {
     private val saveMonthlyPortfolioUseCase = mockk<SaveMonthlyPortfolioUseCase>(relaxed = true)
     private val addInvestmentToPortfolioUseCase = mockk<AddInvestmentToPortfolioUseCase>(relaxed = true)
     private val removePortfolioItemUseCase = mockk<RemovePortfolioItemUseCase>(relaxed = true)
+    private val clearPortfolioUseCase = mockk<com.davidcrespo.onewallet.domain.usecase.portfolio.ClearPortfolioUseCase>(relaxed = true)
     private val financialRepository = mockk<FinancialRepository>(relaxed = true)
     private val getThemeUseCase = mockk<GetThemeUseCase>(relaxed = true)
     private val setThemeUseCase = mockk<SetThemeUseCase>(relaxed = true)
+    private val onboardingRepository = mockk<com.davidcrespo.onewallet.domain.repository.OnboardingRepository>(relaxed = true)
     private val themeFlow = MutableStateFlow(ThemeMode.SYSTEM)
     private val currencyConverter = CurrencyConverter()
     private val context = mockk<Context>(relaxed = true)
@@ -68,6 +69,7 @@ class PortfolioViewModelTest {
         every { financialRepository.getSelectedCurrency() } returns Currency(EUR)
         every { getPortfolioItemsUseCase.invoke() } returns flowOf(emptyList())
         every { getThemeUseCase.invoke() } returns themeFlow
+        every { onboardingRepository.isPortfolioOnboardingCompleted() } returns false
         coEvery { getCurrencyRateUseCase.invoke(any(), any()) } returns Result.success(1.0)
     }
 
@@ -80,10 +82,12 @@ class PortfolioViewModelTest {
                 saveMonthlyPortfolioUseCase,
                 addInvestmentToPortfolioUseCase,
                 removePortfolioItemUseCase,
+                clearPortfolioUseCase,
                 financialRepository,
                 currencyConverter,
                 getThemeUseCase,
                 setThemeUseCase,
+                onboardingRepository,
                 context
             )
         } catch (e: Throwable) {
@@ -204,6 +208,66 @@ class PortfolioViewModelTest {
             
             assertEquals(1, lastState.portfolioItems.size)
             assertEquals("VTI", lastState.portfolioItems[0].symbol)
+            
+            // Verificamos calculos automaticos
+            assertEquals(2000.0, lastState.totalBalance)
+            assertEquals(1950.0, lastState.previousBalance)
+            assertEquals(1, lastState.portfolioItemsByType.size)
+            assertEquals(InvestmentType.ETF, lastState.portfolioItemsByType[0].type)
+            assertEquals(2000.0, lastState.portfolioItemsByType[0].totalValue)
+        }
+    }
+
+    @Test
+    fun `cuando se recibe ClearPortfolio, se llama a clearPortfolioUseCase`() = runTest(mainDispatcherExtension.testDispatcher) {
+        createViewModel()
+        
+        viewModel.handleIntent(PortfolioIntent.ClearPortfolio)
+        
+        coVerify { clearPortfolioUseCase() }
+    }
+
+    @Test
+    fun `cuando se completa el onboarding, se actualiza el repositorio y el estado`() = runTest(mainDispatcherExtension.testDispatcher) {
+        createViewModel()
+        
+        // Empezamos onboarding
+        viewModel.handleIntent(PortfolioIntent.StartOnboarding)
+        
+        viewModel.uiState.test {
+            var state = awaitItem()
+            while (state.onboardingPlaylist.isEmpty()) {
+                state = awaitItem()
+            }
+            
+            // Avanzamos todos los pasos
+            val stepsCount = state.onboardingPlaylist.size
+            repeat(stepsCount) {
+                viewModel.handleIntent(PortfolioIntent.NextOnboardingStep)
+            }
+            
+            // Verificamos que se marca como completado
+            state = awaitItem()
+            while (!state.isOnboardingCompleted) {
+                state = awaitItem()
+            }
+            
+            assertTrue(state.isOnboardingCompleted)
+            coVerify { onboardingRepository.setPortfolioOnboardingCompleted(true) }
+        }
+    }
+
+    @Test
+    fun `si el onboarding ya esta completado, StartOnboarding no hace nada`() = runTest(mainDispatcherExtension.testDispatcher) {
+        every { onboardingRepository.isPortfolioOnboardingCompleted() } returns true
+        createViewModel()
+        
+        viewModel.handleIntent(PortfolioIntent.StartOnboarding)
+        
+        viewModel.uiState.test {
+            val state = awaitItem()
+            assertTrue(state.isOnboardingCompleted)
+            assertTrue(state.onboardingPlaylist.isEmpty())
         }
     }
 }

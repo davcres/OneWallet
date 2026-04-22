@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -87,6 +88,11 @@ private fun OnboardingScreen(
             title = stringResource(R.string.onboarding_5_title),
             description = stringResource(R.string.onboarding_5_description),
             icon = R.drawable.onboarding_5
+        ),
+        OnboardingPage(
+            title = stringResource(R.string.onboarding_6_title),
+            description = stringResource(R.string.onboarding_6_description),
+            icon = R.drawable.onboarding_6
         )
     )
 

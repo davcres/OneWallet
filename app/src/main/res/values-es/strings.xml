@@ -6,12 +6,14 @@
     <string name="onboarding_1_description">Controla todas tus inversiones en un solo lugar. Simple y rápido.</string>
     <string name="onboarding_2_title">Seguimiento de tus inversiones en tiempo real</string>
     <string name="onboarding_2_description">Obtén datos de mercado actualizados sobre acciones, fondos, ETFs y criptomonedas.</string>
-    <string name="onboarding_3_title">Analiza tu evolución mensual</string>
-    <string name="onboarding_3_description">Consulta el rendimiento de tu cartera para ver como evoluciona mes a mes con datos históricos.</string>
-    <string name="onboarding_4_title">Tus datos son solo tuyos</string>
-    <string name="onboarding_4_description">Todos tus datos se almacenan localmente en tu dispositivo. Sin nube, sin seguimiento.</string>
-    <string name="onboarding_5_title">Tus finanzas simplificadas</string>
-    <string name="onboarding_5_description">¿Empezamos?</string>
+    <string name="onboarding_3_title">Widgets en pantalla de inicio</string>
+    <string name="onboarding_3_description">Mantén el control sin abrir la app. Usa el widget de Portfolio para ver tus saldos y el de Cotización para seguir el mercado en tiempo real.</string>
+    <string name="onboarding_4_title">Analiza tu evolución mensual</string>
+    <string name="onboarding_4_description">Consulta el rendimiento de tu cartera para ver como evoluciona mes a mes con datos históricos.</string>
+    <string name="onboarding_5_title">Tus datos son solo tuyos</string>
+    <string name="onboarding_5_description">Todos tus datos se almacenan localmente en tu dispositivo. Sin nube, sin seguimiento.</string>
+    <string name="onboarding_6_title">Tus finanzas simplificadas</string>
+    <string name="onboarding_6_description">¿Empezamos?</string>
     <string name="onboarding_button_next">Siguiente</string>
     <string name="onboarding_button_get_started">Empezar ahora</string>
 
@@ -112,14 +114,12 @@
     <string name="price_per_share_label">Precio por unidad</string>
     <string name="total_value_label">Valor total</string>
     <string name="pl_month_label">P/L (Mes)</string>
-    <string name="percentage_icon_cd">Icono de porcentaje</string>
 
     <!-- Core -->
     <string name="clear_cd">Borrar inversión</string>
     <string name="clear_text_cd">Borrar texto</string>
     <string name="copiable_text_snackbar">Copiado al portapapeles</string>
     <string name="copiable_text_cd">Copiar</string>
-    <string name="reload_cd">Recargar</string>
 
     <string name="total_balance">Balance Total</string>
     <string name="hide_balance_cd">Ocultar balance</string>
@@ -135,8 +135,35 @@
     </string-array>
     <string name="your_investments">Tus inversiones</string>
 
+    <!-- Tooltips -->
+    <string name="tooltip_positions">Consulta tus inversiones activas y el balance total.</string>
+    <string name="tooltip_allocation">Visualiza cómo se distribuye tu capital por tipo de activo.</string>
+    <string name="tooltip_prices">Sigue los precios de mercado en tiempo real para tus activos.</string>
+    <string name="tooltip_history">Analiza la evolución de tu cartera con datos históricos mensuales.</string>
+    <string name="tooltip_total_balance">Consulta el balance total de tu cartera y el cambio diario.</string>
+    <string name="tooltip_portfolio_list">Sigue tus activos individuales y su rendimiento respecto al dia anterior.</string>
+    <string name="tooltip_allocation_graph">Visualiza la distribución de tus activos con este gráfico interactivo.</string>
+    <string name="tooltip_prices_list">Podrás ver su precio actual y su variacion respecto al día anterior.</string>
+    <string name="tooltip_history_list">Consulta el rendimiento de tu cartera a lo largo del tiempo.</string>
+    <string name="tooltip_edit_investment">Haz clic en un activo para cambiar la cantidad que tienes invertida.</string>
+    <string name="tooltip_delete_investment">Desliza un activo hacia la izquierda para eliminarlo de tu cartera.</string>
+    <string name="tooltip_add_investment">Haz clic para seleccionar un activo y empezar a crear tu cartera.</string>
+
+    <string name="onboarding_finished_title">¡Tutorial completado!</string>
+    <string name="onboarding_finished_description">Ya conoces como funciona OneWallet. Vamos a borrar estos ejemplos para que puedas empezar a añadir tus activos reales y tomar el control de tus inversiones.</string>
+    <string name="onboarding_finished_button">Empezar</string>
+
+    <!-- Portfolio Onboarding -->
+    <string name="portfolio_onboarding_title">Vamos a empezar</string>
+    <string name="portfolio_onboarding_description">Para que entiendas mejor cómo funciona la app, hemos preparado un pequeño tutorial con 3 inversiones de ejemplo para enseñarte cómo sacar el máximo provecho a OneWallet. ¡Solo te llevará un minuto!</string>
+    <string name="portfolio_onboarding_start">Empezar tutorial</string>
+    <string name="portfolio_onboarding_skip">Saltar tutorial</string>
+
     <!-- Widget -->
+    <string name="portfolio_widget">Widget de Portfolio</string>
+    <string name="prices_widget">Widget de Cotización</string>
     <string name="widget_portfolio_description">Consulta los valores de tu cartera</string>
     <string name="widget_stocks_description">Sigue la cotización de tus activos en tiempo real</string>
     <string name="asset_prices_title">Precios de Mercado</string>
+    <string name="reload_cd">Recargar</string>
 </resources>

@@ -1,14 +1,20 @@
 package com.davidcrespo.onewallet.presentation.onboarding
 
 import com.davidcrespo.onewallet.domain.repository.OnboardingRepository
+import com.davidcrespo.onewallet.util.MainDispatcherExtension
 import io.mockk.confirmVerified
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class OnboardingViewModelTest {
+
+    @RegisterExtension
+    val mainDispatcherExtension = MainDispatcherExtension()
 
     private val onboardingRepository = mockk<OnboardingRepository>(relaxed = true)
     private lateinit var viewModel: OnboardingViewModel
@@ -20,9 +26,6 @@ class OnboardingViewModelTest {
 
     @Test
     fun `cuando se recibe SetOnboardingCompleted, se marca como completado en el repositorio`() {
-        // Configuracion (opcional si es relaxed, pero mejor ser explicito)
-        every { onboardingRepository.setOnboardingCompleted(any()) } returns Unit
-        
         // Acción
         viewModel.handleIntent(OnboardingIntent.SetOnboardingCompleted)
         

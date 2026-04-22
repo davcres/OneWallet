@@ -11,9 +11,11 @@ import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.domain.model.investment.isManual
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
+import com.davidcrespo.onewallet.domain.repository.OnboardingRepository
 import com.davidcrespo.onewallet.domain.usecase.appRoot.GetThemeUseCase
 import com.davidcrespo.onewallet.domain.usecase.appRoot.SetThemeUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.AddInvestmentToPortfolioUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.ClearPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetInvestmentPriceUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
@@ -24,6 +26,7 @@ import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toDomain
 import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
+import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioCoachmarks
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -51,10 +54,12 @@ class PortfolioViewModel(
     private val saveMonthlyPortfolioUseCase: SaveMonthlyPortfolioUseCase,
     private val addInvestmentToPortfolioUseCase: AddInvestmentToPortfolioUseCase,
     private val removePortfolioItemUseCase: RemovePortfolioItemUseCase,
+    private val clearPortfolioUseCase: ClearPortfolioUseCase,
     private val financialRepository: FinancialRepository,
     private val currencyConverter: CurrencyConverter,
     private val getThemeUseCase: GetThemeUseCase,
     private val setThemeUseCase: SetThemeUseCase,
+    private val onboardingRepository: OnboardingRepository,
     private val context: Context
 ) : ViewModel() {
 
@@ -73,14 +78,17 @@ class PortfolioViewModel(
 
     fun handleIntent(intent: PortfolioIntent) {
         when (intent) {
-            is PortfolioIntent.UpdateBalance -> setTotalBalance()
             is PortfolioIntent.ChangeCurrency -> changeCurrency()
+            is PortfolioIntent.SetTab -> _uiState.update { it.copy(selectedTab = intent.tab) }
             is PortfolioIntent.ToggleTheme -> toggleTheme(intent.themeMode)
 
             is PortfolioIntent.EditQuantity -> _uiState.update { it.copy(editingItem = intent.item) }
             is PortfolioIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity)
             is PortfolioIntent.RemoveItem -> removeItem(intent.item)
             is PortfolioIntent.ShowDeleteDialog -> _uiState.update { it.copy(deletingItem = intent.item) }
+
+            is PortfolioIntent.ShowAddInvestment -> _uiState.update { it.copy(isAddInvestmentVisible = true) }
+            is PortfolioIntent.DismissAddInvestment -> _uiState.update { it.copy(isAddInvestmentVisible = false) }
 
             is PortfolioIntent.AddFundItem -> addFundItem(intent.name, intent.quantity)
             is PortfolioIntent.ShowFundDialog -> _uiState.update { it.copy(isFundDialogVisible = true) }
@@ -103,13 +111,63 @@ class PortfolioViewModel(
 
             is PortfolioIntent.NavigateToMarket -> {}
 
-            is PortfolioIntent.GetItemsByType -> getItemsByType()
             is PortfolioIntent.SelectInvestmentType -> _uiState.update { it.copy(typeDetail = intent.type) }
             is PortfolioIntent.DismissInvestmentType -> _uiState.update { it.copy(typeDetail = null) }
+
+            is PortfolioIntent.StartOnboarding -> startOnboarding()
+            is PortfolioIntent.NextOnboardingStep -> nextOnboardingStep()
+            is PortfolioIntent.ShowOnboardingCompletionDialog -> _uiState.update { it.copy(showOnboardingCompletionDialog = true) }
+            is PortfolioIntent.DismissOnboardingCompletionDialog -> _uiState.update { it.copy(showOnboardingCompletionDialog = false) }
+            is PortfolioIntent.ClearPortfolio -> clearPortfolio()
+            else -> {}
+        }
+    }
+
+    private fun clearPortfolio() {
+        viewModelScope.launch {
+            clearPortfolioUseCase()
+        }
+    }
+
+    private fun startOnboarding() {
+        if (onboardingRepository.isPortfolioOnboardingCompleted()) return
+
+        _uiState.update { 
+            it.copy(onboardingPlaylist = PortfolioCoachmarks.entries.toImmutableList()) 
+        }
+    }
+
+    private fun nextOnboardingStep() {
+        _uiState.update { state ->
+            val currentPlaylist = state.onboardingPlaylist.toMutableList()
+            if (currentPlaylist.isEmpty()) return@update state
+
+            val justFinished = currentPlaylist.removeAt(0)
+            val next = currentPlaylist.firstOrNull()
+
+            if (next == null) {
+                onboardingRepository.setPortfolioOnboardingCompleted(true)
+                state.copy(
+                    isOnboardingCompleted = true,
+                    onboardingPlaylist = currentPlaylist.toImmutableList()
+                )
+            } else if (next.tab != justFinished.tab) {
+                state.copy(
+                    selectedTab = next.tab,
+                    onboardingPlaylist = currentPlaylist.toImmutableList()
+                )
+            } else {
+                state.copy(
+                    onboardingPlaylist = currentPlaylist.toImmutableList()
+                )
+            }
         }
     }
 
     init {
+        _uiState.update { 
+            it.copy(isOnboardingCompleted = onboardingRepository.isPortfolioOnboardingCompleted()) 
+        }
         loadInitialData()
     }
 
@@ -145,6 +203,9 @@ class PortfolioViewModel(
                 _uiState.update {
                     it.copy(
                         portfolioItems = sorted,
+                        totalBalance = sorted.calculateTotalBalance(),
+                        previousBalance = sorted.calculatePreviousBalance(),
+                        portfolioItemsByType = sorted.calculateItemsByType(),
                         isLoading = false
                     )
                 }
@@ -259,6 +320,9 @@ class PortfolioViewModel(
         _uiState.update {
             it.copy(
                 portfolioItems = finalList,
+                totalBalance = finalList.calculateTotalBalance(),
+                previousBalance = finalList.calculatePreviousBalance(),
+                portfolioItemsByType = finalList.calculateItemsByType(),
                 symbolsWithPrice = newSymbolsWithPrice
             )
         }
@@ -269,26 +333,6 @@ class PortfolioViewModel(
         }
 
         return finalList
-    }
-
-    private fun setTotalBalance() {
-        val totalBalance = _uiState.value.portfolioItems.sumOf {
-            it.quantity * it.displayPrice
-        }
-        val previousBalance = _uiState.value.portfolioItems.sumOf {
-            if (it.type.isMarket()) {
-                it.quantity * it.displayPreviousPrice
-            } else {
-                it.quantity * it.displayPrice
-            }
-        }
-
-        _uiState.update {
-            it.copy(
-                totalBalance = totalBalance,
-                previousBalance = previousBalance
-            )
-        }
     }
 
     private suspend fun savePortfolio(itemsView: List<InvestmentView>) {
@@ -498,34 +542,19 @@ class PortfolioViewModel(
                     displayPrice = priceConverted,
                     displayPreviousPrice = previousPriceConverted
                 )
-            }
+            }.toImmutableList()
 
             _uiState.update {
                 it.copy(
                     selectedCurrency = newSelectedCurrency,
-                    portfolioItems = portfolioItemsConverted.toImmutableList()
+                    portfolioItems = portfolioItemsConverted,
+                    totalBalance = portfolioItemsConverted.calculateTotalBalance(),
+                    previousBalance = portfolioItemsConverted.calculatePreviousBalance(),
+                    portfolioItemsByType = portfolioItemsConverted.calculateItemsByType()
                 )
             }
 
             updateWidgets()
-        }
-    }
-
-    private fun getItemsByType() {
-        viewModelScope.launch {
-            val items = _uiState.value.portfolioItems
-
-            val groups: ImmutableList<ItemsByTypeView> =
-                items
-                    .groupBy { it.type }
-                    .map { (type, list) ->
-                        val total = list.sumOf { it.quantity * it.displayPrice }
-                        ItemsByTypeView(type, list.toImmutableList(), total)
-                    }
-                    .sortedByDescending { it.totalValue }
-                    .toImmutableList()
-
-            _uiState.update { it.copy(portfolioItemsByType = groups) }
         }
     }
 
@@ -534,4 +563,19 @@ class PortfolioViewModel(
             setThemeUseCase(mode)
         }
     }
+
+    private fun List<InvestmentView>.calculateTotalBalance(): Double = sumOf { it.quantity * it.displayPrice }
+
+    private fun List<InvestmentView>.calculatePreviousBalance(): Double = sumOf {
+        if (it.type.isMarket()) it.quantity * it.displayPreviousPrice else it.quantity * it.displayPrice
+    }
+
+    private fun List<InvestmentView>.calculateItemsByType(): ImmutableList<ItemsByTypeView> =
+        groupBy { it.type }
+            .map { (type, list) ->
+                val total = list.sumOf { it.quantity * it.displayPrice }
+                ItemsByTypeView(type, list.toImmutableList(), total)
+            }
+            .sortedByDescending { it.totalValue }
+            .toImmutableList()
 }

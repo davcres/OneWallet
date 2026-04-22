@@ -32,7 +32,7 @@ private const val ANIMATION_DURATION = 400
 
 @Composable
 fun SplashRoot(
-    onAnimationFinished: (onboardingCompleted: Boolean) -> Unit,
+    onAnimationFinished: (onboardingCompleted: Boolean, portfolioOnboardingCompleted: Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SplashViewModel = koinViewModel()
 ) {
@@ -53,7 +53,7 @@ fun SplashRoot(
 @Composable
 private fun SplashScreen(
     uiState: SplashUiState,
-    onAnimationFinished: (onboardingCompleted: Boolean) -> Unit,
+    onAnimationFinished: (onboardingCompleted: Boolean, portfolioOnboardingCompleted: Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.splash))
@@ -87,7 +87,10 @@ private fun SplashScreen(
     LaunchedEffect(startAnimation) {
         if (startAnimation) {
             delay(ANIMATION_DURATION.toLong())
-            onAnimationFinished(uiState.onboardingCompleted ?: false)
+            onAnimationFinished(
+                uiState.onboardingCompleted ?: false,
+                uiState.portfolioOnboardingCompleted ?: false
+            )
         }
     }
 

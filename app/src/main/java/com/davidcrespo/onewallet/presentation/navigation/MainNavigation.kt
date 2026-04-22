@@ -12,6 +12,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.davidcrespo.onewallet.presentation.market.globalMarket.GlobalMarketRoot
 import com.davidcrespo.onewallet.presentation.market.usMarket.UsMarketRoot
 import com.davidcrespo.onewallet.presentation.onboarding.OnboardingRoot
+import com.davidcrespo.onewallet.presentation.onboarding.PortfolioOnboardingRoot
 import com.davidcrespo.onewallet.presentation.portfolio.PortfolioRoot
 import com.davidcrespo.onewallet.presentation.splash.SplashRoot
 
@@ -40,10 +41,14 @@ fun MainNavigation() {
         entryProvider = entryProvider {
             entry<Route.Splash> {
                 SplashRoot(
-                    onAnimationFinished = { onboardingCompleted ->
+                    onAnimationFinished = { onboardingCompleted, portfolioOnboardingCompleted ->
                         backStack.clear()
                         if (onboardingCompleted) {
-                            backStack.add(Route.Portfolio())
+                            if (portfolioOnboardingCompleted) {
+                                backStack.add(Route.Portfolio())
+                            } else {
+                                backStack.add(Route.PortfolioOnboarding)
+                            }
                         } else {
                             backStack.add(Route.Onboarding)
                         }
@@ -54,6 +59,19 @@ fun MainNavigation() {
             entry<Route.Onboarding> {
                 OnboardingRoot(
                     onFinish = {
+                        backStack.clear()
+                        backStack.add(Route.PortfolioOnboarding)
+                    }
+                )
+            }
+
+            entry<Route.PortfolioOnboarding> {
+                PortfolioOnboardingRoot(
+                    onStartTutorial = {
+                        backStack.clear()
+                        backStack.add(Route.Portfolio())
+                    },
+                    onSkipTutorial = {
                         backStack.clear()
                         backStack.add(Route.Portfolio())
                     }
