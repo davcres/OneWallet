@@ -138,16 +138,20 @@
     <!-- Tooltips -->
     <string name="tooltip_positions">Consulta tus inversiones activas y el balance total.</string>
     <string name="tooltip_allocation">Visualiza cómo se distribuye tu capital por tipo de activo.</string>
-    <string name="tooltip_prices">Sigue los precios de mercado en tiempo real para tus acciones y cripto.</string>
+    <string name="tooltip_prices">Sigue los precios de mercado en tiempo real para tus activos.</string>
     <string name="tooltip_history">Analiza la evolución de tu cartera con datos históricos mensuales.</string>
     <string name="tooltip_total_balance">Consulta el balance total de tu cartera y el cambio diario.</string>
-    <string name="tooltip_portfolio_list">Sigue tus activos individuales y su rendimiento.</string>
+    <string name="tooltip_portfolio_list">Sigue tus activos individuales y su rendimiento respecto al dia anterior.</string>
     <string name="tooltip_allocation_graph">Visualiza la distribución de tus activos con este gráfico interactivo.</string>
-    <string name="tooltip_prices_list">Sigue los precios de mercado en tiempo real para tus activos.</string>
+    <string name="tooltip_prices_list">Podrás ver su precio actual y su variacion respecto al día anterior.</string>
     <string name="tooltip_history_list">Consulta el rendimiento de tu cartera a lo largo del tiempo.</string>
-    <string name="tooltip_edit_investment">Haz clic en un activo para cambiar lo que tienes invertido.</string>
+    <string name="tooltip_edit_investment">Haz clic en un activo para cambiar la cantidad que tienes invertida.</string>
     <string name="tooltip_delete_investment">Desliza un activo hacia la izquierda para eliminarlo de tu cartera.</string>
     <string name="tooltip_add_investment">Haz clic para seleccionar un activo y empezar a crear tu cartera.</string>
+
+    <string name="onboarding_finished_title">¡Tutorial completado!</string>
+    <string name="onboarding_finished_description">Ya conoces como funciona OneWallet. Vamos a borrar estos ejemplos para que puedas empezar a añadir tus activos reales y tomar el control de tus inversiones.</string>
+    <string name="onboarding_finished_button">Empezar</string>
 
     <!-- Widget -->
     <string name="portfolio_widget">Widget de Portfolio</string>

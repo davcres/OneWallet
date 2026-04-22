@@ -34,6 +34,7 @@ data class PortfolioUiState(
     val error: String? = null,
     val onboardingPlaylist: ImmutableList<PortfolioCoachmarks> = persistentListOf(),
     val isOnboardingCompleted: Boolean = false,
+    val showOnboardingCompletionDialog: Boolean = false,
     val selectedTab: PortfolioTabs = PortfolioTabs.POSITIONS
 )
 
@@ -76,4 +77,7 @@ sealed interface PortfolioIntent {
 
     data object StartOnboarding : PortfolioIntent
     data object NextOnboardingStep : PortfolioIntent
+    data object ShowOnboardingCompletionDialog : PortfolioIntent
+    data object DismissOnboardingCompletionDialog : PortfolioIntent
+    data object ClearPortfolio : PortfolioIntent
 }

@@ -114,7 +114,18 @@ class PortfolioViewModel(
 
             is PortfolioIntent.StartOnboarding -> startOnboarding()
             is PortfolioIntent.NextOnboardingStep -> nextOnboardingStep()
+            is PortfolioIntent.ShowOnboardingCompletionDialog -> _uiState.update { it.copy(showOnboardingCompletionDialog = true) }
+            is PortfolioIntent.DismissOnboardingCompletionDialog -> _uiState.update { it.copy(showOnboardingCompletionDialog = false) }
+            is PortfolioIntent.ClearPortfolio -> clearPortfolio()
             else -> {}
+        }
+    }
+
+    private fun clearPortfolio() {
+        viewModelScope.launch {
+            _uiState.value.portfolioItems.forEach { item ->
+                removePortfolioItemUseCase(item.toDomain())
+            }
         }
     }
 

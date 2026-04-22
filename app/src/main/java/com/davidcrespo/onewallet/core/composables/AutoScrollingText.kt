@@ -17,6 +17,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 
@@ -90,9 +91,11 @@ fun AutoScrollingText(
 @Preview
 @Composable
 private fun AutoScrollingTextPreview() {
-    AutoScrollingText(
-        text = "Esto es una línea muy larga que se mueve de izquierda a derecha y vuelve al inicio.",
-        speedPxPerSecond = 140f,
-        edgePauseMs = 800L
-    )
+    OneWalletTheme {
+        AutoScrollingText(
+            text = "Esto es una línea muy larga que se mueve de izquierda a derecha y vuelve al inicio.",
+            speedPxPerSecond = 140f,
+            edgePauseMs = 800L
+        )
+    }
 }

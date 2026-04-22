@@ -1,10 +1,14 @@
 package com.davidcrespo.onewallet.presentation.portfolio
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,6 +20,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Celebration
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -45,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.ErrorBanner
+import com.davidcrespo.onewallet.core.composables.OWDialog
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.pulse
 import com.davidcrespo.onewallet.core.composables.modifiers.privacyBlur
 import com.davidcrespo.onewallet.core.extensions.applyIf
@@ -208,6 +215,14 @@ fun PortfolioRoot(
         LaunchedEffect(uiState.deletingItem) {
             if (uiState.deletingItem == null && uiState.onboardingPlaylist.firstOrNull() == PortfolioCoachmarks.ADD_INVESTMENT) {
                 delay(500) // Wait for bottom sheet to close
+                viewModel.handleIntent(PortfolioIntent.ShowOnboardingCompletionDialog)
+            }
+        }
+
+        // Show final ADD_INVESTMENT tooltip after clearing portfolio
+        LaunchedEffect(uiState.showOnboardingCompletionDialog) {
+            if (!uiState.showOnboardingCompletionDialog && uiState.onboardingPlaylist.firstOrNull() == PortfolioCoachmarks.ADD_INVESTMENT && !uiState.isOnboardingCompleted) {
+                delay(800)
                 show(PortfolioCoachmarks.ADD_INVESTMENT)
             }
         }
@@ -305,7 +320,16 @@ private fun PortfolioScreen(
         },
         floatingActionButtonPosition = FabPosition.End,
         bottomBar = {
-            if (uiState.portfolioItems.isNotEmpty()) {
+            AnimatedVisibility(
+                uiState.portfolioItems.isNotEmpty(),
+                enter = slideInVertically(
+                    initialOffsetY = { it }
+                ),
+                exit = slideOutVertically(
+                    animationSpec = tween(200, easing = EaseOut),
+                    targetOffsetY = { it }
+                )
+            ) {
                 Column {
                     HorizontalDivider(
                         modifier = Modifier.fillMaxWidth(),
@@ -610,6 +634,19 @@ private fun PortfolioScreen(
                 currency = uiState.selectedCurrency,
                 onDismiss = { onAction(PortfolioIntent.DismissInvestmentType) },
                 isBalanceVisible = isBalanceVisible
+            )
+        }
+
+        if (uiState.showOnboardingCompletionDialog) {
+            OWDialog(
+                title = stringResource(R.string.onboarding_finished_title),
+                description = stringResource(R.string.onboarding_finished_description),
+                primaryButtonText = stringResource(R.string.onboarding_finished_button),
+                onPrimaryClick = {
+                    onAction(PortfolioIntent.ClearPortfolio)
+                    onAction(PortfolioIntent.DismissOnboardingCompletionDialog)
+                },
+                icon = Icons.Outlined.Celebration
             )
         }
 
