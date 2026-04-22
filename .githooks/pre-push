@@ -1,0 +1,9 @@
+#!/bin/sh
+
+./gradlew -q detekt
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+  echo "❌ Detekt failed. Push aborted."
+  exit 1
+fi
+echo "✅ Detekt passed."

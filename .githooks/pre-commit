@@ -1,0 +1,10 @@
+#!/bin/sh
+
+#!/usr/bin/env sh
+./gradlew -q detekt
+STATUS=$?
+if [ $STATUS -ne 0 ]; then
+  echo "❌ Detekt failed. Commit aborted."
+  exit 1
+fi
+echo "✅ Detekt passed."
