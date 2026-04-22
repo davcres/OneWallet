@@ -128,6 +128,12 @@ To run the tests:
 ./gradlew test
 ```
 
+To run unit tests with coverage report (JaCoCo):
+```bash
+./gradlew testDebugUnitTestCoverage
+```
+The report will be generated at `app/build/reports/jacoco/testDebugUnitTestCoverage/html/index.html`.
+
 ## 📈 Design Decisions & Professional Standards
 
 - **MVI Pattern**: Chosen to ensure a single source of truth for the UI state, making it easier to debug and test complex screens like the Portfolio view.

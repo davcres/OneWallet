@@ -128,6 +128,12 @@ Para ejecutar los tests:
 ./gradlew test
 ```
 
+Para ejecutar tests unitarios con reporte de cobertura (JaCoCo):
+```bash
+./gradlew testDebugUnitTestCoverage
+```
+El reporte se generará en `app/build/reports/jacoco/testDebugUnitTestCoverage/html/index.html`.
+
 ## 📈 Decisiones de Diseño y Estándares Profesionales
 
 - **Patrón MVI**: Elegido para asegurar una única fuente de verdad para el estado de la UI, facilitando la depuración y el testeo de pantallas complejas como la vista de Cartera.
