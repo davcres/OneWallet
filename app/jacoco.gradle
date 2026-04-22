@@ -1,0 +1,85 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+project.afterEvaluate {
+    def exclusions = [
+            '**/R.class',
+            '**/R$*.class',
+            '**/BuildConfig.*',
+            '**/Manifest*.*',
+            '**/*Test*.*',
+            'android/**/*.*',
+            '**/*_Impl*.*',
+            '**/*$ViewInjector*.*',
+            '**/*$ViewBinder*.*',
+            '**/*_MembersInjector.class',
+            '**/*_Factory.class',
+            '**/*_ProvideField*Factory*.*',
+            '**/*$Lambda$*.*',
+            '**/*Companion*.*',
+            '**/*Extensions*.*',
+            '**/*$Result*.*',
+            '**/*$Result$*.*',
+            '**/*Composable*.*',
+            '**/*Screen*.*',
+            '**/*ApiClient*.*',
+            '**/*Activity*.*',
+            '**/*Application*.*',
+            '**/presentation/designsystem/**',
+            '**/presentation/**/composables/**',
+            '**/presentation/navigation/**',
+            '**/presentation/**/components/**',
+            '**/presentation/onboarding/models/**',
+            '**/presentation/widget/**',
+            '**/presentation/portfolio/allocation/**',
+            '**/presentation/portfolio/allocation/mapper/**',
+            '**/presentation/portfolio/prices/**',
+            '**/presentation/portfolio/positions/**',
+            '**/domain/cache/**',
+            '**/domain/repository/**',
+            '**/data/local/database/converters/**',
+            '**/data/remote/telegram/models/**',
+            '**/data/local/database/portfolio/dao/**',
+            '**/data/logging/**',
+            '**/data/local/database/market/dao/**',
+            '**/data/local/cache/**',
+            '**/data/local/database/**',
+            '**/core/**',
+            '**/di/**',
+    ]
+
+    android.applicationVariants.all { variant ->
+        def variantName = variant.name
+        def testTaskName = "test${variantName.capitalize()}UnitTest"
+
+        tasks.register("${testTaskName}Coverage", JacocoReport) {
+            group = "Reporting"
+            description = "Generate Jacoco coverage reports for the ${variantName.capitalize()} variant."
+
+            dependsOn testTaskName
+
+            reports {
+                xml.required = true
+                html.required = true
+            }
+
+            def javaClasses = fileTree(
+                    dir: "${project.layout.buildDirectory.get().asFile}/intermediates/javac/$variantName/classes",
+                    includes: ["com/davidcrespo/onewallet/**"],
+                    excludes: exclusions
+            )
+            def kotlinClasses = fileTree(
+                    dir: "${project.layout.buildDirectory.get().asFile}/tmp/kotlin-classes/$variantName",
+                    includes: ["com/davidcrespo/onewallet/**"],
+                    excludes: exclusions
+            )
+
+            classDirectories.from = files([javaClasses, kotlinClasses])
+            sourceDirectories.from = files(["$projectDir/src/main/java", "$projectDir/src/$variantName/java"])
+            executionData.from = files("${project.layout.buildDirectory.get().asFile}/jacoco/${testTaskName}.exec")
+        }
+    }
+}

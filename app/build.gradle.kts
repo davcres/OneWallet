@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+apply(from = "jacoco.gradle")
+
 // Generate in /app/build/compose_metrics/*-composables.txt → list of all @Composable functions, marking if they are restartable/skippable/readonly and their params stability.
 composeCompiler {
     reportsDestination.set(layout.buildDirectory.dir("compose_metrics"))
