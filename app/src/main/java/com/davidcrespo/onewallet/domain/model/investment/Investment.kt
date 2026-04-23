@@ -9,7 +9,8 @@ data class Investment(
     val currency: Currency,
     val type: InvestmentType,
     val year: Int,
-    val month: Int
+    val month: Int,
+    val preferredApi: DataSource? = null
 ) {
 
     fun setDate(month: Int, year: Int): Investment {

@@ -4,8 +4,6 @@
   <CurrentIssues>
     <ID>ConstructorParameterNaming:SendMessageRequest.kt$SendMessageRequest$val chat_id: String</ID>
     <ID>CyclomaticComplexMethod:Button.kt$@Composable fun Button( text: String, contentDescription: String, style: ButtonStyle, onClick: () -&gt; Unit, leadingIcon: ImageVector? = null, trailingIcon: ImageVector? = null, enabled: Boolean = true, modifier: Modifier = Modifier, )</ID>
-    <ID>CyclomaticComplexMethod:HistoryInvestmentDetail.kt$@Composable private fun SheetContent( investment: InvestmentView, previousMonthInvestment: InvestmentView?, currency: CurrencyView, onClose: () -&gt; Unit, snackbarHostState: SnackbarHostState )</ID>
-    <ID>CyclomaticComplexMethod:OWInvestmentWidget.kt$@Composable fun OWInvestmentWidget( item: InvestmentView, currency: CurrencyView, previousMonthItem: InvestmentView? = null, section: SectionType, showPercentageInsteadOfVariance: Boolean = true, isDarkTheme: Boolean, modifier: GlanceModifier = GlanceModifier, )</ID>
     <ID>CyclomaticComplexMethod:PortfolioScreen.kt$@Composable fun PortfolioRoot( initialTab: PortfolioTabs, navigateToMarket: (isCrypto: Boolean) -&gt; Unit, modifier: Modifier = Modifier, viewModel: PortfolioViewModel = koinViewModel() )</ID>
     <ID>CyclomaticComplexMethod:PortfolioScreen.kt$@Composable private fun PortfolioScreen( uiState: PortfolioUiState, onAction: (PortfolioIntent) -&gt; Unit, modifier: Modifier = Modifier, isInteractionEnabled: Boolean = true )</ID>
     <ID>CyclomaticComplexMethod:PortfolioViewModel.kt$PortfolioViewModel$fun handleIntent(intent: PortfolioIntent)</ID>
@@ -13,204 +11,24 @@
     <ID>EmptyDefaultConstructor:GetWidgetCallback.kt$GetWidgetCallback$()</ID>
     <ID>EmptyFunctionBlock:UsMarketViewModelTest.kt$UsMarketViewModelTest${ }</ID>
     <ID>ExplicitItLambdaParameter:OWAnimatedList.kt${ _, it -&gt; key(it) }</ID>
-    <ID>FunctionNaming:AddBankBottomSheet.kt$@Composable private fun Form( currency: CurrencyView, isBank: Boolean, onClose: () -&gt; Unit, onAddBank: (String, Double, CurrencyView) -&gt; Unit )</ID>
-    <ID>FunctionNaming:AddBankBottomSheet.kt$@Composable private fun Header(isBank: Boolean, onClose: () -&gt; Unit)</ID>
-    <ID>FunctionNaming:AddBankBottomSheet.kt$@Composable private fun SheetContent( currency: CurrencyView, isBank: Boolean, onClose: () -&gt; Unit, onAddBank: (String, Double, CurrencyView) -&gt; Unit )</ID>
-    <ID>FunctionNaming:AddBankBottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun AddBankBottomSheet( visible: Boolean, currency: CurrencyView, isBank: Boolean, onDismiss: () -&gt; Unit, onAddBank: (String, Double, CurrencyView) -&gt; Unit )</ID>
-    <ID>FunctionNaming:AddBankBottomSheet.kt$@Preview @Composable private fun AddBankBottomSheetPreview()</ID>
-    <ID>FunctionNaming:AddFundBottomSheet.kt$@Composable private fun Form( onClose: () -&gt; Unit, onAddFund: (String, Double) -&gt; Unit, onIsinError: (String?) -&gt; Unit )</ID>
-    <ID>FunctionNaming:AddFundBottomSheet.kt$@Composable private fun Header(isFund: Boolean, onClose: () -&gt; Unit)</ID>
-    <ID>FunctionNaming:AddFundBottomSheet.kt$@Composable private fun SheetContent( isLoading: Boolean, isFund: Boolean, onClose: () -&gt; Unit, onAddFund: (String, Double) -&gt; Unit, onIsinError: (String?) -&gt; Unit )</ID>
-    <ID>FunctionNaming:AddFundBottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun AddFundBottomSheet( visible: Boolean, isLoading: Boolean, isFund: Boolean, onDismiss: () -&gt; Unit, onAddFund: (String, Double) -&gt; Unit, onIsinError: (String?) -&gt; Unit )</ID>
-    <ID>FunctionNaming:AddFundBottomSheet.kt$@Preview @Composable private fun AddFundBottomSheetPreview()</ID>
-    <ID>FunctionNaming:AddInvestmentBottomSheet.kt$@Composable private fun AssetTypeCard( title: String, subtitle: String, icon: ImageVector, modifier: Modifier = Modifier, onClick: () -&gt; Unit, )</ID>
-    <ID>FunctionNaming:AddInvestmentBottomSheet.kt$@Composable private fun Header(onClose: () -&gt; Unit)</ID>
-    <ID>FunctionNaming:AddInvestmentBottomSheet.kt$@Composable private fun SheetContent( onClose: () -&gt; Unit, onAssetTypeClick: (InvestmentType) -&gt; Unit )</ID>
-    <ID>FunctionNaming:AddInvestmentBottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun AddInvestmentBottomSheet( visible: Boolean, onDismiss: () -&gt; Unit, onAssetTypeClick: (InvestmentType) -&gt; Unit )</ID>
-    <ID>FunctionNaming:AllocationChart.kt$@Composable fun ChartRevealAllAnimation( slices: ImmutableList&lt;AssetSlice&gt;, modifier: Modifier = Modifier, strokeWidth: Dp = 28.dp, animationDurationMs: Int = 900, minSlicePercent: Float = 0.01f, shouldAnimate: Boolean = true )</ID>
-    <ID>FunctionNaming:AllocationChart.kt$@Composable fun ChartSequentialAnimation( slices: ImmutableList&lt;AssetSlice&gt;, modifier: Modifier = Modifier, strokeWidth: Dp = 28.dp, durationMs: Int = 2000, minSlicePercent: Float = 0.01f, shouldAnimate: Boolean = true )</ID>
-    <ID>FunctionNaming:AllocationChart.kt$@Composable fun Graphic( portfolioItems: ImmutableList&lt;AssetSlice&gt;, totalBalance: Double, previousBalance: Double, currency: CurrencyView, isBalanceVisible: Boolean, isExpanded: Boolean, modifier: Modifier = Modifier, shouldAnimate: Boolean = true )</ID>
-    <ID>FunctionNaming:AllocationList.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun AllocationList( header: @Composable () -&gt; Unit, items: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onSelect: (InvestmentType) -&gt; Unit, modifier: Modifier = Modifier, isBalanceVisible: Boolean = true, shouldAnimate: Boolean = true )</ID>
-    <ID>FunctionNaming:AllocationTab.kt$@Composable fun AllocationTab( itemsByType: ImmutableList&lt;ItemsByTypeView&gt;, totalBalance: Double, previousBalance: Double, currency: CurrencyView, onSelect: (InvestmentType) -&gt; Unit, modifier: Modifier = Modifier, isBalanceVisible: Boolean = true, isActivePage: Boolean = true )</ID>
-    <ID>FunctionNaming:AnimatedCounter.kt$@Composable fun AnimatedCounter( targetValue: Double, modifier: Modifier = Modifier, color: Color = Color.Unspecified, fontSize: TextUnit = TextUnit.Unspecified, fontWeight: FontWeight? = null, style: TextStyle = LocalTextStyle.current, prefix: String = "", suffix: String = "", shouldAnimate: Boolean = true )</ID>
-    <ID>FunctionNaming:AutoScrollingText.kt$@Composable fun AutoScrollingText( text: String, style: TextStyle = LocalTextStyle.current, color: Color = Color.Unspecified, fontWeight: FontWeight? = null, modifier: Modifier = Modifier, // px por segundo (más alto = más rápido) speedPxPerSecond: Float = 120f, // pausa al llegar a los extremos edgePauseMs: Long = 1000L, )</ID>
-    <ID>FunctionNaming:AutoScrollingText.kt$@Preview @Composable private fun AutoScrollingTextPreview()</ID>
-    <ID>FunctionNaming:Button.kt$@Composable fun Button( text: String, contentDescription: String, style: ButtonStyle, onClick: () -&gt; Unit, leadingIcon: ImageVector? = null, trailingIcon: ImageVector? = null, enabled: Boolean = true, modifier: Modifier = Modifier, )</ID>
-    <ID>FunctionNaming:Button.kt$@Preview @Composable fun ButtonPreview( @PreviewParameter(ButtonPreviewParamsProvider::class) buttonParams: ButtonPreviewParams )</ID>
-    <ID>FunctionNaming:CardWithComicBubble.kt$@Composable fun CardWithComicBubble( item: InvestmentView, currency: CurrencyView, section: SectionType, modifier: Modifier = Modifier, onClick: (InvestmentView) -&gt; Unit, isBalanceVisible: Boolean, )</ID>
-    <ID>FunctionNaming:ChartLegend.kt$@Composable fun ChartLegend( portfolioItems: ImmutableList&lt;AssetSlice&gt;, style: TextStyle, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:ComicBubble.kt$@Composable fun ComicBubble( widthPx: Int, heightPx: Int, arrowToXInWindowPx: Int, bubbleLeftInWindowPx: Int, arrowOnTop: Boolean, borderColor: Color = Color.Black, fillColor: Color = Color.White, borderWidth: Dp = 2.dp, onDismiss: () -&gt; Unit, content: @Composable () -&gt; Unit )</ID>
-    <ID>FunctionNaming:ComicBubblePopup.kt$@Composable fun ComicBubblePopup( anchor: LayoutCoordinates, onDismiss: () -&gt; Unit, content: @Composable () -&gt; Unit )</ID>
-    <ID>FunctionNaming:CopiableText.kt$@Composable fun CopiableText( text: String, modifier: Modifier = Modifier, snackbarHostState: SnackbarHostState, color: Color = Color.Unspecified, style: TextStyle = LocalTextStyle.current, textAlign: TextAlign? = null )</ID>
-    <ID>FunctionNaming:DashedDivider.kt$@Composable fun DashedDivider( modifier: Modifier = Modifier, thickness: Dp = DividerDefaults.Thickness, color: Color = DividerDefaults.color, dashLength: Float = 30f, gapLength: Float = 10f )</ID>
-    <ID>FunctionNaming:DeleteInvestmentBottomSheet.kt$@Composable private fun Header(investment: InvestmentView, onClose: () -&gt; Unit)</ID>
-    <ID>FunctionNaming:DeleteInvestmentBottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun DeleteInvestmentBottomSheet( investment: InvestmentView, visible: Boolean, onDismiss: () -&gt; Unit, onDelete: (InvestmentView) -&gt; Unit )</ID>
-    <ID>FunctionNaming:Dot.kt$@Composable fun Dot(size: Int, color: Color, modifier: Modifier = Modifier, onClick : () -&gt; Unit = {})</ID>
-    <ID>FunctionNaming:EmptyInvestments.kt$@Composable fun EmptyInvestments( modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:EqualHeightGrid.kt$@Composable fun EqualHeightGrid( columns: Int, modifier: Modifier = Modifier, spacing: Dp = 0.dp, content: @Composable () -&gt; Unit )</ID>
-    <ID>FunctionNaming:ErrorBanner.kt$@Composable fun ErrorBanner( message: String?, autoCloseable: Boolean, showCloseIcon: Boolean, duration: Long = 4000, onErrorDismiss: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:ErrorBanner.kt$@Preview @Composable private fun ErrorBannerPreview()</ID>
-    <ID>FunctionNaming:GlobalMarketScreen.kt$@Composable fun GlobalMarketRoot( onBack: () -&gt; Unit, modifier: Modifier = Modifier, viewModel: GlobalMarketViewModel = koinViewModel() )</ID>
-    <ID>FunctionNaming:GlobalMarketScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun GlobalMarketScreen( uiState: GlobalMarketUiState, onAction: (GlobalMarketIntent) -&gt; Unit, onBack: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:GlobalMarketScreen.kt$@Preview @Composable private fun GlobalMarketScreenPreview()</ID>
-    <ID>FunctionNaming:GlobalMarketsCard.kt$@Composable fun GlobalMarketsCard( visible: Boolean, onOpenGlobalMarkets: () -&gt; Unit, onClose: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:GlobalMarketsCard.kt$@Preview @Composable private fun GlobalMarketsCardPreview()</ID>
-    <ID>FunctionNaming:Header.kt$@Composable fun Header( text: String, currency: CurrencyView, themeMode: ThemeMode, onCurrencyChange: () -&gt; Unit, onChangeUIMode: (ThemeMode) -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:Header.kt$@Preview @Composable private fun HeaderPreview()</ID>
-    <ID>FunctionNaming:HistoryInvestmentDetail.kt$@Composable private fun SheetContent( investment: InvestmentView, previousMonthInvestment: InvestmentView?, currency: CurrencyView, onClose: () -&gt; Unit, snackbarHostState: SnackbarHostState )</ID>
-    <ID>FunctionNaming:HistoryInvestmentDetail.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun HistoryInvestmentDetailBottomSheet( visible: Boolean, investment: InvestmentView, previousMonthInvestment: InvestmentView?, currency: CurrencyView, onDismiss: () -&gt; Unit )</ID>
-    <ID>FunctionNaming:HistoryInvestmentDetail.kt$@Preview @Composable private fun HistoryInvestmentDetailBottomSheetPreview()</ID>
-    <ID>FunctionNaming:HistoryList.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun HistoryList( items: ImmutableList&lt;ImmutableList&lt;InvestmentView&gt;&gt;, currency: CurrencyView, onClick: (ImmutableList&lt;InvestmentView&gt;) -&gt; Unit, isBalanceVisible: Boolean, modifier: Modifier = Modifier, state: LazyListState = rememberLazyListState() )</ID>
-    <ID>FunctionNaming:HistoryMonthCard.kt$@Composable fun HistoryMonthCard( item: ImmutableList&lt;InvestmentView&gt;, previousItem: ImmutableList&lt;InvestmentView&gt;? = null, currency: CurrencyView, onClick: () -&gt; Unit, isBalanceVisible: Boolean, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:HistoryMonthCard.kt$@Composable private fun GhostContent()</ID>
-    <ID>FunctionNaming:HistoryMonthDetailBottomSheet.kt$@Composable private fun Header( investment: InvestmentView, onClose: () -&gt; Unit )</ID>
-    <ID>FunctionNaming:HistoryMonthDetailBottomSheet.kt$@Composable private fun SheetContent( investments: ImmutableList&lt;InvestmentView&gt;, previousInvestments: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onClickInvestment: (InvestmentView) -&gt; Unit, onClose: () -&gt; Unit, maxSheetHeight: Dp = Dp.Unspecified, isBalanceVisible: Boolean, )</ID>
-    <ID>FunctionNaming:HistoryMonthDetailBottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun HistoryMonthDetailBottomSheet( investments: ImmutableList&lt;InvestmentView&gt;, previousInvestments: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, visible: Boolean, onClickInvestment: (InvestmentView) -&gt; Unit, onDismiss: () -&gt; Unit, hideBackground: Boolean, isBalanceVisible: Boolean, )</ID>
-    <ID>FunctionNaming:HistoryScreen.kt$@Composable fun HistoryTab( currency: CurrencyView, isBalanceVisible: Boolean, modifier: Modifier = Modifier, viewModel: HistoryViewModel = koinViewModel() )</ID>
-    <ID>FunctionNaming:HistoryScreen.kt$@Composable private fun HistoryScreen( uiState: HistoryUiState, onAction: (HistoryIntent) -&gt; Unit, isBalanceVisible: Boolean, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:InvestmentTypeBottomSheet.kt$@Composable private fun Header( type: InvestmentType, onClose: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:InvestmentTypeBottomSheet.kt$@Composable private fun SheetContent( type: InvestmentType, investments: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onClose: () -&gt; Unit, maxSheetHeight: Dp = Dp.Unspecified, isBalanceVisible: Boolean = true, )</ID>
-    <ID>FunctionNaming:InvestmentTypeBottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun InvestmentTypeBottomSheet( type: InvestmentType, investments: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, visible: Boolean, onDismiss: () -&gt; Unit, isBalanceVisible: Boolean, )</ID>
-    <ID>FunctionNaming:InvestmentTypeBottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun ItemsByTypeList( items: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, modifier: Modifier = Modifier, isBalanceVisible: Boolean, )</ID>
-    <ID>FunctionNaming:InvestmentTypeBottomSheet.kt$@Preview @Composable private fun InvestmentTypeBottomSheetPreview()</ID>
-    <ID>FunctionNaming:MainNavigation.kt$@Composable fun MainNavigation()</ID>
-    <ID>FunctionNaming:MarketListItem.kt$@Composable fun MarketListItem( marketType: MarketType, marketAsset: MarketAssetView, isSelected: Boolean, addOneAsset: () -&gt; Unit, selectAsset: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:MarketListItem.kt$@Preview @Composable private fun MarketListItemPreview()</ID>
-    <ID>FunctionNaming:MarketSearchBar.kt$@Composable fun MarketSearchBar( isCrypto: Boolean, marketType: MarketType, query: String, onQueryChange: (String) -&gt; Unit, onSearch: (String) -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:MarketSearchBar.kt$@Preview @Composable private fun MarketSearchBarPreview()</ID>
-    <ID>FunctionNaming:OWAnimatedList.kt$@Composable private fun &lt;T&gt; AnimatableRow( item: T, index: Int, key: (T) -&gt; Any, shouldAnimate: Boolean, staggerMs: Long, itemContent: @Composable (modifier: Modifier, item: T, index: Int) -&gt; Unit )</ID>
-    <ID>FunctionNaming:OWAnimatedList.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun &lt;T&gt; OWAnimatedList( header: @Composable () -&gt; Unit = {}, items: ImmutableList&lt;T&gt;, key: (T) -&gt; Any, state: LazyListState = rememberLazyListState(), contentPadding: PaddingValues = PaddingValues(0.dp), verticalArrangement: Arrangement.Vertical = Arrangement.Top, horizontalAlignment: Alignment.Horizontal = Alignment.Start, modifier: Modifier = Modifier, animate: Boolean = true, itemContent: @Composable (modifier: Modifier, item: T, index: Int) -&gt; Unit )</ID>
-    <ID>FunctionNaming:OWBalance.kt$@Composable fun OWBalance( currency: CurrencyView, balance: Double, previousBalance: Double, isBalanceVisible: Boolean, isExpanded: Boolean, section: SectionType, modifier: Modifier = Modifier, shouldAnimate: Boolean )</ID>
-    <ID>FunctionNaming:OWBalance.kt$@Preview @Composable private fun OWBalancePreview()</ID>
-    <ID>FunctionNaming:OWCurrencyPrice.kt$@Composable fun OWCurrencyPrice( price: Double, currency: CurrencyView, fontSize: TextUnit, prefix: String = "", textColor: Color = MaterialTheme.colorScheme.onPrimaryContainer, modifier: Modifier = Modifier, shouldAnimate: Boolean = true )</ID>
-    <ID>FunctionNaming:OWCurrencyPrice.kt$@Preview @Composable private fun OWCurrencyPricePreview()</ID>
-    <ID>FunctionNaming:OWDialog.kt$@Composable fun OWDialog( title: String, description: String, primaryButtonText: String, onPrimaryClick: () -&gt; Unit, modifier: Modifier = Modifier, icon: ImageVector? = null, secondaryButtonText: String? = null, onSecondaryClick: (() -&gt; Unit)? = null, onDismissRequest: (() -&gt; Unit)? = null )</ID>
-    <ID>FunctionNaming:OWDialog.kt$@Preview @Composable private fun OWDialogPreview()</ID>
-    <ID>FunctionNaming:OWFloatingActionButton.kt$@Composable fun OWFloatingActionButton( expanded: Boolean, onExpandedChange: (Boolean) -&gt; Unit, modifier: Modifier = Modifier, isPressedForced: Boolean = false )</ID>
-    <ID>FunctionNaming:OWIconButton.kt$@Composable fun OWIconButton( imageVector: ImageVector, onClick: () -&gt; Unit, contentDescription: String, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:OWIconButtonAutoCloseable.kt$@Composable fun OWIconButtonAutoCloseable( imageVector: ImageVector, onClick: () -&gt; Unit, contentDescription: String, modifier: Modifier = Modifier, durationMillis: Int = 5000, delayMillis: Int = 500 )</ID>
-    <ID>FunctionNaming:OWInvestmentItem.kt$@Composable fun OWInvestmentItem( item: InvestmentView, currency: CurrencyView, previousMonthItem: InvestmentView? = null, section: SectionType, onClick: (InvestmentView) -&gt; Unit, isBalanceVisible: Boolean, onGloballyPositioned: (LayoutCoordinates) -&gt; Unit = {}, modifier: Modifier = Modifier, isPressed: Boolean = false )</ID>
-    <ID>FunctionNaming:OWInvestmentItem.kt$@Composable private fun GhostContent()</ID>
-    <ID>FunctionNaming:OWInvestmentItem.kt$@Preview @Composable private fun OWInvestmentItemPreview()</ID>
-    <ID>FunctionNaming:OWInvestmentWidget.kt$@Composable fun OWInvestmentWidget( item: InvestmentView, currency: CurrencyView, previousMonthItem: InvestmentView? = null, section: SectionType, showPercentageInsteadOfVariance: Boolean = true, isDarkTheme: Boolean, modifier: GlanceModifier = GlanceModifier, )</ID>
-    <ID>FunctionNaming:OWLoader.kt$@Composable fun OWLoader(modifier: Modifier = Modifier)</ID>
-    <ID>FunctionNaming:OWShakeListener.kt$@Composable fun OWShakeListener( enabled: Boolean = true, onShake: () -&gt; Unit, threshold: Float = 5f, // sensibilidad (2.2–3.2 típico) slopTimeMs: Long = 1000L // evita múltiples disparos seguidos )</ID>
-    <ID>FunctionNaming:OnboardingScreen.kt$@Composable fun OnboardingContent( page: OnboardingPage )</ID>
-    <ID>FunctionNaming:OnboardingScreen.kt$@Composable fun OnboardingRoot( onFinish: () -&gt; Unit, modifier: Modifier = Modifier, viewModel: OnboardingViewModel = koinViewModel() )</ID>
-    <ID>FunctionNaming:OnboardingScreen.kt$@Composable fun PageIndicator( pageCount: Int, currentPage: Int, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:OnboardingScreen.kt$@Composable private fun OnboardingScreen( onFinish: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:PercentageVarianceSwitcher.kt$@Composable fun PercentageVarianceSwitcher( currentPrice: Double, previousPrice: Double, currency: CurrencyView )</ID>
-    <ID>FunctionNaming:PercentageVarianceSwitcher.kt$@Preview @Composable private fun PercentageVarianceSwitcherPreview()</ID>
-    <ID>FunctionNaming:PortfolioList.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun PortfolioList( header: @Composable () -&gt; Unit, items: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onRemove: (InvestmentView) -&gt; Unit, onEdit: (InvestmentView) -&gt; Unit, isBalanceVisible: Boolean, modifier: Modifier = Modifier, state: LazyListState = rememberLazyListState(), shouldAnimate: Boolean = true, isEditOnboardingActive: Boolean = false, isDeleteOnboardingActive: Boolean = false, )</ID>
-    <ID>FunctionNaming:PortfolioOnboardingScreen.kt$@Composable fun PortfolioOnboardingRoot( onStartTutorial: () -&gt; Unit, onSkipTutorial: () -&gt; Unit, modifier: Modifier = Modifier, viewModel: PortfolioOnboardingViewModel = koinViewModel() )</ID>
-    <ID>FunctionNaming:PortfolioOnboardingScreen.kt$@Composable private fun PortfolioOnboardingScreen( onStartTutorial: () -&gt; Unit, onSkipTutorial: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:PortfolioOnboardingScreen.kt$@Preview @Composable private fun PortfolioOnboardingScreenPreview()</ID>
-    <ID>FunctionNaming:PortfolioScreen.kt$@Composable fun PortfolioRoot( initialTab: PortfolioTabs, navigateToMarket: (isCrypto: Boolean) -&gt; Unit, modifier: Modifier = Modifier, viewModel: PortfolioViewModel = koinViewModel() )</ID>
-    <ID>FunctionNaming:PortfolioScreen.kt$@Composable private fun PortfolioScreen( uiState: PortfolioUiState, onAction: (PortfolioIntent) -&gt; Unit, modifier: Modifier = Modifier, isInteractionEnabled: Boolean = true )</ID>
-    <ID>FunctionNaming:PortfolioScreen.kt$@Preview @Composable private fun PortfolioScreenPreview()</ID>
-    <ID>FunctionNaming:PortfolioWidget.kt$@Preview @Composable private fun PortfolioWidgetPreview()</ID>
-    <ID>FunctionNaming:PortfolioWidget.kt$PortfolioWidget$@Composable fun PortfolioWidgetContent( isDarkTheme: Boolean, balance: Double, items: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView )</ID>
-    <ID>FunctionNaming:PortfolioWidget.kt$PortfolioWidget$@Composable private fun ItemsList( items: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onClick: Action, isDarkTheme: Boolean, )</ID>
-    <ID>FunctionNaming:PositionsTab.kt$@Composable fun PositionsTab( currency: CurrencyView, totalBalance: Double, previousBalance: Double, portfolioItems: ImmutableList&lt;InvestmentView&gt;, onRemoveItem: (InvestmentView) -&gt; Unit, onEditQuantity: (InvestmentView) -&gt; Unit, changeBalanceVisibility: () -&gt; Unit, isBalanceVisible: Boolean, isActivePage: Boolean = true, isEditOnboardingActive: Boolean = false, isDeleteOnboardingActive: Boolean = false )</ID>
-    <ID>FunctionNaming:PositionsTab.kt$@Preview @Composable private fun PositionsTabPreview()</ID>
-    <ID>FunctionNaming:PriceDisplay.kt$@Composable fun PriceDisplay(value: Double, currency: CurrencyView, modifier: Modifier = Modifier)</ID>
-    <ID>FunctionNaming:PricesList.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun PricesList( items: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, modifier: Modifier = Modifier, isBalanceVisible: Boolean = true, shouldAnimate: Boolean = true )</ID>
-    <ID>FunctionNaming:PricesTab.kt$@Composable fun PricesTab( currency: CurrencyView, portfolioItems: ImmutableList&lt;InvestmentView&gt;, modifier: Modifier = Modifier, isBalanceVisible: Boolean = true, isActivePage: Boolean = true )</ID>
-    <ID>FunctionNaming:Reload.kt$@Composable fun Reload( isDarkTheme: Boolean, modifier: GlanceModifier = GlanceModifier )</ID>
-    <ID>FunctionNaming:SheetHandle.kt$@Composable fun SheetHandle()</ID>
-    <ID>FunctionNaming:SplashScreen.kt$@Composable fun SplashRoot( onAnimationFinished: (onboardingCompleted: Boolean, portfolioOnboardingCompleted: Boolean) -&gt; Unit, modifier: Modifier = Modifier, viewModel: SplashViewModel = koinViewModel() )</ID>
-    <ID>FunctionNaming:SplashScreen.kt$@Composable private fun SplashScreen( uiState: SplashUiState, onAnimationFinished: (onboardingCompleted: Boolean, portfolioOnboardingCompleted: Boolean) -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:StocksWidget.kt$@Preview @Composable private fun StocksWidgetPreview()</ID>
-    <ID>FunctionNaming:StocksWidget.kt$StocksWidget$@Composable fun StocksWidgetContent( isDarkTheme: Boolean, stocks: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView )</ID>
-    <ID>FunctionNaming:StocksWidget.kt$StocksWidget$@Composable fun Title()</ID>
-    <ID>FunctionNaming:StocksWidget.kt$StocksWidget$@Composable private fun StockList( items: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onClick: Action, isDarkTheme: Boolean )</ID>
-    <ID>FunctionNaming:TextField.kt$@Composable fun TextField( value: String, onValueChange: (String) -&gt; Unit, icon: ImageVector, placeholder: String, cornerRadius: Dp, keyboardOptions: KeyboardOptions = KeyboardOptions.Default, keyboardActions: KeyboardActions = KeyboardActions.Default, modifier: Modifier = Modifier, )</ID>
-    <ID>FunctionNaming:TextField.kt$@Preview @Composable private fun TextFieldPreview()</ID>
-    <ID>FunctionNaming:Theme.kt$@Composable fun OneWalletTheme( themeMode: ThemeMode = ThemeMode.SYSTEM, content: @Composable () -&gt; Unit )</ID>
-    <ID>FunctionNaming:TotalBalance.kt$@Composable fun TotalBalance( currency: CurrencyView, totalBalance: Double, previousBalance: Double, changeBalanceVisibility: () -&gt; Unit, modifier: Modifier = Modifier, isExpanded: Boolean = true, isBalanceVisible: Boolean, shouldAnimate: Boolean )</ID>
-    <ID>FunctionNaming:TotalBalance.kt$@Composable fun TotalBalance(balance: Double, currency: CurrencyView)</ID>
-    <ID>FunctionNaming:TotalBalance.kt$@Preview @Composable private fun TotalBalancePreview()</ID>
-    <ID>FunctionNaming:TrendDisplay.kt$@Composable fun TrendDisplay( value: Double, text: String = "", showPercentage: Boolean, currency: CurrencyView, style: TextStyle = MaterialTheme.typography.bodyMedium )</ID>
-    <ID>FunctionNaming:UpdateInvestmentBottomSheet.kt$@Composable private fun CurrentHolding( investment: InvestmentView, currency: CurrencyView, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:UpdateInvestmentBottomSheet.kt$@Composable private fun Form( investment: InvestmentView, currency: CurrencyView, onClose: () -&gt; Unit, onEditQuantity: (newQuantity: Double) -&gt; Unit, onError: (String) -&gt; Unit )</ID>
-    <ID>FunctionNaming:UpdateInvestmentBottomSheet.kt$@Composable private fun Header(investment: InvestmentView, onClose: () -&gt; Unit, snackbarHostState: SnackbarHostState)</ID>
-    <ID>FunctionNaming:UpdateInvestmentBottomSheet.kt$@Composable private fun SheetContent( investment: InvestmentView, currency: CurrencyView, onClose: () -&gt; Unit, onEditQuantity: (Double) -&gt; Unit, onQuantityError: (String) -&gt; Unit, snackbarHostState: SnackbarHostState )</ID>
-    <ID>FunctionNaming:UpdateInvestmentBottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun UpdateInvestmentBottomSheet( investment: InvestmentView, currency: CurrencyView, visible: Boolean, onDismiss: () -&gt; Unit, onEditInvestment: (newQuantity: Double) -&gt; Unit, onQuantityError: (String) -&gt; Unit )</ID>
-    <ID>FunctionNaming:UpdateInvestmentBottomSheet.kt$@Preview @Composable private fun UpdateInvestmentBottomSheetPreview()</ID>
-    <ID>FunctionNaming:UsMarketScreen.kt$@Composable fun UsMarketRoot( isCrypto: Boolean, navigateToGlobalMarket: () -&gt; Unit, onBack: () -&gt; Unit, modifier: Modifier = Modifier, viewModel: UsMarketViewModel = koinViewModel() )</ID>
-    <ID>FunctionNaming:UsMarketScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun UsMarketScreen( uiState: UsMarketUiState, onAction: (UsMarketIntent) -&gt; Unit, isCrypto: Boolean, onBack: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>FunctionNaming:UsMarketScreen.kt$@Preview @Composable private fun UsMarketScreenPreview()</ID>
-    <ID>LongMethod:AddBankBottomSheet.kt$@Composable private fun Form( currency: CurrencyView, isBank: Boolean, onClose: () -&gt; Unit, onAddBank: (String, Double, CurrencyView) -&gt; Unit )</ID>
     <ID>LongMethod:AddFundBottomSheet.kt$@Composable private fun Form( onClose: () -&gt; Unit, onAddFund: (String, Double) -&gt; Unit, onIsinError: (String?) -&gt; Unit )</ID>
-    <ID>LongMethod:AllocationChart.kt$@Composable fun ChartRevealAllAnimation( slices: ImmutableList&lt;AssetSlice&gt;, modifier: Modifier = Modifier, strokeWidth: Dp = 28.dp, animationDurationMs: Int = 900, minSlicePercent: Float = 0.01f, shouldAnimate: Boolean = true )</ID>
-    <ID>LongMethod:AllocationChart.kt$@Composable fun ChartSequentialAnimation( slices: ImmutableList&lt;AssetSlice&gt;, modifier: Modifier = Modifier, strokeWidth: Dp = 28.dp, durationMs: Int = 2000, minSlicePercent: Float = 0.01f, shouldAnimate: Boolean = true )</ID>
-    <ID>LongMethod:AllocationChart.kt$@Composable fun Graphic( portfolioItems: ImmutableList&lt;AssetSlice&gt;, totalBalance: Double, previousBalance: Double, currency: CurrencyView, isBalanceVisible: Boolean, isExpanded: Boolean, modifier: Modifier = Modifier, shouldAnimate: Boolean = true )</ID>
     <ID>LongMethod:Button.kt$@Composable fun Button( text: String, contentDescription: String, style: ButtonStyle, onClick: () -&gt; Unit, leadingIcon: ImageVector? = null, trailingIcon: ImageVector? = null, enabled: Boolean = true, modifier: Modifier = Modifier, )</ID>
     <ID>LongMethod:ComicBubble.kt$@Composable fun ComicBubble( widthPx: Int, heightPx: Int, arrowToXInWindowPx: Int, bubbleLeftInWindowPx: Int, arrowOnTop: Boolean, borderColor: Color = Color.Black, fillColor: Color = Color.White, borderWidth: Dp = 2.dp, onDismiss: () -&gt; Unit, content: @Composable () -&gt; Unit )</ID>
-    <ID>LongMethod:ComicBubblePopup.kt$@Composable fun ComicBubblePopup( anchor: LayoutCoordinates, onDismiss: () -&gt; Unit, content: @Composable () -&gt; Unit )</ID>
-    <ID>LongMethod:DeleteInvestmentBottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun DeleteInvestmentBottomSheet( investment: InvestmentView, visible: Boolean, onDismiss: () -&gt; Unit, onDelete: (InvestmentView) -&gt; Unit )</ID>
-    <ID>LongMethod:ErrorBanner.kt$@Composable fun ErrorBanner( message: String?, autoCloseable: Boolean, showCloseIcon: Boolean, duration: Long = 4000, onErrorDismiss: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
     <ID>LongMethod:GlobalMarketScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun GlobalMarketScreen( uiState: GlobalMarketUiState, onAction: (GlobalMarketIntent) -&gt; Unit, onBack: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>LongMethod:GlobalMarketsCard.kt$@Composable fun GlobalMarketsCard( visible: Boolean, onOpenGlobalMarkets: () -&gt; Unit, onClose: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>LongMethod:Header.kt$@Composable fun Header( text: String, currency: CurrencyView, themeMode: ThemeMode, onCurrencyChange: () -&gt; Unit, onChangeUIMode: (ThemeMode) -&gt; Unit, modifier: Modifier = Modifier )</ID>
     <ID>LongMethod:HistoryInvestmentDetail.kt$@Composable private fun SheetContent( investment: InvestmentView, previousMonthInvestment: InvestmentView?, currency: CurrencyView, onClose: () -&gt; Unit, snackbarHostState: SnackbarHostState )</ID>
-    <ID>LongMethod:HistoryMonthCard.kt$@Composable fun HistoryMonthCard( item: ImmutableList&lt;InvestmentView&gt;, previousItem: ImmutableList&lt;InvestmentView&gt;? = null, currency: CurrencyView, onClick: () -&gt; Unit, isBalanceVisible: Boolean, modifier: Modifier = Modifier )</ID>
-    <ID>LongMethod:HistoryScreen.kt$@Composable private fun HistoryScreen( uiState: HistoryUiState, onAction: (HistoryIntent) -&gt; Unit, isBalanceVisible: Boolean, modifier: Modifier = Modifier )</ID>
-    <ID>LongMethod:MainNavigation.kt$@Composable fun MainNavigation()</ID>
     <ID>LongMethod:OWBalance.kt$@Composable fun OWBalance( currency: CurrencyView, balance: Double, previousBalance: Double, isBalanceVisible: Boolean, isExpanded: Boolean, section: SectionType, modifier: Modifier = Modifier, shouldAnimate: Boolean )</ID>
-    <ID>LongMethod:OWInvestmentItem.kt$@Composable fun OWInvestmentItem( item: InvestmentView, currency: CurrencyView, previousMonthItem: InvestmentView? = null, section: SectionType, onClick: (InvestmentView) -&gt; Unit, isBalanceVisible: Boolean, onGloballyPositioned: (LayoutCoordinates) -&gt; Unit = {}, modifier: Modifier = Modifier, isPressed: Boolean = false )</ID>
-    <ID>LongMethod:OWInvestmentWidget.kt$@Composable fun OWInvestmentWidget( item: InvestmentView, currency: CurrencyView, previousMonthItem: InvestmentView? = null, section: SectionType, showPercentageInsteadOfVariance: Boolean = true, isDarkTheme: Boolean, modifier: GlanceModifier = GlanceModifier, )</ID>
-    <ID>LongMethod:OnboardingScreen.kt$@Composable private fun OnboardingScreen( onFinish: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
     <ID>LongMethod:PortfolioList.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun PortfolioList( header: @Composable () -&gt; Unit, items: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onRemove: (InvestmentView) -&gt; Unit, onEdit: (InvestmentView) -&gt; Unit, isBalanceVisible: Boolean, modifier: Modifier = Modifier, state: LazyListState = rememberLazyListState(), shouldAnimate: Boolean = true, isEditOnboardingActive: Boolean = false, isDeleteOnboardingActive: Boolean = false, )</ID>
-    <ID>LongMethod:PortfolioOnboardingScreen.kt$@Composable private fun PortfolioOnboardingScreen( onStartTutorial: () -&gt; Unit, onSkipTutorial: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
     <ID>LongMethod:PortfolioScreen.kt$@Composable fun PortfolioRoot( initialTab: PortfolioTabs, navigateToMarket: (isCrypto: Boolean) -&gt; Unit, modifier: Modifier = Modifier, viewModel: PortfolioViewModel = koinViewModel() )</ID>
     <ID>LongMethod:PortfolioScreen.kt$@Composable private fun PortfolioScreen( uiState: PortfolioUiState, onAction: (PortfolioIntent) -&gt; Unit, modifier: Modifier = Modifier, isInteractionEnabled: Boolean = true )</ID>
     <ID>LongMethod:PortfolioViewModel.kt$PortfolioViewModel$private suspend fun fetchPricesForItems(items: ImmutableList&lt;InvestmentView&gt;): List&lt;InvestmentView&gt;</ID>
-    <ID>LongMethod:TextField.kt$@Composable fun TextField( value: String, onValueChange: (String) -&gt; Unit, icon: ImageVector, placeholder: String, cornerRadius: Dp, keyboardOptions: KeyboardOptions = KeyboardOptions.Default, keyboardActions: KeyboardActions = KeyboardActions.Default, modifier: Modifier = Modifier, )</ID>
-    <ID>LongMethod:TotalBalance.kt$@Composable fun TotalBalance( currency: CurrencyView, totalBalance: Double, previousBalance: Double, changeBalanceVisibility: () -&gt; Unit, modifier: Modifier = Modifier, isExpanded: Boolean = true, isBalanceVisible: Boolean, shouldAnimate: Boolean )</ID>
-    <ID>LongMethod:UpdateInvestmentBottomSheet.kt$@Composable private fun CurrentHolding( investment: InvestmentView, currency: CurrencyView, modifier: Modifier = Modifier )</ID>
     <ID>LongMethod:UpdateInvestmentBottomSheet.kt$@Composable private fun Form( investment: InvestmentView, currency: CurrencyView, onClose: () -&gt; Unit, onEditQuantity: (newQuantity: Double) -&gt; Unit, onError: (String) -&gt; Unit )</ID>
     <ID>LongMethod:UsMarketScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun UsMarketScreen( uiState: UsMarketUiState, onAction: (UsMarketIntent) -&gt; Unit, isCrypto: Boolean, onBack: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>LongParameterList:AddFundBottomSheet.kt$( visible: Boolean, isLoading: Boolean, isFund: Boolean, onDismiss: () -&gt; Unit, onAddFund: (String, Double) -&gt; Unit, onIsinError: (String?) -&gt; Unit )</ID>
-    <ID>LongParameterList:AllocationChart.kt$( portfolioItems: ImmutableList&lt;AssetSlice&gt;, totalBalance: Double, previousBalance: Double, currency: CurrencyView, isBalanceVisible: Boolean, isExpanded: Boolean, modifier: Modifier = Modifier, shouldAnimate: Boolean = true )</ID>
-    <ID>LongParameterList:AllocationChart.kt$( slices: ImmutableList&lt;AssetSlice&gt;, modifier: Modifier = Modifier, strokeWidth: Dp = 28.dp, animationDurationMs: Int = 900, minSlicePercent: Float = 0.01f, shouldAnimate: Boolean = true )</ID>
-    <ID>LongParameterList:AllocationChart.kt$( slices: ImmutableList&lt;AssetSlice&gt;, modifier: Modifier = Modifier, strokeWidth: Dp = 28.dp, durationMs: Int = 2000, minSlicePercent: Float = 0.01f, shouldAnimate: Boolean = true )</ID>
-    <ID>LongParameterList:AllocationList.kt$( header: @Composable () -&gt; Unit, items: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onSelect: (InvestmentType) -&gt; Unit, modifier: Modifier = Modifier, isBalanceVisible: Boolean = true, shouldAnimate: Boolean = true )</ID>
-    <ID>LongParameterList:AllocationTab.kt$( itemsByType: ImmutableList&lt;ItemsByTypeView&gt;, totalBalance: Double, previousBalance: Double, currency: CurrencyView, onSelect: (InvestmentType) -&gt; Unit, modifier: Modifier = Modifier, isBalanceVisible: Boolean = true, isActivePage: Boolean = true )</ID>
-    <ID>LongParameterList:AnimatedCounter.kt$( targetValue: Double, modifier: Modifier = Modifier, color: Color = Color.Unspecified, fontSize: TextUnit = TextUnit.Unspecified, fontWeight: FontWeight? = null, style: TextStyle = LocalTextStyle.current, prefix: String = "", suffix: String = "", shouldAnimate: Boolean = true )</ID>
-    <ID>LongParameterList:AutoScrollingText.kt$( text: String, style: TextStyle = LocalTextStyle.current, color: Color = Color.Unspecified, fontWeight: FontWeight? = null, modifier: Modifier = Modifier, // px por segundo (más alto = más rápido) speedPxPerSecond: Float = 120f, // pausa al llegar a los extremos edgePauseMs: Long = 1000L, )</ID>
-    <ID>LongParameterList:Button.kt$( text: String, contentDescription: String, style: ButtonStyle, onClick: () -&gt; Unit, leadingIcon: ImageVector? = null, trailingIcon: ImageVector? = null, enabled: Boolean = true, modifier: Modifier = Modifier, )</ID>
-    <ID>LongParameterList:CardWithComicBubble.kt$( item: InvestmentView, currency: CurrencyView, section: SectionType, modifier: Modifier = Modifier, onClick: (InvestmentView) -&gt; Unit, isBalanceVisible: Boolean, )</ID>
     <ID>LongParameterList:ComicBubble.kt$( widthPx: Int, heightPx: Int, arrowToXInWindowPx: Int, bubbleLeftInWindowPx: Int, arrowOnTop: Boolean, borderColor: Color = Color.Black, fillColor: Color = Color.White, borderWidth: Dp = 2.dp, onDismiss: () -&gt; Unit, content: @Composable () -&gt; Unit )</ID>
-    <ID>LongParameterList:CopiableText.kt$( text: String, modifier: Modifier = Modifier, snackbarHostState: SnackbarHostState, color: Color = Color.Unspecified, style: TextStyle = LocalTextStyle.current, textAlign: TextAlign? = null )</ID>
-    <ID>LongParameterList:ErrorBanner.kt$( message: String?, autoCloseable: Boolean, showCloseIcon: Boolean, duration: Long = 4000, onErrorDismiss: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>LongParameterList:FinancialRepository.kt$FinancialRepository$( symbol: String, type: InvestmentType, name: String = "", selectedCurrency: Currency?, marketType: MarketType?, investmentCurrency: Currency? )</ID>
     <ID>LongParameterList:FinancialRepositoryImpl.kt$FinancialRepositoryImpl$( private val twelveDataDataSource: TwelveDataDataSource, private val finnhubDataSource: FinnhubDataSource, private val alphaVantageDataSource: AlphaVantageDataSource, private val marketstackDataSource: MarketstackDataSource, private val yahooFinanceDataSource: YahooFinanceDataSource, private val binanceDataSource: BinanceDataSource, private val investingDataSource: InvestingDataSource, private val queFondosDataSource: QueFondosDataSource, private val justEtfDataSource: JustEtfDataSource, private val extraEtfDataSource: ExtraEtfDataSource, private val symbolCache: SymbolCache, private val currencyCache: CurrencyCache, private val marketCache: MarketCache, private val dispatcher: DispatcherProvider, private val cachePolicy: CachePolicy, private val telemetry: Telemetry, )</ID>
-    <ID>LongParameterList:GetInvestmentPriceUseCase.kt$GetInvestmentPriceUseCase$( symbol: String, type: InvestmentType, name: String = "", selectedCurrency: Currency? = null, marketType: MarketType? = null, investmentCurrency: Currency? = null )</ID>
-    <ID>LongParameterList:Header.kt$( text: String, currency: CurrencyView, themeMode: ThemeMode, onCurrencyChange: () -&gt; Unit, onChangeUIMode: (ThemeMode) -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>LongParameterList:HistoryList.kt$( items: ImmutableList&lt;ImmutableList&lt;InvestmentView&gt;&gt;, currency: CurrencyView, onClick: (ImmutableList&lt;InvestmentView&gt;) -&gt; Unit, isBalanceVisible: Boolean, modifier: Modifier = Modifier, state: LazyListState = rememberLazyListState() )</ID>
-    <ID>LongParameterList:HistoryMonthCard.kt$( item: ImmutableList&lt;InvestmentView&gt;, previousItem: ImmutableList&lt;InvestmentView&gt;? = null, currency: CurrencyView, onClick: () -&gt; Unit, isBalanceVisible: Boolean, modifier: Modifier = Modifier )</ID>
-    <ID>LongParameterList:HistoryMonthDetailBottomSheet.kt$( investments: ImmutableList&lt;InvestmentView&gt;, previousInvestments: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onClickInvestment: (InvestmentView) -&gt; Unit, onClose: () -&gt; Unit, maxSheetHeight: Dp = Dp.Unspecified, isBalanceVisible: Boolean, )</ID>
-    <ID>LongParameterList:HistoryMonthDetailBottomSheet.kt$( investments: ImmutableList&lt;InvestmentView&gt;, previousInvestments: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, visible: Boolean, onClickInvestment: (InvestmentView) -&gt; Unit, onDismiss: () -&gt; Unit, hideBackground: Boolean, isBalanceVisible: Boolean, )</ID>
-    <ID>LongParameterList:InvestmentTypeBottomSheet.kt$( type: InvestmentType, investments: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onClose: () -&gt; Unit, maxSheetHeight: Dp = Dp.Unspecified, isBalanceVisible: Boolean = true, )</ID>
-    <ID>LongParameterList:InvestmentTypeBottomSheet.kt$( type: InvestmentType, investments: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, visible: Boolean, onDismiss: () -&gt; Unit, isBalanceVisible: Boolean, )</ID>
-    <ID>LongParameterList:MarketListItem.kt$( marketType: MarketType, marketAsset: MarketAssetView, isSelected: Boolean, addOneAsset: () -&gt; Unit, selectAsset: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>LongParameterList:MarketSearchBar.kt$( isCrypto: Boolean, marketType: MarketType, query: String, onQueryChange: (String) -&gt; Unit, onSearch: (String) -&gt; Unit, modifier: Modifier = Modifier )</ID>
     <ID>LongParameterList:OWAnimatedList.kt$( header: @Composable () -&gt; Unit = {}, items: ImmutableList&lt;T&gt;, key: (T) -&gt; Any, state: LazyListState = rememberLazyListState(), contentPadding: PaddingValues = PaddingValues(0.dp), verticalArrangement: Arrangement.Vertical = Arrangement.Top, horizontalAlignment: Alignment.Horizontal = Alignment.Start, modifier: Modifier = Modifier, animate: Boolean = true, itemContent: @Composable (modifier: Modifier, item: T, index: Int) -&gt; Unit )</ID>
-    <ID>LongParameterList:OWAnimatedList.kt$( item: T, index: Int, key: (T) -&gt; Any, shouldAnimate: Boolean, staggerMs: Long, itemContent: @Composable (modifier: Modifier, item: T, index: Int) -&gt; Unit )</ID>
-    <ID>LongParameterList:OWBalance.kt$( currency: CurrencyView, balance: Double, previousBalance: Double, isBalanceVisible: Boolean, isExpanded: Boolean, section: SectionType, modifier: Modifier = Modifier, shouldAnimate: Boolean )</ID>
-    <ID>LongParameterList:OWCurrencyPrice.kt$( price: Double, currency: CurrencyView, fontSize: TextUnit, prefix: String = "", textColor: Color = MaterialTheme.colorScheme.onPrimaryContainer, modifier: Modifier = Modifier, shouldAnimate: Boolean = true )</ID>
-    <ID>LongParameterList:OWDialog.kt$( title: String, description: String, primaryButtonText: String, onPrimaryClick: () -&gt; Unit, modifier: Modifier = Modifier, icon: ImageVector? = null, secondaryButtonText: String? = null, onSecondaryClick: (() -&gt; Unit)? = null, onDismissRequest: (() -&gt; Unit)? = null )</ID>
-    <ID>LongParameterList:OWIconButtonAutoCloseable.kt$( imageVector: ImageVector, onClick: () -&gt; Unit, contentDescription: String, modifier: Modifier = Modifier, durationMillis: Int = 5000, delayMillis: Int = 500 )</ID>
-    <ID>LongParameterList:OWInvestmentItem.kt$( item: InvestmentView, currency: CurrencyView, previousMonthItem: InvestmentView? = null, section: SectionType, onClick: (InvestmentView) -&gt; Unit, isBalanceVisible: Boolean, onGloballyPositioned: (LayoutCoordinates) -&gt; Unit = {}, modifier: Modifier = Modifier, isPressed: Boolean = false )</ID>
-    <ID>LongParameterList:OWInvestmentWidget.kt$( item: InvestmentView, currency: CurrencyView, previousMonthItem: InvestmentView? = null, section: SectionType, showPercentageInsteadOfVariance: Boolean = true, isDarkTheme: Boolean, modifier: GlanceModifier = GlanceModifier, )</ID>
     <ID>LongParameterList:PortfolioList.kt$( header: @Composable () -&gt; Unit, items: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onRemove: (InvestmentView) -&gt; Unit, onEdit: (InvestmentView) -&gt; Unit, isBalanceVisible: Boolean, modifier: Modifier = Modifier, state: LazyListState = rememberLazyListState(), shouldAnimate: Boolean = true, isEditOnboardingActive: Boolean = false, isDeleteOnboardingActive: Boolean = false, )</ID>
     <ID>LongParameterList:PortfolioViewModel.kt$PortfolioViewModel$( private val getCurrencyRateUseCase: GetCurrencyRateUseCase, private val getPortfolioItemsUseCase: GetPortfolioItemsUseCase, private val getInvestmentPriceUseCase: GetInvestmentPriceUseCase, private val saveMonthlyPortfolioUseCase: SaveMonthlyPortfolioUseCase, private val addInvestmentToPortfolioUseCase: AddInvestmentToPortfolioUseCase, private val removePortfolioItemUseCase: RemovePortfolioItemUseCase, private val clearPortfolioUseCase: ClearPortfolioUseCase, private val financialRepository: FinancialRepository, private val currencyConverter: CurrencyConverter, private val getThemeUseCase: GetThemeUseCase, private val setThemeUseCase: SetThemeUseCase, private val onboardingRepository: OnboardingRepository, private val context: Context )</ID>
     <ID>LongParameterList:PositionsTab.kt$( currency: CurrencyView, totalBalance: Double, previousBalance: Double, portfolioItems: ImmutableList&lt;InvestmentView&gt;, onRemoveItem: (InvestmentView) -&gt; Unit, onEditQuantity: (InvestmentView) -&gt; Unit, changeBalanceVisibility: () -&gt; Unit, isBalanceVisible: Boolean, isActivePage: Boolean = true, isEditOnboardingActive: Boolean = false, isDeleteOnboardingActive: Boolean = false )</ID>
-    <ID>LongParameterList:TextField.kt$( value: String, onValueChange: (String) -&gt; Unit, icon: ImageVector, placeholder: String, cornerRadius: Dp, keyboardOptions: KeyboardOptions = KeyboardOptions.Default, keyboardActions: KeyboardActions = KeyboardActions.Default, modifier: Modifier = Modifier, )</ID>
-    <ID>LongParameterList:TotalBalance.kt$( currency: CurrencyView, totalBalance: Double, previousBalance: Double, changeBalanceVisibility: () -&gt; Unit, modifier: Modifier = Modifier, isExpanded: Boolean = true, isBalanceVisible: Boolean, shouldAnimate: Boolean )</ID>
-    <ID>LongParameterList:UpdateInvestmentBottomSheet.kt$( investment: InvestmentView, currency: CurrencyView, onClose: () -&gt; Unit, onEditQuantity: (Double) -&gt; Unit, onQuantityError: (String) -&gt; Unit, snackbarHostState: SnackbarHostState )</ID>
-    <ID>LongParameterList:UpdateInvestmentBottomSheet.kt$( investment: InvestmentView, currency: CurrencyView, visible: Boolean, onDismiss: () -&gt; Unit, onEditInvestment: (newQuantity: Double) -&gt; Unit, onQuantityError: (String) -&gt; Unit )</ID>
     <ID>LoopWithTooManyJumpStatements:PortfolioScreen.kt$for</ID>
     <ID>MagicNumber:AddFundBottomSheet.kt$12</ID>
     <ID>MagicNumber:AllocationChart.kt$0.0001f</ID>
@@ -224,49 +42,11 @@
     <ID>MagicNumber:BounceClick.kt$0.95f</ID>
     <ID>MagicNumber:BounceClick.kt$0.97f</ID>
     <ID>MagicNumber:ChartLegend.kt$3</ID>
-    <ID>MagicNumber:Color.kt$0x1AFFFFFF</ID>
-    <ID>MagicNumber:Color.kt$0xFF000000</ID>
-    <ID>MagicNumber:Color.kt$0xFF001F1A</ID>
-    <ID>MagicNumber:Color.kt$0xFF062114</ID>
-    <ID>MagicNumber:Color.kt$0xFF091A12</ID>
-    <ID>MagicNumber:Color.kt$0xFF0D9488</ID>
-    <ID>MagicNumber:Color.kt$0xFF0F1412</ID>
-    <ID>MagicNumber:Color.kt$0xFF0F172A</ID>
-    <ID>MagicNumber:Color.kt$0xFF101513</ID>
-    <ID>MagicNumber:Color.kt$0xFF134E4A</ID>
-    <ID>MagicNumber:Color.kt$0xFF143224</ID>
-    <ID>MagicNumber:Color.kt$0xFF161C19</ID>
-    <ID>MagicNumber:Color.kt$0xFF163A2A</ID>
-    <ID>MagicNumber:Color.kt$0xFF1B2E27</ID>
-    <ID>MagicNumber:Color.kt$0xFF1E40AF</ID>
-    <ID>MagicNumber:Color.kt$0xFF1F2724</ID>
-    <ID>MagicNumber:Color.kt$0xFF1FBF67</ID>
-    <ID>MagicNumber:Color.kt$0xFF2A3430</ID>
-    <ID>MagicNumber:Color.kt$0xFF2B0B0D</ID>
-    <ID>MagicNumber:Color.kt$0xFF2DD4BF</ID>
-    <ID>MagicNumber:Color.kt$0xFF35F28F</ID>
-    <ID>MagicNumber:Color.kt$0xFF3B1214</ID>
-    <ID>MagicNumber:Color.kt$0xFF475569</ID>
-    <ID>MagicNumber:Color.kt$0xFF60A5FA</ID>
-    <ID>MagicNumber:Color.kt$0xFFB8C6BF</ID>
-    <ID>MagicNumber:Color.kt$0xFFCFF7DE</ID>
-    <ID>MagicNumber:Color.kt$0xFFD8FFE9</ID>
-    <ID>MagicNumber:Color.kt$0xFFDBEAFE</ID>
-    <ID>MagicNumber:Color.kt$0xFFE2E8F0</ID>
-    <ID>MagicNumber:Color.kt$0xFFE7EEE9</ID>
-    <ID>MagicNumber:Color.kt$0xFFEAF1ED</ID>
-    <ID>MagicNumber:Color.kt$0xFFF0FDFA</ID>
-    <ID>MagicNumber:Color.kt$0xFFF1F5F9</ID>
-    <ID>MagicNumber:Color.kt$0xFFF8FAFC</ID>
-    <ID>MagicNumber:Color.kt$0xFFFF5A5F</ID>
-    <ID>MagicNumber:Color.kt$0xFFFFD6D8</ID>
-    <ID>MagicNumber:Color.kt$0xFFFFFFFF</ID>
     <ID>MagicNumber:ComicBubblePopup.kt$0.5f</ID>
     <ID>MagicNumber:ComicBubblePopup.kt$10</ID>
     <ID>MagicNumber:ComicBubblePopup.kt$180</ID>
     <ID>MagicNumber:CopiableText.kt$900</ID>
     <ID>MagicNumber:EmptyInvestments.kt$0.3f</ID>
-    <ID>MagicNumber:GlobalMarketViewModel.kt$GlobalMarketViewModel$5_000L</ID>
     <ID>MagicNumber:GlobalMarketsCard.kt$1800f</ID>
     <ID>MagicNumber:Header.kt$11</ID>
     <ID>MagicNumber:Header.kt$12</ID>
@@ -278,23 +58,17 @@
     <ID>MagicNumber:HistoryMonthDetailBottomSheet.kt$0.80f</ID>
     <ID>MagicNumber:InvestmentEntity.kt$5</ID>
     <ID>MagicNumber:InvestmentEntity.kt$6</ID>
-    <ID>MagicNumber:InvestmentType.kt$InvestmentType.BANK$0xFF64748B</ID>
-    <ID>MagicNumber:InvestmentType.kt$InvestmentType.CRYPTO$0xFFF59E0B</ID>
-    <ID>MagicNumber:InvestmentType.kt$InvestmentType.ETF$0xFF10B981</ID>
-    <ID>MagicNumber:InvestmentType.kt$InvestmentType.FUND$0xFF7C3AED</ID>
-    <ID>MagicNumber:InvestmentType.kt$InvestmentType.OTHER$0xFFEC4899</ID>
-    <ID>MagicNumber:InvestmentType.kt$InvestmentType.STOCK$0xFF2563EB</ID>
+    <ID>MagicNumber:InvestmentEntity.kt$9</ID>
     <ID>MagicNumber:InvestmentTypeBottomSheet.kt$0.80f</ID>
     <ID>MagicNumber:InvestmentView.kt$100.0</ID>
+    <ID>MagicNumber:InvestmentView.kt$12</ID>
     <ID>MagicNumber:InvestmentView.kt$7</ID>
     <ID>MagicNumber:InvestmentView.kt$9</ID>
-    <ID>MagicNumber:MainViewModel.kt$MainViewModel$5_000</ID>
     <ID>MagicNumber:MarketAssetView.kt$3</ID>
     <ID>MagicNumber:MarketAssetView.kt$4</ID>
     <ID>MagicNumber:MarketAssetView.kt$5</ID>
     <ID>MagicNumber:MarketAssetView.kt$6</ID>
     <ID>MagicNumber:MarketAssetView.kt$7</ID>
-    <ID>MagicNumber:NetworkModule.kt$15000</ID>
     <ID>MagicNumber:OWBalance.kt$100</ID>
     <ID>MagicNumber:OWBalance.kt$10000</ID>
     <ID>MagicNumber:OWBalance.kt$1_000_000</ID>
@@ -321,96 +95,24 @@
     <ID>MagicNumber:String.kt$10</ID>
     <ID>MagicNumber:String.kt$12</ID>
     <ID>MagicNumber:String.kt$9</ID>
-    <ID>MagicNumber:UsMarketViewModel.kt$UsMarketViewModel$5_000L</ID>
     <ID>MatchingDeclarationName:NavKeys.kt$Route : NavKey</ID>
     <ID>MatchingDeclarationName:OnboardingContract.kt$OnboardingIntent</ID>
     <ID>MatchingDeclarationName:PortfolioOnboardingContract.kt$PortfolioOnboardingIntent</ID>
-    <ID>MaxLineLength:AddBankBottomSheet.kt$placeholder = if (isBank) stringResource(R.string.bank_name_placeholder) else stringResource(R.string.other_name_placeholder)</ID>
-    <ID>MaxLineLength:AddBankBottomSheet.kt$text = if (isBank) stringResource(R.string.add_bank_title) else stringResource(R.string.add_other_title)</ID>
-    <ID>MaxLineLength:AddFundBottomSheet.kt$text = if (isFund) stringResource(R.string.add_new_fund_title) else stringResource(R.string.add_new_etf_title)</ID>
-    <ID>MaxLineLength:AllocationChart.kt$val chartSize by animateDpAsState(targetValue = if (isExpanded) BigChartSize else SmallChartSize, label = "chartSize")</ID>
-    <ID>MaxLineLength:AllocationChart.kt$val strokeWidth by animateDpAsState(targetValue = if (isExpanded) BigChartStrokeWidth else SmallChartStrokeWidth, label = "strokeWidth")</ID>
-    <ID>MaxLineLength:AppDatabase.kt$AppDatabase$@Database(entities = [InvestmentEntity::class, StockMarketEntity::class, CryptoMarketEntity::class], version = 1, exportSchema = false)</ID>
-    <ID>MaxLineLength:CardWithComicBubble.kt$text = "Unidades en cartera: ${item.quantity}\n" + "Precio por unidad: %.2f €".format(item.displayPrice)</ID>
     <ID>MaxLineLength:ErrorBanner.kt$message = "Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente."</ID>
-    <ID>MaxLineLength:ExtraEtfResponse.kt$val previousDay = etf?.returns?.values?.find { it.closePrice != null &amp;&amp; it.priceDate?.toLocalDate("yyyy-MM-dd")?.isYesterday() == true }</ID>
-    <ID>MaxLineLength:ExtraEtfResponseTest.kt$ExtraEtfResponseTest$AssetResult(isin = "SECOND", fondName = "Second", currency = EUR, nav = 10.0, navDate = null, lastQuote = null, returns = null)</ID>
     <ID>MaxLineLength:ExtraEtfResponseTest.kt$ExtraEtfResponseTest$val res1 = ExtraEtfResponse(results = listOf(AssetResult(isin = "T1", fondName = "N1", currency = "USD", nav = 1.0, navDate = null, lastQuote = LastQuote(null, null, null, "EUR"), returns = null)))</ID>
     <ID>MaxLineLength:ExtraEtfResponseTest.kt$ExtraEtfResponseTest$val res2 = ExtraEtfResponse(results = listOf(AssetResult(isin = "T2", fondName = "N2", currency = "USD", nav = 1.0, navDate = null, lastQuote = null, returns = null)))</ID>
     <ID>MaxLineLength:ExtraEtfResponseTest.kt$ExtraEtfResponseTest$val res3 = ExtraEtfResponse(results = listOf(AssetResult(isin = "T3", fondName = "N3", currency = null, nav = 1.0, navDate = null, lastQuote = null, returns = mapOf("y" to ReturnDetail(1.0, "GBP", yesterdayStr)))))</ID>
     <ID>MaxLineLength:ExtraEtfResponseTest.kt$ExtraEtfResponseTest$val res4 = ExtraEtfResponse(results = listOf(AssetResult(isin = "T4", fondName = "N4", currency = null, nav = 1.0, navDate = null, lastQuote = null, returns = null)))</ID>
-    <ID>MaxLineLength:FinancialRepositoryImpl.kt$FinancialRepositoryImpl$?:</ID>
     <ID>MaxLineLength:FinancialRepositoryImpl.kt$FinancialRepositoryImpl$private suspend</ID>
-    <ID>MaxLineLength:FinancialRepositoryImpl.kt$FinancialRepositoryImpl$val valid = inv?.takeIf { if (validateName) { it.isValidName() &amp;&amp; it.isValidPrice() } else { it.isValidPrice()} }</ID>
-    <ID>MaxLineLength:FinancialRepositoryImplTest.kt$FinancialRepositoryImplTest$fun</ID>
-    <ID>MaxLineLength:FinnhubDataSourceTest.kt$FinnhubDataSourceTest$MarketStockResponse(symbol = "MSFT", description = "Microsoft Corp", currency = "USD", figi = "F2", type = "T2")</ID>
-    <ID>MaxLineLength:GetGlobalMarketAssetsUseCaseTest.kt$GetGlobalMarketAssetsUseCaseTest$fun</ID>
-    <ID>MaxLineLength:GetUSMarketAssetsUseCaseTest.kt$GetUSMarketAssetsUseCaseTest$fun</ID>
-    <ID>MaxLineLength:GlobalMarketScreen.kt$isSelected = uiState.assetsToSaveToPortfolio.find { it.symbol == asset.symbol } != null</ID>
-    <ID>MaxLineLength:GlobalMarketScreen.kt$uiState.marketAssets?.firstOrNull()?.second?.isEmpty() == true &amp;&amp; uiState.searchQuery.isNotEmpty()</ID>
-    <ID>MaxLineLength:GlobalMarketScreen.kt$visible = uiState.marketAssets == null || uiState.marketAssets.firstOrNull()?.second?.isEmpty() == true</ID>
-    <ID>MaxLineLength:GlobalMarketViewModel.kt$GlobalMarketViewModel$savedStateHandle["assetsToSaveToPortfolio"] = state.assetsToSaveToPortfolio.joinToString(",") { it.toString() }</ID>
     <ID>MaxLineLength:GlobalMarketViewModelTest.kt$GlobalMarketViewModelTest$fun</ID>
-    <ID>MaxLineLength:GlobalMarketViewModelTest.kt$GlobalMarketViewModelTest$val asset = MarketAsset("AMZN", 100.0, Currency(EUR), InvestmentType.STOCK, "Amazon", stockType = "Common").toUI()</ID>
-    <ID>MaxLineLength:GlobalMarketViewModelTest.kt$GlobalMarketViewModelTest$val asset = MarketAsset("TSLA", 200.0, Currency(EUR), InvestmentType.STOCK, "Tesla", stockType = "Common").toUI()</ID>
-    <ID>MaxLineLength:GlobalMarketViewModelTest.kt$GlobalMarketViewModelTest$val asset1 = MarketAsset("AAPL", 150.0, Currency(EUR), InvestmentType.STOCK, "Apple", stockType = "Common").toUI()</ID>
-    <ID>MaxLineLength:GlobalMarketViewModelTest.kt$GlobalMarketViewModelTest$val asset2 = MarketAsset("GOOGL", 2800.0, Currency(EUR), InvestmentType.STOCK, "Google", stockType = "Common").toUI()</ID>
-    <ID>MaxLineLength:GlobalMarketsCard.kt$val dismissToPx = with(density) { 500.dp.toPx() } // mas que la altura de la card para que se deslice del todo al irse</ID>
     <ID>MaxLineLength:HistoryInvestmentDetail.kt$((investment.displayPrice * investment.quantity) - (previousMonthInvestment.displayPrice * previousMonthInvestment.quantity)) / (previousMonthInvestment.displayPrice * previousMonthInvestment.quantity) * 100</ID>
-    <ID>MaxLineLength:HistoryInvestmentDetail.kt$(investment.displayPrice * investment.quantity) - (previousMonthInvestment.displayPrice * previousMonthInvestment.quantity)</ID>
-    <ID>MaxLineLength:HistoryInvestmentDetail.kt$(investment.displayPrice - previousMonthInvestment.displayPrice) / previousMonthInvestment.displayPrice * 100</ID>
-    <ID>MaxLineLength:HistoryInvestmentDetail.kt$if</ID>
-    <ID>MaxLineLength:HistoryViewModel.kt$HistoryViewModel$historyConverted.firstOrNull { it.firstOrNull()?.let { m -&gt; m.year == first.year &amp;&amp; m.month == first.month } == true }</ID>
-    <ID>MaxLineLength:HistoryViewModel.kt$HistoryViewModel$selectedMonthDetail = details.sortedByDescending { it.quantity * it.displayPrice }.toImmutableList()</ID>
-    <ID>MaxLineLength:HistoryViewModelTest.kt$HistoryViewModelTest$fun</ID>
-    <ID>MaxLineLength:InvestmentView.kt$InvestmentView$return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|${originalCurrency.code}|$changePercent|$type|$year|$month"</ID>
-    <ID>MaxLineLength:MainNavigation.kt$rememberViewModelStoreNavEntryDecorator()</ID>
-    <ID>MaxLineLength:MarketAssetView.kt$MarketAssetView$return "$symbol|$price|${currency.code}|$type|${description.orEmpty()}|${figi.orEmpty()}|$region|${stockType.orEmpty()}"</ID>
-    <ID>MaxLineLength:MarketListItem.kt$contentDescription = if (isSelected) stringResource(R.string.unselect_asset_cd) else stringResource(R.string.select_asset_cd)</ID>
-    <ID>MaxLineLength:OWAnimatedList.kt$initialVisibleIndex = firstVisibleItems.take(firstVisibleItems.size - 1)</ID>
-    <ID>MaxLineLength:OWBalance.kt$val fontSize by animateFloatAsState(targetValue = if (isExpanded) sizes.balanceValueExpanded else sizes.balanceValueContracted, label = "fontSize")</ID>
-    <ID>MaxLineLength:OWCurrencyPrice.kt$val eurWidth by animateDpAsState(targetValue = if (currency.code == EUR) fontSize.value.dp/2 else 0.dp, label = "eurWidth")</ID>
-    <ID>MaxLineLength:OWCurrencyPrice.kt$val usdWidth by animateDpAsState(targetValue = if (currency.code != EUR) fontSize.value.dp/2 else 0.dp, label = "usdWidth")</ID>
+    <ID>MaxLineLength:InvestmentView.kt$InvestmentView$return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|${originalCurrency.code}|$changePercent|$type|$year|$month|${preferredApi?.name}"</ID>
     <ID>MaxLineLength:OWDialog.kt$description = "Ya conoces como funciona OneWallet. Vamos a borrar estos ejemplos para que puedas empezar a añadir tus activos reales y tomar el control de tus inversiones."</ID>
-    <ID>MaxLineLength:OWInvestmentWidget.kt$val background = if (isDarkTheme) R.drawable.widget_round_background_dark else R.drawable.widget_round_background_light</ID>
-    <ID>MaxLineLength:OnboardingScreen.kt$.</ID>
-    <ID>MaxLineLength:OnboardingScreen.kt$val buttonText = if (isLastPage) stringResource(R.string.onboarding_button_get_started) else stringResource(R.string.onboarding_button_next)</ID>
-    <ID>MaxLineLength:PercentageVarianceSwitcher.kt$TrendDisplay(value = percentage, text = "%.2f %%".format(percentage), showPercentage = true, currency = currency)</ID>
     <ID>MaxLineLength:PortfolioDao.kt$PortfolioDao$@Query("SELECT * FROM monthly_portfolio_table WHERE (year, month) = (SELECT year, month FROM monthly_portfolio_table ORDER BY year DESC, month DESC LIMIT 1)")</ID>
     <ID>MaxLineLength:PortfolioList.kt$val</ID>
-    <ID>MaxLineLength:PortfolioRepositoryImplTest.kt$PortfolioRepositoryImplTest$fun</ID>
     <ID>MaxLineLength:PortfolioScreen.kt$if</ID>
     <ID>MaxLineLength:PortfolioScreen.kt$if (item == PortfolioCoachmarks.EDIT_INVESTMENT || item == PortfolioCoachmarks.DELETE_INVESTMENT || item == PortfolioCoachmarks.ADD_INVESTMENT) break</ID>
-    <ID>MaxLineLength:PortfolioScreen.kt$onExpandedChange = { if (it) onAction(PortfolioIntent.ShowAddInvestment) else onAction(PortfolioIntent.DismissAddInvestment) }</ID>
-    <ID>MaxLineLength:PortfolioScreen.kt$val isAddOnboardingActive = uiState.onboardingPlaylist.firstOrNull() == PortfolioCoachmarks.ADD_INVESTMENT &amp;&amp; !hideBackground</ID>
-    <ID>MaxLineLength:PortfolioScreen.kt$val isDeleteOnboardingActive = uiState.onboardingPlaylist.firstOrNull() == PortfolioCoachmarks.DELETE_INVESTMENT &amp;&amp; !hideBackground</ID>
-    <ID>MaxLineLength:PortfolioScreen.kt$val isEditOnboardingActive = uiState.onboardingPlaylist.firstOrNull() == PortfolioCoachmarks.EDIT_INVESTMENT &amp;&amp; !hideBackground</ID>
-    <ID>MaxLineLength:PortfolioViewModel.kt$PortfolioViewModel$is PortfolioIntent.DismissOnboardingCompletionDialog -&gt; _uiState.update { it.copy(showOnboardingCompletionDialog = false) }</ID>
-    <ID>MaxLineLength:PortfolioViewModel.kt$PortfolioViewModel$is PortfolioIntent.ShowOnboardingCompletionDialog -&gt; _uiState.update { it.copy(showOnboardingCompletionDialog = true) }</ID>
-    <ID>MaxLineLength:PortfolioViewModelTest.kt$PortfolioViewModelTest$coEvery { getInvestmentPriceUseCase.invoke(any(), any(), any(), any(), any(), any()) } returns Result.success(mockInvestment)</ID>
-    <ID>MaxLineLength:PortfolioViewModelTest.kt$PortfolioViewModelTest$fun</ID>
-    <ID>MaxLineLength:PortfolioViewModelTest.kt$PortfolioViewModelTest$private val clearPortfolioUseCase = mockk&lt;com.davidcrespo.onewallet.domain.usecase.portfolio.ClearPortfolioUseCase&gt;(relaxed = true)</ID>
-    <ID>MaxLineLength:PortfolioViewModelTest.kt$PortfolioViewModelTest$private val onboardingRepository = mockk&lt;com.davidcrespo.onewallet.domain.repository.OnboardingRepository&gt;(relaxed = true)</ID>
-    <ID>MaxLineLength:PortfolioWidget.kt$PortfolioWidget$// (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES</ID>
-    <ID>MaxLineLength:QueFondosApiClient.kt$QueFondosApiClient$"""&lt;span[^&gt;]*class="[^"]*floatleft[^"]*"[^&gt;]*&gt;\s*$labelRegex\s*&lt;/span&gt;\s*&lt;span[^&gt;]*class="[^"]*floatright[^"]*"[^&gt;]*&gt;\s*([^&lt;]+)"""</ID>
-    <ID>MaxLineLength:QueFondosApiClient.kt$QueFondosApiClient$pattern = """&lt;span[^&gt;]*class="[^"]*floatleft[^"]*"[^&gt;]*&gt;.*?$label\s*&lt;/span&gt;\s*&lt;span[^&gt;]*class="[^"]*floatright[^"]*"[^&gt;]*&gt;.*?([\d.,]+)%"""</ID>
-    <ID>MaxLineLength:Reload.kt$val background = if (isDarkTheme) R.drawable.widget_round_background_dark else R.drawable.widget_round_background_light</ID>
-    <ID>MaxLineLength:RepositoryModule.kt$get()</ID>
     <ID>MaxLineLength:SeedInitialPortfolioUseCaseTest.kt$SeedInitialPortfolioUseCaseTest$coEvery { getInvestmentPriceUseCase(symbol = "BTCEUR", type = InvestmentType.CRYPTO, any(), any(), any(), any()) } returns Result.failure(Exception("Network Error"))</ID>
-    <ID>MaxLineLength:SeedInitialPortfolioUseCaseTest.kt$SeedInitialPortfolioUseCaseTest$coEvery { getInvestmentPriceUseCase(symbol = "BTCEUR", type = InvestmentType.CRYPTO, any(), any(), any(), any()) } returns Result.success(btcBase)</ID>
-    <ID>MaxLineLength:SeedInitialPortfolioUseCaseTest.kt$SeedInitialPortfolioUseCaseTest$coEvery { getInvestmentPriceUseCase(symbol = "GOOGL", type = InvestmentType.STOCK, any(), any(), any(), any()) } returns Result.success(googlBase)</ID>
-    <ID>MaxLineLength:SplashViewModelTest.kt$SplashViewModelTest$fun</ID>
-    <ID>MaxLineLength:StocksWidget.kt$StocksWidget$// (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES</ID>
-    <ID>MaxLineLength:TotalBalance.kt$contentDescription = if (isBalanceVisible) stringResource(R.string.hide_balance_cd) else stringResource(R.string.show_balance_cd)</ID>
-    <ID>MaxLineLength:UsMarketScreen.kt$isSelected = uiState.assetsToSaveToPortfolio.find { it.symbol == asset.symbol } != null</ID>
-    <ID>MaxLineLength:UsMarketScreen.kt$text = if (isCrypto) stringResource(R.string.add_crypto_title) else stringResource(R.string.add_us_stocks_title)</ID>
-    <ID>MaxLineLength:UsMarketViewModel.kt$UsMarketViewModel$savedStateHandle["assetsToSaveToPortfolio"] = state.assetsToSaveToPortfolio.joinToString(",") { it.toString() }</ID>
-    <ID>MaxLineLength:UsMarketViewModelTest.kt$UsMarketViewModelTest$fun</ID>
-    <ID>MaxLineLength:UsMarketViewModelTest.kt$UsMarketViewModelTest$val asset = MarketAsset("AAPL", 150.0, Currency(EUR), InvestmentType.STOCK, "Apple Inc", stockType = "Common Stock").toUI()</ID>
-    <ID>MaxLineLength:UsMarketViewModelTest.kt$UsMarketViewModelTest$val asset1 = MarketAsset("AAPL", 150.0, Currency(EUR), InvestmentType.STOCK, "Apple Inc", stockType = "Common Stock")</ID>
-    <ID>MaxLineLength:UsMarketViewModelTest.kt$UsMarketViewModelTest$val asset1 = MarketAsset("AAPL", 150.0, Currency(EUR), InvestmentType.STOCK, "Apple Inc", stockType = "Common Stock").toUI()</ID>
-    <ID>MaxLineLength:UsMarketViewModelTest.kt$UsMarketViewModelTest$val asset2 = MarketAsset("MSFT", 300.0, Currency(EUR), InvestmentType.STOCK, "Microsoft", stockType = "Common Stock")</ID>
-    <ID>MaxLineLength:UsMarketViewModelTest.kt$UsMarketViewModelTest$val asset2 = MarketAsset("MSFT", 300.0, Currency(EUR), InvestmentType.STOCK, "Microsoft", stockType = "Common Stock").toUI()</ID>
     <ID>NestedBlockDepth:Button.kt$ButtonPreviewParamsProvider$private fun getAllCombinations(): Sequence&lt;ButtonPreviewParams&gt;</ID>
     <ID>NewLineAtEndOfFile:AlphaVantageApiConfig.kt$com.davidcrespo.onewallet.data.remote.alphaVantage.AlphaVantageApiConfig.kt</ID>
     <ID>NewLineAtEndOfFile:AlphaVantageDataSource.kt$com.davidcrespo.onewallet.data.remote.alphaVantage.AlphaVantageDataSource.kt</ID>
@@ -501,11 +203,10 @@
     <ID>NewLineAtEndOfFile:trendColor.kt$com.davidcrespo.onewallet.presentation.widget.utils.trendColor.kt</ID>
     <ID>PrintStackTrace:PortfolioViewModelTest.kt$PortfolioViewModelTest$e</ID>
     <ID>ReturnCount:AllocationChart.kt$private fun computeMinSweeps( values: List&lt;Float&gt;, minFraction: Float = 0.01f ): List&lt;Float&gt;</ID>
+    <ID>ReturnCount:FinancialRepositoryImpl.kt$FinancialRepositoryImpl$private suspend fun tryFetchFromSequence( isin: String, apis: List&lt;Pair&lt;DataSource, suspend () -&gt; InvestmentDto?&gt;&gt;, preferredApi: DataSource? ): Investment?</ID>
     <ID>ReturnCount:GlobalMarketRegion.kt$GlobalMarketRegion.Companion$fun from(value: String?): GlobalMarketRegion</ID>
     <ID>ReturnCount:String.kt$fun String.isValidIsin(): Boolean</ID>
-    <ID>ReturnCount:SymbolCacheImpl.kt$SymbolCacheImpl$override fun getCachedInvestmentIfValid(symbol: String, validCacheHours: Long): InvestmentEntity?</ID>
     <ID>SpreadOperator:PortfolioScreen.kt$(*currentTabBatch.toTypedArray())</ID>
-    <ID>TooManyFunctions:FinancialRepositoryImpl.kt$FinancialRepositoryImpl : FinancialRepository</ID>
     <ID>TooManyFunctions:PortfolioViewModel.kt$PortfolioViewModel : ViewModel</ID>
     <ID>UnusedParameter:ComicBubble.kt$onDismiss: () -&gt; Unit</ID>
     <ID>UnusedParameter:Double.kt$decimals: Int = 2</ID>

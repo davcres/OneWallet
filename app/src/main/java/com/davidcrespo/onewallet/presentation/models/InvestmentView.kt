@@ -2,6 +2,7 @@ package com.davidcrespo.onewallet.presentation.models
 
 import androidx.compose.runtime.Immutable
 import com.davidcrespo.onewallet.R
+import com.davidcrespo.onewallet.domain.model.investment.DataSource
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 
@@ -18,7 +19,8 @@ data class InvestmentView(
     val changePercent: Double,
     val type: InvestmentType,
     val month: Int,
-    val year: Int
+    val year: Int,
+    val preferredApi: DataSource? = null
 ) {
     fun getIconRes() =
         when (type) {
@@ -31,7 +33,7 @@ data class InvestmentView(
         }
 
     override fun toString(): String {
-        return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|${originalCurrency.code}|$changePercent|$type|$year|$month"
+        return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|${originalCurrency.code}|$changePercent|$type|$year|$month|${preferredApi?.name}"
     }
 }
 
@@ -52,7 +54,8 @@ fun Investment.toUI(): InvestmentView {
         changePercent = changePercent,
         type = type,
         month = month,
-        year = year
+        year = year,
+        preferredApi = preferredApi
     )
 }
 
@@ -66,7 +69,8 @@ fun InvestmentView.toDomain(): Investment {
         currency = originalCurrency.toDomain(),
         type = type,
         year = year,
-        month = month
+        month = month,
+        preferredApi = preferredApi
     )
 }
 
@@ -85,5 +89,6 @@ fun String.toInvestmentView(): InvestmentView {
         type = InvestmentType.valueOf(parts[9]),
         year = parts[10].toIntOrNull() ?: 0,
         month = parts[11].toIntOrNull() ?: 0,
+        preferredApi = parts.getOrNull(12)?.let { runCatching { DataSource.valueOf(it) }.getOrNull() }
     )
 }

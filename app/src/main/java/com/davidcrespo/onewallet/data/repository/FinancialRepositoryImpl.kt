@@ -32,6 +32,7 @@ import com.davidcrespo.onewallet.domain.cache.CachePolicy
 import com.davidcrespo.onewallet.domain.di.DispatcherProvider
 import com.davidcrespo.onewallet.domain.logging.Telemetry
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.DataSource
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
@@ -68,14 +69,15 @@ class FinancialRepositoryImpl(
         name: String,
         selectedCurrency: Currency?,
         marketType: MarketType?,
-        investmentCurrency: Currency?
+        investmentCurrency: Currency?,
+        preferredApi: DataSource?
     ): Result<Investment> {
         return withContext(dispatcher.io) {
             when (type) {
-                InvestmentType.STOCK -> getStockPrice(symbol, name, marketType, investmentCurrency)
+                InvestmentType.STOCK -> getStockPrice(symbol, name, marketType, investmentCurrency, preferredApi)
                 InvestmentType.CRYPTO -> getCryptoPrice(symbol)
-                InvestmentType.FUND -> getFundPrice(symbol)
-                InvestmentType.ETF -> getEtfPrice(symbol, selectedCurrency)
+                InvestmentType.FUND -> getFundPrice(symbol, preferredApi)
+                InvestmentType.ETF -> getEtfPrice(symbol, selectedCurrency, preferredApi)
                 else -> Result.failure(IllegalArgumentException("Invalid investment type: $type"))
             }
         }
@@ -87,64 +89,104 @@ class FinancialRepositoryImpl(
                 ?.toDomain()
                 ?.let { return@runCatching it }
 
-            val dto = binanceDataSource.getCryptoPrice(symbol)
-            val valid = dto.takeIf { it.isValidPrice() }
+            tryFetch(symbol, DataSource.BINANCE) { binanceDataSource.getCryptoPrice(symbol) }
                 ?: throw IllegalStateException("No se pudo obtener el precio de $symbol")
-
-            telemetry.log("(Binance) get $symbol from remote ${valid.price} ${valid.currency}")
-            symbolCache.setCachedInvestment(valid.toEntity())
-            valid.toDomain()
         }
     }
 
-    private suspend fun getStockPrice(symbol: String, name: String, marketType: MarketType?, currency: Currency?): Result<Investment> =
+    private suspend fun getStockPrice(symbol: String, name: String, marketType: MarketType?, currency: Currency?, preferredApi: DataSource?): Result<Investment> =
         runCatching {
-            symbolCache.getCachedInvestmentIfValid(symbol, cachePolicy.stockHours)
-                ?.toDomain()
-                ?.let { return@runCatching it }
+            val cachedValid = symbolCache.getCachedInvestmentIfValid(symbol, cachePolicy.stockHours)
+            cachedValid?.toDomain()?.let { return@runCatching it }
+
+            val apiToTryFirst = preferredApi ?: symbolCache.getCachedInvestment(symbol)?.preferredApi
 
             val country = marketType ?: MarketType.GLOBAL
 
             when (country) {
                 MarketType.US -> {
-                    tryFetch(symbol, "Finnhub") { finnhubDataSource.getStockPrice(symbol, name) }
+                    tryFetch(symbol, DataSource.FINNHUB) { finnhubDataSource.getStockPrice(symbol, name) }
                         ?: throw IllegalStateException("No se pudo obtener el precio del fondo")
                 }
                 MarketType.GLOBAL -> {
-                    tryFetch(symbol, "Yahoo Finance") { yahooFinanceDataSource.getStockPrice(symbol, name) }
-                        ?: tryFetch(symbol, "Finnhub") { finnhubDataSource.getStockPrice(symbol, name) }
-                        ?: tryFetch(symbol, "Alpha Vantage") { alphaVantageDataSource.getStockPrice(symbol, name, currency?.toDto() ?: CurrencyDto(USD)) }
-                        ?: tryFetch(symbol, "Marketstack") { marketstackDataSource.getStockPrice(symbol, name) }
+                    val apis = listOf<Pair<DataSource, suspend () -> InvestmentDto?>>(
+                        DataSource.YAHOO_FINANCE to { yahooFinanceDataSource.getStockPrice(symbol, name) },
+                        DataSource.FINNHUB to { finnhubDataSource.getStockPrice(symbol, name) },
+                        DataSource.ALPHA_VANTAGE to { alphaVantageDataSource.getStockPrice(symbol, name, currency?.toDto() ?: CurrencyDto(USD)) },
+                        DataSource.MARKETSTACK to { marketstackDataSource.getStockPrice(symbol, name) }
+                    )
+                    tryFetchFromSequence(symbol, apis, apiToTryFirst)
                         ?: throw IllegalStateException("No se pudo obtener el precio del fondo")
                 }
             }
         }
 
-    private suspend fun getFundPrice(isin: String): Result<Investment> =
+    private suspend fun getFundPrice(isin: String, preferredApi: DataSource?): Result<Investment> =
         runCatching {
-            symbolCache.getCachedInvestmentIfValid(isin, cachePolicy.fundHours)
-                ?.toDomain()
-                ?.let { return@runCatching it }
+            val cachedValid = symbolCache.getCachedInvestmentIfValid(isin, cachePolicy.fundHours)
+            cachedValid?.toDomain()?.let { return@runCatching it }
 
-            tryFetch(isin, "Investing.com") { investingDataSource.getFundPrice(isin) }
-                ?: tryFetch(isin, "QueFondos.com") { queFondosDataSource.getFundPrice(isin, InvestmentType.FUND) }
+            val apiToTryFirst = preferredApi ?: symbolCache.getCachedInvestment(isin)?.preferredApi
+
+            val apis = listOf<Pair<DataSource, suspend () -> InvestmentDto?>>(
+                DataSource.INVESTING_COM to { investingDataSource.getFundPrice(isin) },
+                DataSource.QUE_FONDOS to { queFondosDataSource.getFundPrice(isin, InvestmentType.FUND) }
+            )
+
+            tryFetchFromSequence(isin, apis, apiToTryFirst)
                 ?: throw IllegalStateException("No se pudo obtener el precio del fondo")
         }
 
-    private suspend fun getEtfPrice(isin: String, selectedCurrency: Currency?): Result<Investment> {
+    private suspend fun getEtfPrice(isin: String, selectedCurrency: Currency?, preferredApi: DataSource?): Result<Investment> {
         return runCatching {
-            symbolCache.getCachedInvestmentIfValid(isin, cachePolicy.etfHours)
-                ?.toDomain()
-                ?.let { return@runCatching it }
+            val cachedValid = symbolCache.getCachedInvestmentIfValid(isin, cachePolicy.etfHours)
+            cachedValid?.toDomain()?.let { return@runCatching it }
+
+            val apiToTryFirst = preferredApi ?: symbolCache.getCachedInvestment(isin)?.preferredApi
 
             val currency = selectedCurrency?.toDto() ?: CurrencyDto(EUR)
 
-            tryFetch(isin, "JustETF.com (detail)") { justEtfDataSource.getEtfDetail(isin, currency) }
-                ?: tryFetch(isin, "ExtraETF.com") { extraEtfDataSource.getEtfPrice(isin) }
-                ?: tryFetch(isin, "QueFondos.com") { queFondosDataSource.getFundPrice(isin, InvestmentType.ETF) }
-                ?: tryFetch(isin, "JustETF.com (price)", false) { justEtfDataSource.getEtfPrice(isin, currency) }
-                ?: throw IllegalStateException("No se pudo obtener el precio del ETF")
+            val apis = listOf<Triple<DataSource, Boolean, suspend () -> InvestmentDto?>>(
+                Triple(DataSource.JUST_ETF_DETAIL, true) { justEtfDataSource.getEtfDetail(isin, currency) },
+                Triple(DataSource.EXTRA_ETF, true) { extraEtfDataSource.getEtfPrice(isin) },
+                Triple(DataSource.QUE_FONDOS, true) { queFondosDataSource.getFundPrice(isin, InvestmentType.ETF) },
+                Triple(DataSource.JUST_ETF_PRICE, false) { justEtfDataSource.getEtfPrice(isin, currency) }
+            )
+
+            if (apiToTryFirst != null) {
+                val preferred = apis.find { it.first == apiToTryFirst }
+                if (preferred != null) {
+                    tryFetch(isin, preferred.first, preferred.second, preferred.third)?.let { return@runCatching it }
+                }
+            }
+
+            for (api in apis) {
+                if (api.first == apiToTryFirst) continue
+                tryFetch(isin, api.first, api.second, api.third)?.let { return@runCatching it }
+            }
+
+            throw IllegalStateException("No se pudo obtener el precio del ETF")
         }
+    }
+
+    private suspend fun tryFetchFromSequence(
+        isin: String,
+        apis: List<Pair<DataSource, suspend () -> InvestmentDto?>>,
+        preferredApi: DataSource?
+    ): Investment? {
+        if (preferredApi != null) {
+            val preferred = apis.find { it.first == preferredApi }
+            if (preferred != null) {
+                tryFetch(isin, preferred.first, fetch = preferred.second)?.let { return it }
+            }
+        }
+
+        for ((source, fetch) in apis) {
+            if (source == preferredApi) continue
+            tryFetch(isin, source, fetch = fetch)?.let { return it }
+        }
+
+        return null
     }
 
     override suspend fun getStocksSymbols(exchange: String): Result<List<MarketAsset>> =
@@ -251,15 +293,16 @@ class FinancialRepositoryImpl(
 
     private suspend fun tryFetch(
         isin: String,
-        source: String,
+        source: DataSource,
         validateName: Boolean = true,
         fetch: suspend () -> InvestmentDto?
     ): Investment? {
         return runCatching {
             val inv = fetch()
             val valid = inv?.takeIf { if (validateName) { it.isValidName() && it.isValidPrice() } else { it.isValidPrice()} }
+                ?.copy(preferredApi = source)
             if (valid != null) {
-                telemetry.log("$source get $isin succeed ${valid.price} ${valid.currency.code}")
+                telemetry.log("${source.value} get $isin succeed ${valid.price} ${valid.currency.code}")
                 symbolCache.setCachedInvestment(valid.toEntity())
             }
             valid?.toDomain()

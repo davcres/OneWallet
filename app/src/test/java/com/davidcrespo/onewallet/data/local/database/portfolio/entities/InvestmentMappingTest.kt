@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.data.local.database.portfolio.entities
 
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.DataSource
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -20,7 +21,8 @@ class InvestmentMappingTest {
             currency = CurrencyEntity("EUR"),
             type = InvestmentType.STOCK,
             year = 2026,
-            month = 3
+            month = 3,
+            preferredApi = DataSource.YAHOO_FINANCE
         )
 
         // When
@@ -36,6 +38,7 @@ class InvestmentMappingTest {
         assertEquals(entity.type, domain.type)
         assertEquals(entity.year, domain.year)
         assertEquals(entity.month, domain.month)
+        assertEquals(entity.preferredApi, domain.preferredApi)
     }
 
     @Test
@@ -50,7 +53,8 @@ class InvestmentMappingTest {
             currency = CurrencyEntity("USD"),
             type = InvestmentType.CRYPTO,
             year = 2026,
-            month = 3
+            month = 3,
+            preferredApi = DataSource.BINANCE
         )
 
         // When
@@ -58,6 +62,7 @@ class InvestmentMappingTest {
 
         // Then
         assertEquals(0.0, domain.previousPrice, 0.0)
+        assertEquals(DataSource.BINANCE, domain.preferredApi)
     }
 
     @Test
@@ -72,7 +77,8 @@ class InvestmentMappingTest {
             currency = Currency("EUR"),
             type = InvestmentType.CRYPTO,
             year = 2026,
-            month = 3
+            month = 3,
+            preferredApi = DataSource.BINANCE
         )
 
         // When
@@ -88,6 +94,7 @@ class InvestmentMappingTest {
         assertEquals(domain.type, entity.type)
         assertEquals(domain.year, entity.year)
         assertEquals(domain.month, entity.month)
+        assertEquals(domain.preferredApi, entity.preferredApi)
     }
 
     @Test
@@ -102,7 +109,8 @@ class InvestmentMappingTest {
             currency = CurrencyEntity("USD"),
             type = InvestmentType.STOCK,
             year = 2026,
-            month = 3
+            month = 3,
+            preferredApi = DataSource.FINNHUB
         )
         val serialized = originalEntity.toString()
 
@@ -125,7 +133,8 @@ class InvestmentMappingTest {
             currency = CurrencyEntity("USD"),
             type = InvestmentType.CRYPTO,
             year = 2026,
-            month = 3
+            month = 3,
+            preferredApi = null
         )
         val serialized = originalEntity.toString()
 
@@ -133,7 +142,6 @@ class InvestmentMappingTest {
         val restoredEntity = serialized.toInvestmentEntity()
 
         // Then
-        // Preveo que fallara porque original es null y restored sera 0.0
         assertEquals(originalEntity, restoredEntity)
     }
 
@@ -149,14 +157,15 @@ class InvestmentMappingTest {
             currency = CurrencyEntity("EUR"),
             type = InvestmentType.STOCK,
             year = 2026,
-            month = 3
+            month = 3,
+            preferredApi = DataSource.YAHOO_FINANCE
         )
 
         // When
         val result = entity.toString()
 
         // Then
-        val expected = "AAPL|Apple Inc|10.0|150.0|145.0|EUR|STOCK|2026|3"
+        val expected = "AAPL|Apple Inc|10.0|150.0|145.0|EUR|STOCK|2026|3|YAHOO_FINANCE"
         assertEquals(expected, result)
     }
 }

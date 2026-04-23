@@ -2,6 +2,7 @@ package com.davidcrespo.onewallet.presentation.models
 
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.DataSource
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
@@ -23,7 +24,8 @@ class InvestmentMappingTest {
             currency = Currency(USD),
             type = InvestmentType.STOCK,
             year = 2024,
-            month = 3
+            month = 3,
+            preferredApi = DataSource.YAHOO_FINANCE
         )
 
         // When
@@ -43,6 +45,7 @@ class InvestmentMappingTest {
         assertEquals(InvestmentType.STOCK, ui.type)
         assertEquals(2024, ui.year)
         assertEquals(3, ui.month)
+        assertEquals(DataSource.YAHOO_FINANCE, ui.preferredApi)
     }
 
     @Test
@@ -57,7 +60,8 @@ class InvestmentMappingTest {
             currency = Currency(EUR),
             type = InvestmentType.CRYPTO,
             year = 2024,
-            month = 3
+            month = 3,
+            preferredApi = DataSource.BINANCE
         )
 
         // When
@@ -65,6 +69,7 @@ class InvestmentMappingTest {
 
         // Then
         assertEquals(0.0, ui.changePercent, 0.0)
+        assertEquals(DataSource.BINANCE, ui.preferredApi)
     }
 
     @Test
@@ -82,7 +87,8 @@ class InvestmentMappingTest {
             changePercent = 3.44,
             type = InvestmentType.CRYPTO,
             year = 2024,
-            month = 3
+            month = 3,
+            preferredApi = DataSource.BINANCE
         )
 
         // When
@@ -98,13 +104,15 @@ class InvestmentMappingTest {
         assertEquals(ui.type, domain.type)
         assertEquals(ui.year, domain.year)
         assertEquals(ui.month, domain.month)
+        assertEquals(ui.preferredApi, domain.preferredApi)
     }
 
     @Test
     fun `getIconRes devuelve el recurso correcto para cada tipo`() {
         val baseUi = InvestmentView(
             "S", "N", 1.0, 1.0, 1.0, 1.0, 1.0, 
-            CurrencyView.get(USD), 0.0, InvestmentType.STOCK, 1, 2024
+            CurrencyView.get(USD), 0.0, InvestmentType.STOCK, 1, 2024,
+            preferredApi = null
         )
 
         assertEquals(R.drawable.ic_stacked_line_chart, baseUi.copy(type = InvestmentType.STOCK).getIconRes())
@@ -130,7 +138,8 @@ class InvestmentMappingTest {
             changePercent = 1.14,
             type = InvestmentType.STOCK,
             year = 2024,
-            month = 3
+            month = 3,
+            preferredApi = DataSource.FINNHUB
         )
         val serialized = original.toString()
 
