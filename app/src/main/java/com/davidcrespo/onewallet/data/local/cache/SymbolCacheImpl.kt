@@ -15,6 +15,10 @@ class SymbolCacheImpl(
     override fun getCachedInvestmentIfValid(symbol: String, validCacheHours: Long): InvestmentEntity? {
         if (!isValid(symbol, validCacheHours)) return null
 
+        return getCachedInvestment(symbol)
+    }
+
+    override fun getCachedInvestment(symbol: String): InvestmentEntity? {
         val raw = sharedPreferences.getString(valueKey(symbol), null) ?: return null
         return runCatching { raw.toInvestmentEntity() }.getOrNull()
     }

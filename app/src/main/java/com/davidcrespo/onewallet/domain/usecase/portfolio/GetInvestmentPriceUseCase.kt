@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.domain.usecase.portfolio
 
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.DataSource
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.MarketType
@@ -13,8 +14,9 @@ class GetInvestmentPriceUseCase(private val repository: FinancialRepository) {
         name: String = "",
         selectedCurrency: Currency? = null,
         marketType: MarketType? = null,
-        investmentCurrency: Currency? = null
+        investmentCurrency: Currency? = null,
+        preferredApi: DataSource? = null
     ): Result<Investment> {
-        return repository.getInvestmentPrice(symbol, type, name, selectedCurrency, marketType, investmentCurrency)
+        return repository.getInvestmentPrice(symbol, type, name, selectedCurrency, marketType, investmentCurrency, preferredApi)
     }
 }

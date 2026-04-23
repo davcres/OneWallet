@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.data.remote.dto
 
 import com.davidcrespo.onewallet.data.local.database.portfolio.entities.InvestmentEntity
+import com.davidcrespo.onewallet.domain.model.investment.DataSource
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 
@@ -13,7 +14,8 @@ data class InvestmentDto(
     val currency: CurrencyDto,
     val type: InvestmentType,
     val year: Int,
-    val month: Int
+    val month: Int,
+    val preferredApi: DataSource? = null
 ) {
     fun isValidName(): Boolean =
         name.isNotBlank()
@@ -31,7 +33,8 @@ fun InvestmentDto.toDomain(): Investment = Investment(
     currency = currency.toDomain(),
     type = type,
     year = year,
-    month = month
+    month = month,
+    preferredApi = preferredApi
 )
 
 fun InvestmentDto.toEntity(): InvestmentEntity = InvestmentEntity(
@@ -43,5 +46,6 @@ fun InvestmentDto.toEntity(): InvestmentEntity = InvestmentEntity(
     currency = currency.toEntity(),
     type = type,
     year = year,
-    month = month
+    month = month,
+    preferredApi = preferredApi
 )

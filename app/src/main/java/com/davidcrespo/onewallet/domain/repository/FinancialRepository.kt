@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.domain.repository
 
 import com.davidcrespo.onewallet.domain.model.investment.Currency
+import com.davidcrespo.onewallet.domain.model.investment.DataSource
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.MarketType
@@ -14,7 +15,8 @@ interface FinancialRepository {
         name: String = "",
         selectedCurrency: Currency?,
         marketType: MarketType?,
-        investmentCurrency: Currency?
+        investmentCurrency: Currency?,
+        preferredApi: DataSource? = null
     ): Result<Investment>
     suspend fun getStocksSymbols(exchange: String): Result<List<MarketAsset>>
     suspend fun getStocksSymbolsByQuery(query: String): Result<List<MarketAsset>>

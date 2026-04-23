@@ -236,12 +236,13 @@ class PortfolioViewModel(
                         ) ?: item
                     }
 
-                    getInvestmentPriceUseCase(
+                    getInvestmentPriceUseCase.invoke(
                         symbol = symbol,
                         type = item.type,
                         name = item.name,
                         selectedCurrency = state.selectedCurrency.toDomain(),
-                        investmentCurrency = item.originalCurrency.toDomain()
+                        investmentCurrency = item.originalCurrency.toDomain(),
+                        preferredApi = item.preferredApi
                     ).fold(
                         onSuccess = { api ->
                             val currency = item.originalCurrency.takeIf { it.code != UNKNOWN } ?: api.currency.toUI()
@@ -272,7 +273,8 @@ class PortfolioViewModel(
                                 originalPrice = api.price,
                                 originalPreviousPrice = api.previousPrice,
                                 displayPrice = priceConverted,
-                                displayPreviousPrice = previousPriceConverted
+                                displayPreviousPrice = previousPriceConverted,
+                                preferredApi = api.preferredApi
                             )
                         },
                         onFailure = { error ->

@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.data.local.database.portfolio.entities
 
 import androidx.room.Entity
+import com.davidcrespo.onewallet.domain.model.investment.DataSource
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import kotlinx.serialization.Serializable
@@ -16,10 +17,11 @@ data class InvestmentEntity(
     val currency: CurrencyEntity,
     val type: InvestmentType,
     val year: Int,
-    val month: Int
+    val month: Int,
+    val preferredApi: DataSource? = null
 ) {
     override fun toString(): String {
-        return "$symbol|$name|$quantity|$price|$previousPrice|${currency.code}|$type|$year|$month"
+        return "$symbol|$name|$quantity|$price|$previousPrice|${currency.code}|$type|$year|$month|${preferredApi?.name}"
     }
 }
 
@@ -32,7 +34,8 @@ fun Investment.toEntity(): InvestmentEntity = InvestmentEntity(
     currency = currency.toEntity(),
     type = type,
     year = year,
-    month = month
+    month = month,
+    preferredApi = preferredApi
 )
 
 fun InvestmentEntity.toDomain(): Investment = Investment(
@@ -44,7 +47,8 @@ fun InvestmentEntity.toDomain(): Investment = Investment(
     currency = currency.toDomain(),
     type = type,
     year = year,
-    month = month
+    month = month,
+    preferredApi = preferredApi
 )
 
 fun String.toInvestmentEntity(): InvestmentEntity {
@@ -59,5 +63,6 @@ fun String.toInvestmentEntity(): InvestmentEntity {
         type = InvestmentType.valueOf(parts[6]),
         year = parts[7].toIntOrNull() ?: 0,
         month = parts[8].toIntOrNull() ?: 0,
+        preferredApi = parts.getOrNull(9)?.let { runCatching { DataSource.valueOf(it) }.getOrNull() }
     )
 }

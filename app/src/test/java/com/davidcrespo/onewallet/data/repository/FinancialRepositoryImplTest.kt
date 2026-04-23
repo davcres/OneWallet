@@ -19,6 +19,7 @@ import com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataDataSource
 import com.davidcrespo.onewallet.data.remote.yahooFinance.YahooFinanceDataSource
 import com.davidcrespo.onewallet.domain.cache.CachePolicy
 import com.davidcrespo.onewallet.domain.logging.Telemetry
+import com.davidcrespo.onewallet.domain.model.investment.DataSource
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.MarketType
@@ -145,26 +146,46 @@ class FinancialRepositoryImplTest {
     }
 
     @Test
-    fun `cuando falla la primera fuente de Stocks, intenta con la siguiente (Cascada)`() = runTest(mainDispatcherExtension.testDispatcher) {
+    fun `cuando se proporciona preferredApi, intenta esa fuente primero`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
         val symbol = "AAPL"
+        val preferredSource = DataSource.FINNHUB
         every { symbolCache.getCachedInvestmentIfValid(any(), any()) } returns null
-        
-        // Yahoo Finance devuelve null (falla)
-        coEvery { yahooFinanceDataSource.getStockPrice(symbol, any()) } returns null
-        
-        // Finnhub devuelve exito
+        every { symbolCache.getCachedInvestment(symbol) } returns null
+
         val dto = InvestmentDto(symbol, "Apple", 0.0, 150.0, 145.0, CurrencyDto("USD"), InvestmentType.STOCK, 2026, 3)
         coEvery { finnhubDataSource.getStockPrice(symbol, any()) } returns dto
 
         // When
-        val result = repository.getInvestmentPrice(symbol, InvestmentType.STOCK, "", null, MarketType.GLOBAL, null)
+        val result = repository.getInvestmentPrice(symbol, InvestmentType.STOCK, "", null, MarketType.GLOBAL, null, preferredSource)
 
         // Then
         assertTrue(result.isSuccess)
-        assertEquals(150.0, result.getOrNull()?.price)
-        coVerify(exactly = 1) { yahooFinanceDataSource.getStockPrice(any(), any()) }
+        assertEquals(preferredSource, result.getOrNull()?.preferredApi)
         coVerify(exactly = 1) { finnhubDataSource.getStockPrice(any(), any()) }
+        coVerify(exactly = 0) { yahooFinanceDataSource.getStockPrice(any(), any()) }
+    }
+
+    @Test
+    fun `cuando preferredApi falla, continua con el resto de la cadena`() = runTest(mainDispatcherExtension.testDispatcher) {
+        // Given
+        val symbol = "AAPL"
+        val preferredSource = DataSource.ALPHA_VANTAGE
+        every { symbolCache.getCachedInvestmentIfValid(any(), any()) } returns null
+        every { symbolCache.getCachedInvestment(symbol) } returns null
+
+        coEvery { alphaVantageDataSource.getStockPrice(symbol, any(), any()) } returns null
+        val dto = InvestmentDto(symbol, "Apple", 0.0, 150.0, 145.0, CurrencyDto("USD"), InvestmentType.STOCK, 2026, 3)
+        coEvery { yahooFinanceDataSource.getStockPrice(symbol, any()) } returns dto
+
+        // When
+        val result = repository.getInvestmentPrice(symbol, InvestmentType.STOCK, "", null, MarketType.GLOBAL, null, preferredSource)
+
+        // Then
+        assertTrue(result.isSuccess)
+        assertEquals(DataSource.YAHOO_FINANCE, result.getOrNull()?.preferredApi)
+        coVerify(exactly = 1) { alphaVantageDataSource.getStockPrice(any(), any(), any()) }
+        coVerify(exactly = 1) { yahooFinanceDataSource.getStockPrice(any(), any()) }
     }
 
     @Test
