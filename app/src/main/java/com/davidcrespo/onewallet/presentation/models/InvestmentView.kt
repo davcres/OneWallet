@@ -20,7 +20,8 @@ data class InvestmentView(
     val type: InvestmentType,
     val month: Int,
     val year: Int,
-    val preferredApi: DataSource? = null
+    val preferredApi: DataSource? = null,
+    val alertThreshold: Double? = null
 ) {
     fun getIconRes() =
         when (type) {
@@ -33,7 +34,7 @@ data class InvestmentView(
         }
 
     override fun toString(): String {
-        return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|${originalCurrency.code}|$changePercent|$type|$year|$month|${preferredApi?.name}"
+        return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|${originalCurrency.code}|$changePercent|$type|$year|$month|${preferredApi?.name}|$alertThreshold"
     }
 }
 
@@ -55,7 +56,8 @@ fun Investment.toUI(): InvestmentView {
         type = type,
         month = month,
         year = year,
-        preferredApi = preferredApi
+        preferredApi = preferredApi,
+        alertThreshold = alertThreshold
     )
 }
 
@@ -70,7 +72,8 @@ fun InvestmentView.toDomain(): Investment {
         type = type,
         year = year,
         month = month,
-        preferredApi = preferredApi
+        preferredApi = preferredApi,
+        alertThreshold = alertThreshold
     )
 }
 
@@ -89,6 +92,7 @@ fun String.toInvestmentView(): InvestmentView {
         type = InvestmentType.valueOf(parts[9]),
         year = parts[10].toIntOrNull() ?: 0,
         month = parts[11].toIntOrNull() ?: 0,
-        preferredApi = parts.getOrNull(12)?.let { runCatching { DataSource.valueOf(it) }.getOrNull() }
+        preferredApi = parts.getOrNull(12)?.let { runCatching { DataSource.valueOf(it) }.getOrNull() },
+        alertThreshold = parts.getOrNull(13)?.toDoubleOrNull()
     )
 }

@@ -11,6 +11,7 @@ import com.davidcrespo.onewallet.domain.usecase.portfolio.ClearPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetInvestmentPriceUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetPortfolioItemsUseCase
+import com.davidcrespo.onewallet.domain.usecase.portfolio.RefreshPortfolioPricesUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.RemovePortfolioItemUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.SaveMonthlyPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.SeedInitialPortfolioUseCase
@@ -24,6 +25,7 @@ val useCaseModule = module {
     single { GetCurrencyRateUseCase(get()) }
 
     single { GetPortfolioItemsUseCase(get()) }
+    single { RefreshPortfolioPricesUseCase(get(), get(), get(), get()) }
     single { ClearPortfolioUseCase(get(), get()) }
     single { AddInvestmentToPortfolioUseCase(get()) }
     single { AddMarketAssetToPortfolioUseCase(get()) }

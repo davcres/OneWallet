@@ -25,7 +25,8 @@ class InvestmentMappingTest {
             type = InvestmentType.STOCK,
             year = 2024,
             month = 3,
-            preferredApi = DataSource.YAHOO_FINANCE
+            preferredApi = DataSource.YAHOO_FINANCE,
+            alertThreshold = 5.0
         )
 
         // When
@@ -46,6 +47,7 @@ class InvestmentMappingTest {
         assertEquals(2024, ui.year)
         assertEquals(3, ui.month)
         assertEquals(DataSource.YAHOO_FINANCE, ui.preferredApi)
+        assertEquals(5.0, ui.alertThreshold)
     }
 
     @Test
@@ -61,7 +63,8 @@ class InvestmentMappingTest {
             type = InvestmentType.CRYPTO,
             year = 2024,
             month = 3,
-            preferredApi = DataSource.BINANCE
+            preferredApi = DataSource.BINANCE,
+            alertThreshold = null
         )
 
         // When
@@ -70,6 +73,7 @@ class InvestmentMappingTest {
         // Then
         assertEquals(0.0, ui.changePercent, 0.0)
         assertEquals(DataSource.BINANCE, ui.preferredApi)
+        assertEquals(null, ui.alertThreshold)
     }
 
     @Test
@@ -88,7 +92,8 @@ class InvestmentMappingTest {
             type = InvestmentType.CRYPTO,
             year = 2024,
             month = 3,
-            preferredApi = DataSource.BINANCE
+            preferredApi = DataSource.BINANCE,
+            alertThreshold = 2.5
         )
 
         // When
@@ -105,6 +110,7 @@ class InvestmentMappingTest {
         assertEquals(ui.year, domain.year)
         assertEquals(ui.month, domain.month)
         assertEquals(ui.preferredApi, domain.preferredApi)
+        assertEquals(ui.alertThreshold, domain.alertThreshold)
     }
 
     @Test
@@ -112,7 +118,8 @@ class InvestmentMappingTest {
         val baseUi = InvestmentView(
             "S", "N", 1.0, 1.0, 1.0, 1.0, 1.0, 
             CurrencyView.get(USD), 0.0, InvestmentType.STOCK, 1, 2024,
-            preferredApi = null
+            preferredApi = null,
+            alertThreshold = null
         )
 
         assertEquals(R.drawable.ic_stacked_line_chart, baseUi.copy(type = InvestmentType.STOCK).getIconRes())
@@ -139,7 +146,8 @@ class InvestmentMappingTest {
             type = InvestmentType.STOCK,
             year = 2024,
             month = 3,
-            preferredApi = DataSource.FINNHUB
+            preferredApi = DataSource.FINNHUB,
+            alertThreshold = 10.0
         )
         val serialized = original.toString()
 

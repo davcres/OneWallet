@@ -552,8 +552,8 @@ private fun PortfolioScreen(
                 currency = uiState.selectedCurrency,
                 visible = true,
                 onDismiss = { onAction(PortfolioIntent.EditQuantity(null)) },
-                onEditInvestment = { quantity ->
-                    onAction(PortfolioIntent.UpdateQuantity(item, quantity))
+                onEditInvestment = { quantity, alertThreshold ->
+                    onAction(PortfolioIntent.UpdateQuantity(item, quantity, alertThreshold))
                 },
                 onQuantityError = { quantityError ->
                     onAction(PortfolioIntent.SetError(quantityError))

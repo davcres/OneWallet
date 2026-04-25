@@ -73,6 +73,12 @@
     <string name="new_quantity_market">Introduce la nueva cantidad de acciones</string>
     <string name="new_quantity_manual">Introduce el nuevo saldo</string>
     <string name="new_quantity_manual_info">Usa la moneda original de la inversión (%s)</string>
+    <string name="receive_notifications">Recibir notificaciones</string>
+    <string name="alert_threshold_placeholder">ej: 5,0</string>
+    <string name="alert_threshold_info">Avisarme si el precio cambia\nmás de un:</string>
+    <string name="notification_price_up_title">¡%s está subiendo!</string>
+    <string name="notification_price_down_title">¡%s está bajando!</string>
+    <string name="notification_price_body">%1$s ha cambiado un %2$s%% hoy.</string>
     <string name="estimated_new_value">Nuevo valor estimado</string>
     <string name="cancel_edit_investment_cd">Pulsa para no editar la cantidad</string>
     <string name="error_quantity_empty">Introduce una cantidad válida.</string>

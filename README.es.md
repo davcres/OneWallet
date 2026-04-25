@@ -192,3 +192,9 @@ Estos son algunos de los siguientes pasos previstos para seguir mejorando la cal
 - **Uso de Effects en MVI para eventos one-shot**: Incorporar una capa de **Effects** para gestionar eventos efímeros que no deben persistirse en el estado, como mostrar un `Snackbar`, lanzar una navegación o emitir mensajes puntuales al usuario. Esto evita que este tipo de eventos se repitan accidentalmente tras una recomposición o un cambio de configuración, y ayuda a mantener el `State` centrado exclusivamente en representar la UI.
 
 - **Modelo `Result` para la gestión de errores**: Consolidar un modelo `Result` propio para representar de forma explícita los casos de éxito y error en toda la aplicación. Esto permite un manejo de errores más predecible y uniforme entre capas, evita depender de excepciones como mecanismo principal de control de flujo y mejora tanto la legibilidad como la capacidad de testeo de la lógica de negocio.
+
+## Límites API Keys
+- Finnhub: 60/minuto (Solo US)
+- TwelveData: 800/dia (Tipos de Cambio de Monedas)
+- AlphaVantage: 25/dia (Global)
+- MarketStack: 100/mes (Global)

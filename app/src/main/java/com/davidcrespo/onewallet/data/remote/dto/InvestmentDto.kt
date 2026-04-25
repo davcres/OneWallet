@@ -15,7 +15,8 @@ data class InvestmentDto(
     val type: InvestmentType,
     val year: Int,
     val month: Int,
-    val preferredApi: DataSource? = null
+    val preferredApi: DataSource? = null,
+    val alertThreshold: Double? = null
 ) {
     fun isValidName(): Boolean =
         name.isNotBlank()
@@ -34,7 +35,8 @@ fun InvestmentDto.toDomain(): Investment = Investment(
     type = type,
     year = year,
     month = month,
-    preferredApi = preferredApi
+    preferredApi = preferredApi,
+    alertThreshold = alertThreshold
 )
 
 fun InvestmentDto.toEntity(): InvestmentEntity = InvestmentEntity(
@@ -47,5 +49,6 @@ fun InvestmentDto.toEntity(): InvestmentEntity = InvestmentEntity(
     type = type,
     year = year,
     month = month,
-    preferredApi = preferredApi
+    preferredApi = preferredApi,
+    alertThreshold = alertThreshold
 )

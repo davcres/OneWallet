@@ -83,7 +83,7 @@ class PortfolioViewModel(
             is PortfolioIntent.ToggleTheme -> toggleTheme(intent.themeMode)
 
             is PortfolioIntent.EditQuantity -> _uiState.update { it.copy(editingItem = intent.item) }
-            is PortfolioIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity)
+            is PortfolioIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity, intent.alertThreshold)
             is PortfolioIntent.RemoveItem -> removeItem(intent.item)
             is PortfolioIntent.ShowDeleteDialog -> _uiState.update { it.copy(deletingItem = intent.item) }
 
@@ -213,6 +213,7 @@ class PortfolioViewModel(
     }
 
     private suspend fun fetchPricesForItems(items: ImmutableList<InvestmentView>): List<InvestmentView> {
+        _uiState.update { it.copy(isLoading = true, error = null) }
         // Take a stable snapshot
         val state = _uiState.value
         val selectedCurrency = state.selectedCurrency
@@ -232,7 +233,10 @@ class PortfolioViewModel(
                     // Reuse if already priced
                     if (symbol in alreadyPriced) {
                         return@async existingBySymbol[symbol]?.copy(
-                            quantity = item.quantity
+                            quantity = item.quantity,
+                            alertThreshold = item.alertThreshold,
+                            year = item.year,
+                            month = item.month
                         ) ?: item
                     }
 
@@ -479,7 +483,7 @@ class PortfolioViewModel(
         }
     }
 
-    private fun updateQuantity(item: InvestmentView, quantity: Double) {
+    private fun updateQuantity(item: InvestmentView, quantity: Double, alertThreshold: Double?) {
         viewModelScope.launch {
             val now = LocalDate.now()
             val year = now.year
@@ -488,7 +492,8 @@ class PortfolioViewModel(
             val itemUpdated = item.copy(
                 quantity = quantity,
                 year = year,
-                month = month
+                month = month,
+                alertThreshold = alertThreshold
             )
             addInvestmentToPortfolioUseCase(itemUpdated.toDomain())
 
