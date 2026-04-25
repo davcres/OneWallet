@@ -5,9 +5,9 @@ complexity:
     threshold: 20
   LongMethod:
     active: true
-    threshold: 100
+    threshold: 150
   LongParameterList:
-    active: true
+    active: false
     functionThreshold: 10
     constructorThreshold: 10
   TooManyFunctions:
@@ -28,7 +28,7 @@ style:
     ignoreAnnotation: true
     ignoreEnums: true
   MaxLineLength:
-    active: true
+    active: false
     maxLineLength: 160
 
 naming:

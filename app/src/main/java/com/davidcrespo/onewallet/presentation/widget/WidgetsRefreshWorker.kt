@@ -30,9 +30,9 @@ class WidgetsRefreshWorker(
     params: WorkerParameters
 ) : CoroutineWorker(appContext, params), KoinComponent {
 
-    val getPortfolioItemsUseCase: GetPortfolioItemsUseCase by inject()
-    val financialRepository: FinancialRepository by inject()
-    val getCurrencyRateUseCase: GetCurrencyRateUseCase by inject()
+    private val getPortfolioItemsUseCase: GetPortfolioItemsUseCase by inject()
+    private val financialRepository: FinancialRepository by inject()
+    private val getCurrencyRateUseCase: GetCurrencyRateUseCase by inject()
 
     override suspend fun doWork(): Result = runCatching {
 
@@ -91,7 +91,7 @@ class WidgetsRefreshWorker(
         Result.success()
     }.getOrElse { e ->
         e.printStackTrace()
-        Result.retry() // o failure()
+        Result.retry()
     }
 
     companion object {

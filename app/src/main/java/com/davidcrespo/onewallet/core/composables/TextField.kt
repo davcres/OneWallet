@@ -50,9 +50,12 @@ import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 fun TextField(
     value: String,
     onValueChange: (String) -> Unit,
-    icon: ImageVector,
+    leadingIcon: ImageVector? = null,
+    trailingIcon: ImageVector? = null,
+    hasClearIcon: Boolean,
     placeholder: String,
     cornerRadius: Dp,
+    enabled: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     modifier: Modifier = Modifier,
@@ -100,6 +103,7 @@ fun TextField(
         value = value,
         onValueChange = onValueChange,
         singleLine = true,
+        enabled = enabled,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
@@ -124,14 +128,16 @@ fun TextField(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = animatedIconTint,
-                    modifier = Modifier.size(animatedIconSize)
-                )
+                if (leadingIcon != null) {
+                    Icon(
+                        imageVector = leadingIcon,
+                        contentDescription = null,
+                        tint = animatedIconTint,
+                        modifier = Modifier.size(animatedIconSize)
+                    )
 
-                Spacer(Modifier.width(12.dp))
+                    Spacer(Modifier.width(12.dp))
+                }
 
                 Box(Modifier.weight(1f)) {
                     if (!isFocused && value.isEmpty()) {
@@ -146,7 +152,7 @@ fun TextField(
 
                 Spacer(Modifier.width(12.dp))
 
-                if (value.isNotEmpty()) {
+                if (value.isNotEmpty() && hasClearIcon) {
                     IconButton(
                         onClick = { onValueChange("") },
                         modifier = Modifier.size(animatedIconSize)
@@ -157,6 +163,13 @@ fun TextField(
                             tint = animatedIconTint
                         )
                     }
+                } else if (trailingIcon != null) {
+                    Icon(
+                        imageVector = trailingIcon,
+                        contentDescription = null,
+                        tint = animatedIconTint,
+                        modifier = Modifier.size(animatedIconSize)
+                    )
                 }
             }
         }
@@ -170,8 +183,9 @@ private fun TextFieldPreview() {
         TextField(
             value = "",
             onValueChange = {},
-            icon = Icons.Default.Search,
+            leadingIcon = Icons.Default.Search,
             placeholder = "Search",
+            hasClearIcon = true,
             cornerRadius = 16.dp
         )
     }

@@ -27,12 +27,13 @@ fun MarketSearchBar(
     TextField(
         value = query,
         onValueChange = onQueryChange,
-        icon = Icons.Outlined.Search,
+        leadingIcon = Icons.Outlined.Search,
         placeholder = when {
             isCrypto -> stringResource(R.string.search_crypto_placeholder)
             marketType == MarketType.US -> stringResource(R.string.search_us_stock_placeholder)
             else -> stringResource(R.string.search_global_stock_placeholder)
         },
+        hasClearIcon = true,
         cornerRadius = 999.dp,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(

@@ -73,6 +73,12 @@
     <string name="new_quantity_market">Enter new quantity of shares</string>
     <string name="new_quantity_manual">Enter the new balance</string>
     <string name="new_quantity_manual_info">Use the original investment currency (%s)</string>
+    <string name="receive_notifications">Receive notifications</string>
+    <string name="alert_threshold_placeholder">e.g. 5.0</string>
+    <string name="alert_threshold_info">Notify me if the price changes\nby more than:</string>
+    <string name="notification_price_up_title">%s is going up!</string>
+    <string name="notification_price_down_title">%s is going down!</string>
+    <string name="notification_price_body">%1$s has changed %2$s%% today.</string>
     <string name="estimated_new_value">Estimated new value</string>
     <string name="cancel_edit_investment_cd">Tap to not edit the quantity</string>
     <string name="error_quantity_empty">Enter a valid amount.</string>
@@ -154,7 +160,7 @@
     <string name="onboarding_finished_button">Start now</string>
 
     <!-- Portfolio Onboarding -->
-    <string name="portfolio_onboarding_title">Personalize your Experience</string>
+    <string name="portfolio_onboarding_title">Let\'s get started</string>
     <string name="portfolio_onboarding_description">To help you understand how the app works, we have prepared a small tutorial with 3 example investments to show you how to get the most out of OneWallet. It only takes a minute!</string>
     <string name="portfolio_onboarding_start">Start tutorial</string>
     <string name="portfolio_onboarding_skip">Skip tutorial</string>

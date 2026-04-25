@@ -17,15 +17,15 @@ val policyModule = module {
                 cryptoHours = 1,
                 fundHours = 2,
                 etfHours = 2,
-                marketHours = 24 * 7,
-                rateHours = 24 * 7
+                marketHours = 24 * 365,
+                rateHours = 24 * 365
             )
         } else {
             CachePolicy(
-                stockHours = 6,
+                stockHours = 1,
                 cryptoHours = 1,
-                fundHours = 2,
-                etfHours = 2,
+                fundHours = 1,
+                etfHours = 1,
                 marketHours = 24 * 7,
                 rateHours = 24
             )

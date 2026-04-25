@@ -210,7 +210,8 @@ private fun Form(
                     .filter { it.isLetterOrDigit() }
                     .take(12)
             },
-            icon = Icons.Outlined.QrCode2,
+            leadingIcon = Icons.Outlined.QrCode2,
+            hasClearIcon = true,
             placeholder = "US0000000000",
             cornerRadius = 16.dp
         )
@@ -257,7 +258,8 @@ private fun Form(
                     quantity = normalized
                 }
             },
-            icon = Icons.Outlined.PieChartOutline,
+            leadingIcon = Icons.Outlined.PieChartOutline,
+            hasClearIcon = true,
             placeholder = "0.0",
             cornerRadius = 16.dp,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)

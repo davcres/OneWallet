@@ -7,28 +7,16 @@
     <ID>CyclomaticComplexMethod:PortfolioScreen.kt$@Composable fun PortfolioRoot( initialTab: PortfolioTabs, navigateToMarket: (isCrypto: Boolean) -&gt; Unit, modifier: Modifier = Modifier, viewModel: PortfolioViewModel = koinViewModel() )</ID>
     <ID>CyclomaticComplexMethod:PortfolioScreen.kt$@Composable private fun PortfolioScreen( uiState: PortfolioUiState, onAction: (PortfolioIntent) -&gt; Unit, modifier: Modifier = Modifier, isInteractionEnabled: Boolean = true )</ID>
     <ID>CyclomaticComplexMethod:PortfolioViewModel.kt$PortfolioViewModel$fun handleIntent(intent: PortfolioIntent)</ID>
+    <ID>CyclomaticComplexMethod:UpdateInvestmentBottomSheet.kt$@Composable private fun Form( investment: InvestmentView, currency: CurrencyView, onClose: () -&gt; Unit, onEditInvestment: (newQuantity: Double, alertThreshold: Double?) -&gt; Unit, onError: (String) -&gt; Unit )</ID>
     <ID>DestructuringDeclarationWithTooManyEntries:HistoryInvestmentDetail.kt$val (percentageIcon, percentageColor, backgroundColor, prefix) = when { percentage &gt; 0 -&gt; Quadruple( Icons.AutoMirrored.Filled.TrendingUp, MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.primaryContainer, "+" ) percentage &lt; 0 -&gt; Quadruple( Icons.AutoMirrored.Filled.TrendingDown, MaterialTheme.colorScheme.error, MaterialTheme.colorScheme.error.copy(alpha = 0.25f), "" ) else -&gt; Quadruple( Icons.AutoMirrored.Filled.TrendingFlat, MaterialTheme.colorScheme.onSurfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.25f), "" ) }</ID>
     <ID>EmptyDefaultConstructor:GetWidgetCallback.kt$GetWidgetCallback$()</ID>
     <ID>EmptyFunctionBlock:UsMarketViewModelTest.kt$UsMarketViewModelTest${ }</ID>
     <ID>ExplicitItLambdaParameter:OWAnimatedList.kt${ _, it -&gt; key(it) }</ID>
-    <ID>LongMethod:AddFundBottomSheet.kt$@Composable private fun Form( onClose: () -&gt; Unit, onAddFund: (String, Double) -&gt; Unit, onIsinError: (String?) -&gt; Unit )</ID>
-    <ID>LongMethod:Button.kt$@Composable fun Button( text: String, contentDescription: String, style: ButtonStyle, onClick: () -&gt; Unit, leadingIcon: ImageVector? = null, trailingIcon: ImageVector? = null, enabled: Boolean = true, modifier: Modifier = Modifier, )</ID>
-    <ID>LongMethod:ComicBubble.kt$@Composable fun ComicBubble( widthPx: Int, heightPx: Int, arrowToXInWindowPx: Int, bubbleLeftInWindowPx: Int, arrowOnTop: Boolean, borderColor: Color = Color.Black, fillColor: Color = Color.White, borderWidth: Dp = 2.dp, onDismiss: () -&gt; Unit, content: @Composable () -&gt; Unit )</ID>
     <ID>LongMethod:GlobalMarketScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun GlobalMarketScreen( uiState: GlobalMarketUiState, onAction: (GlobalMarketIntent) -&gt; Unit, onBack: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
     <ID>LongMethod:HistoryInvestmentDetail.kt$@Composable private fun SheetContent( investment: InvestmentView, previousMonthInvestment: InvestmentView?, currency: CurrencyView, onClose: () -&gt; Unit, snackbarHostState: SnackbarHostState )</ID>
-    <ID>LongMethod:OWBalance.kt$@Composable fun OWBalance( currency: CurrencyView, balance: Double, previousBalance: Double, isBalanceVisible: Boolean, isExpanded: Boolean, section: SectionType, modifier: Modifier = Modifier, shouldAnimate: Boolean )</ID>
     <ID>LongMethod:PortfolioList.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun PortfolioList( header: @Composable () -&gt; Unit, items: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onRemove: (InvestmentView) -&gt; Unit, onEdit: (InvestmentView) -&gt; Unit, isBalanceVisible: Boolean, modifier: Modifier = Modifier, state: LazyListState = rememberLazyListState(), shouldAnimate: Boolean = true, isEditOnboardingActive: Boolean = false, isDeleteOnboardingActive: Boolean = false, )</ID>
-    <ID>LongMethod:PortfolioScreen.kt$@Composable fun PortfolioRoot( initialTab: PortfolioTabs, navigateToMarket: (isCrypto: Boolean) -&gt; Unit, modifier: Modifier = Modifier, viewModel: PortfolioViewModel = koinViewModel() )</ID>
     <ID>LongMethod:PortfolioScreen.kt$@Composable private fun PortfolioScreen( uiState: PortfolioUiState, onAction: (PortfolioIntent) -&gt; Unit, modifier: Modifier = Modifier, isInteractionEnabled: Boolean = true )</ID>
-    <ID>LongMethod:PortfolioViewModel.kt$PortfolioViewModel$private suspend fun fetchPricesForItems(items: ImmutableList&lt;InvestmentView&gt;): List&lt;InvestmentView&gt;</ID>
-    <ID>LongMethod:UpdateInvestmentBottomSheet.kt$@Composable private fun Form( investment: InvestmentView, currency: CurrencyView, onClose: () -&gt; Unit, onEditQuantity: (newQuantity: Double) -&gt; Unit, onError: (String) -&gt; Unit )</ID>
-    <ID>LongMethod:UsMarketScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun UsMarketScreen( uiState: UsMarketUiState, onAction: (UsMarketIntent) -&gt; Unit, isCrypto: Boolean, onBack: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
-    <ID>LongParameterList:ComicBubble.kt$( widthPx: Int, heightPx: Int, arrowToXInWindowPx: Int, bubbleLeftInWindowPx: Int, arrowOnTop: Boolean, borderColor: Color = Color.Black, fillColor: Color = Color.White, borderWidth: Dp = 2.dp, onDismiss: () -&gt; Unit, content: @Composable () -&gt; Unit )</ID>
-    <ID>LongParameterList:FinancialRepositoryImpl.kt$FinancialRepositoryImpl$( private val twelveDataDataSource: TwelveDataDataSource, private val finnhubDataSource: FinnhubDataSource, private val alphaVantageDataSource: AlphaVantageDataSource, private val marketstackDataSource: MarketstackDataSource, private val yahooFinanceDataSource: YahooFinanceDataSource, private val binanceDataSource: BinanceDataSource, private val investingDataSource: InvestingDataSource, private val queFondosDataSource: QueFondosDataSource, private val justEtfDataSource: JustEtfDataSource, private val extraEtfDataSource: ExtraEtfDataSource, private val symbolCache: SymbolCache, private val currencyCache: CurrencyCache, private val marketCache: MarketCache, private val dispatcher: DispatcherProvider, private val cachePolicy: CachePolicy, private val telemetry: Telemetry, )</ID>
-    <ID>LongParameterList:OWAnimatedList.kt$( header: @Composable () -&gt; Unit = {}, items: ImmutableList&lt;T&gt;, key: (T) -&gt; Any, state: LazyListState = rememberLazyListState(), contentPadding: PaddingValues = PaddingValues(0.dp), verticalArrangement: Arrangement.Vertical = Arrangement.Top, horizontalAlignment: Alignment.Horizontal = Alignment.Start, modifier: Modifier = Modifier, animate: Boolean = true, itemContent: @Composable (modifier: Modifier, item: T, index: Int) -&gt; Unit )</ID>
-    <ID>LongParameterList:PortfolioList.kt$( header: @Composable () -&gt; Unit, items: ImmutableList&lt;InvestmentView&gt;, currency: CurrencyView, onRemove: (InvestmentView) -&gt; Unit, onEdit: (InvestmentView) -&gt; Unit, isBalanceVisible: Boolean, modifier: Modifier = Modifier, state: LazyListState = rememberLazyListState(), shouldAnimate: Boolean = true, isEditOnboardingActive: Boolean = false, isDeleteOnboardingActive: Boolean = false, )</ID>
-    <ID>LongParameterList:PortfolioViewModel.kt$PortfolioViewModel$( private val getCurrencyRateUseCase: GetCurrencyRateUseCase, private val getPortfolioItemsUseCase: GetPortfolioItemsUseCase, private val getInvestmentPriceUseCase: GetInvestmentPriceUseCase, private val saveMonthlyPortfolioUseCase: SaveMonthlyPortfolioUseCase, private val addInvestmentToPortfolioUseCase: AddInvestmentToPortfolioUseCase, private val removePortfolioItemUseCase: RemovePortfolioItemUseCase, private val clearPortfolioUseCase: ClearPortfolioUseCase, private val financialRepository: FinancialRepository, private val currencyConverter: CurrencyConverter, private val getThemeUseCase: GetThemeUseCase, private val setThemeUseCase: SetThemeUseCase, private val onboardingRepository: OnboardingRepository, private val context: Context )</ID>
-    <ID>LongParameterList:PositionsTab.kt$( currency: CurrencyView, totalBalance: Double, previousBalance: Double, portfolioItems: ImmutableList&lt;InvestmentView&gt;, onRemoveItem: (InvestmentView) -&gt; Unit, onEditQuantity: (InvestmentView) -&gt; Unit, changeBalanceVisibility: () -&gt; Unit, isBalanceVisible: Boolean, isActivePage: Boolean = true, isEditOnboardingActive: Boolean = false, isDeleteOnboardingActive: Boolean = false )</ID>
+    <ID>LongMethod:UpdateInvestmentBottomSheet.kt$@Composable private fun Form( investment: InvestmentView, currency: CurrencyView, onClose: () -&gt; Unit, onEditInvestment: (newQuantity: Double, alertThreshold: Double?) -&gt; Unit, onError: (String) -&gt; Unit )</ID>
     <ID>LoopWithTooManyJumpStatements:PortfolioScreen.kt$for</ID>
     <ID>MagicNumber:AddFundBottomSheet.kt$12</ID>
     <ID>MagicNumber:AllocationChart.kt$0.0001f</ID>
@@ -56,12 +44,14 @@
     <ID>MagicNumber:HistoryMonthCard.kt$100</ID>
     <ID>MagicNumber:HistoryMonthCard.kt$5000</ID>
     <ID>MagicNumber:HistoryMonthDetailBottomSheet.kt$0.80f</ID>
+    <ID>MagicNumber:InvestmentEntity.kt$10</ID>
     <ID>MagicNumber:InvestmentEntity.kt$5</ID>
     <ID>MagicNumber:InvestmentEntity.kt$6</ID>
     <ID>MagicNumber:InvestmentEntity.kt$9</ID>
     <ID>MagicNumber:InvestmentTypeBottomSheet.kt$0.80f</ID>
     <ID>MagicNumber:InvestmentView.kt$100.0</ID>
     <ID>MagicNumber:InvestmentView.kt$12</ID>
+    <ID>MagicNumber:InvestmentView.kt$13</ID>
     <ID>MagicNumber:InvestmentView.kt$7</ID>
     <ID>MagicNumber:InvestmentView.kt$9</ID>
     <ID>MagicNumber:MarketAssetView.kt$3</ID>
@@ -92,27 +82,13 @@
     <ID>MagicNumber:PortfolioScreen.kt$600</ID>
     <ID>MagicNumber:PortfolioScreen.kt$800</ID>
     <ID>MagicNumber:QueFondosApiClient.kt$QueFondosApiClient$100.0</ID>
+    <ID>MagicNumber:RefreshPortfolioPricesUseCase.kt$RefreshPortfolioPricesUseCase$100.0</ID>
     <ID>MagicNumber:String.kt$10</ID>
     <ID>MagicNumber:String.kt$12</ID>
     <ID>MagicNumber:String.kt$9</ID>
     <ID>MatchingDeclarationName:NavKeys.kt$Route : NavKey</ID>
     <ID>MatchingDeclarationName:OnboardingContract.kt$OnboardingIntent</ID>
     <ID>MatchingDeclarationName:PortfolioOnboardingContract.kt$PortfolioOnboardingIntent</ID>
-    <ID>MaxLineLength:ErrorBanner.kt$message = "Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente. Error de conexión. Intente nuevamente."</ID>
-    <ID>MaxLineLength:ExtraEtfResponseTest.kt$ExtraEtfResponseTest$val res1 = ExtraEtfResponse(results = listOf(AssetResult(isin = "T1", fondName = "N1", currency = "USD", nav = 1.0, navDate = null, lastQuote = LastQuote(null, null, null, "EUR"), returns = null)))</ID>
-    <ID>MaxLineLength:ExtraEtfResponseTest.kt$ExtraEtfResponseTest$val res2 = ExtraEtfResponse(results = listOf(AssetResult(isin = "T2", fondName = "N2", currency = "USD", nav = 1.0, navDate = null, lastQuote = null, returns = null)))</ID>
-    <ID>MaxLineLength:ExtraEtfResponseTest.kt$ExtraEtfResponseTest$val res3 = ExtraEtfResponse(results = listOf(AssetResult(isin = "T3", fondName = "N3", currency = null, nav = 1.0, navDate = null, lastQuote = null, returns = mapOf("y" to ReturnDetail(1.0, "GBP", yesterdayStr)))))</ID>
-    <ID>MaxLineLength:ExtraEtfResponseTest.kt$ExtraEtfResponseTest$val res4 = ExtraEtfResponse(results = listOf(AssetResult(isin = "T4", fondName = "N4", currency = null, nav = 1.0, navDate = null, lastQuote = null, returns = null)))</ID>
-    <ID>MaxLineLength:FinancialRepositoryImpl.kt$FinancialRepositoryImpl$private suspend</ID>
-    <ID>MaxLineLength:GlobalMarketViewModelTest.kt$GlobalMarketViewModelTest$fun</ID>
-    <ID>MaxLineLength:HistoryInvestmentDetail.kt$((investment.displayPrice * investment.quantity) - (previousMonthInvestment.displayPrice * previousMonthInvestment.quantity)) / (previousMonthInvestment.displayPrice * previousMonthInvestment.quantity) * 100</ID>
-    <ID>MaxLineLength:InvestmentView.kt$InvestmentView$return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|${originalCurrency.code}|$changePercent|$type|$year|$month|${preferredApi?.name}"</ID>
-    <ID>MaxLineLength:OWDialog.kt$description = "Ya conoces como funciona OneWallet. Vamos a borrar estos ejemplos para que puedas empezar a añadir tus activos reales y tomar el control de tus inversiones."</ID>
-    <ID>MaxLineLength:PortfolioDao.kt$PortfolioDao$@Query("SELECT * FROM monthly_portfolio_table WHERE (year, month) = (SELECT year, month FROM monthly_portfolio_table ORDER BY year DESC, month DESC LIMIT 1)")</ID>
-    <ID>MaxLineLength:PortfolioList.kt$val</ID>
-    <ID>MaxLineLength:PortfolioScreen.kt$if</ID>
-    <ID>MaxLineLength:PortfolioScreen.kt$if (item == PortfolioCoachmarks.EDIT_INVESTMENT || item == PortfolioCoachmarks.DELETE_INVESTMENT || item == PortfolioCoachmarks.ADD_INVESTMENT) break</ID>
-    <ID>MaxLineLength:SeedInitialPortfolioUseCaseTest.kt$SeedInitialPortfolioUseCaseTest$coEvery { getInvestmentPriceUseCase(symbol = "BTCEUR", type = InvestmentType.CRYPTO, any(), any(), any(), any()) } returns Result.failure(Exception("Network Error"))</ID>
     <ID>NestedBlockDepth:Button.kt$ButtonPreviewParamsProvider$private fun getAllCombinations(): Sequence&lt;ButtonPreviewParams&gt;</ID>
     <ID>NewLineAtEndOfFile:AlphaVantageApiConfig.kt$com.davidcrespo.onewallet.data.remote.alphaVantage.AlphaVantageApiConfig.kt</ID>
     <ID>NewLineAtEndOfFile:AlphaVantageDataSource.kt$com.davidcrespo.onewallet.data.remote.alphaVantage.AlphaVantageDataSource.kt</ID>

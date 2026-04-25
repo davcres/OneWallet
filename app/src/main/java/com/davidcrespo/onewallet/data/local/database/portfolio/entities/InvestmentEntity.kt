@@ -18,10 +18,11 @@ data class InvestmentEntity(
     val type: InvestmentType,
     val year: Int,
     val month: Int,
-    val preferredApi: DataSource? = null
+    val preferredApi: DataSource? = null,
+    val alertThreshold: Double? = null
 ) {
     override fun toString(): String {
-        return "$symbol|$name|$quantity|$price|$previousPrice|${currency.code}|$type|$year|$month|${preferredApi?.name}"
+        return "$symbol|$name|$quantity|$price|$previousPrice|${currency.code}|$type|$year|$month|${preferredApi?.name}|$alertThreshold"
     }
 }
 
@@ -35,7 +36,8 @@ fun Investment.toEntity(): InvestmentEntity = InvestmentEntity(
     type = type,
     year = year,
     month = month,
-    preferredApi = preferredApi
+    preferredApi = preferredApi,
+    alertThreshold = alertThreshold
 )
 
 fun InvestmentEntity.toDomain(): Investment = Investment(
@@ -48,7 +50,8 @@ fun InvestmentEntity.toDomain(): Investment = Investment(
     type = type,
     year = year,
     month = month,
-    preferredApi = preferredApi
+    preferredApi = preferredApi,
+    alertThreshold = alertThreshold
 )
 
 fun String.toInvestmentEntity(): InvestmentEntity {
@@ -63,6 +66,7 @@ fun String.toInvestmentEntity(): InvestmentEntity {
         type = InvestmentType.valueOf(parts[6]),
         year = parts[7].toIntOrNull() ?: 0,
         month = parts[8].toIntOrNull() ?: 0,
-        preferredApi = parts.getOrNull(9)?.let { runCatching { DataSource.valueOf(it) }.getOrNull() }
+        preferredApi = parts.getOrNull(9)?.let { runCatching { DataSource.valueOf(it) }.getOrNull() },
+        alertThreshold = parts.getOrNull(10)?.toDoubleOrNull()
     )
 }

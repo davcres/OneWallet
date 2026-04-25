@@ -44,7 +44,7 @@ sealed interface PortfolioIntent {
     data class ToggleTheme(val themeMode: ThemeMode) : PortfolioIntent
 
     data class EditQuantity(val item: InvestmentView?) : PortfolioIntent
-    data class UpdateQuantity(val item: InvestmentView, val quantity: Double) : PortfolioIntent
+    data class UpdateQuantity(val item: InvestmentView, val quantity: Double, val alertThreshold: Double?) : PortfolioIntent
     data class RemoveItem(val item: InvestmentView) : PortfolioIntent
     data class ShowDeleteDialog(val item: InvestmentView?) : PortfolioIntent
 

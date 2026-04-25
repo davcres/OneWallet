@@ -22,7 +22,8 @@ class InvestmentMappingTest {
             type = InvestmentType.STOCK,
             year = 2026,
             month = 3,
-            preferredApi = DataSource.YAHOO_FINANCE
+            preferredApi = DataSource.YAHOO_FINANCE,
+            alertThreshold = 5.0
         )
 
         // When
@@ -39,6 +40,7 @@ class InvestmentMappingTest {
         assertEquals(entity.year, domain.year)
         assertEquals(entity.month, domain.month)
         assertEquals(entity.preferredApi, domain.preferredApi)
+        assertEquals(entity.alertThreshold, domain.alertThreshold)
     }
 
     @Test
@@ -54,7 +56,8 @@ class InvestmentMappingTest {
             type = InvestmentType.CRYPTO,
             year = 2026,
             month = 3,
-            preferredApi = DataSource.BINANCE
+            preferredApi = DataSource.BINANCE,
+            alertThreshold = null
         )
 
         // When
@@ -63,6 +66,7 @@ class InvestmentMappingTest {
         // Then
         assertEquals(0.0, domain.previousPrice, 0.0)
         assertEquals(DataSource.BINANCE, domain.preferredApi)
+        assertEquals(null, domain.alertThreshold)
     }
 
     @Test
@@ -78,7 +82,8 @@ class InvestmentMappingTest {
             type = InvestmentType.CRYPTO,
             year = 2026,
             month = 3,
-            preferredApi = DataSource.BINANCE
+            preferredApi = DataSource.BINANCE,
+            alertThreshold = 2.5
         )
 
         // When
@@ -95,6 +100,7 @@ class InvestmentMappingTest {
         assertEquals(domain.year, entity.year)
         assertEquals(domain.month, entity.month)
         assertEquals(domain.preferredApi, entity.preferredApi)
+        assertEquals(domain.alertThreshold, entity.alertThreshold)
     }
 
     @Test
@@ -110,7 +116,8 @@ class InvestmentMappingTest {
             type = InvestmentType.STOCK,
             year = 2026,
             month = 3,
-            preferredApi = DataSource.FINNHUB
+            preferredApi = DataSource.FINNHUB,
+            alertThreshold = 1.0
         )
         val serialized = originalEntity.toString()
 
@@ -134,7 +141,8 @@ class InvestmentMappingTest {
             type = InvestmentType.CRYPTO,
             year = 2026,
             month = 3,
-            preferredApi = null
+            preferredApi = null,
+            alertThreshold = null
         )
         val serialized = originalEntity.toString()
 
@@ -158,14 +166,15 @@ class InvestmentMappingTest {
             type = InvestmentType.STOCK,
             year = 2026,
             month = 3,
-            preferredApi = DataSource.YAHOO_FINANCE
+            preferredApi = DataSource.YAHOO_FINANCE,
+            alertThreshold = 5.0
         )
 
         // When
         val result = entity.toString()
 
         // Then
-        val expected = "AAPL|Apple Inc|10.0|150.0|145.0|EUR|STOCK|2026|3|YAHOO_FINANCE"
+        val expected = "AAPL|Apple Inc|10.0|150.0|145.0|EUR|STOCK|2026|3|YAHOO_FINANCE|5.0"
         assertEquals(expected, result)
     }
 }

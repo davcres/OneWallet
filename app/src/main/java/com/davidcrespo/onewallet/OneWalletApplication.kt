@@ -2,6 +2,7 @@ package com.davidcrespo.onewallet
 
 import android.app.Application
 import com.davidcrespo.onewallet.di.appModules
+import com.davidcrespo.onewallet.presentation.portfolio.worker.PriceAlertWorker
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
@@ -19,5 +20,6 @@ class OneWalletApplication : Application() {
         }
 
         WidgetsRefreshWorker.enqueuePeriodic(this)
+        PriceAlertWorker.enqueuePeriodic(this)
     }
 }
