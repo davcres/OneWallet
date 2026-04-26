@@ -77,6 +77,7 @@ class PriceAlertWorker(
 
         Result.success()
     }.getOrElse { e ->
+        telemetry.log("Error $e")
         e.printStackTrace()
         Result.retry()
     }
