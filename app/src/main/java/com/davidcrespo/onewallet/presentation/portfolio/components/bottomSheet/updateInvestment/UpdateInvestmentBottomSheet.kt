@@ -49,18 +49,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.core.content.ContextCompat
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.core.composables.Button
 import com.davidcrespo.onewallet.core.composables.CopiableText
@@ -333,15 +334,45 @@ private fun Form(
     onEditInvestment: (newQuantity: Double, alertThreshold: Double?) -> Unit,
     onError: (String) -> Unit
 ) {
-    var quantity by remember { mutableStateOf(investment.quantity.toString().replace('.', ',') ?: "") }
-    var threshold by remember { mutableStateOf(investment.alertThreshold?.toString()?.replace('.', ',') ?: "") }
+    val initialQuantityValue = investment.quantity.toString()
+    val initialQuantityPlaceholder = initialQuantityValue.takeIf { it.isNotEmpty() } ?: "0.0"
+    var quantity by remember { mutableStateOf("") }
+
+    val initialThresholdValue = investment.alertThreshold?.toString().orEmpty()
+    val thresholdPlaceholder = initialThresholdValue.takeIf { it.isNotEmpty() } ?: stringResource(R.string.alert_threshold_placeholder)
+    var threshold by remember { mutableStateOf("") }
+    
     var notificationsEnabled by remember { mutableStateOf(investment.alertThreshold != null) }
     val newPrice = investment.displayPrice * quantity.normalizeDouble()
 
     val context = LocalContext.current
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { _ -> }
+    ) { isGranted ->
+        if (isGranted) {
+            notificationsEnabled = true
+        } else {
+            notificationsEnabled = false
+        }
+    }
+
+    val requestNotificationsPermissionIfNeeded = {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val isGranted = ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+
+            if (!isGranted) {
+                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    val enableNotifications = {
+        notificationsEnabled = true
+        requestNotificationsPermissionIfNeeded()
+    }
 
     Column {
         Text(
@@ -364,7 +395,7 @@ private fun Form(
                 }
             },
             leadingIcon = if (investment.type.isMarket()) Icons.Outlined.PieChartOutline else investment.originalCurrency.icon,
-            placeholder = "0.0",
+            placeholder = initialQuantityPlaceholder,
             cornerRadius = 16.dp,
             hasClearIcon = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -421,15 +452,9 @@ private fun Form(
                             checked = notificationsEnabled,
                             onCheckedChange = { isEnabled ->
                                 notificationsEnabled = isEnabled
-                                if (isEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                    val isGranted = ContextCompat.checkSelfPermission(
-                                        context,
-                                        Manifest.permission.POST_NOTIFICATIONS
-                                    ) == PackageManager.PERMISSION_GRANTED
 
-                                    if (!isGranted) {
-                                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                                    }
+                                if (isEnabled) {
+                                    requestNotificationsPermissionIfNeeded()
                                 }
                             },
                             colors = SwitchDefaults.colors(
@@ -465,13 +490,18 @@ private fun Form(
                                     threshold = normalized
                                 }
                             },
-                            enabled = notificationsEnabled,
-                            placeholder = stringResource(R.string.alert_threshold_placeholder),
+                            placeholder = thresholdPlaceholder,
                             cornerRadius = 16.dp,
                             trailingIcon = Icons.Default.Percent,
                             hasClearIcon = false,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier
+                                .weight(1f)
+                                .onFocusChanged { focusState ->
+                                    if (focusState.isFocused && !notificationsEnabled) {
+                                        enableNotifications()
+                                    }
+                                }
                         )
                     }
                 }
@@ -540,27 +570,53 @@ private fun Form(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            val normalizedQuantity = quantity.normalizeDouble()
-            val normalizedThreshold = threshold.normalizeDouble().takeIf { it > 0 }
+            val normalizedQuantity = quantity
+                .takeIf { it.isNotBlank() }
+                ?.normalizeDouble()
+                ?: initialQuantityValue.normalizeDouble()
+
+            val normalizedThreshold = threshold
+                .takeIf { it.isNotBlank() }
+                ?.normalizeDouble()
+                ?: initialThresholdValue
+                    .takeIf { it.isNotBlank() }
+                    ?.normalizeDouble()
+
+            val isValidQuantity = normalizedQuantity >= 0
+            val isValidThreshold = !notificationsEnabled ||
+                    normalizedThreshold == null ||
+                    normalizedThreshold > 0
+
             val errorInvalidQuantity = stringResource(R.string.error_quantity_empty)
+            val errorInvalidThreshold = stringResource(R.string.error_alert_threshold_invalid)
 
             Button(
                 text = stringResource(R.string.update_quantity_action),
                 contentDescription = stringResource(R.string.update_quantity_action),
                 style = ButtonStyle.PRIMARY,
                 onClick = {
-                    if (normalizedQuantity >= 0 && (!notificationsEnabled || normalizedThreshold != null)) {
-                        onEditInvestment(
-                            normalizedQuantity,
-                            if (notificationsEnabled) normalizedThreshold else null
-                        )
-                    } else {
-                        onError(errorInvalidQuantity)
+                    when {
+                        !isValidQuantity -> {
+                            onError(errorInvalidQuantity)
+                        }
+
+                        !isValidThreshold -> {
+                            onError(errorInvalidThreshold)
+                        }
+
+                        else -> {
+                            onEditInvestment(
+                                normalizedQuantity,
+                                if (notificationsEnabled) normalizedThreshold else null
+                            )
+                        }
                     }
                 },
                 modifier = Modifier
                     .weight(1f)
-                    .applyIf(normalizedQuantity < 0) { shakeClickEffect() }
+                    .applyIf(!isValidQuantity || !isValidThreshold) {
+                        shakeClickEffect()
+                    }
             )
         }
     }
