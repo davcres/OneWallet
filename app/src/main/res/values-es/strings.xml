@@ -82,6 +82,7 @@
     <string name="estimated_new_value">Nuevo valor estimado</string>
     <string name="cancel_edit_investment_cd">Pulsa para no editar la cantidad</string>
     <string name="error_quantity_empty">Introduce una cantidad válida.</string>
+    <string name="error_alert_threshold_invalid">El porcentaje de notificación debe ser mayor que 0</string>
     <string name="delete_action">Eliminar</string>
     <string name="delete_investment_message">¿Estás seguro de que quieres eliminar esta inversión de tu cartera?</string>
 

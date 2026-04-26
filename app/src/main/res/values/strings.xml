@@ -82,6 +82,7 @@
     <string name="estimated_new_value">Estimated new value</string>
     <string name="cancel_edit_investment_cd">Tap to not edit the quantity</string>
     <string name="error_quantity_empty">Enter a valid amount.</string>
+    <string name="error_alert_threshold_invalid">The notification percentage must be greater than 0</string>
     <string name="delete_action">Delete</string>
     <string name="delete_investment_message">Are you sure you want to delete this investment from your portfolio?</string>
 
