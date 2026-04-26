@@ -14,9 +14,9 @@ data class CryptoPriceResponse(
     val prevClosePrice: String // Close price
 )
 
-fun CryptoPriceResponse.toInvestDto() = InvestmentDto(
+fun CryptoPriceResponse.toInvestDto(name: String = "") = InvestmentDto(
     symbol = symbol,
-    name = "",
+    name = name.ifBlank { symbol },
     quantity = 0.0,
     price = lastPrice.toDoubleOrNull() ?: 0.0,
     previousPrice = prevClosePrice.toDoubleOrNull() ?: 0.0,
