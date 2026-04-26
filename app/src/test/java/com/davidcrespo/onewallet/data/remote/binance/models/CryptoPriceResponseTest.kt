@@ -23,7 +23,7 @@ class CryptoPriceResponseTest {
 
         // Then
         assertEquals("BTCEUR", dto.symbol)
-        assertEquals("", dto.name)
+        assertEquals("BTCEUR", dto.name)
         assertEquals(60000.50, dto.price, 0.0)
         assertEquals(59000.20, dto.previousPrice, 0.0)
         assertEquals(CurrencyDto(EUR), dto.currency)
@@ -63,6 +63,23 @@ class CryptoPriceResponseTest {
 
         // Then
         assertEquals(CurrencyDto(USD), dto.currency)
+    }
+
+    @Test
+    fun `toInvestDto usa el nombre proporcionado si no esta en blanco`() {
+        // Given
+        val response = CryptoPriceResponse(
+            symbol = "BTCEUR",
+            lastPrice = "60000.50",
+            prevClosePrice = "59000.20"
+        )
+
+        // When
+        val dto = response.toInvestDto("Bitcoin")
+
+        // Then
+        assertEquals("BTCEUR", dto.symbol)
+        assertEquals("Bitcoin", dto.name)
     }
 
     @Test

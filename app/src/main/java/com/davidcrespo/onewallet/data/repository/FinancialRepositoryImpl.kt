@@ -75,7 +75,7 @@ class FinancialRepositoryImpl(
         return withContext(dispatcher.io) {
             when (type) {
                 InvestmentType.STOCK -> getStockPrice(symbol, name, marketType, investmentCurrency, preferredApi)
-                InvestmentType.CRYPTO -> getCryptoPrice(symbol)
+                InvestmentType.CRYPTO -> getCryptoPrice(symbol, name)
                 InvestmentType.FUND -> getFundPrice(symbol, preferredApi)
                 InvestmentType.ETF -> getEtfPrice(symbol, selectedCurrency, preferredApi)
                 else -> Result.failure(IllegalArgumentException("Invalid investment type: $type"))
@@ -83,13 +83,13 @@ class FinancialRepositoryImpl(
         }
     }
 
-    private suspend fun getCryptoPrice(symbol: String): Result<Investment> {
+    private suspend fun getCryptoPrice(symbol: String, name: String): Result<Investment> {
         return runCatching {
             symbolCache.getCachedInvestmentIfValid(symbol, cachePolicy.cryptoHours)
                 ?.toDomain()
                 ?.let { return@runCatching it }
 
-            tryFetch(symbol, DataSource.BINANCE) { binanceDataSource.getCryptoPrice(symbol) }
+            tryFetch(symbol, DataSource.BINANCE) { binanceDataSource.getCryptoPrice(symbol, name) }
                 ?: throw IllegalStateException("No se pudo obtener el precio de $symbol")
         }
     }

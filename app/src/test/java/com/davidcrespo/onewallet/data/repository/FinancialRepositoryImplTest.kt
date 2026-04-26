@@ -134,15 +134,43 @@ class FinancialRepositoryImplTest {
             month = 3
         )
         every { symbolCache.getCachedInvestmentIfValid(any(), any()) } returns null
-        coEvery { binanceDataSource.getCryptoPrice(symbol) } returns dto
+        coEvery { binanceDataSource.getCryptoPrice(symbol, any()) } returns dto
+
+        // When
+        val result = repository.getInvestmentPrice(symbol, InvestmentType.CRYPTO, "Bitcoin", null, null, null)
+
+        // Then
+        assertTrue(result.isSuccess)
+        assertEquals(61000.0, result.getOrNull()?.price)
+        assertEquals("Bitcoin", result.getOrNull()?.name)
+        coVerify(exactly = 1) { symbolCache.setCachedInvestment(any()) }
+    }
+
+    @Test
+    fun `cuando se descarga crypto sin nombre, usa el symbol como nombre`() = runTest(mainDispatcherExtension.testDispatcher) {
+        // Given
+        val symbol = "BTCEUR"
+        // DTO simulating what BinanceDataSource would return if name is empty
+        val dto = InvestmentDto(
+            symbol = symbol,
+            name = symbol, // Result of .ifBlank { symbol }
+            quantity = 0.0,
+            price = 61000.0,
+            previousPrice = 60000.0,
+            currency = CurrencyDto(EUR),
+            type = InvestmentType.CRYPTO,
+            year = 0,
+            month = 0
+        )
+        every { symbolCache.getCachedInvestmentIfValid(any(), any()) } returns null
+        coEvery { binanceDataSource.getCryptoPrice(symbol, "") } returns dto
 
         // When
         val result = repository.getInvestmentPrice(symbol, InvestmentType.CRYPTO, "", null, null, null)
 
         // Then
         assertTrue(result.isSuccess)
-        assertEquals(61000.0, result.getOrNull()?.price)
-        coVerify(exactly = 1) { symbolCache.setCachedInvestment(any()) }
+        assertEquals(symbol, result.getOrNull()?.name)
     }
 
     @Test

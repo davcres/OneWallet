@@ -10,7 +10,7 @@ class BinanceDataSource(private val binanceApiClient: BinanceApiClient) {
         return binanceApiClient.getCryptoSymbols()
     }
 
-    suspend fun getCryptoPrice(symbol: String): InvestmentDto {
-        return binanceApiClient.getCryptoPrice(symbol).toInvestDto()
+    suspend fun getCryptoPrice(symbol: String, name: String = ""): InvestmentDto {
+        return binanceApiClient.getCryptoPrice(symbol).toInvestDto(name)
     }
 }
