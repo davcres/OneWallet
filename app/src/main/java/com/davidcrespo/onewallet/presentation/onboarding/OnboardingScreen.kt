@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.presentation.onboarding
 
+import android.os.Build
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -10,11 +11,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -22,14 +26,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -135,6 +140,11 @@ private fun OnboardingScreen(
                 )
             }
         },
+        contentWindowInsets = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            WindowInsets(0, 0, 0, 0)
+        } else {
+            ScaffoldDefaults.contentWindowInsets
+        },
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
         HorizontalPager(
@@ -155,7 +165,8 @@ fun OnboardingContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp),
+            .statusBarsPadding()
+            .padding(horizontal = 32.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -163,8 +174,11 @@ fun OnboardingContent(
             painter = painterResource(page.icon),
             contentDescription = null,
             modifier = Modifier
+                .weight(1f, fill = false)
                 .fillMaxWidth(0.95f)
-                .clip(RoundedCornerShape(50.dp))
+                .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                .clip(RoundedCornerShape(20)),
+            contentScale = ContentScale.Fit
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -175,7 +189,7 @@ fun OnboardingContent(
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 8.dp)
         )
 
         Text(
@@ -183,7 +197,7 @@ fun OnboardingContent(
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
-            lineHeight = 24.sp
+            lineHeight = 22.sp
         )
     }
 }
