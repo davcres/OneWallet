@@ -35,7 +35,7 @@ class PriceAlertWorker(
     private val alertNotificationRepository: PriceAlertNotificationRepository by inject()
 
     override suspend fun doWork(): Result = runCatching {
-        telemetry.log("alerts")
+        telemetry.log("${Build.MODEL} alerts")
 
         // 0) Check if it has notifications configured
         if (!canSendNotifications()) {
