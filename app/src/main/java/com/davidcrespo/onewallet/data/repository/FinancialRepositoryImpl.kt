@@ -212,7 +212,7 @@ class FinancialRepositoryImpl(
                 val response = yahooFinanceDataSource.getStocksSymbolsByQuery(query)
                 telemetry.log("(Yahoo Finance) get symbols from remote $query - ${response.size}")
 
-                if (false&&response.isNotEmpty()) {
+                if (response.isNotEmpty()) {
                     Result.success(response.map { it.toDomain() })
                 } else {
                     val response = alphaVantageDataSource.getStocksSymbolsByQuery(query)
