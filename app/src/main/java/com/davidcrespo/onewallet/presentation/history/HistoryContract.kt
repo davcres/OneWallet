@@ -15,7 +15,10 @@ data class HistoryUiState(
     val selectedInvestment: InvestmentView? = null,
     val selectedPreviousInvestment: InvestmentView? = null,
     val selectedCurrency: CurrencyView = CurrencyView.get(EUR),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val showFilePicker: Boolean = false,
+    val error: String? = null,
+    val successMessage: String? = null
 )
 
 sealed interface HistoryIntent {
@@ -25,4 +28,8 @@ sealed interface HistoryIntent {
     data class SelectInvestment(val investment: InvestmentView) : HistoryIntent
     data object DismissBottomSheet : HistoryIntent
     data object DismissInvestmentDetail : HistoryIntent
+    data object ImportHistory : HistoryIntent
+    data object ExportHistory : HistoryIntent
+    data class OnFileSelected(val uri: String) : HistoryIntent
+    data object ClearMessages : HistoryIntent
 }

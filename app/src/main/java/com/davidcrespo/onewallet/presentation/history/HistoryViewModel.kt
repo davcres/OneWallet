@@ -3,8 +3,11 @@ package com.davidcrespo.onewallet.presentation.history
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davidcrespo.onewallet.core.extensions.orEmpty
+import com.davidcrespo.onewallet.domain.repository.FileRepository
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
+import com.davidcrespo.onewallet.domain.usecase.history.ExportHistoryUseCase
 import com.davidcrespo.onewallet.domain.usecase.history.GetMonthlyHistoryUseCase
+import com.davidcrespo.onewallet.domain.usecase.history.ImportHistoryUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toUI
@@ -21,7 +24,10 @@ class HistoryViewModel(
     private val getMonthlyHistoryUseCase: GetMonthlyHistoryUseCase,
     private val financialRepository: FinancialRepository,
     private val getCurrencyRateUseCase: GetCurrencyRateUseCase,
-    private val currencyConverter: CurrencyConverter
+    private val currencyConverter: CurrencyConverter,
+    private val importHistoryUseCase: ImportHistoryUseCase,
+    private val exportHistoryUseCase: ExportHistoryUseCase,
+    private val fileRepository: FileRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HistoryUiState())
@@ -38,6 +44,41 @@ class HistoryViewModel(
             is HistoryIntent.SelectInvestment -> selectInvestment(intent.investment)
             is HistoryIntent.DismissBottomSheet -> dismissBottomSheet()
             is HistoryIntent.DismissInvestmentDetail -> dismissInvestmentDetail()
+            is HistoryIntent.ImportHistory -> _uiState.update { it.copy(showFilePicker = true) }
+            is HistoryIntent.ExportHistory -> exportHistory()
+            is HistoryIntent.OnFileSelected -> importHistory(intent.uri)
+            is HistoryIntent.ClearMessages -> _uiState.update { it.copy(error = null, successMessage = null) }
+        }
+    }
+
+    private fun importHistory(uri: String) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, showFilePicker = false) }
+            fileRepository.readFromUri(uri).onSuccess { content ->
+                importHistoryUseCase(content).onSuccess {
+                    getMonthlyHistory()
+                    _uiState.update { it.copy(successMessage = "History imported successfully", isLoading = false) }
+                }.onFailure {
+                    _uiState.update { it.copy(error = "Error importing history", isLoading = false) }
+                }
+            }.onFailure {
+                _uiState.update { it.copy(error = "Error reading file", isLoading = false) }
+            }
+        }
+    }
+
+    private fun exportHistory() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            exportHistoryUseCase().onSuccess { content ->
+                fileRepository.saveToDownloads("onewallet_history.csv", content).onSuccess {
+                    _uiState.update { it.copy(successMessage = "History saved to Downloads", isLoading = false) }
+                }.onFailure {
+                    _uiState.update { it.copy(error = "Error saving file", isLoading = false) }
+                }
+            }.onFailure {
+                _uiState.update { it.copy(error = "Error exporting history", isLoading = false) }
+            }
         }
     }
 

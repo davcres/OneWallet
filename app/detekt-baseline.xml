@@ -44,6 +44,8 @@
     <ID>MagicNumber:HistoryMonthCard.kt$100</ID>
     <ID>MagicNumber:HistoryMonthCard.kt$5000</ID>
     <ID>MagicNumber:HistoryMonthDetailBottomSheet.kt$0.80f</ID>
+    <ID>MagicNumber:ImportHistoryUseCase.kt$ImportHistoryUseCase$5</ID>
+    <ID>MagicNumber:ImportHistoryUseCase.kt$ImportHistoryUseCase$6</ID>
     <ID>MagicNumber:InvestmentEntity.kt$10</ID>
     <ID>MagicNumber:InvestmentEntity.kt$5</ID>
     <ID>MagicNumber:InvestmentEntity.kt$6</ID>
@@ -184,6 +186,9 @@
     <ID>ReturnCount:GlobalMarketRegion.kt$GlobalMarketRegion.Companion$fun from(value: String?): GlobalMarketRegion</ID>
     <ID>ReturnCount:String.kt$fun String.isValidIsin(): Boolean</ID>
     <ID>SpreadOperator:PortfolioScreen.kt$(*currentTabBatch.toTypedArray())</ID>
+    <ID>TooGenericExceptionThrown:FileRepositoryImpl.kt$FileRepositoryImpl$throw Exception("Failed to create MediaStore entry")</ID>
+    <ID>TooGenericExceptionThrown:FileRepositoryImpl.kt$FileRepositoryImpl$throw Exception("Failed to open input stream")</ID>
+    <ID>TooGenericExceptionThrown:FileRepositoryImpl.kt$FileRepositoryImpl$throw Exception("Failed to open output stream")</ID>
     <ID>TooManyFunctions:PortfolioViewModel.kt$PortfolioViewModel : ViewModel</ID>
     <ID>UnusedParameter:ComicBubble.kt$onDismiss: () -&gt; Unit</ID>
     <ID>UnusedParameter:Double.kt$decimals: Int = 2</ID>

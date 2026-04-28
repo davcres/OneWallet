@@ -2,7 +2,9 @@ package com.davidcrespo.onewallet.di
 
 import com.davidcrespo.onewallet.domain.usecase.appRoot.GetThemeUseCase
 import com.davidcrespo.onewallet.domain.usecase.appRoot.SetThemeUseCase
+import com.davidcrespo.onewallet.domain.usecase.history.ExportHistoryUseCase
 import com.davidcrespo.onewallet.domain.usecase.history.GetMonthlyHistoryUseCase
+import com.davidcrespo.onewallet.domain.usecase.history.ImportHistoryUseCase
 import com.davidcrespo.onewallet.domain.usecase.market.AddMarketAssetToPortfolioUseCase
 import com.davidcrespo.onewallet.domain.usecase.market.GetGlobalMarketAssetsUseCase
 import com.davidcrespo.onewallet.domain.usecase.market.GetUSMarketAssetsUseCase
@@ -33,6 +35,8 @@ val useCaseModule = module {
 
     single { SaveMonthlyPortfolioUseCase(get()) }
     single { GetMonthlyHistoryUseCase(get()) }
+    single { ImportHistoryUseCase(get()) }
+    single { ExportHistoryUseCase(get()) }
 
     single { GetThemeUseCase(get()) }
     single { SetThemeUseCase(get()) }
