@@ -6,8 +6,11 @@ import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.USD
+import com.davidcrespo.onewallet.domain.repository.FileRepository
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
+import com.davidcrespo.onewallet.domain.usecase.history.ExportHistoryUseCase
 import com.davidcrespo.onewallet.domain.usecase.history.GetMonthlyHistoryUseCase
+import com.davidcrespo.onewallet.domain.usecase.history.ImportHistoryUseCase
 import com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase
 import com.davidcrespo.onewallet.presentation.models.toUI
 import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
@@ -23,6 +26,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
@@ -36,6 +40,9 @@ class HistoryViewModelTest {
     private val getMonthlyHistoryUseCase = mockk<GetMonthlyHistoryUseCase>(relaxed = true)
     private val financialRepository = mockk<FinancialRepository>(relaxed = true)
     private val getCurrencyRateUseCase = mockk<GetCurrencyRateUseCase>(relaxed = true)
+    private val importHistoryUseCase = mockk<ImportHistoryUseCase>(relaxed = true)
+    private val exportHistoryUseCase = mockk<ExportHistoryUseCase>(relaxed = true)
+    private val fileRepository = mockk<FileRepository>(relaxed = true)
     private val currencyConverter = CurrencyConverter()
 
     private lateinit var viewModel: HistoryViewModel
@@ -51,7 +58,10 @@ class HistoryViewModelTest {
             getMonthlyHistoryUseCase,
             financialRepository,
             getCurrencyRateUseCase,
-            currencyConverter
+            currencyConverter,
+            importHistoryUseCase,
+            exportHistoryUseCase,
+            fileRepository
         )
     }
 
@@ -231,6 +241,62 @@ class HistoryViewModelTest {
             viewModel.handleIntent(HistoryIntent.DismissInvestmentDetail)
             state = awaitItem()
             assertNull(state.selectedInvestment)
+        }
+    }
+
+    @Test
+    fun `cuando se pide importar, se muestra el selector de archivos`() = runTest(mainDispatcherExtension.testDispatcher) {
+        createViewModel()
+        viewModel.handleIntent(HistoryIntent.ImportHistory)
+        
+        viewModel.uiState.test {
+            val state = awaitItem()
+            assertTrue(state.showFilePicker)
+        }
+    }
+
+    @Test
+    fun `cuando se selecciona un archivo, se importa y se recarga la historia`() = runTest(mainDispatcherExtension.testDispatcher) {
+        coEvery { fileRepository.readFromUri(any()) } returns Result.success("content")
+        coEvery { importHistoryUseCase(any()) } returns Result.success(Unit)
+        coEvery { getMonthlyHistoryUseCase() } returns Result.success(listOf())
+        
+        createViewModel()
+        
+        viewModel.uiState.test {
+            assertEquals(HistoryUiState(), awaitItem())
+            viewModel.handleIntent(HistoryIntent.OnFileSelected("uri"))
+            
+            // Should see: isLoading=true -> getMonthlyHistory updates -> successMessage updates
+            var state = awaitItem()
+            while (state.successMessage == null) {
+                state = awaitItem()
+            }
+            
+            assertNotNull(state.successMessage)
+            assertFalse(state.showFilePicker)
+            assertFalse(state.isLoading)
+        }
+    }
+
+    @Test
+    fun `cuando se pide exportar, se genera el CSV y se guarda en Downloads`() = runTest(mainDispatcherExtension.testDispatcher) {
+        coEvery { exportHistoryUseCase() } returns Result.success("csv")
+        coEvery { fileRepository.saveToDownloads(any(), any()) } returns Result.success(Unit)
+        
+        createViewModel()
+        
+        viewModel.uiState.test {
+            assertEquals(HistoryUiState(), awaitItem())
+            viewModel.handleIntent(HistoryIntent.ExportHistory)
+            
+            var state = awaitItem()
+            while (state.successMessage == null) {
+                state = awaitItem()
+            }
+            
+            assertNotNull(state.successMessage)
+            assertFalse(state.isLoading)
         }
     }
 }

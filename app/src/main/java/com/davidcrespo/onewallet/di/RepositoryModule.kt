@@ -10,6 +10,9 @@ import com.davidcrespo.onewallet.domain.repository.OnboardingRepository
 import com.davidcrespo.onewallet.domain.repository.PortfolioRepository
 import com.davidcrespo.onewallet.domain.repository.PriceAlertNotificationRepository
 import com.davidcrespo.onewallet.domain.repository.ThemeRepository
+import com.davidcrespo.onewallet.data.repository.FileRepositoryImpl
+import com.davidcrespo.onewallet.domain.repository.FileRepository
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -22,4 +25,5 @@ val repositoryModule = module {
     single<OnboardingRepository> { OnboardingRepositoryImpl(get()) }
     single<ThemeRepository> { ThemeRepositoryImpl(get()) }
     single<PriceAlertNotificationRepository> { PriceAlertNotificationRepositoryImpl(get()) }
+    single<FileRepository> { FileRepositoryImpl(androidContext(), get()) }
 }

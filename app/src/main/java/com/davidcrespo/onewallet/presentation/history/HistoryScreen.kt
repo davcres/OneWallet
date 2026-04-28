@@ -1,18 +1,31 @@
 package com.davidcrespo.onewallet.presentation.history
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.FileDownload
+import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +33,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.davidcrespo.onewallet.R
+import com.davidcrespo.onewallet.core.composables.Button
+import com.davidcrespo.onewallet.core.composables.auxiliar.ButtonStyle
 import com.davidcrespo.onewallet.core.composables.modifiers.privacyBlur
 import com.davidcrespo.onewallet.core.extensions.orEmpty
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWLoader
@@ -67,6 +83,29 @@ private fun HistoryScreen(
     isBalanceVisible: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let { onAction(HistoryIntent.OnFileSelected(it.toString())) }
+    }
+
+    LaunchedEffect(uiState.showFilePicker) {
+        if (uiState.showFilePicker) {
+            launcher.launch("*/*")
+        }
+    }
+
+    LaunchedEffect(uiState.successMessage, uiState.error) {
+        uiState.successMessage?.let {
+            snackbarHostState.showSnackbar(it)
+            onAction(HistoryIntent.ClearMessages)
+        }
+        uiState.error?.let {
+            snackbarHostState.showSnackbar(it)
+            onAction(HistoryIntent.ClearMessages)
+        }
+    }
+
     val hideBackground =
         uiState.selectedMonthDetail != null ||
                 uiState.selectedInvestment != null
@@ -89,79 +128,112 @@ private fun HistoryScreen(
             .fillMaxSize()
             .privacyBlur(blurRadius)
     ) {
-        when {
-            uiState.isLoading -> {
-                OWLoader(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .align(Alignment.Center)
-                )
-            }
-            else -> {
-                HistoryList(
-                    items = uiState.history,
-                    currency = uiState.selectedCurrency,
-                    onClick = {
-                        onAction(
-                            HistoryIntent.SelectMonth(
-                                it.first().year,
-                                it.first().month
-                            )
-                        )
-                    },
-                    isBalanceVisible = isBalanceVisible,
-                    modifier = Modifier.enableCoachMark(
-                        key = PortfolioCoachmarks.HISTORY_LIST,
-                        toolTipPlacement = ToolTipPlacement.Top,
-                        tooltip = {
-                            Balloon(
-                                arrow = Arrow.Bottom(),
-                                modifier = Modifier.widthIn(max = 200.dp),
-                                bgColor = MaterialTheme.colorScheme.primaryContainer,
-                                cornerRadius = 16.dp,
-                                padding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
-                            ) {
-                                Text(
-                                    text = stringResource(PortfolioCoachmarks.HISTORY_LIST.tooltip),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        },
-                        coachMarkScope = LocalCoachMarkScope.current
-                    )
+        Column(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    text = stringResource(R.string.import_history),
+                    contentDescription = stringResource(R.string.import_history),
+                    style = ButtonStyle.SECONDARY,
+                    onClick = { onAction(HistoryIntent.ImportHistory) },
+                    leadingIcon = Icons.Outlined.FileUpload,
+                    modifier = Modifier.weight(1f)
                 )
 
-                if (hideBackground) {
-                    Box(
+                Button(
+                    text = stringResource(R.string.export_history),
+                    contentDescription = stringResource(R.string.export_history),
+                    style = ButtonStyle.SECONDARY,
+                    onClick = { onAction(HistoryIntent.ExportHistory) },
+                    leadingIcon = Icons.Outlined.FileDownload,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            when {
+                uiState.isLoading -> {
+                    OWLoader(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.Black.copy(alpha = overlayAlpha))
                     )
                 }
-
-                HistoryMonthDetailBottomSheet(
-                    investments = uiState.selectedMonthDetail.orEmpty(),
-                    previousInvestments = uiState.selectedPreviousMonth.orEmpty(),
-                    currency = uiState.selectedCurrency,
-                    visible = uiState.selectedMonthDetail != null,
-                    onClickInvestment = { onAction(HistoryIntent.SelectInvestment(it)) },
-                    onDismiss = { onAction(HistoryIntent.DismissBottomSheet) },
-                    hideBackground = uiState.selectedInvestment != null,
-                    isBalanceVisible = isBalanceVisible
-                )
-
-                uiState.selectedInvestment?.let {
-                    HistoryInvestmentDetailBottomSheet(
-                        visible = true,
-                        investment = it,
-                        previousMonthInvestment = uiState.selectedPreviousInvestment,
+                else -> {
+                    HistoryList(
+                        items = uiState.history,
                         currency = uiState.selectedCurrency,
-                        onDismiss = { onAction(HistoryIntent.DismissInvestmentDetail) }
+                        onClick = {
+                            onAction(
+                                HistoryIntent.SelectMonth(
+                                    it.first().year,
+                                    it.first().month
+                                )
+                            )
+                        },
+                        isBalanceVisible = isBalanceVisible,
+                        modifier = Modifier
+                            .weight(1f)
+                            .enableCoachMark(
+                                key = PortfolioCoachmarks.HISTORY_LIST,
+                                toolTipPlacement = ToolTipPlacement.Top,
+                                tooltip = {
+                                    Balloon(
+                                        arrow = Arrow.Bottom(),
+                                        modifier = Modifier.widthIn(max = 200.dp),
+                                        bgColor = MaterialTheme.colorScheme.primaryContainer,
+                                        cornerRadius = 16.dp,
+                                        padding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+                                    ) {
+                                        Text(
+                                            text = stringResource(PortfolioCoachmarks.HISTORY_LIST.tooltip),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                },
+                                coachMarkScope = LocalCoachMarkScope.current
+                            )
                     )
                 }
             }
+        }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
+
+        if (hideBackground) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = overlayAlpha))
+            )
+        }
+
+        HistoryMonthDetailBottomSheet(
+            investments = uiState.selectedMonthDetail.orEmpty(),
+            previousInvestments = uiState.selectedPreviousMonth.orEmpty(),
+            currency = uiState.selectedCurrency,
+            visible = uiState.selectedMonthDetail != null,
+            onClickInvestment = { onAction(HistoryIntent.SelectInvestment(it)) },
+            onDismiss = { onAction(HistoryIntent.DismissBottomSheet) },
+            hideBackground = uiState.selectedInvestment != null,
+            isBalanceVisible = isBalanceVisible
+        )
+
+        uiState.selectedInvestment?.let {
+            HistoryInvestmentDetailBottomSheet(
+                visible = true,
+                investment = it,
+                previousMonthInvestment = uiState.selectedPreviousInvestment,
+                currency = uiState.selectedCurrency,
+                onDismiss = { onAction(HistoryIntent.DismissInvestmentDetail) }
+            )
         }
     }
 }
