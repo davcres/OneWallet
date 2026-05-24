@@ -56,6 +56,11 @@
     <string name="asset_bank_subtitle">Efectivo, ahorros y depósitos</string>
     <string name="asset_other">Otro</string>
     <string name="asset_other_subtitle">Cualquier otro tipo de activo que quieras añadir a tu cartera</string>
+    <string name="accessibility_add_investment_fab">Añadir activo de inversión</string>
+    <string name="accessibility_add_investment_expanded">Selector de tipo de inversión abierto</string>
+    <string name="accessibility_add_investment_collapsed">Selector de tipo de inversión cerrado</string>
+    <string name="accessibility_show_add_investment">Mostrar selector para añadir activo de inversión</string>
+    <string name="accessibility_dismiss_add_investment">Cerrar selector para añadir activo de inversión</string>
     <string name="add_bank_title">Añadir Saldo / Depósito</string>
     <string name="bank_name_label">Nombre del Banco / Depósito:</string>
     <string name="bank_name_placeholder">ej: Banco Santander</string>
@@ -181,4 +186,8 @@
     <string name="widget_stocks_description">Sigue la cotización de tus activos en tiempo real</string>
     <string name="asset_prices_title">Precios de Mercado</string>
     <string name="reload_cd">Recargar</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_selected">Seleccionado</string>
+    <string name="accessibility_not_selected">No seleccionado</string>
 </resources>

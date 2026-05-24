@@ -60,7 +60,7 @@ fun OWFloatingActionButton(
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            contentDescription = "Añadir",
+            contentDescription = null,
             modifier = Modifier
                 .size(35.dp)
                 .graphicsLayer {

@@ -56,6 +56,11 @@
     <string name="asset_bank_subtitle">Cash, savings, &amp; deposits</string>
     <string name="asset_other">Other</string>
     <string name="asset_other_subtitle">Any other type of asset you want to add to your portfolio</string>
+    <string name="accessibility_add_investment_fab">Add Investment Asset</string>
+    <string name="accessibility_add_investment_expanded">Investment Type Selector Open</string>
+    <string name="accessibility_add_investment_collapsed">Investment Type Selector Closed</string>
+    <string name="accessibility_show_add_investment">Show Selector to Add Investment Asset</string>
+    <string name="accessibility_dismiss_add_investment">Close Selector to Add Investment Asset</string>
     <string name="add_bank_title">Add Cash / Deposit</string>
     <string name="bank_name_label">Bank / Deposit Name:</string>
     <string name="bank_name_placeholder">e.g. Bank of America</string>
@@ -181,4 +186,8 @@
     <string name="widget_stocks_description">Track your assets in real time</string>
     <string name="asset_prices_title">Market Prices</string>
     <string name="reload_cd">Reload</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_selected">Selected</string>
+    <string name="accessibility_not_selected">Not selected</string>
 </resources>
