@@ -6,6 +6,8 @@ OneWallet es una aplicación Android diseñada para gestionar y realizar el segu
 - 🇬🇧 [English](README.md)
 - 🇪🇸 Español (actual)
 
+🔑 [Configuración Rápida: Claves API](#-configuración-y-claves-api)
+
 ## 🚀 Funcionalidades
 
 - **Multi-Activo y Multi-Divisa**: Soporte para acciones de EE. UU., mercados internacionales, criptomonedas, fondos de inversión, ETFs y depósitos bancarios. Los activos pueden añadirse en cualquier divisa y la app calculará y convertirá automáticamente su valor a tu moneda base preferida (EUR o USD) para una vista de cartera unificada.
