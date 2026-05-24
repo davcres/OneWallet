@@ -1,10 +1,15 @@
 package com.davidcrespo.onewallet.presentation.models
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.res.stringResource
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.domain.model.investment.DataSource
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.domain.model.investment.isMarket
+import java.util.Locale
+import kotlin.math.abs
 
 @Immutable
 data class InvestmentView(
@@ -95,4 +100,79 @@ fun String.toInvestmentView(): InvestmentView {
         preferredApi = parts.getOrNull(12)?.let { runCatching { DataSource.valueOf(it) }.getOrNull() },
         alertThreshold = parts.getOrNull(13)?.toDoubleOrNull()
     )
+}
+
+@Composable
+fun InvestmentView.contentDescription(
+    totalValue: Double,
+    currency: CurrencyView
+): String {
+    val title = this.name.ifEmpty { this.symbol }
+    val formattedTotalValue = formatAccessibilityNumber(totalValue)
+
+    return buildString {
+        append(title)
+        append(", ")
+        append(formattedTotalValue)
+        append(" ")
+        append(currency.symbol)
+
+        if (this@contentDescription.type.isMarket()) {
+            append(", ")
+            append(changePercentDescription(this@contentDescription))
+            append(" ")
+            append(priceDifferenceDescription(this@contentDescription, currency))
+        }
+    }
+}
+
+@Composable
+private fun changePercentDescription(
+    item: InvestmentView
+): String {
+    val formattedChangePercent = formatAccessibilityNumber(abs(item.changePercent))
+
+    return when {
+        item.changePercent > 0.0 -> stringResource(
+            R.string.accessibility_percent_increased_by,
+            formattedChangePercent
+        )
+
+        item.changePercent < 0.0 -> stringResource(
+            R.string.accessibility_percent_decreased_by,
+            formattedChangePercent
+        )
+
+        else -> stringResource(
+            R.string.accessibility_unchanged
+        )
+    }
+}
+
+@Composable
+private fun priceDifferenceDescription(
+    item: InvestmentView,
+    currency: CurrencyView
+): String {
+    val priceDifference = item.displayPrice - item.displayPreviousPrice
+    val formattedDifference = formatAccessibilityNumber(abs(priceDifference))
+
+    return when {
+        priceDifference > 0.0 -> stringResource(
+            R.string.accessibility_price_increased_by,
+            formattedDifference,
+            currency.symbol
+        )
+
+        priceDifference < 0.0 -> stringResource(
+            R.string.accessibility_price_decreased_by,
+            formattedDifference,
+            currency.symbol
+        )
+        else -> ""
+    }
+}
+
+private fun formatAccessibilityNumber(value: Double): String {
+    return "%.2f".format(Locale.getDefault(), value)
 }

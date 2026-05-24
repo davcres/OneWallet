@@ -4,6 +4,7 @@
   <CurrentIssues>
     <ID>ConstructorParameterNaming:SendMessageRequest.kt$SendMessageRequest$val chat_id: String</ID>
     <ID>CyclomaticComplexMethod:Button.kt$@Composable fun Button( text: String, contentDescription: String, style: ButtonStyle, onClick: () -&gt; Unit, leadingIcon: ImageVector? = null, trailingIcon: ImageVector? = null, enabled: Boolean = true, modifier: Modifier = Modifier, )</ID>
+    <ID>CyclomaticComplexMethod:OWBalance.kt$@Composable fun OWBalance( currency: CurrencyView, balance: Double, previousBalance: Double, isBalanceVisible: Boolean, isExpanded: Boolean, section: SectionType, modifier: Modifier = Modifier, shouldAnimate: Boolean )</ID>
     <ID>CyclomaticComplexMethod:PortfolioScreen.kt$@Composable fun PortfolioRoot( initialTab: PortfolioTabs, navigateToMarket: (isCrypto: Boolean) -&gt; Unit, modifier: Modifier = Modifier, viewModel: PortfolioViewModel = koinViewModel() )</ID>
     <ID>CyclomaticComplexMethod:PortfolioScreen.kt$@Composable private fun PortfolioScreen( uiState: PortfolioUiState, onAction: (PortfolioIntent) -&gt; Unit, modifier: Modifier = Modifier, isInteractionEnabled: Boolean = true )</ID>
     <ID>CyclomaticComplexMethod:PortfolioViewModel.kt$PortfolioViewModel$fun handleIntent(intent: PortfolioIntent)</ID>

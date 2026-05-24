@@ -31,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -92,10 +94,31 @@ fun OWBalance(
     val verticalPadding by animateDpAsState(targetValue = if (isExpanded) 32.dp else 16.dp, label = "padding")
     val fontSize by animateFloatAsState(targetValue = if (isExpanded) sizes.balanceValueExpanded else sizes.balanceValueContracted, label = "fontSize")
 
+    val variance = balance - previousBalance
+    val percentage = if (balance == 0.0 || previousBalance == 0.0) 0.0 else variance / previousBalance * 100
+
+    val balanceDescription = stringResource(R.string.total_balance) + ": " + "%.2f".format(balance) + " " + currency.symbol
+    val trendDescription = if (isExpanded) {
+        val changeDescription = when {
+            percentage > 0.0 -> stringResource(R.string.accessibility_percent_increased_by, "%.2f".format(java.util.Locale.getDefault(), kotlin.math.abs(percentage)))
+            percentage < 0.0 -> stringResource(R.string.accessibility_percent_decreased_by, "%.2f".format(java.util.Locale.getDefault(), kotlin.math.abs(percentage)))
+            else -> stringResource(R.string.accessibility_unchanged)
+        }
+        val diffDescription = when {
+            variance > 0.0 -> stringResource(R.string.accessibility_price_increased_by, "%.2f".format(java.util.Locale.getDefault(), kotlin.math.abs(variance)), currency.symbol)
+            variance < 0.0 -> stringResource(R.string.accessibility_price_decreased_by, "%.2f".format(java.util.Locale.getDefault(), kotlin.math.abs(variance)), currency.symbol)
+            else -> ""
+        }
+        ", $changeDescription $diffDescription"
+    } else ""
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .privacySensitive(hideContent = !isBalanceVisible)
+            .clearAndSetSemantics {
+                contentDescription = balanceDescription + trendDescription
+            }
     ) {
         Column(
             modifier = Modifier
@@ -151,14 +174,6 @@ fun OWBalance(
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            val variance = balance - previousBalance
-                            val percentage =
-                                if (balance == 0.0 || previousBalance == 0.0) {
-                                    0.0
-                                } else {
-                                    variance / previousBalance * 100
-                                }
-
                             val (backgroundColor, prefix) = when {
                                 percentage > 0 -> Pair(
                                     MaterialTheme.colorScheme.primaryContainer,

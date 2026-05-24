@@ -45,8 +45,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
@@ -293,20 +291,6 @@ private fun PortfolioScreen(
 
     Scaffold(
         floatingActionButton = {
-            val fabContentDescription = stringResource(R.string.accessibility_add_investment_fab)
-
-            val fabStateDescription = if (uiState.isAddInvestmentVisible) {
-                stringResource(R.string.accessibility_add_investment_expanded)
-            } else {
-                stringResource(R.string.accessibility_add_investment_collapsed)
-            }
-
-            val fabClickLabel = if (uiState.isAddInvestmentVisible) {
-                stringResource(R.string.accessibility_dismiss_add_investment)
-            } else {
-                stringResource(R.string.accessibility_show_add_investment)
-            }
-
             OWFloatingActionButton(
                 expanded = uiState.isAddInvestmentVisible,
                 onExpandedChange = {
@@ -319,14 +303,6 @@ private fun PortfolioScreen(
                 isPressedForced = isFabPressed,
                 modifier = Modifier
                     .applyIf(uiState.portfolioItems.isEmpty()) { pulse() }
-                    .semantics(mergeDescendants = true) {
-                        contentDescription = fabContentDescription
-                        stateDescription = fabStateDescription
-                        onClick(
-                            label = fabClickLabel,
-                            action = null
-                        )
-                    }
                     .enableCoachMark(
                         key = PortfolioCoachmarks.ADD_INVESTMENT,
                         toolTipPlacement = ToolTipPlacement.Start,

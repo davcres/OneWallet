@@ -147,11 +147,8 @@
     <string-array name="rich_phrases">
         <item>Demasiado dinero para mostrarlo sin gafas de sol.</item>
         <item>A Hacienda le gusta esto.</item>
-        <item>Eres rico, ¿para qué quieres saber si has ganado 5€ más?</item>
-        <item>Con esto te dejan entrar al Época sin hacer cola.</item>
         <item>Seguro que te puedes permitir hacerle un bizum al humilde desarrollador de la app.</item>
         <item>¿Seguro que no has añadido ceros de más? Te dejo un momento para reflexionar.</item>
-        <item>Deja algo para los demás Javito.</item>
     </string-array>
     <string name="your_investments">Tus inversiones</string>
 
@@ -190,4 +187,10 @@
     <!-- Accessibility -->
     <string name="accessibility_selected">Seleccionado</string>
     <string name="accessibility_not_selected">No seleccionado</string>
+    <string name="loading_cd">Cargando</string>
+    <string name="accessibility_percent_increased_by">ha subido %1$s por ciento</string>
+    <string name="accessibility_percent_decreased_by">ha bajado %1$s por ciento</string>
+    <string name="accessibility_price_increased_by">y %1$s %2$s respecto al día anterior</string>
+    <string name="accessibility_price_decreased_by">y %1$s %2$s respecto al día anterior</string>
+    <string name="accessibility_unchanged">no ha cambiado respecto al día anterior</string>
 </resources>

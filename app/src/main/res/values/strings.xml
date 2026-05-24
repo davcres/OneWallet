@@ -147,11 +147,8 @@
     <string-array name="rich_phrases">
         <item>Too much money to look at without sunglasses.</item>
         <item>The IRS likes this.</item>
-        <item>You\'re rich, why care about 5€ more?</item>
-        <item>This gets you VIP access anywhere.</item>
         <item>You can definitely afford a tip for the humble developer.</item>
         <item>Are you sure you didn\'t add too many zeros? Reflect on it.</item>
-        <item>Leave some for the rest of us, Javito.</item>
     </string-array>
     <string name="your_investments">Your investments</string>
 
@@ -190,4 +187,10 @@
     <!-- Accessibility -->
     <string name="accessibility_selected">Selected</string>
     <string name="accessibility_not_selected">Not selected</string>
+    <string name="loading_cd">Loading</string>
+    <string name="accessibility_percent_increased_by">has increased by %1$s percent</string>
+    <string name="accessibility_percent_decreased_by">has decreased by %1$s percent</string>
+    <string name="accessibility_price_increased_by">and %1$s %2$s compared to the previous day</string>
+    <string name="accessibility_price_decreased_by">and %1$s %2$s compared to the previous day</string>
+    <string name="accessibility_unchanged">has not changed compared to the previous day</string>
 </resources>
