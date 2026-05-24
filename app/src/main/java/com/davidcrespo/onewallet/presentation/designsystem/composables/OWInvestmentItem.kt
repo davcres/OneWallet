@@ -25,6 +25,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +46,7 @@ import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import com.davidcrespo.onewallet.presentation.models.contentDescription
 
 @Composable
 fun OWInvestmentItem(
@@ -55,11 +60,21 @@ fun OWInvestmentItem(
     modifier: Modifier = Modifier,
     isPressed: Boolean = false
 ) {
+    val totalValue = when (section) {
+        SectionType.PORTFOLIO, SectionType.HISTORY -> item.quantity * item.displayPrice
+        SectionType.PRICES, SectionType.ALLOCATION -> item.displayPrice
+    }
+
+    val itemContentDescription = item.contentDescription(totalValue, currency)
+
     Card(
         modifier = modifier
             .onGloballyPositioned { onGloballyPositioned(it) }
             .fillMaxWidth()
-            .bounceClick(isPressed),
+            .bounceClick(isPressed)
+            .clearAndSetSemantics {
+                contentDescription = itemContentDescription
+            },
         shape = CircleShape,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.onTertiaryContainer),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -118,10 +133,6 @@ fun OWInvestmentItem(
             ) {
                 Column(horizontalAlignment = Alignment.End) {
                     val showPercentage = item.type.isMarket()
-                    val totalValue = when (section) {
-                        SectionType.PORTFOLIO, SectionType.HISTORY -> item.quantity * item.displayPrice
-                        SectionType.PRICES, SectionType.ALLOCATION -> item.displayPrice
-                    }
 
                     if (showPercentage) {
                         Spacer(modifier = Modifier.height(4.dp))
@@ -163,7 +174,9 @@ fun OWInvestmentItem(
 private fun GhostContent() {
     // Ghost Column to have same height in all items
     Column(
-        modifier = Modifier.alpha(0f)
+        modifier = Modifier
+            .alpha(0f)
+            .semantics { hideFromAccessibility() }
     ) {
         Spacer(modifier = Modifier.height(4.dp))
         PriceDisplay(value = 0.0, currency = CurrencyView.get(EUR))

@@ -56,6 +56,11 @@
     <string name="asset_bank_subtitle">Cash, savings, &amp; deposits</string>
     <string name="asset_other">Other</string>
     <string name="asset_other_subtitle">Any other type of asset you want to add to your portfolio</string>
+    <string name="accessibility_add_investment_fab">Add Investment Asset</string>
+    <string name="accessibility_add_investment_expanded">Investment Type Selector Open</string>
+    <string name="accessibility_add_investment_collapsed">Investment Type Selector Closed</string>
+    <string name="accessibility_show_add_investment">Show Selector to Add Investment Asset</string>
+    <string name="accessibility_dismiss_add_investment">Close Selector to Add Investment Asset</string>
     <string name="add_bank_title">Add Cash / Deposit</string>
     <string name="bank_name_label">Bank / Deposit Name:</string>
     <string name="bank_name_placeholder">e.g. Bank of America</string>
@@ -85,6 +90,11 @@
     <string name="error_alert_threshold_invalid">The notification percentage must be greater than 0</string>
     <string name="delete_action">Delete</string>
     <string name="delete_investment_message">Are you sure you want to delete this investment from your portfolio?</string>
+    <string name="asset_name_cd">Enter asset name</string>
+    <string name="asset_manual_quantity_cd">Enter asset quantity</string>
+    <string name="asset_isin_cd">Enter asset ISIN</string>
+    <string name="asset_market_quantity_cd">Enter shares asset quantity</string>
+    <string name="asset_alert_threshold_cd">Enter the percentage of variation from which you want to be notified</string>
 
     <!-- Allocation -->
     <string name="tab_allocation_title">Allocation by asset type</string>
@@ -102,6 +112,7 @@
     <string name="search_global_stock_placeholder">Search symbol or name</string>
     <string name="unselect_asset_cd">Unselect Asset</string>
     <string name="select_asset_cd">Select Asset</string>
+    <string name="search_market_cd">Search assets by symbol, name or figi</string>
 
     <!-- Global Market -->
     <string name="global_markets_request_limit">Due to high demand, our API has taken a break, but don\'t worry, it will be back in full force tomorrow.</string>
@@ -136,11 +147,8 @@
     <string-array name="rich_phrases">
         <item>Too much money to look at without sunglasses.</item>
         <item>The IRS likes this.</item>
-        <item>You\'re rich, why care about 5€ more?</item>
-        <item>This gets you VIP access anywhere.</item>
         <item>You can definitely afford a tip for the humble developer.</item>
         <item>Are you sure you didn\'t add too many zeros? Reflect on it.</item>
-        <item>Leave some for the rest of us, Javito.</item>
     </string-array>
     <string name="your_investments">Your investments</string>
 
@@ -175,4 +183,14 @@
     <string name="widget_stocks_description">Track your assets in real time</string>
     <string name="asset_prices_title">Market Prices</string>
     <string name="reload_cd">Reload</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_selected">Selected</string>
+    <string name="accessibility_not_selected">Not selected</string>
+    <string name="loading_cd">Loading</string>
+    <string name="accessibility_percent_increased_by">has increased by %1$s percent</string>
+    <string name="accessibility_percent_decreased_by">has decreased by %1$s percent</string>
+    <string name="accessibility_price_increased_by">and %1$s %2$s compared to the previous day</string>
+    <string name="accessibility_price_decreased_by">and %1$s %2$s compared to the previous day</string>
+    <string name="accessibility_unchanged">has not changed compared to the previous day</string>
 </resources>

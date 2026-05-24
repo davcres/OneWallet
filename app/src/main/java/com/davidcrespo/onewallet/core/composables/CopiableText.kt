@@ -34,6 +34,11 @@ import com.davidcrespo.onewallet.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+
 @Composable
 fun CopiableText(
     text: String,
@@ -47,6 +52,7 @@ fun CopiableText(
     val scope = rememberCoroutineScope()
     val snackbarText = stringResource(R.string.copiable_text_snackbar)
     var copied by remember { mutableStateOf(false) }
+    val copyLabel = stringResource(R.string.copiable_text_cd)
 
     LaunchedEffect(copied) {
         if (copied) {
@@ -56,15 +62,20 @@ fun CopiableText(
     }
 
     Row(
-        modifier = modifier.clickable(
-            interactionSource = null,
-            indication = null,
-            onClick = {
-                clipboard.setText(AnnotatedString(text))
-                copied = true
-                scope.launch { snackbarHostState.showSnackbar(snackbarText) }
+        modifier = modifier
+            .clearAndSetSemantics {
+                role = Role.Button
+                contentDescription = "$text. $copyLabel"
             }
-        ),
+            .clickable(
+                interactionSource = null,
+                indication = null,
+                onClick = {
+                    clipboard.setText(AnnotatedString(text))
+                    copied = true
+                    scope.launch { snackbarHostState.showSnackbar(snackbarText) }
+                }
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -79,7 +90,7 @@ fun CopiableText(
         Crossfade(targetState = copied, label = "copy_icon_crossfade") { isCopied ->
             Icon(
                 imageVector = if (isCopied) Icons.Filled.CheckCircle else Icons.Rounded.ContentCopy,
-                contentDescription = stringResource(R.string.copiable_text_cd),
+                contentDescription = null,
                 tint = if (isCopied) MaterialTheme.colorScheme.primary else LocalContentColor.current
             )
         }

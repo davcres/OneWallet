@@ -10,6 +10,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
@@ -32,25 +34,33 @@ fun AnimatedCounter(
         ?.coerceIn(-Float.MAX_VALUE, Float.MAX_VALUE)
         ?: Float.MAX_VALUE
 
-    val animatedValue = remember { Animatable(if (shouldAnimate) targetValueFloat else 0f) }
+    val animatedValue = remember {
+        Animatable(targetValueFloat)
+    }
 
-    LaunchedEffect(targetValue, shouldAnimate) {
+    val formattedTargetValue = remember(targetValue, prefix, suffix) {
+        "$prefix${"%.2f".format(targetValue)}$suffix"
+    }
+
+    LaunchedEffect(targetValueFloat, shouldAnimate) {
         if (shouldAnimate) {
-            // Only animate if the value has changed or if we are starting from 0
-            if (animatedValue.value != targetValueFloat) {
-                animatedValue.animateTo(
-                    targetValue = targetValueFloat,
-                    animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+            animatedValue.animateTo(
+                targetValue = targetValueFloat,
+                animationSpec = tween(
+                    durationMillis = 1000,
+                    easing = FastOutSlowInEasing
                 )
-            }
+            )
         } else {
-            animatedValue.snapTo(0f)
+            animatedValue.snapTo(targetValueFloat)
         }
     }
 
     Text(
         text = "$prefix${"%.2f".format(animatedValue.value)}$suffix",
-        modifier = modifier,
+        modifier = modifier.semantics {
+            contentDescription = formattedTargetValue
+        },
         color = color,
         fontSize = fontSize,
         fontWeight = fontWeight,

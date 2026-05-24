@@ -45,6 +45,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -291,7 +293,13 @@ private fun PortfolioScreen(
         floatingActionButton = {
             OWFloatingActionButton(
                 expanded = uiState.isAddInvestmentVisible,
-                onExpandedChange = { if (it) onAction(PortfolioIntent.ShowAddInvestment) else onAction(PortfolioIntent.DismissAddInvestment) },
+                onExpandedChange = {
+                    if (it) {
+                        onAction(PortfolioIntent.ShowAddInvestment)
+                    } else {
+                        onAction(PortfolioIntent.DismissAddInvestment)
+                    }
+                },
                 isPressedForced = isFabPressed,
                 modifier = Modifier
                     .applyIf(uiState.portfolioItems.isEmpty()) { pulse() }
@@ -339,6 +347,10 @@ private fun PortfolioScreen(
                     NavigationBar(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer
                     ) {
+
+                        val selectedDescription = stringResource(R.string.accessibility_selected)
+                        val notSelectedDescription = stringResource(R.string.accessibility_not_selected)
+
                         PortfolioTabs.entries.forEach { tab ->
                             val selected = uiState.selectedTab == tab
                             val animatedScale by animateFloatAsState(
@@ -360,7 +372,7 @@ private fun PortfolioScreen(
                                 icon = {
                                     Icon(
                                         imageVector = tab.icon,
-                                        contentDescription = stringResource(tab.title),
+                                        contentDescription = null,
                                         modifier = Modifier.scale(animatedScale)
                                     )
                                 },
@@ -376,6 +388,13 @@ private fun PortfolioScreen(
                                     selectedTextColor = MaterialTheme.colorScheme.primary
                                 ),
                                 modifier = Modifier
+                                    .semantics {
+                                        stateDescription = if (selected) {
+                                            selectedDescription
+                                        } else {
+                                            notSelectedDescription
+                                        }
+                                    }
                                     .enableCoachMark(
                                         key = coachmarkKey,
                                         toolTipPlacement = ToolTipPlacement.Top,

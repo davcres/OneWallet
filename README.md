@@ -6,6 +6,8 @@ OneWallet is a comprehensive Android application designed to manage and track in
 - 🇬🇧 English (default)
 - 🇪🇸 [Español](README.es.md)
 
+🔑 [Quick Setup: Configuration & API Keys](#-configuration--api-keys)
+
 ## 🚀 Features
 
 - **Multi-Asset & Multi-Currency**: Support for US Stocks, International Markets, Cryptocurrencies, Investment Funds, ETFs, and Bank Deposits. Assets can be added in any currency, and the app will automatically calculate and convert their value to your preferred base currency (EUR or USD) for a unified portfolio view.
@@ -17,6 +19,7 @@ OneWallet is a comprehensive Android application designed to manage and track in
 - **Privacy First (Shake to Hide & Blur)**: Built with user privacy in mind. By shaking the device, sensitive information such as balances and holdings is instantly hidden. On Android 12+ (API 31), a native **Gaussian blur effect** is applied to sensitive areas for a premium privacy experience.
 - **Guided Onboarding**: Interactive in-app tutorial that guides users through every major component and functionality of the app.
 - **Modern Edge-to-Edge**: Full support for Android 15+ edge-to-edge drawing, ensuring the UI seamlessly flows behind system bars for an immersive look.
+- **Accessibility (Semantics)**: Full implementation of Jetpack Compose Semantics and content descriptions, ensuring the application is fully navigable and usable via Screen Readers (TalkBack) and other assistive technologies.
 - **Custom Telemetry**: Integrated a lightweight, private telemetry system via **Telegram API** for real-time error reporting without the need for heavy third-party SDKs like Firebase or Sentry.
 - **Offline Support**: Cached data and manual asset entry for seamless use without internet.
 - **Continuous Integration & Coverage**: Fully automated pipeline that compiles the app and executes the entire suite of unit tests on every push. It includes **JaCoCo** integration to generate detailed code coverage reports, ensuring high testing standards.

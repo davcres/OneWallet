@@ -41,6 +41,11 @@ import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
+
 @Composable
 fun ErrorBanner(
     message: String?,
@@ -87,6 +92,10 @@ fun ErrorBanner(
                     }
                 }
             )
+            .semantics {
+                liveRegion = LiveRegionMode.Assertive
+                isTraversalGroup = true
+            }
     ) {
         Surface(
             color = Error,

@@ -37,6 +37,9 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -108,6 +111,8 @@ fun PortfolioList(
 
                     val autoSwipeOffset = remember { androidx.compose.animation.core.Animatable(0f) }
                     var isItemPressed by remember { mutableStateOf(false) }
+
+                    val deleteLabel = stringResource(R.string.clear_cd)
 
                     if (index == 0) {
                         LaunchedEffect(isDeleteOnboardingActive) {
@@ -219,7 +224,7 @@ fun PortfolioList(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
-                                        contentDescription = stringResource(R.string.clear_cd),
+                                        contentDescription = null,
                                         tint = Color.White
                                     )
                                 }
@@ -231,8 +236,17 @@ fun PortfolioList(
                                     section = SectionType.PORTFOLIO,
                                     onClick = { onEdit(portfolioItem) },
                                     isBalanceVisible = isBalanceVisible,
-                                    modifier = Modifier.offset { IntOffset(autoSwipeOffset.value.roundToInt(), 0) },
-                                    isPressed = isItemPressed
+                                    isPressed = isItemPressed,
+                                    modifier = Modifier
+                                        .offset { IntOffset(autoSwipeOffset.value.roundToInt(), 0) }
+                                        .semantics(mergeDescendants = true) {
+                                            customActions = listOf(
+                                                CustomAccessibilityAction(deleteLabel) {
+                                                    onRemove(portfolioItem)
+                                                    true
+                                                }
+                                            )
+                                        }
                                 )
                             }
                         )
