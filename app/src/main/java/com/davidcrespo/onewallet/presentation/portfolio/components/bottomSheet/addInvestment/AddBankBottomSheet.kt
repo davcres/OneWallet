@@ -188,9 +188,10 @@ private fun Form(
             onValueChange = { input ->
                 name = input
             },
+            placeholder = if (isBank) stringResource(R.string.bank_name_placeholder) else stringResource(R.string.other_name_placeholder),
+            contentDescription = stringResource(R.string.asset_name_cd),
             leadingIcon = Icons.Default.Addchart,
             hasClearIcon = true,
-            placeholder = if (isBank) stringResource(R.string.bank_name_placeholder) else stringResource(R.string.other_name_placeholder),
             cornerRadius = 16.dp
         )
 
@@ -213,9 +214,10 @@ private fun Form(
                     quantity = normalized
                 }
             },
+            placeholder = "0.0",
+            contentDescription = stringResource(R.string.asset_manual_quantity_cd),
             leadingIcon = if (currency.code == EUR) Icons.Filled.Euro else Icons.Filled.AttachMoney,
             hasClearIcon = true,
-            placeholder = "0.0",
             cornerRadius = 16.dp,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )

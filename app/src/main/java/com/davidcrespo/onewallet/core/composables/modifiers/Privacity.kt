@@ -9,6 +9,8 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -29,15 +31,22 @@ import androidx.compose.ui.unit.dp
 fun Modifier.privacySensitive(hideContent: Boolean, effect: PrivacyEffect = PrivacyEffect.Blur(16.dp)): Modifier {
     val windowInfo = LocalWindowInfo.current
     val isInRecentApps by rememberUpdatedState(!windowInfo.isWindowFocused)
+    val shouldHide = isInRecentApps || hideContent
 
-    return if (isInRecentApps || hideContent) {
-        when (effect) {
-            is PrivacyEffect.Redact -> applyRedact(effect.color)
-            is PrivacyEffect.Blur -> applyBlur(effect.blurRadius)
-        }
-    } else {
-        this
-    }
+    return this
+        .then(
+            if (shouldHide) {
+                Modifier.semantics { hideFromAccessibility() }
+            } else Modifier
+        )
+        .then(
+            if (shouldHide) {
+                when (effect) {
+                    is PrivacyEffect.Redact -> Modifier.applyRedact(effect.color)
+                    is PrivacyEffect.Blur -> Modifier.applyBlur(effect.blurRadius)
+                }
+            } else Modifier
+        )
 }
 
 /**

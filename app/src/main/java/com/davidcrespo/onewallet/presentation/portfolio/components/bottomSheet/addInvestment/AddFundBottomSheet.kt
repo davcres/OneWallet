@@ -210,9 +210,10 @@ private fun Form(
                     .filter { it.isLetterOrDigit() }
                     .take(12)
             },
+            placeholder = "US0000000000",
+            contentDescription = stringResource(R.string.asset_isin_cd),
             leadingIcon = Icons.Outlined.QrCode2,
             hasClearIcon = true,
-            placeholder = "US0000000000",
             cornerRadius = 16.dp
         )
 
@@ -258,9 +259,10 @@ private fun Form(
                     quantity = normalized
                 }
             },
+            placeholder = "0.0",
+            contentDescription = stringResource(R.string.asset_market_quantity_cd),
             leadingIcon = Icons.Outlined.PieChartOutline,
             hasClearIcon = true,
-            placeholder = "0.0",
             cornerRadius = 16.dp,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )

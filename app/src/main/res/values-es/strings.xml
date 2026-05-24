@@ -85,6 +85,11 @@
     <string name="error_alert_threshold_invalid">El porcentaje de notificación debe ser mayor que 0</string>
     <string name="delete_action">Eliminar</string>
     <string name="delete_investment_message">¿Estás seguro de que quieres eliminar esta inversión de tu cartera?</string>
+    <string name="asset_name_cd">Introduce el nombre del activo</string>
+    <string name="asset_manual_quantity_cd">Introduce la cantidad del activo</string>
+    <string name="asset_isin_cd">Introduce el ISIN del activo</string>
+    <string name="asset_market_quantity_cd">Introduce la cantidad de acciones del activo</string>
+    <string name="asset_alert_threshold_cd">Introduce el porcentaje de variación a partir del cual quieres ser avisado</string>
 
     <!-- Allocation -->
     <string name="tab_allocation_title">Distribución por tipo de activo</string>
@@ -102,6 +107,7 @@
     <string name="search_global_stock_placeholder">Buscar símbolo o nombre</string>
     <string name="unselect_asset_cd">Deseleccionar activo</string>
     <string name="select_asset_cd">Seleccionar activo</string>
+    <string name="search_market_cd">Busca activos por símbolo, nombre or figi</string>
 
     <!-- Global Market -->
     <string name="global_markets_request_limit">Se han buscado tantas acciones que nuestra API ha pedido vacaciones, pero no te preocupes, mañana volverá a estar a tope.</string>

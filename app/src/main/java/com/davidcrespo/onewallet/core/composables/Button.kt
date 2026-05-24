@@ -27,10 +27,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -114,8 +113,12 @@ fun Button(
             )
             .bounceClick()
             .clip(shape)
+            .clearAndSetSemantics {
+                role = Role.Button
+                this.contentDescription = contentDescription
+                testTag = text
+            }
             .clickable(
-                role = Role.Button,
                 interactionSource = interactionSource,
                 indication = ripple(
                     bounded = true,
@@ -123,18 +126,8 @@ fun Button(
                     color = MaterialTheme.colorScheme.primary
                 ),
                 onClick = onClick,
-                onClickLabel = contentDescription,
                 enabled = enabled
             )
-            .semantics {
-                role = Role.Button
-                testTag = text
-                this.contentDescription = contentDescription
-                this.onClick(label = contentDescription) {
-                    onClick()
-                    true
-                }
-            }
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,

@@ -39,6 +39,8 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -50,11 +52,12 @@ import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 fun TextField(
     value: String,
     onValueChange: (String) -> Unit,
+    placeholder: String,
+    contentDescription: String?,
+    hasClearIcon: Boolean,
+    cornerRadius: Dp,
     leadingIcon: ImageVector? = null,
     trailingIcon: ImageVector? = null,
-    hasClearIcon: Boolean,
-    placeholder: String,
-    cornerRadius: Dp,
     enabled: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -122,7 +125,12 @@ fun TextField(
                 cornerRadius = cornerRadius
             )
             .padding(horizontal = 16.dp)
-            .onFocusChanged { isFocused = it.isFocused },
+            .onFocusChanged { isFocused = it.isFocused }
+            .semantics {
+                if (contentDescription != null) {
+                    this.contentDescription = contentDescription
+                }
+            },
         decorationBox = { innerTextField ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -185,6 +193,7 @@ private fun TextFieldPreview() {
             onValueChange = {},
             leadingIcon = Icons.Default.Search,
             placeholder = "Search",
+            contentDescription = "Search field",
             hasClearIcon = true,
             cornerRadius = 16.dp
         )

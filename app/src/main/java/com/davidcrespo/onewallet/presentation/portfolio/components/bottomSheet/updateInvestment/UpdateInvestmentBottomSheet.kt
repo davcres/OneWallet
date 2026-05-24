@@ -56,6 +56,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -374,11 +375,17 @@ private fun Form(
         requestNotificationsPermissionIfNeeded()
     }
 
-    Column {
+    val quantityLabel = if (investment.type.isMarket()) {
+        stringResource(R.string.new_quantity_market)
+    } else {
+        stringResource(R.string.new_quantity_manual)
+    }
+
+    Column(
+        modifier = Modifier.semantics(mergeDescendants = true) {}
+    ) {
         Text(
-            text = if (investment.type.isMarket()) stringResource(R.string.new_quantity_market) else stringResource(
-                R.string.new_quantity_manual
-            ),
+            text = quantityLabel,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(horizontal = 8.dp)
@@ -394,10 +401,11 @@ private fun Form(
                     quantity = normalized
                 }
             },
-            leadingIcon = if (investment.type.isMarket()) Icons.Outlined.PieChartOutline else investment.originalCurrency.icon,
             placeholder = initialQuantityPlaceholder,
-            cornerRadius = 16.dp,
+            contentDescription = null,
+            leadingIcon = if (investment.type.isMarket()) Icons.Outlined.PieChartOutline else investment.originalCurrency.icon,
             hasClearIcon = true,
+            cornerRadius = 16.dp,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
 
@@ -491,6 +499,7 @@ private fun Form(
                                 }
                             },
                             placeholder = thresholdPlaceholder,
+                            contentDescription = stringResource(R.string.asset_alert_threshold_cd),
                             cornerRadius = 16.dp,
                             trailingIcon = Icons.Default.Percent,
                             hasClearIcon = false,
