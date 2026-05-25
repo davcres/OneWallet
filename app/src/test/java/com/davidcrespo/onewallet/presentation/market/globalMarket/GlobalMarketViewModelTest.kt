@@ -116,11 +116,13 @@ class GlobalMarketViewModelTest {
         val asset = MarketAsset("TSLA", 200.0, Currency(EUR), InvestmentType.STOCK, "Tesla", stockType = "Common").toUI()
         createViewModel()
         
-        viewModel.handleIntent(GlobalMarketIntent.AddOneAsset(asset))
+        viewModel.effect.test {
+            viewModel.handleIntent(GlobalMarketIntent.AddOneAsset(asset))
+            assertEquals(GlobalMarketEffect.NavigateBack, awaitItem())
+        }
         
         viewModel.uiState.test {
             val state = awaitItem()
-            assertTrue(state.navigateBack)
             assertEquals("", state.searchQuery)
             coVerify { addMarketAssetToPortfolioUseCase(any(), false) }
         }
@@ -153,17 +155,13 @@ class GlobalMarketViewModelTest {
         viewModel.handleIntent(GlobalMarketIntent.SelectAsset(asset1))
         viewModel.handleIntent(GlobalMarketIntent.SelectAsset(asset2))
         
-        viewModel.uiState.test {
-            // Saltamos hasta tener ambos seleccionados
-            var lastState = awaitItem()
-            while (lastState.assetsToSaveToPortfolio.size < 2) {
-                lastState = awaitItem()
-            }
-            
+        viewModel.effect.test {
             viewModel.handleIntent(GlobalMarketIntent.SaveAssetsSelected)
-            
+            assertEquals(GlobalMarketEffect.NavigateBack, awaitItem())
+        }
+
+        viewModel.uiState.test {
             val state = awaitItem()
-            assertTrue(state.navigateBack)
             assertEquals(0, state.assetsToSaveToPortfolio.size)
             coVerify(exactly = 2) { addMarketAssetToPortfolioUseCase(any(), false) }
         }
