@@ -134,6 +134,12 @@
     <string name="price_per_share_label">Price per share</string>
     <string name="total_value_label">Total value</string>
     <string name="pl_month_label">P/L (Month)</string>
+    <string name="history_import_success">History imported successfully</string>
+    <string name="history_import_error">Error importing history</string>
+    <string name="history_read_error">Error reading file</string>
+    <string name="history_export_success">History saved to Downloads</string>
+    <string name="history_export_error">Error exporting history</string>
+    <string name="history_save_error">Error saving file</string>
 
     <!-- Core -->
     <string name="clear_cd">Delete investment</string>

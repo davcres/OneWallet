@@ -13,8 +13,7 @@ data class UsMarketUiState(
     val searchQuery: String = "",
     val isCrypto: Boolean = false,
     val showGlobalMarketsCard: Boolean = false,
-    val isLoading: Boolean = true,
-    val error: String? = null
+    val isLoading: Boolean = true
 )
 
 sealed interface UsMarketEffect {
