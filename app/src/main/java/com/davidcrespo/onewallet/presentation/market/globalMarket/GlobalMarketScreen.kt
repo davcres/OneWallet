@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +50,14 @@ fun GlobalMarketRoot(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                GlobalMarketEffect.NavigateBack -> onBack()
+            }
+        }
+    }
+
     GlobalMarketScreen(
         uiState = uiState,
         onAction = viewModel::handleIntent,
@@ -65,10 +74,6 @@ private fun GlobalMarketScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (uiState.navigateBack) {
-        onBack()
-    }
-
     Scaffold(
         topBar = {
             Box(

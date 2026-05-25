@@ -153,20 +153,42 @@ class UsMarketViewModelTest {
         viewModel.handleIntent(UsMarketIntent.SelectAsset(asset1))
         viewModel.handleIntent(UsMarketIntent.SelectAsset(asset2))
         
-        viewModel.uiState.test {
-            // Saltamos los eventos de seleccion hasta que tengamos los 2
-            var lastState = awaitItem()
-            while (lastState.assetsToSaveToPortfolio.size < 2) {
-                lastState = awaitItem()
-            }
-            
+        viewModel.effect.test {
             viewModel.handleIntent(UsMarketIntent.SaveAssetsSelected)
-            
-            lastState = awaitItem()
-            assertTrue(lastState.navigateBack)
+            assertEquals(UsMarketEffect.NavigateBack, awaitItem())
+        }
+
+        viewModel.uiState.test {
+            val lastState = awaitItem()
             assertEquals(0, lastState.assetsToSaveToPortfolio.size)
-            
             coVerify(exactly = 2) { addMarketAssetToPortfolioUseCase(any(), any()) }
+        }
+    }
+
+    @Test
+    fun `cuando se añade un asset individualmente, se guarda y se navega hacia atras`() = runTest(mainDispatcherExtension.testDispatcher) {
+        val asset = MarketAsset("TSLA", 200.0, Currency(EUR), InvestmentType.STOCK, "Tesla", stockType = "Common").toUI()
+        createViewModel()
+        
+        viewModel.effect.test {
+            viewModel.handleIntent(UsMarketIntent.AddOneAsset(asset))
+            assertEquals(UsMarketEffect.NavigateBack, awaitItem())
+        }
+        
+        viewModel.uiState.test {
+            val state = awaitItem()
+            assertEquals("", state.searchQuery)
+            coVerify { addMarketAssetToPortfolioUseCase(any(), any()) }
+        }
+    }
+
+    @Test
+    fun `cuando se abre el mercado global, se emite el efecto de navegacion correspondiente`() = runTest(mainDispatcherExtension.testDispatcher) {
+        createViewModel()
+        
+        viewModel.effect.test {
+            viewModel.handleIntent(UsMarketIntent.OpenGlobalMarket)
+            assertEquals(UsMarketEffect.NavigateToGlobalMarket, awaitItem())
         }
     }
 

@@ -38,6 +38,10 @@ data class PortfolioUiState(
     val selectedTab: PortfolioTabs = PortfolioTabs.POSITIONS
 )
 
+sealed interface PortfolioEffect {
+    data class NavigateToMarket(val isCrypto: Boolean) : PortfolioEffect
+}
+
 sealed interface PortfolioIntent {
     data object ChangeCurrency : PortfolioIntent
     data class SetTab(val tab: PortfolioTabs) : PortfolioIntent

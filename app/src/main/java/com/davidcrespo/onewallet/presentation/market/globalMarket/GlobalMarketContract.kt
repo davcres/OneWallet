@@ -11,10 +11,13 @@ data class GlobalMarketUiState(
     val marketAssets: ImmutableList<Pair<String, ImmutableList<MarketAssetView>>>? = null,
     val assetsToSaveToPortfolio: ImmutableList<MarketAssetView> = persistentListOf(),
     val searchQuery: String = "",
-    val navigateBack: Boolean = false,
     val isLoading: Boolean = false,
     @StringRes val error: Int? = null
 )
+
+sealed interface GlobalMarketEffect {
+    data object NavigateBack : GlobalMarketEffect
+}
 
 sealed interface GlobalMarketIntent {
     data class OnQueryChange(val query: String) : GlobalMarketIntent

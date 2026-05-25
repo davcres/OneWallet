@@ -86,6 +86,7 @@ import com.pseudoankit.coachmark.model.HighlightedViewConfig
 import com.pseudoankit.coachmark.model.OverlayClickEvent
 import com.pseudoankit.coachmark.model.ToolTipPlacement
 import com.pseudoankit.coachmark.overlay.DimOverlayEffect
+import com.pseudoankit.coachmark.scope.CoachMarkScope
 import com.pseudoankit.coachmark.scope.enableCoachMark
 import com.pseudoankit.coachmark.shape.Arrow
 import com.pseudoankit.coachmark.shape.Balloon
@@ -108,7 +109,15 @@ fun PortfolioRoot(
         viewModel.handleIntent(PortfolioIntent.SetTab(initialTab))
     }
 
-    var coachMarkScope by remember { mutableStateOf<com.pseudoankit.coachmark.scope.CoachMarkScope?>(null) }
+    LaunchedEffect(viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is PortfolioEffect.NavigateToMarket -> navigateToMarket(effect.isCrypto)
+            }
+        }
+    }
+
+    var coachMarkScope by remember { mutableStateOf<CoachMarkScope?>(null) }
 
     UnifyCoachmark(
         overlayEffect = DimOverlayEffect(Color.Black.copy(alpha = .5f)),
@@ -157,12 +166,7 @@ fun PortfolioRoot(
         Box(modifier = modifier.fillMaxSize()) {
             PortfolioScreen(
                 uiState = uiState,
-                onAction = { action ->
-                    when (action) {
-                        is PortfolioIntent.NavigateToMarket -> navigateToMarket(action.isCrypto)
-                        else -> viewModel.handleIntent(action)
-                    }
-                },
+                onAction = viewModel::handleIntent,
                 isInteractionEnabled = !isOnboardingActive || isAnySheetVisible
             )
 

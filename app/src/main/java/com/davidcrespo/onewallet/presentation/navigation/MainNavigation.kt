@@ -102,7 +102,9 @@ fun MainNavigation() {
             entry<Route.GlobalMarket> {
                 GlobalMarketRoot(
                     onBack = {
-                        if (backStack.size > 1) backStack.removeLastOrNull()
+                        while (backStack.size > 1 && backStack.last() !is Route.Portfolio) {
+                            backStack.removeLastOrNull()
+                        }
                     }
                 )
             }

@@ -15,8 +15,10 @@ import com.davidcrespo.onewallet.presentation.portfolio.CurrencyConverter
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -33,6 +35,9 @@ class HistoryViewModel(
     private val _uiState = MutableStateFlow(HistoryUiState())
     val uiState = _uiState.asStateFlow()
 
+    private val _effect = Channel<HistoryEffect>(Channel.BUFFERED)
+    val effect = _effect.receiveAsFlow()
+
     fun handleIntent(intent: HistoryIntent) {
         when (intent) {
             is HistoryIntent.LoadInitialData -> loadInitialData()
@@ -44,25 +49,31 @@ class HistoryViewModel(
             is HistoryIntent.SelectInvestment -> selectInvestment(intent.investment)
             is HistoryIntent.DismissBottomSheet -> dismissBottomSheet()
             is HistoryIntent.DismissInvestmentDetail -> dismissInvestmentDetail()
-            is HistoryIntent.ImportHistory -> _uiState.update { it.copy(showFilePicker = true) }
+            is HistoryIntent.ImportHistory -> {
+                viewModelScope.launch {
+                    _effect.send(HistoryEffect.ShowFilePicker)
+                }
+            }
             is HistoryIntent.ExportHistory -> exportHistory()
             is HistoryIntent.OnFileSelected -> importHistory(intent.uri)
-            is HistoryIntent.ClearMessages -> _uiState.update { it.copy(error = null, successMessage = null) }
         }
     }
 
     private fun importHistory(uri: String) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, showFilePicker = false) }
+            _uiState.update { it.copy(isLoading = true) }
             fileRepository.readFromUri(uri).onSuccess { content ->
                 importHistoryUseCase(content).onSuccess {
                     getMonthlyHistory()
-                    _uiState.update { it.copy(successMessage = "History imported successfully", isLoading = false) }
+                    _uiState.update { it.copy(isLoading = false) }
+                    _effect.send(HistoryEffect.ShowSnackbar(com.davidcrespo.onewallet.R.string.history_import_success))
                 }.onFailure {
-                    _uiState.update { it.copy(error = "Error importing history", isLoading = false) }
+                    _uiState.update { it.copy(isLoading = false) }
+                    _effect.send(HistoryEffect.ShowSnackbar(com.davidcrespo.onewallet.R.string.history_import_error))
                 }
             }.onFailure {
-                _uiState.update { it.copy(error = "Error reading file", isLoading = false) }
+                _uiState.update { it.copy(isLoading = false) }
+                _effect.send(HistoryEffect.ShowSnackbar(com.davidcrespo.onewallet.R.string.history_read_error))
             }
         }
     }
@@ -72,12 +83,15 @@ class HistoryViewModel(
             _uiState.update { it.copy(isLoading = true) }
             exportHistoryUseCase().onSuccess { content ->
                 fileRepository.saveToDownloads("onewallet_history.csv", content).onSuccess {
-                    _uiState.update { it.copy(successMessage = "History saved to Downloads", isLoading = false) }
+                    _uiState.update { it.copy(isLoading = false) }
+                    _effect.send(HistoryEffect.ShowSnackbar(com.davidcrespo.onewallet.R.string.history_export_success))
                 }.onFailure {
-                    _uiState.update { it.copy(error = "Error saving file", isLoading = false) }
+                    _uiState.update { it.copy(isLoading = false) }
+                    _effect.send(HistoryEffect.ShowSnackbar(com.davidcrespo.onewallet.R.string.history_save_error))
                 }
             }.onFailure {
-                _uiState.update { it.copy(error = "Error exporting history", isLoading = false) }
+                _uiState.update { it.copy(isLoading = false) }
+                _effect.send(HistoryEffect.ShowSnackbar(com.davidcrespo.onewallet.R.string.history_export_error))
             }
         }
     }

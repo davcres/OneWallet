@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.data.logging
 
+import android.os.Build
 import android.util.Log
 import com.davidcrespo.onewallet.data.remote.telegram.TelegramDataSource
 import com.davidcrespo.onewallet.domain.logging.Telemetry
@@ -8,6 +9,12 @@ class TelegramTelemetry(private val telegramDataSource: TelegramDataSource) : Te
 
     override suspend fun log(message: String) {
         Log.e("***", message)
-        runCatching { telegramDataSource.sendMessage(message) }
+        if (Build.DEVICE != EMULATOR) {
+            runCatching { telegramDataSource.sendMessage(message) }
+        }
+    }
+
+    companion object {
+        const val EMULATOR = "emu64a"
     }
 }

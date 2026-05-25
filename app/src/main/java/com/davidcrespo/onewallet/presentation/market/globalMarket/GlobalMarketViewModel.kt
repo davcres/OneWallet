@@ -12,9 +12,11 @@ import com.davidcrespo.onewallet.presentation.models.toMarketAssetView
 import com.davidcrespo.onewallet.presentation.models.toUI
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -43,6 +45,9 @@ class GlobalMarketViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
             initialValue = GlobalMarketUiState()
         )
+
+    private val _effect = Channel<GlobalMarketEffect>(Channel.BUFFERED)
+    val effect = _effect.receiveAsFlow()
 
     fun handleIntent(intent: GlobalMarketIntent) {
         when (intent) {
@@ -98,10 +103,10 @@ class GlobalMarketViewModel(
 
             _uiState.update {
                 it.copy(
-                    searchQuery = "",
-                    navigateBack = true
+                    searchQuery = ""
                 )
             }
+            _effect.send(GlobalMarketEffect.NavigateBack)
         }
     }
 
@@ -128,10 +133,10 @@ class GlobalMarketViewModel(
             _uiState.update {
                 it.copy(
                     searchQuery = "",
-                    assetsToSaveToPortfolio = persistentListOf(),
-                    navigateBack = true
+                    assetsToSaveToPortfolio = persistentListOf()
                 )
             }
+            _effect.send(GlobalMarketEffect.NavigateBack)
         }
     }
 

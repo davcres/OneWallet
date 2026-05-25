@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -49,6 +50,7 @@ import com.pseudoankit.coachmark.model.ToolTipPlacement
 import com.pseudoankit.coachmark.scope.enableCoachMark
 import com.pseudoankit.coachmark.shape.Arrow
 import com.pseudoankit.coachmark.shape.Balloon
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -59,6 +61,11 @@ fun HistoryTab(
     viewModel: HistoryViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let { viewModel.handleIntent(HistoryIntent.OnFileSelected(it.toString())) }
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.handleIntent(HistoryIntent.LoadInitialData)
@@ -68,10 +75,26 @@ fun HistoryTab(
         viewModel.handleIntent(HistoryIntent.OnCurrencyChanged)
     }
 
+    val resources = LocalResources.current
+
+    LaunchedEffect(viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                is HistoryEffect.ShowFilePicker -> launcher.launch("*/*")
+                is HistoryEffect.ShowSnackbar -> {
+                    launch {
+                        snackbarHostState.showSnackbar(resources.getString(effect.message))
+                    }
+                }
+            }
+        }
+    }
+
     HistoryScreen(
         uiState = uiState,
         onAction = viewModel::handleIntent,
         isBalanceVisible = isBalanceVisible,
+        snackbarHostState = snackbarHostState,
         modifier = modifier
     )
 }
@@ -81,31 +104,9 @@ private fun HistoryScreen(
     uiState: HistoryUiState,
     onAction: (HistoryIntent) -> Unit,
     isBalanceVisible: Boolean,
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let { onAction(HistoryIntent.OnFileSelected(it.toString())) }
-    }
-
-    LaunchedEffect(uiState.showFilePicker) {
-        if (uiState.showFilePicker) {
-            launcher.launch("*/*")
-        }
-    }
-
-    LaunchedEffect(uiState.successMessage, uiState.error) {
-        uiState.successMessage?.let {
-            snackbarHostState.showSnackbar(it)
-            onAction(HistoryIntent.ClearMessages)
-        }
-        uiState.error?.let {
-            snackbarHostState.showSnackbar(it)
-            onAction(HistoryIntent.ClearMessages)
-        }
-    }
-
     val hideBackground =
         uiState.selectedMonthDetail != null ||
                 uiState.selectedInvestment != null

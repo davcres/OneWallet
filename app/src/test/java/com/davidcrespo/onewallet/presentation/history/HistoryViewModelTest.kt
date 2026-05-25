@@ -245,13 +245,12 @@ class HistoryViewModelTest {
     }
 
     @Test
-    fun `cuando se pide importar, se muestra el selector de archivos`() = runTest(mainDispatcherExtension.testDispatcher) {
+    fun `cuando se pide importar, se emite el efecto de mostrar el selector de archivos`() = runTest(mainDispatcherExtension.testDispatcher) {
         createViewModel()
-        viewModel.handleIntent(HistoryIntent.ImportHistory)
         
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue(state.showFilePicker)
+        viewModel.effect.test {
+            viewModel.handleIntent(HistoryIntent.ImportHistory)
+            assertEquals(HistoryEffect.ShowFilePicker, awaitItem())
         }
     }
 
@@ -263,18 +262,13 @@ class HistoryViewModelTest {
         
         createViewModel()
         
-        viewModel.uiState.test {
-            assertEquals(HistoryUiState(), awaitItem())
+        viewModel.effect.test {
             viewModel.handleIntent(HistoryIntent.OnFileSelected("uri"))
-            
-            // Should see: isLoading=true -> getMonthlyHistory updates -> successMessage updates
-            var state = awaitItem()
-            while (state.successMessage == null) {
-                state = awaitItem()
-            }
-            
-            assertNotNull(state.successMessage)
-            assertFalse(state.showFilePicker)
+            assertEquals(HistoryEffect.ShowSnackbar(com.davidcrespo.onewallet.R.string.history_import_success), awaitItem())
+        }
+
+        viewModel.uiState.test {
+            val state = awaitItem()
             assertFalse(state.isLoading)
         }
     }
@@ -286,16 +280,13 @@ class HistoryViewModelTest {
         
         createViewModel()
         
-        viewModel.uiState.test {
-            assertEquals(HistoryUiState(), awaitItem())
+        viewModel.effect.test {
             viewModel.handleIntent(HistoryIntent.ExportHistory)
-            
-            var state = awaitItem()
-            while (state.successMessage == null) {
-                state = awaitItem()
-            }
-            
-            assertNotNull(state.successMessage)
+            assertEquals(HistoryEffect.ShowSnackbar(com.davidcrespo.onewallet.R.string.history_export_success), awaitItem())
+        }
+
+        viewModel.uiState.test {
+            val state = awaitItem()
             assertFalse(state.isLoading)
         }
     }

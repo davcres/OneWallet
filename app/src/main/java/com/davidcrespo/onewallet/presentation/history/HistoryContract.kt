@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.presentation.history
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
@@ -15,11 +16,13 @@ data class HistoryUiState(
     val selectedInvestment: InvestmentView? = null,
     val selectedPreviousInvestment: InvestmentView? = null,
     val selectedCurrency: CurrencyView = CurrencyView.get(EUR),
-    val isLoading: Boolean = false,
-    val showFilePicker: Boolean = false,
-    val error: String? = null,
-    val successMessage: String? = null
+    val isLoading: Boolean = false
 )
+
+sealed interface HistoryEffect {
+    data object ShowFilePicker : HistoryEffect
+    data class ShowSnackbar(@StringRes val message: Int) : HistoryEffect
+}
 
 sealed interface HistoryIntent {
     data object LoadInitialData : HistoryIntent
@@ -31,5 +34,4 @@ sealed interface HistoryIntent {
     data object ImportHistory : HistoryIntent
     data object ExportHistory : HistoryIntent
     data class OnFileSelected(val uri: String) : HistoryIntent
-    data object ClearMessages : HistoryIntent
 }
