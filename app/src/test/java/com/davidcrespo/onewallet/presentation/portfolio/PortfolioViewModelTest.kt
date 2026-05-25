@@ -137,6 +137,19 @@ class PortfolioViewModelTest {
     }
 
     @Test
+    fun `cuando se recibe NavigateToMarket, se emite el efecto correspondiente`() = runTest(mainDispatcherExtension.testDispatcher) {
+        createViewModel()
+        
+        viewModel.effect.test {
+            viewModel.handleIntent(PortfolioIntent.NavigateToMarket(isCrypto = true))
+            assertEquals(PortfolioEffect.NavigateToMarket(isCrypto = true), awaitItem())
+            
+            viewModel.handleIntent(PortfolioIntent.NavigateToMarket(isCrypto = false))
+            assertEquals(PortfolioEffect.NavigateToMarket(isCrypto = false), awaitItem())
+        }
+    }
+
+    @Test
     fun `al iniciar el ViewModel, el estado carga la moneda seleccionada y una lista vacia`() = runTest(mainDispatcherExtension.testDispatcher) {
         createViewModel()
         

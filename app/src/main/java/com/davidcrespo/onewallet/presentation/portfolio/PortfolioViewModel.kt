@@ -32,6 +32,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -39,6 +40,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -76,6 +78,9 @@ class PortfolioViewModel(
             initialValue = _uiState.value
         )
 
+    private val _effect = Channel<PortfolioEffect>(Channel.BUFFERED)
+    val effect = _effect.receiveAsFlow()
+
     fun handleIntent(intent: PortfolioIntent) {
         when (intent) {
             is PortfolioIntent.ChangeCurrency -> changeCurrency()
@@ -109,7 +114,11 @@ class PortfolioViewModel(
             is PortfolioIntent.SetError -> _uiState.update { it.copy(error = intent.error) }
             is PortfolioIntent.ClearError -> _uiState.update { it.copy(error = null) }
 
-            is PortfolioIntent.NavigateToMarket -> {}
+            is PortfolioIntent.NavigateToMarket -> {
+                viewModelScope.launch {
+                    _effect.send(PortfolioEffect.NavigateToMarket(intent.isCrypto))
+                }
+            }
 
             is PortfolioIntent.SelectInvestmentType -> _uiState.update { it.copy(typeDetail = intent.type) }
             is PortfolioIntent.DismissInvestmentType -> _uiState.update { it.copy(typeDetail = null) }
