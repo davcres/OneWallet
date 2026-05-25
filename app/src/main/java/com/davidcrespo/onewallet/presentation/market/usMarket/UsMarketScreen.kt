@@ -57,14 +57,18 @@ fun UsMarketRoot(
         viewModel.handleIntent(UsMarketIntent.LoadInitialData(isCrypto))
     }
 
+    LaunchedEffect(viewModel.effect) {
+        viewModel.effect.collect { effect ->
+            when (effect) {
+                UsMarketEffect.NavigateBack -> onBack()
+                UsMarketEffect.NavigateToGlobalMarket -> navigateToGlobalMarket()
+            }
+        }
+    }
+
     UsMarketScreen(
         uiState = uiState,
-        onAction = { action ->
-            when(action) {
-                is UsMarketIntent.OpenGlobalMarket -> navigateToGlobalMarket()
-                else -> viewModel.handleIntent(action)
-            }
-        },
+        onAction = viewModel::handleIntent,
         isCrypto = isCrypto,
         onBack = onBack,
         modifier = modifier
@@ -80,10 +84,6 @@ private fun UsMarketScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (uiState.navigateBack) {
-        onBack()
-    }
-
     Scaffold(
         topBar = {
             Box(

@@ -13,10 +13,14 @@ data class UsMarketUiState(
     val searchQuery: String = "",
     val isCrypto: Boolean = false,
     val showGlobalMarketsCard: Boolean = false,
-    val navigateBack: Boolean = false,
     val isLoading: Boolean = true,
     val error: String? = null
 )
+
+sealed interface UsMarketEffect {
+    data object NavigateBack : UsMarketEffect
+    data object NavigateToGlobalMarket : UsMarketEffect
+}
 
 sealed interface UsMarketIntent {
     data class LoadInitialData(val isCrypto: Boolean) : UsMarketIntent
