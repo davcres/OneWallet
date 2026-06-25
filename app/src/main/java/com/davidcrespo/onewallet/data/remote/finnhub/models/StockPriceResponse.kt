@@ -25,7 +25,5 @@ fun StockPriceResponse.toInvestDto(symbol: String, name: String) = InvestmentDto
     price = c,
     previousPrice = pc ?: 0.0,
     currency = CurrencyDto(USD),
-    type = InvestmentType.STOCK,
-    year = 0,
-    month = 0
+    type = InvestmentType.STOCK
 )

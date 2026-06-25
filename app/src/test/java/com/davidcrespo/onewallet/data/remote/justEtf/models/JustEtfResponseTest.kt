@@ -28,8 +28,6 @@ class JustEtfResponseTest {
         assertEquals(84.0, dto.previousPrice, 0.0)
         assertEquals(currency, dto.currency)
         assertEquals(InvestmentType.ETF, dto.type)
-        assertEquals(0, dto.year)
-        assertEquals(0, dto.month)
     }
 
     @Test

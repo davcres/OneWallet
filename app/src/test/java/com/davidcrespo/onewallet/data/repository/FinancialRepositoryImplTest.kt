@@ -130,8 +130,6 @@ class FinancialRepositoryImplTest {
             previousPrice = 60000.0,
             currency = CurrencyDto(EUR),
             type = InvestmentType.CRYPTO,
-            year = 2026,
-            month = 3
         )
         every { symbolCache.getCachedInvestmentIfValid(any(), any()) } returns null
         coEvery { binanceDataSource.getCryptoPrice(symbol, any()) } returns dto
@@ -158,9 +156,7 @@ class FinancialRepositoryImplTest {
             price = 61000.0,
             previousPrice = 60000.0,
             currency = CurrencyDto(EUR),
-            type = InvestmentType.CRYPTO,
-            year = 0,
-            month = 0
+            type = InvestmentType.CRYPTO
         )
         every { symbolCache.getCachedInvestmentIfValid(any(), any()) } returns null
         coEvery { binanceDataSource.getCryptoPrice(symbol, "") } returns dto
@@ -181,7 +177,7 @@ class FinancialRepositoryImplTest {
         every { symbolCache.getCachedInvestmentIfValid(any(), any()) } returns null
         every { symbolCache.getCachedInvestment(symbol) } returns null
 
-        val dto = InvestmentDto(symbol, "Apple", 0.0, 150.0, 145.0, CurrencyDto("USD"), InvestmentType.STOCK, 2026, 3)
+        val dto = InvestmentDto(symbol, "Apple", 0.0, 150.0, 145.0, CurrencyDto("USD"), InvestmentType.STOCK)
         coEvery { finnhubDataSource.getStockPrice(symbol, any()) } returns dto
 
         // When
@@ -203,7 +199,7 @@ class FinancialRepositoryImplTest {
         every { symbolCache.getCachedInvestment(symbol) } returns null
 
         coEvery { alphaVantageDataSource.getStockPrice(symbol, any(), any()) } returns null
-        val dto = InvestmentDto(symbol, "Apple", 0.0, 150.0, 145.0, CurrencyDto("USD"), InvestmentType.STOCK, 2026, 3)
+        val dto = InvestmentDto(symbol, "Apple", 0.0, 150.0, 145.0, CurrencyDto("USD"), InvestmentType.STOCK)
         coEvery { yahooFinanceDataSource.getStockPrice(symbol, any()) } returns dto
 
         // When

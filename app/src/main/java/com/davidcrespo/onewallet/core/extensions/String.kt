@@ -76,3 +76,7 @@ fun String.toLocalDate(pattern: String): LocalDate? =
         val apiDateFormatter = DateTimeFormatter.ofPattern(pattern)
         LocalDate.parse(this, apiDateFormatter)
     }.getOrNull()
+
+fun String.toSpanishFormatNumber(): String {
+    return this.replace('.', ',')
+}

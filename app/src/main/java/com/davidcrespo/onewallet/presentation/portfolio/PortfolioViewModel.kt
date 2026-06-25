@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.davidcrespo.onewallet.core.models.ThemeMode
 import com.davidcrespo.onewallet.domain.model.investment.EUR
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentCategory
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.UNKNOWN
 import com.davidcrespo.onewallet.domain.model.investment.USD
@@ -25,6 +26,7 @@ import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
 import com.davidcrespo.onewallet.presentation.models.toDomain
 import com.davidcrespo.onewallet.presentation.models.toUI
+import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByCategoryView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioCoachmarks
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
@@ -88,7 +90,7 @@ class PortfolioViewModel(
             is PortfolioIntent.ToggleTheme -> toggleTheme(intent.themeMode)
 
             is PortfolioIntent.EditQuantity -> _uiState.update { it.copy(editingItem = intent.item) }
-            is PortfolioIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity, intent.alertThreshold)
+            is PortfolioIntent.UpdateQuantity -> updateQuantity(intent.item, intent.quantity, intent.alertThreshold, intent.category)
             is PortfolioIntent.RemoveItem -> removeItem(intent.item)
             is PortfolioIntent.ShowDeleteDialog -> _uiState.update { it.copy(deletingItem = intent.item) }
 
@@ -120,14 +122,15 @@ class PortfolioViewModel(
                 }
             }
 
-            is PortfolioIntent.SelectInvestmentType -> _uiState.update { it.copy(typeDetail = intent.type) }
-            is PortfolioIntent.DismissInvestmentType -> _uiState.update { it.copy(typeDetail = null) }
+            is PortfolioIntent.SelectAttribute -> _uiState.update { it.copy(attributeDetail = intent.attribute) }
+            is PortfolioIntent.DismissAttributeDetail -> _uiState.update { it.copy(attributeDetail = null) }
 
             is PortfolioIntent.StartOnboarding -> startOnboarding()
             is PortfolioIntent.NextOnboardingStep -> nextOnboardingStep()
             is PortfolioIntent.ShowOnboardingCompletionDialog -> _uiState.update { it.copy(showOnboardingCompletionDialog = true) }
             is PortfolioIntent.DismissOnboardingCompletionDialog -> _uiState.update { it.copy(showOnboardingCompletionDialog = false) }
             is PortfolioIntent.ClearPortfolio -> clearPortfolio()
+            is PortfolioIntent.ChangeAllocationMode -> _uiState.update { it.copy(allocationMode = intent.modeIndex) }
             else -> {}
         }
     }
@@ -215,6 +218,7 @@ class PortfolioViewModel(
                         totalBalance = sorted.calculateTotalBalance(),
                         previousBalance = sorted.calculatePreviousBalance(),
                         portfolioItemsByType = sorted.calculateItemsByType(),
+                        portfolioItemsByCategory = sorted.calculateItemsByCategory(),
                         isLoading = false
                     )
                 }
@@ -244,6 +248,7 @@ class PortfolioViewModel(
                         return@async existingBySymbol[symbol]?.copy(
                             quantity = item.quantity,
                             alertThreshold = item.alertThreshold,
+                            category = item.category,
                             year = item.year,
                             month = item.month
                         ) ?: item
@@ -338,6 +343,7 @@ class PortfolioViewModel(
                 totalBalance = finalList.calculateTotalBalance(),
                 previousBalance = finalList.calculatePreviousBalance(),
                 portfolioItemsByType = finalList.calculateItemsByType(),
+                portfolioItemsByCategory = finalList.calculateItemsByCategory(),
                 symbolsWithPrice = newSymbolsWithPrice
             )
         }
@@ -492,7 +498,7 @@ class PortfolioViewModel(
         }
     }
 
-    private fun updateQuantity(item: InvestmentView, quantity: Double, alertThreshold: Double?) {
+    private fun updateQuantity(item: InvestmentView, quantity: Double, alertThreshold: Double?, category: InvestmentCategory) {
         viewModelScope.launch {
             val now = LocalDate.now()
             val year = now.year
@@ -502,7 +508,8 @@ class PortfolioViewModel(
                 quantity = quantity,
                 year = year,
                 month = month,
-                alertThreshold = alertThreshold
+                alertThreshold = alertThreshold,
+                category = category
             )
             addInvestmentToPortfolioUseCase(itemUpdated.toDomain())
 
@@ -566,7 +573,8 @@ class PortfolioViewModel(
                     portfolioItems = portfolioItemsConverted,
                     totalBalance = portfolioItemsConverted.calculateTotalBalance(),
                     previousBalance = portfolioItemsConverted.calculatePreviousBalance(),
-                    portfolioItemsByType = portfolioItemsConverted.calculateItemsByType()
+                    portfolioItemsByType = portfolioItemsConverted.calculateItemsByType(),
+                    portfolioItemsByCategory = portfolioItemsConverted.calculateItemsByCategory()
                 )
             }
 
@@ -591,6 +599,15 @@ class PortfolioViewModel(
             .map { (type, list) ->
                 val total = list.sumOf { it.quantity * it.displayPrice }
                 ItemsByTypeView(type, list.toImmutableList(), total)
+            }
+            .sortedByDescending { it.totalValue }
+            .toImmutableList()
+
+    private fun List<InvestmentView>.calculateItemsByCategory(): ImmutableList<ItemsByCategoryView> =
+        groupBy { it.category }
+            .map { (category, list) ->
+                val total = list.sumOf { it.quantity * it.displayPrice }
+                ItemsByCategoryView(category, list.toImmutableList(), total)
             }
             .sortedByDescending { it.totalValue }
             .toImmutableList()

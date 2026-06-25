@@ -7,6 +7,8 @@ import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentCategory
+
 class InvestmentMappingTest {
 
     @Test
@@ -23,7 +25,8 @@ class InvestmentMappingTest {
             year = 2026,
             month = 3,
             preferredApi = DataSource.YAHOO_FINANCE,
-            alertThreshold = 5.0
+            alertThreshold = 5.0,
+            category = "Tecnología"
         )
 
         // When
@@ -41,6 +44,7 @@ class InvestmentMappingTest {
         assertEquals(entity.month, domain.month)
         assertEquals(entity.preferredApi, domain.preferredApi)
         assertEquals(entity.alertThreshold, domain.alertThreshold)
+        assertEquals(InvestmentCategory.fromName(entity.category), domain.category)
     }
 
     @Test
@@ -57,7 +61,8 @@ class InvestmentMappingTest {
             year = 2026,
             month = 3,
             preferredApi = DataSource.BINANCE,
-            alertThreshold = null
+            alertThreshold = null,
+            category = InvestmentCategory.Other.id
         )
 
         // When
@@ -67,6 +72,7 @@ class InvestmentMappingTest {
         assertEquals(0.0, domain.previousPrice, 0.0)
         assertEquals(DataSource.BINANCE, domain.preferredApi)
         assertEquals(null, domain.alertThreshold)
+        assertEquals(InvestmentCategory.Other, domain.category)
     }
 
     @Test
@@ -83,7 +89,8 @@ class InvestmentMappingTest {
             year = 2026,
             month = 3,
             preferredApi = DataSource.BINANCE,
-            alertThreshold = 2.5
+            alertThreshold = 2.5,
+            category = InvestmentCategory.fromName("Otros")
         )
 
         // When
@@ -101,6 +108,7 @@ class InvestmentMappingTest {
         assertEquals(domain.month, entity.month)
         assertEquals(domain.preferredApi, entity.preferredApi)
         assertEquals(domain.alertThreshold, entity.alertThreshold)
+        assertEquals(domain.category.id, entity.category)
     }
 
     @Test
@@ -117,7 +125,8 @@ class InvestmentMappingTest {
             year = 2026,
             month = 3,
             preferredApi = DataSource.FINNHUB,
-            alertThreshold = 1.0
+            alertThreshold = 1.0,
+            category = "Tecnología"
         )
         val serialized = originalEntity.toString()
 
@@ -142,7 +151,8 @@ class InvestmentMappingTest {
             year = 2026,
             month = 3,
             preferredApi = null,
-            alertThreshold = null
+            alertThreshold = null,
+            category = InvestmentCategory.Other.id
         )
         val serialized = originalEntity.toString()
 
@@ -167,14 +177,15 @@ class InvestmentMappingTest {
             year = 2026,
             month = 3,
             preferredApi = DataSource.YAHOO_FINANCE,
-            alertThreshold = 5.0
+            alertThreshold = 5.0,
+            category = "Tecnología"
         )
 
         // When
         val result = entity.toString()
 
         // Then
-        val expected = "AAPL|Apple Inc|10.0|150.0|145.0|EUR|STOCK|2026|3|YAHOO_FINANCE|5.0"
+        val expected = "AAPL|Apple Inc|10.0|150.0|145.0|EUR|STOCK|2026|3|YAHOO_FINANCE|5.0|Tecnología"
         assertEquals(expected, result)
     }
 }

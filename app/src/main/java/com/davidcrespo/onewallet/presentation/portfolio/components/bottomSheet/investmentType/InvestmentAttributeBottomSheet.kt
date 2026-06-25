@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.R
 import com.davidcrespo.onewallet.domain.model.investment.EUR
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentAttribute
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWAnimatedList
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
@@ -50,8 +51,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InvestmentTypeBottomSheet(
-    type: InvestmentType,
+fun InvestmentAttributeBottomSheet(
+    attribute: InvestmentAttribute,
     investments: ImmutableList<InvestmentView>,
     currency: CurrencyView,
     visible: Boolean,
@@ -80,7 +81,7 @@ fun InvestmentTypeBottomSheet(
                 .verticalScroll(rememberScrollState())
         ) {
             SheetContent(
-                type = type,
+                attribute = attribute,
                 investments = investments,
                 currency = currency,
                 onClose = {
@@ -99,7 +100,7 @@ fun InvestmentTypeBottomSheet(
 // ---------- UI ----------
 @Composable
 private fun SheetContent(
-    type: InvestmentType,
+    attribute: InvestmentAttribute,
     investments: ImmutableList<InvestmentView>,
     currency: CurrencyView,
     onClose: () -> Unit,
@@ -113,7 +114,7 @@ private fun SheetContent(
             .heightIn(max = maxSheetHeight)
     ) {
         Header(
-            type = type,
+            attribute = attribute,
             onClose = onClose,
             modifier = Modifier.padding(horizontal = 18.dp)
         )
@@ -131,7 +132,7 @@ private fun SheetContent(
 
 @Composable
 private fun Header(
-    type: InvestmentType,
+    attribute: InvestmentAttribute,
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -148,13 +149,13 @@ private fun Header(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    imageVector = type.icon,
+                    imageVector = attribute.icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = stringResource(type.titleRes),
+                    text = attribute.nameRes?.let { stringResource(it) } ?: attribute.id,
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -189,7 +190,7 @@ fun ItemsByTypeList(
             OWInvestmentItem(
                 item = priceItem,
                 currency = currency,
-                section = SectionType.ALLOCATION,
+                section = SectionType.PORTFOLIO,
                 onClick = {},
                 modifier = modifier,
                 isBalanceVisible = isBalanceVisible
@@ -200,10 +201,10 @@ fun ItemsByTypeList(
 
 @Preview
 @Composable
-private fun InvestmentTypeBottomSheetPreview() {
+private fun InvestmentAttributeBottomSheetPreview() {
     OneWalletTheme {
-        InvestmentTypeBottomSheet(
-            type = InvestmentType.STOCK,
+        InvestmentAttributeBottomSheet(
+            attribute = InvestmentType.STOCK,
             investments = persistentListOf(
                 InvestmentView(
                     symbol = "AAPL",

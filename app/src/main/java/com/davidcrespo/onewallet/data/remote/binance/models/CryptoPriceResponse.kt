@@ -25,7 +25,5 @@ fun CryptoPriceResponse.toInvestDto(name: String = "") = InvestmentDto(
         symbol.endsWith(USD) -> CurrencyDto(USD)
         else -> CurrencyDto(USD)
     },
-    type = InvestmentType.CRYPTO,
-    year = 0,
-    month = 0
+    type = InvestmentType.CRYPTO
 )

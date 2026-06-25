@@ -3,9 +3,12 @@ package com.davidcrespo.onewallet.presentation.portfolio
 import androidx.compose.runtime.Immutable
 import com.davidcrespo.onewallet.core.models.ThemeMode
 import com.davidcrespo.onewallet.domain.model.investment.EUR
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentAttribute
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentCategory
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByCategoryView
 import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsByTypeView
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioCoachmarks
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTabs
@@ -16,6 +19,8 @@ import kotlinx.collections.immutable.persistentListOf
 data class PortfolioUiState(
     val portfolioItems: ImmutableList<InvestmentView> = persistentListOf(),
     val portfolioItemsByType: ImmutableList<ItemsByTypeView> = persistentListOf(),
+    val portfolioItemsByCategory: ImmutableList<ItemsByCategoryView> = persistentListOf(),
+    val allocationMode: Int = ALLOCATION_BY_TYPE,
     val symbolsWithPrice: ImmutableList<String> = persistentListOf(),
     val selectedCurrency: CurrencyView = CurrencyView.get(EUR),
     val totalBalance: Double = 0.0,
@@ -27,7 +32,7 @@ data class PortfolioUiState(
     val isEtfDialogVisible: Boolean = false,
     val isBankDialogVisible: Boolean = false,
     val isOtherDialogVisible: Boolean = false,
-    val typeDetail: InvestmentType? = null,
+    val attributeDetail: InvestmentAttribute? = null,
     val isLoading: Boolean = true,
     val isLoadingBottomSheet: Boolean = false,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
@@ -36,7 +41,12 @@ data class PortfolioUiState(
     val isOnboardingCompleted: Boolean = false,
     val showOnboardingCompletionDialog: Boolean = false,
     val selectedTab: PortfolioTabs = PortfolioTabs.POSITIONS
-)
+) {
+    companion object {
+        const val ALLOCATION_BY_TYPE = 0
+        const val ALLOCATION_BY_CATEGORY = 1
+    }
+}
 
 sealed interface PortfolioEffect {
     data class NavigateToMarket(val isCrypto: Boolean) : PortfolioEffect
@@ -48,7 +58,7 @@ sealed interface PortfolioIntent {
     data class ToggleTheme(val themeMode: ThemeMode) : PortfolioIntent
 
     data class EditQuantity(val item: InvestmentView?) : PortfolioIntent
-    data class UpdateQuantity(val item: InvestmentView, val quantity: Double, val alertThreshold: Double?) : PortfolioIntent
+    data class UpdateQuantity(val item: InvestmentView, val quantity: Double, val alertThreshold: Double?, val category: InvestmentCategory) : PortfolioIntent
     data class RemoveItem(val item: InvestmentView) : PortfolioIntent
     data class ShowDeleteDialog(val item: InvestmentView?) : PortfolioIntent
 
@@ -76,12 +86,13 @@ sealed interface PortfolioIntent {
 
     data class NavigateToMarket(val isCrypto: Boolean) : PortfolioIntent
 
-    data class SelectInvestmentType(val type: InvestmentType?) : PortfolioIntent
-    data object DismissInvestmentType : PortfolioIntent
+    data class SelectAttribute(val attribute: InvestmentAttribute?) : PortfolioIntent
+    data object DismissAttributeDetail : PortfolioIntent
 
     data object StartOnboarding : PortfolioIntent
     data object NextOnboardingStep : PortfolioIntent
     data object ShowOnboardingCompletionDialog : PortfolioIntent
     data object DismissOnboardingCompletionDialog : PortfolioIntent
     data object ClearPortfolio : PortfolioIntent
+    data class ChangeAllocationMode(val modeIndex: Int) : PortfolioIntent
 }

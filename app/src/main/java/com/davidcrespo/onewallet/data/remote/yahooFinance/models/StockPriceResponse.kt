@@ -63,7 +63,5 @@ fun StockPriceResponseMeta.toInvestDto(symbol: String, name: String) = Investmen
     price = regularMarketPrice ?: 0.0,
     previousPrice = chartPreviousClose ?: 0.0,
     currency = CurrencyDto(currency ?: USD),
-    type = InvestmentType.STOCK,
-    year = 0,
-    month = 0
+    type = InvestmentType.STOCK
 )

@@ -209,6 +209,31 @@ private fun SheetContent(
                 )
             }
 
+            val categoryName = investment.category.nameRes?.let { stringResource(it) } ?: investment.category.id
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = investment.category.color.copy(alpha = 0.15f),
+                modifier = Modifier.padding(top = 4.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = investment.category.icon,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = investment.category.color
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = categoryName,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = investment.category.color
+                    )
+                }
+            }
+
             HorizontalDivider()
 
             if (investment.type.isMarket()) {

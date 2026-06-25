@@ -74,7 +74,7 @@ import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.a
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddFundBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.addInvestment.AddInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.deleteInvestment.DeleteInvestmentBottomSheet
-import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.investmentType.InvestmentTypeBottomSheet
+import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.investmentType.InvestmentAttributeBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.updateInvestment.UpdateInvestmentBottomSheet
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioCoachmarks
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioTabs
@@ -159,7 +159,7 @@ fun PortfolioRoot(
                 uiState.isAddInvestmentVisible ||
                 uiState.editingItem != null ||
                 uiState.deletingItem != null ||
-                uiState.typeDetail != null
+                uiState.attributeDetail != null
 
         val isOnboardingActive = uiState.onboardingPlaylist.isNotEmpty()
 
@@ -253,7 +253,7 @@ private fun PortfolioScreen(
                 uiState.isAddInvestmentVisible ||
                 uiState.editingItem != null ||
                 uiState.deletingItem != null ||
-                uiState.typeDetail != null
+                uiState.attributeDetail != null
 
     val isEditOnboardingActive = uiState.onboardingPlaylist.firstOrNull() == PortfolioCoachmarks.EDIT_INVESTMENT && !hideBackground
     val isDeleteOnboardingActive = uiState.onboardingPlaylist.firstOrNull() == PortfolioCoachmarks.DELETE_INVESTMENT && !hideBackground
@@ -514,10 +514,13 @@ private fun PortfolioScreen(
                                     )
                                     PortfolioTabs.ALLOCATION -> AllocationTab(
                                         itemsByType = uiState.portfolioItemsByType,
+                                        itemsByCategory = uiState.portfolioItemsByCategory,
+                                        allocationMode = uiState.allocationMode,
                                         totalBalance = uiState.totalBalance,
                                         previousBalance = uiState.previousBalance,
                                         currency = uiState.selectedCurrency,
-                                        onSelect = { onAction(PortfolioIntent.SelectInvestmentType(it)) },
+                                        onSelect = { onAction(PortfolioIntent.SelectAttribute(it)) },
+                                        onAllocationModeChange = { onAction(PortfolioIntent.ChangeAllocationMode(it)) },
                                         modifier = Modifier.fillMaxSize(),
                                         isBalanceVisible = isBalanceVisible,
                                         isActivePage = true
@@ -575,8 +578,8 @@ private fun PortfolioScreen(
                 currency = uiState.selectedCurrency,
                 visible = true,
                 onDismiss = { onAction(PortfolioIntent.EditQuantity(null)) },
-                onEditInvestment = { quantity, alertThreshold ->
-                    onAction(PortfolioIntent.UpdateQuantity(item, quantity, alertThreshold))
+                onEditInvestment = { quantity, alertThreshold, category ->
+                    onAction(PortfolioIntent.UpdateQuantity(item, quantity, alertThreshold, category))
                 },
                 onQuantityError = { quantityError ->
                     onAction(PortfolioIntent.SetError(quantityError))
@@ -648,14 +651,17 @@ private fun PortfolioScreen(
             }
         )
 
-        // Add Type Detail Bottom Sheet
-        uiState.typeDetail?.let { type ->
-            InvestmentTypeBottomSheet(
+        // Add Attribute Detail Bottom Sheet
+        uiState.attributeDetail?.let { attribute ->
+            InvestmentAttributeBottomSheet(
                 visible = true,
-                type = type,
-                investments = uiState.portfolioItems.filter { it.type == type }.toImmutableList(),
+                attribute = attribute,
+                investments = uiState.portfolioItems.filter { 
+                    if (attribute is InvestmentType) it.type == attribute
+                    else it.category == attribute
+                }.toImmutableList(),
                 currency = uiState.selectedCurrency,
-                onDismiss = { onAction(PortfolioIntent.DismissInvestmentType) },
+                onDismiss = { onAction(PortfolioIntent.DismissAttributeDetail) },
                 isBalanceVisible = isBalanceVisible
             )
         }

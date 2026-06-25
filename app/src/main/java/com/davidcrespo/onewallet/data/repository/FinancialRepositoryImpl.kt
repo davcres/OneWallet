@@ -300,12 +300,11 @@ class FinancialRepositoryImpl(
         return runCatching {
             val inv = fetch()
             val valid = inv?.takeIf { if (validateName) { it.isValidName() && it.isValidPrice() } else { it.isValidPrice()} }
-                ?.copy(preferredApi = source)
             if (valid != null) {
                 telemetry.log("${source.value} get $isin succeed ${valid.price} ${valid.currency.code}")
-                symbolCache.setCachedInvestment(valid.toEntity())
+                symbolCache.setCachedInvestment(valid.toEntity(preferredApi = source))
             }
-            valid?.toDomain()
+            valid?.toDomain(preferredApi = source)
         }.getOrElse {
             it.printStackTrace()
             null

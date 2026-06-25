@@ -75,9 +75,7 @@ class QueFondosApiClient(private val client: HttpClient) {
             previousPrice = if (diff != null) value - diff else 0.0,
             currency = currency,
             type = type,
-            quantity = 0.0,
-            year = 0,
-            month = 0
+            quantity = 0.0
         )
     }
 

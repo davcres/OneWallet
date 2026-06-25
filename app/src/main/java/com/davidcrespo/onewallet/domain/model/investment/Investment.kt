@@ -11,7 +11,8 @@ data class Investment(
     val year: Int,
     val month: Int,
     val preferredApi: DataSource? = null,
-    val alertThreshold: Double? = null
+    val alertThreshold: Double? = null,
+    val category: InvestmentCategory = InvestmentCategory.Other
 ) {
 
     fun setDate(month: Int, year: Int): Investment {

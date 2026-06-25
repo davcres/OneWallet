@@ -28,9 +28,7 @@ class QueFondosDataSourceTest {
             price = 50.0,
             previousPrice = 49.5,
             currency = CurrencyDto(EUR),
-            type = type,
-            year = 0,
-            month = 0
+            type = type
         )
         coEvery { apiClient.getFundPrice(symbol, type) } returns mockDto
 

@@ -17,8 +17,6 @@ class InvestmentDtoTest {
         previousPrice = 148.0,
         currency = CurrencyDto(USD),
         type = InvestmentType.STOCK,
-        year = 2026,
-        month = 3
     )
 
     @Test
@@ -56,8 +54,6 @@ class InvestmentDtoTest {
         assertEquals(validDto.previousPrice, domain.previousPrice, 0.0)
         assertEquals(validDto.currency.code, domain.currency.code)
         assertEquals(validDto.type, domain.type)
-        assertEquals(validDto.year, domain.year)
-        assertEquals(validDto.month, domain.month)
     }
 
     @Test
@@ -73,7 +69,5 @@ class InvestmentDtoTest {
         assertEquals(validDto.previousPrice, entity.previousPrice ?: 0.0, 0.0)
         assertEquals(validDto.currency.code, entity.currency.code)
         assertEquals(validDto.type, entity.type)
-        assertEquals(validDto.year, entity.year)
-        assertEquals(validDto.month, entity.month)
     }
 }
