@@ -2,6 +2,7 @@ package com.davidcrespo.onewallet.domain.usecase.portfolio
 
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentCategory
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.MarketType
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
@@ -50,7 +51,8 @@ class SeedInitialPortfolioUseCase(
                     investment.copy(
                         quantity = asset.initialQuantity,
                         year = year,
-                        month = month
+                        month = month,
+                        category = asset.category
                     )
                 },
                 onFailure = {
@@ -68,7 +70,8 @@ class SeedInitialPortfolioUseCase(
                 currency = selectedCurrency,
                 type = asset.type,
                 year = year,
-                month = month
+                month = month,
+                category = asset.category
             )
         }
     }
@@ -79,12 +82,14 @@ class SeedInitialPortfolioUseCase(
                 symbol = "BTCEUR",
                 name = "BTCEUR",
                 type = InvestmentType.CRYPTO,
+                category = InvestmentCategory.Crypto,
                 initialQuantity = 0.01
             ),
             SeedAsset(
                 symbol = "GOOGL",
                 name = "Alphabet Inc.",
                 type = InvestmentType.STOCK,
+                category = InvestmentCategory.Tech,
                 initialQuantity = 2.0,
                 marketType = MarketType.US
             ),
@@ -92,6 +97,7 @@ class SeedInitialPortfolioUseCase(
                 symbol = "Cuenta Remunerada",
                 name = "Cuenta Remunerada",
                 type = InvestmentType.BANK,
+                category = InvestmentCategory.fromName("Cuenta Remunerada"),
                 initialQuantity = 500.0
             )
         )

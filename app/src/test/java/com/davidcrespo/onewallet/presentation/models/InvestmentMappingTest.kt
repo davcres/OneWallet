@@ -5,6 +5,7 @@ import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.DataSource
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentCategory
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.USD
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -26,7 +27,8 @@ class InvestmentMappingTest {
             year = 2024,
             month = 3,
             preferredApi = DataSource.YAHOO_FINANCE,
-            alertThreshold = 5.0
+            alertThreshold = 5.0,
+            category = InvestmentCategory.fromName("Tecnología")
         )
 
         // When
@@ -48,6 +50,7 @@ class InvestmentMappingTest {
         assertEquals(3, ui.month)
         assertEquals(DataSource.YAHOO_FINANCE, ui.preferredApi)
         assertEquals(5.0, ui.alertThreshold)
+        assertEquals("Tecnología", ui.category.id)
     }
 
     @Test
@@ -64,7 +67,8 @@ class InvestmentMappingTest {
             year = 2024,
             month = 3,
             preferredApi = DataSource.BINANCE,
-            alertThreshold = null
+            alertThreshold = null,
+            category = InvestmentCategory.Other
         )
 
         // When
@@ -74,6 +78,7 @@ class InvestmentMappingTest {
         assertEquals(0.0, ui.changePercent, 0.0)
         assertEquals(DataSource.BINANCE, ui.preferredApi)
         assertEquals(null, ui.alertThreshold)
+        assertEquals(InvestmentCategory.Other, ui.category)
     }
 
     @Test
@@ -93,7 +98,8 @@ class InvestmentMappingTest {
             year = 2024,
             month = 3,
             preferredApi = DataSource.BINANCE,
-            alertThreshold = 2.5
+            alertThreshold = 2.5,
+            category = InvestmentCategory.fromName("Otros")
         )
 
         // When
@@ -111,6 +117,7 @@ class InvestmentMappingTest {
         assertEquals(ui.month, domain.month)
         assertEquals(ui.preferredApi, domain.preferredApi)
         assertEquals(ui.alertThreshold, domain.alertThreshold)
+        assertEquals(ui.category, domain.category)
     }
 
     @Test
@@ -119,7 +126,8 @@ class InvestmentMappingTest {
             "S", "N", 1.0, 1.0, 1.0, 1.0, 1.0, 
             CurrencyView.get(USD), 0.0, InvestmentType.STOCK, 1, 2024,
             preferredApi = null,
-            alertThreshold = null
+            alertThreshold = null,
+            category = InvestmentCategory.Other
         )
 
         assertEquals(R.drawable.ic_stacked_line_chart, baseUi.copy(type = InvestmentType.STOCK).getIconRes())
@@ -147,7 +155,8 @@ class InvestmentMappingTest {
             year = 2024,
             month = 3,
             preferredApi = DataSource.FINNHUB,
-            alertThreshold = 10.0
+            alertThreshold = 10.0,
+            category = InvestmentCategory.fromName("Tecnología")
         )
         val serialized = original.toString()
 

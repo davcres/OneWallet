@@ -12,11 +12,7 @@ data class InvestmentDto(
     val price: Double,
     val previousPrice: Double,
     val currency: CurrencyDto,
-    val type: InvestmentType,
-    val year: Int,
-    val month: Int,
-    val preferredApi: DataSource? = null,
-    val alertThreshold: Double? = null
+    val type: InvestmentType
 ) {
     fun isValidName(): Boolean =
         name.isNotBlank()
@@ -25,7 +21,7 @@ data class InvestmentDto(
         price > 0.0
 }
 
-fun InvestmentDto.toDomain(): Investment = Investment(
+fun InvestmentDto.toDomain(preferredApi: DataSource? = null): Investment = Investment(
     symbol = symbol,
     name = name,
     quantity = quantity,
@@ -33,13 +29,12 @@ fun InvestmentDto.toDomain(): Investment = Investment(
     previousPrice = previousPrice,
     currency = currency.toDomain(),
     type = type,
-    year = year,
-    month = month,
+    year = 0,
+    month = 0,
     preferredApi = preferredApi,
-    alertThreshold = alertThreshold
 )
 
-fun InvestmentDto.toEntity(): InvestmentEntity = InvestmentEntity(
+fun InvestmentDto.toEntity(preferredApi: DataSource? = null): InvestmentEntity = InvestmentEntity(
     symbol = symbol,
     name = name,
     quantity = quantity,
@@ -47,8 +42,7 @@ fun InvestmentDto.toEntity(): InvestmentEntity = InvestmentEntity(
     previousPrice = previousPrice,
     currency = currency.toEntity(),
     type = type,
-    year = year,
-    month = month,
+    year = 0,
+    month = 0,
     preferredApi = preferredApi,
-    alertThreshold = alertThreshold
 )

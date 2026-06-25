@@ -28,8 +28,6 @@ class CryptoPriceResponseTest {
         assertEquals(59000.20, dto.previousPrice, 0.0)
         assertEquals(CurrencyDto(EUR), dto.currency)
         assertEquals(InvestmentType.CRYPTO, dto.type)
-        assertEquals(0, dto.year)
-        assertEquals(0, dto.month)
     }
 
     @Test

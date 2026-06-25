@@ -52,7 +52,5 @@ fun StockPriceResponse.toInvestDto(symbol: String, name: String, currency: Curre
     price = price?.toDoubleOrNull() ?: 0.0,
     previousPrice = previousClose?.toDoubleOrNull() ?: 0.0,
     currency = currency,
-    type = InvestmentType.STOCK,
-    year = 0,
-    month = 0
+    type = InvestmentType.STOCK
 )

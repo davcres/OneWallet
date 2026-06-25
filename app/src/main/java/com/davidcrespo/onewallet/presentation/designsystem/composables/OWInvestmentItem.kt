@@ -37,6 +37,7 @@ import com.davidcrespo.onewallet.core.composables.AutoScrollingText
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
 import com.davidcrespo.onewallet.core.composables.modifiers.privacySensitive
 import com.davidcrespo.onewallet.domain.model.investment.EUR
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentCategory
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.PercentageVarianceSwitcher
@@ -58,7 +59,8 @@ fun OWInvestmentItem(
     isBalanceVisible: Boolean,
     onGloballyPositioned: (LayoutCoordinates) -> Unit = {},
     modifier: Modifier = Modifier,
-    isPressed: Boolean = false
+    isPressed: Boolean = false,
+    showTypeIcon: Boolean = false
 ) {
     val totalValue = when (section) {
         SectionType.PORTFOLIO, SectionType.HISTORY -> item.quantity * item.displayPrice
@@ -88,15 +90,18 @@ fun OWInvestmentItem(
         ) {
             Spacer(modifier = Modifier.width(16.dp))
 
+            val boxColor = if (showTypeIcon) item.type.color else item.category.color
+            val icon = if (showTypeIcon) item.type.icon else item.category.icon
+
             Box(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(item.type.color),
+                    .background(boxColor),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = item.type.icon,
+                    imageVector = icon,
                     contentDescription = null,
                     tint = Color.White
                 )
@@ -201,11 +206,12 @@ private fun OWInvestmentItemPreview() {
                 originalCurrency = CurrencyView.get(EUR),
                 changePercent = 10.0,
                 type = InvestmentType.STOCK,
+                category = InvestmentCategory.Tech,
                 month = 0,
                 year = 0
             ),
             currency = CurrencyView.get(EUR),
-            section = SectionType.PORTFOLIO,
+            section = SectionType.PRICES,
             onClick = {},
             isBalanceVisible = true
         )

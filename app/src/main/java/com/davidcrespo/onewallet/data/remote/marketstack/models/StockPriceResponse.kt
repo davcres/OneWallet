@@ -83,7 +83,5 @@ fun StockPriceResponseList.toInvestDto(symbol: String, name: String) = Investmen
     price = data.firstOrNull()?.close ?: 0.0,
     previousPrice = data.lastOrNull()?.close ?: 0.0,
     currency = data.firstOrNull()?.priceCurrency?.let { CurrencyDto(it) } ?: CurrencyDto(UNKNOWN),
-    type = InvestmentType.STOCK,
-    year = 0,
-    month = 0
+    type = InvestmentType.STOCK
 )

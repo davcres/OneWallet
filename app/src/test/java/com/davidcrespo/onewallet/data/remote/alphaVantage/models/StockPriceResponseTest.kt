@@ -31,8 +31,6 @@ class StockPriceResponseTest {
         assertEquals(currencyDto, dto.currency)
         assertEquals(InvestmentType.STOCK, dto.type)
         assertEquals(0.0, dto.quantity, 0.0)
-        assertEquals(0, dto.year)
-        assertEquals(0, dto.month)
     }
 
     @Test

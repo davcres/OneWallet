@@ -11,6 +11,8 @@ import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import java.util.Locale
 import kotlin.math.abs
 
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentCategory
+
 @Immutable
 data class InvestmentView(
     val symbol: String,
@@ -26,7 +28,8 @@ data class InvestmentView(
     val month: Int,
     val year: Int,
     val preferredApi: DataSource? = null,
-    val alertThreshold: Double? = null
+    val alertThreshold: Double? = null,
+    val category: InvestmentCategory = InvestmentCategory.Other
 ) {
     fun getIconRes() =
         when (type) {
@@ -39,7 +42,7 @@ data class InvestmentView(
         }
 
     override fun toString(): String {
-        return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|${originalCurrency.code}|$changePercent|$type|$year|$month|${preferredApi?.name}|$alertThreshold"
+        return "$symbol|$name|$quantity|$displayPrice|$displayPreviousPrice|$originalPrice|$originalPreviousPrice|${originalCurrency.code}|$changePercent|$type|$year|$month|${preferredApi?.name}|$alertThreshold|${category.id}"
     }
 }
 
@@ -62,7 +65,8 @@ fun Investment.toUI(): InvestmentView {
         month = month,
         year = year,
         preferredApi = preferredApi,
-        alertThreshold = alertThreshold
+        alertThreshold = alertThreshold,
+        category = category
     )
 }
 
@@ -78,7 +82,8 @@ fun InvestmentView.toDomain(): Investment {
         year = year,
         month = month,
         preferredApi = preferredApi,
-        alertThreshold = alertThreshold
+        alertThreshold = alertThreshold,
+        category = category
     )
 }
 
@@ -97,8 +102,9 @@ fun String.toInvestmentView(): InvestmentView {
         type = InvestmentType.valueOf(parts[9]),
         year = parts[10].toIntOrNull() ?: 0,
         month = parts[11].toIntOrNull() ?: 0,
-        preferredApi = parts.getOrNull(12)?.let { runCatching { DataSource.valueOf(it) }.getOrNull() },
-        alertThreshold = parts.getOrNull(13)?.toDoubleOrNull()
+        preferredApi = parts.getOrNull(12)?.takeIf { it != "null" }?.let { runCatching { DataSource.valueOf(it) }.getOrNull() },
+        alertThreshold = parts.getOrNull(13)?.takeIf { it != "null" }?.toDoubleOrNull(),
+        category = InvestmentCategory.fromName(parts.getOrNull(14)?.takeIf { it != "null" })
     )
 }
 

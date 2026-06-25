@@ -27,9 +27,7 @@ class InvestingDataSourceTest {
             price = 120.0,
             previousPrice = 118.0,
             currency = CurrencyDto(EUR),
-            type = InvestmentType.FUND,
-            year = 0,
-            month = 0
+            type = InvestmentType.FUND
         )
         coEvery { apiClient.getFundPrice(symbol) } returns mockDto
 

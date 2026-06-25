@@ -35,8 +35,6 @@ fun JustEtfDetailResponse.toInvestDto(currency: CurrencyDto): InvestmentDto {
         price = etf?.latestQuote?.raw ?: 0.0,
         previousPrice = etf?.previousQuote?.raw ?: 0.0,
         currency = currency,
-        type = InvestmentType.ETF,
-        year = 0,
-        month = 0
+        type = InvestmentType.ETF
     )
 }

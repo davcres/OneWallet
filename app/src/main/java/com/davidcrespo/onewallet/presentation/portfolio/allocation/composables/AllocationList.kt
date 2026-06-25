@@ -22,10 +22,11 @@ fun AllocationList(
     header: @Composable () -> Unit,
     items: ImmutableList<InvestmentView>,
     currency: CurrencyView,
-    onSelect: (InvestmentType) -> Unit,
+    onSelect: (InvestmentView) -> Unit,
     modifier: Modifier = Modifier,
     isBalanceVisible: Boolean = true,
-    shouldAnimate: Boolean = true
+    shouldAnimate: Boolean = true,
+    showTypeIcon: Boolean = false
 ) {
     if (shouldAnimate) {
         OWAnimatedList(
@@ -39,10 +40,11 @@ fun AllocationList(
                 OWInvestmentItem(
                     item = priceItem,
                     currency = currency,
-                    section = SectionType.PRICES,
-                    onClick = { onSelect(it.type) },
+                    section = SectionType.ALLOCATION,
+                    onClick = { onSelect(it) },
                     modifier = modifier,
-                    isBalanceVisible = isBalanceVisible
+                    isBalanceVisible = isBalanceVisible,
+                    showTypeIcon = showTypeIcon
                 )
             }
         )

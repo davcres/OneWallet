@@ -2,6 +2,7 @@ package com.davidcrespo.onewallet.domain.usecase.history
 
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentCategory
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.repository.PortfolioRepository
 
@@ -18,16 +19,19 @@ class ImportHistoryUseCase(
                 Investment(
                     symbol = parts[0],
                     name = parts[1],
-                    quantity = parts[2].toDouble(),
-                    price = parts[3].toDouble(),
-                    previousPrice = parts[4].toDouble(),
+                    quantity = parts[2].replace(',', '.').toDouble(),
+                    price = parts[3].replace(',', '.').toDouble(),
+                    previousPrice = parts[4].replace(',', '.').toDouble(),
                     currency = Currency(parts[5]),
                     type = InvestmentType.valueOf(parts[6]),
                     year = parts[7].toInt(),
-                    month = parts[8].toInt()
+                    month = parts[8].toInt(),
+                    category = InvestmentCategory.fromName(parts.getOrNull(9))
                 )
             }
             portfolioRepository.addOrUpdateItems(investments)
+        }.onFailure { throwable ->
+            throwable.printStackTrace()
         }
     }
 }

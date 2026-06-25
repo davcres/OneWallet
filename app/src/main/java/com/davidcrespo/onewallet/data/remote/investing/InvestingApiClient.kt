@@ -72,9 +72,7 @@ class InvestingApiClient(private val client: HttpClient) {
             previousPrice = if (diff != null) value - diff else 0.0,
             currency = if (!currency.isNullOrEmpty()) CurrencyDto(currency) else CurrencyDto(USD),
             type = InvestmentType.FUND,
-            quantity = 0.0,
-            year = 0,
-            month = 0
+            quantity = 0.0
         )
     }
 }

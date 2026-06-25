@@ -1,10 +1,5 @@
 package com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.updateInvestment
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,18 +11,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Percent
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.PieChartOutline
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,54 +25,38 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import com.davidcrespo.onewallet.R
-import com.davidcrespo.onewallet.core.composables.Button
 import com.davidcrespo.onewallet.core.composables.CopiableText
-import com.davidcrespo.onewallet.core.composables.TextField
-import com.davidcrespo.onewallet.core.composables.auxiliar.ButtonStyle
-import com.davidcrespo.onewallet.core.composables.modifiers.animations.shakeClickEffect
-import com.davidcrespo.onewallet.core.extensions.applyIf
-import com.davidcrespo.onewallet.core.extensions.normalizeDouble
 import com.davidcrespo.onewallet.domain.model.investment.EUR
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentCategory
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.model.investment.hasIsin
-import com.davidcrespo.onewallet.domain.model.investment.isManual
 import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWCurrencyPrice
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
-import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.TrendDisplay
 import com.davidcrespo.onewallet.presentation.designsystem.composables.auxiliar.bottomSheet.SheetHandle
 import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.presentation.models.CurrencyView
 import com.davidcrespo.onewallet.presentation.models.InvestmentView
+import com.davidcrespo.onewallet.presentation.portfolio.components.bottomSheet.updateInvestment.components.UpdateInvestmentForm
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,7 +66,7 @@ fun UpdateInvestmentBottomSheet(
     currency: CurrencyView,
     visible: Boolean,
     onDismiss: () -> Unit,
-    onEditInvestment: (newQuantity: Double, alertThreshold: Double?) -> Unit,
+    onEditInvestment: (newQuantity: Double, alertThreshold: Double?, category: InvestmentCategory) -> Unit,
     onQuantityError: (String) -> Unit
 ) {
     if (!visible) return
@@ -123,7 +97,7 @@ fun UpdateInvestmentBottomSheet(
                             .invokeOnCompletion { onDismiss() }
                     },
                     onEditInvestment = onEditInvestment,
-                    onQuantityError = onQuantityError,
+                    onError = onQuantityError,
                     snackbarHostState = snackbarHostState
                 )
 
@@ -146,8 +120,8 @@ private fun SheetContent(
     investment: InvestmentView,
     currency: CurrencyView,
     onClose: () -> Unit,
-    onEditInvestment: (Double, Double?) -> Unit,
-    onQuantityError: (String) -> Unit,
+    onEditInvestment: (Double, Double?, InvestmentCategory) -> Unit,
+    onError: (String) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
     val focusManager = LocalFocusManager.current
@@ -180,12 +154,12 @@ private fun SheetContent(
 
         Spacer(Modifier.height(32.dp))
 
-        Form(
+        UpdateInvestmentForm(
             investment = investment,
             currency = currency,
             onClose = onClose,
             onEditInvestment = onEditInvestment,
-            onError = onQuantityError
+            onError = onError
         )
     }
 }
@@ -327,310 +301,6 @@ private fun CurrentHolding(
     }
 }
 
-@Composable
-private fun Form(
-    investment: InvestmentView,
-    currency: CurrencyView,
-    onClose: () -> Unit,
-    onEditInvestment: (newQuantity: Double, alertThreshold: Double?) -> Unit,
-    onError: (String) -> Unit
-) {
-    val initialQuantityValue = investment.quantity.toString()
-    val initialQuantityPlaceholder = initialQuantityValue.takeIf { it.isNotEmpty() } ?: "0.0"
-    var quantity by remember { mutableStateOf("") }
-
-    val initialThresholdValue = investment.alertThreshold?.toString().orEmpty()
-    val thresholdPlaceholder = initialThresholdValue.takeIf { it.isNotEmpty() } ?: stringResource(R.string.alert_threshold_placeholder)
-    var threshold by remember { mutableStateOf("") }
-    
-    var notificationsEnabled by remember { mutableStateOf(investment.alertThreshold != null) }
-    val newPrice = investment.displayPrice * quantity.normalizeDouble()
-
-    val context = LocalContext.current
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            notificationsEnabled = true
-        } else {
-            notificationsEnabled = false
-        }
-    }
-
-    val requestNotificationsPermissionIfNeeded = {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val isGranted = ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-
-            if (!isGranted) {
-                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }
-    }
-
-    val enableNotifications = {
-        notificationsEnabled = true
-        requestNotificationsPermissionIfNeeded()
-    }
-
-    val quantityLabel = if (investment.type.isMarket()) {
-        stringResource(R.string.new_quantity_market)
-    } else {
-        stringResource(R.string.new_quantity_manual)
-    }
-
-    Column(
-        modifier = Modifier.semantics(mergeDescendants = true) {}
-    ) {
-        Text(
-            text = quantityLabel,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        TextField(
-            value = quantity,
-            onValueChange = { input ->
-                val normalized = input.replace('.', ',')
-                if (normalized.all { it.isDigit() || it == ',' } && normalized.count { it == ',' } <= 1) {
-                    quantity = normalized
-                }
-            },
-            placeholder = initialQuantityPlaceholder,
-            contentDescription = null,
-            leadingIcon = if (investment.type.isMarket()) Icons.Outlined.PieChartOutline else investment.originalCurrency.icon,
-            hasClearIcon = true,
-            cornerRadius = 16.dp,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-        )
-
-        if (investment.type.isManual()) {
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row (
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Info,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(16.dp)
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text = stringResource(R.string.new_quantity_manual_info, investment.originalCurrency.symbol),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-        } else {
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.receive_notifications),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        )
-
-                        Switch(
-                            checked = notificationsEnabled,
-                            onCheckedChange = { isEnabled ->
-                                notificationsEnabled = isEnabled
-
-                                if (isEnabled) {
-                                    requestNotificationsPermissionIfNeeded()
-                                }
-                            },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = MaterialTheme.colorScheme.onTertiary,
-                                checkedTrackColor = MaterialTheme.colorScheme.primary,
-                                uncheckedThumbColor = Color.White,
-                                uncheckedTrackColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                checkedBorderColor = Color.Transparent,
-                                uncheckedBorderColor = Color.Transparent
-                            )
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.alert_threshold_info),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.weight(2f)
-                        )
-
-                        TextField(
-                            value = threshold,
-                            onValueChange = { input ->
-                                val normalized = input.replace('.', ',')
-                                if (normalized.all { it.isDigit() || it == ',' } && normalized.count { it == ',' } <= 1) {
-                                    threshold = normalized
-                                }
-                            },
-                            placeholder = thresholdPlaceholder,
-                            contentDescription = stringResource(R.string.asset_alert_threshold_cd),
-                            cornerRadius = 16.dp,
-                            trailingIcon = Icons.Default.Percent,
-                            hasClearIcon = false,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            modifier = Modifier
-                                .weight(1f)
-                                .onFocusChanged { focusState ->
-                                    if (focusState.isFocused && !notificationsEnabled) {
-                                        enableNotifications()
-                                    }
-                                }
-                        )
-                    }
-                }
-            }
-        }
-
-        Spacer(Modifier.height(32.dp))
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = stringResource(R.string.estimated_new_value),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OWCurrencyPrice(
-                price = newPrice,
-                currency = currency,
-                fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                textColor = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            val variance = newPrice - (investment.displayPrice * investment.quantity)
-
-            val backgroundColor = when {
-                variance > 0 -> MaterialTheme.colorScheme.primaryContainer
-                variance < 0 -> MaterialTheme.colorScheme.error.copy(alpha = 0.25f)
-                else -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.25f)
-            }
-
-            Surface(
-                shape = RoundedCornerShape(8.dp),
-                color = backgroundColor
-            ) {
-                TrendDisplay(
-                    value = variance,
-                    showPercentage = false,
-                    currency = currency,
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-        }
-
-        Spacer(Modifier.height(32.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Button(
-                text = stringResource(R.string.cancel_action),
-                contentDescription = stringResource(R.string.cancel_edit_investment_cd),
-                style = ButtonStyle.SECONDARY,
-                onClick = onClose,
-                modifier = Modifier.weight(1f)
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            val normalizedQuantity = quantity
-                .takeIf { it.isNotBlank() }
-                ?.normalizeDouble()
-                ?: initialQuantityValue.normalizeDouble()
-
-            val normalizedThreshold = threshold
-                .takeIf { it.isNotBlank() }
-                ?.normalizeDouble()
-                ?: initialThresholdValue
-                    .takeIf { it.isNotBlank() }
-                    ?.normalizeDouble()
-
-            val isValidQuantity = normalizedQuantity >= 0
-            val isValidThreshold = !notificationsEnabled ||
-                    normalizedThreshold == null ||
-                    normalizedThreshold > 0
-
-            val errorInvalidQuantity = stringResource(R.string.error_quantity_empty)
-            val errorInvalidThreshold = stringResource(R.string.error_alert_threshold_invalid)
-
-            Button(
-                text = stringResource(R.string.update_quantity_action),
-                contentDescription = stringResource(R.string.update_quantity_action),
-                style = ButtonStyle.PRIMARY,
-                onClick = {
-                    when {
-                        !isValidQuantity -> {
-                            onError(errorInvalidQuantity)
-                        }
-
-                        !isValidThreshold -> {
-                            onError(errorInvalidThreshold)
-                        }
-
-                        else -> {
-                            onEditInvestment(
-                                normalizedQuantity,
-                                if (notificationsEnabled) normalizedThreshold else null
-                            )
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .weight(1f)
-                    .applyIf(!isValidQuantity || !isValidThreshold) {
-                        shakeClickEffect()
-                    }
-            )
-        }
-    }
-}
-
 @Preview
 @Composable
 private fun UpdateInvestmentBottomSheetPreview() {
@@ -653,7 +323,7 @@ private fun UpdateInvestmentBottomSheetPreview() {
             currency = CurrencyView.get(EUR),
             visible = true,
             onDismiss = {},
-            onEditInvestment = { _, _ -> },
+            onEditInvestment = { _, _, _ -> },
             onQuantityError = {}
         )
     }

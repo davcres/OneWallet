@@ -107,6 +107,8 @@ sealed interface {ProjectName}Error {
 *   Follow Material Design guidelines.
 *   In the View (Compose), always use collectAsStateWithLifecycle() to observe the State and avoid memory leaks or unnecessary consumption of resources.
 *   Each Composable Panel must have a 'Content' version containing only the State and Events (lambdas), to facilitate the creation of Previews without the need to mock the ViewModel. The 'Content' composable is called by a 'Root' composable which makes the initial calls to the ViewModel and obtains its state.
+*   Use always colors from com.davidcrespo.onewallet.presentation.designsystem.theme.Theme and follow com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem style.
+*   In Text composables use style = MaterialTheme.typography instead of fontSize.
 
 ### Testing
 *   **Dependencies** Use MockK and JUnit5 for business logic tests. Use Jetpack Compose Tests with JUnit 4 for UI tests and robolectric for running them without emulator. Create also screenshot tests with roborazzi.

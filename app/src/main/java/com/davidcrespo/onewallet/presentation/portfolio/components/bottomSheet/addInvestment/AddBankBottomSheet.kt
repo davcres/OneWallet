@@ -48,6 +48,7 @@ import com.davidcrespo.onewallet.core.composables.auxiliar.ButtonStyle
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.shakeClickEffect
 import com.davidcrespo.onewallet.core.extensions.applyIf
 import com.davidcrespo.onewallet.core.extensions.normalizeDouble
+import com.davidcrespo.onewallet.core.extensions.toSpanishFormatNumber
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.presentation.designsystem.composables.OWIconButton
@@ -209,7 +210,7 @@ private fun Form(
         TextField(
             value = quantity,
             onValueChange = { input ->
-                val normalized = input.replace('.', ',')
+                val normalized = input.toSpanishFormatNumber()
                 if (normalized.all { it.isDigit() || it == ',' } && normalized.count { it == ',' } <= 1) {
                     quantity = normalized
                 }

@@ -88,6 +88,7 @@
     <string name="cancel_edit_investment_cd">Pulsa para no editar la cantidad</string>
     <string name="error_quantity_empty">Introduce una cantidad válida.</string>
     <string name="error_alert_threshold_invalid">El porcentaje de notificación debe ser mayor que 0</string>
+    <string name="error_category_empty">Por favor, selecciona una categoría.</string>
     <string name="delete_action">Eliminar</string>
     <string name="delete_investment_message">¿Estás seguro de que quieres eliminar esta inversión de tu cartera?</string>
     <string name="asset_name_cd">Introduce el nombre del activo</string>
@@ -98,6 +99,8 @@
 
     <!-- Allocation -->
     <string name="tab_allocation_title">Distribución por tipo de activo</string>
+    <string name="tab_allocation_type">Tipo</string>
+    <string name="tab_allocation_category">Categoría</string>
 
     <!-- Prices -->
     <string name="tab_prices_title">Precio por unidad</string>
@@ -199,4 +202,29 @@
     <string name="accessibility_price_increased_by">y %1$s %2$s respecto al día anterior</string>
     <string name="accessibility_price_decreased_by">y %1$s %2$s respecto al día anterior</string>
     <string name="accessibility_unchanged">no ha cambiado respecto al día anterior</string>
+
+    <!-- Dropdown Selector -->
+    <string name="dropdown_select_category">Selecciona una categoría</string>
+    <string name="dropdown_custom_category_title">Categoría personalizada</string>
+    <string name="dropdown_custom_category_placeholder">Nombre de la categoría</string>
+    <string name="dropdown_custom_category_cancel_cd">Cancelar categoría personalizada</string>
+    <string name="accept_action">Aceptar</string>
+    <string name="dropdown_custom_category_accept_cd">Aceptar categoría personalizada</string>
+    <string name="dropdown_custom_category_add_cd">Agregar categoría personalizada</string>
+    <string name="dropdown_custom_category_item">Personalizado…</string>
+
+    <!-- Investment Categories -->
+    <string name="category_label">Categoría</string>
+    <string name="category_tech">Tecnología</string>
+    <string name="category_real_estate">Inmobiliario</string>
+    <string name="category_healthcare">Salud</string>
+    <string name="category_energy">Energía</string>
+    <string name="category_finance">Finanzas</string>
+    <string name="category_consumer">Consumo</string>
+    <string name="category_industrial">Industrial</string>
+    <string name="category_telecom">Telecomunicaciones</string>
+    <string name="category_raw_materials">Materias Primas</string>
+    <string name="category_utilities">Servicios Públicos</string>
+    <string name="category_crypto">Cripto</string>
+    <string name="category_other">Otros</string>
 </resources>
