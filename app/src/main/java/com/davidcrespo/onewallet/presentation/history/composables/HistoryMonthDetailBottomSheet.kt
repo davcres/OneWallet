@@ -71,13 +71,16 @@ fun HistoryMonthDetailBottomSheet(
     val blurRadius by animateDpAsState(
         targetValue = if (hideBackground) 16.dp else 0.dp,
         animationSpec = tween(
-            durationMillis = 1000
+            durationMillis = if (hideBackground) 300 else 200
         ),
         label = "blur"
     )
 
     val overlayAlpha by animateFloatAsState(
         targetValue = if (hideBackground) 0.32f else 0f,
+        animationSpec = tween(
+            durationMillis = if (hideBackground) 300 else 200
+        ),
         label = "overlay"
     )
 

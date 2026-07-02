@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">OneWallet Portafolio</string>
+    <string name="app_name">OneWallet</string>
 
     <!-- Onboarding -->
     <string name="onboarding_1_title">Bienvenido a OneWallet</string>
