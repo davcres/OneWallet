@@ -230,4 +230,60 @@ class FinancialRepositoryImplTest {
         // Then
         assertTrue(result.isFailure)
     }
+
+    @Test
+    fun `cuando se obtiene ETF desde JUST_ETF_PRICE, preferredApi es null`() = runTest(mainDispatcherExtension.testDispatcher) {
+        // Given
+        val isin = "IE00B4ND3602"
+        every { symbolCache.getCachedInvestmentIfValid(any(), any()) } returns null
+        every { symbolCache.getCachedInvestment(isin) } returns null
+
+        coEvery { justEtfDataSource.getEtfDetail(isin, any()) } throws Exception("Failed")
+        coEvery { extraEtfDataSource.getEtfPrice(isin) } throws Exception("Failed")
+        coEvery { queFondosDataSource.getFundPrice(isin, InvestmentType.ETF) } returns null
+
+        val dto = InvestmentDto(
+            symbol = isin,
+            name = "Gold ETF",
+            quantity = 0.0,
+            price = 84.46,
+            previousPrice = 84.0,
+            currency = CurrencyDto(EUR),
+            type = InvestmentType.ETF
+        )
+        coEvery { justEtfDataSource.getEtfPrice(isin, any()) } returns dto
+
+        // When
+        val result = repository.getInvestmentPrice(isin, InvestmentType.ETF, "", null, null, null)
+
+        // Then
+        assertTrue(result.isSuccess)
+        assertEquals(null, result.getOrNull()?.preferredApi)
+    }
+
+    @Test
+    fun `cuando se obtiene ETF desde JUST_ETF_DETAIL, preferredApi es JUST_ETF_DETAIL`() = runTest(mainDispatcherExtension.testDispatcher) {
+        // Given
+        val isin = "IE00B4ND3602"
+        every { symbolCache.getCachedInvestmentIfValid(any(), any()) } returns null
+        every { symbolCache.getCachedInvestment(isin) } returns null
+
+        val dto = InvestmentDto(
+            symbol = isin,
+            name = "Gold ETF",
+            quantity = 0.0,
+            price = 84.46,
+            previousPrice = 84.0,
+            currency = CurrencyDto(EUR),
+            type = InvestmentType.ETF
+        )
+        coEvery { justEtfDataSource.getEtfDetail(isin, any()) } returns dto
+
+        // When
+        val result = repository.getInvestmentPrice(isin, InvestmentType.ETF, "", null, null, null)
+
+        // Then
+        assertTrue(result.isSuccess)
+        assertEquals(DataSource.JUST_ETF_DETAIL, result.getOrNull()?.preferredApi)
+    }
 }

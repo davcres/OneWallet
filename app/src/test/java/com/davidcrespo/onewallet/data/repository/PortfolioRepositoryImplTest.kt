@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.data.repository
 
+import android.content.SharedPreferences
 import app.cash.turbine.test
 import com.davidcrespo.onewallet.data.local.database.portfolio.dao.PortfolioDao
 import com.davidcrespo.onewallet.data.local.database.portfolio.entities.CurrencyEntity
@@ -18,13 +19,13 @@ import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
+import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PortfolioRepositoryImplTest {
@@ -35,11 +36,12 @@ class PortfolioRepositoryImplTest {
     private val dispatcherProvider = TestDispatcherProvider(mainDispatcherExtension.testDispatcher)
 
     private val dao = mockk<PortfolioDao>(relaxed = true)
+    private val sharedPreferences = mockk<SharedPreferences>(relaxed = true)
     private lateinit var repository: PortfolioRepositoryImpl
 
     @BeforeEach
     fun setUp() {
-        repository = PortfolioRepositoryImpl(dao, dispatcherProvider)
+        repository = PortfolioRepositoryImpl(dao, sharedPreferences, dispatcherProvider)
     }
 
     @AfterEach
@@ -50,6 +52,7 @@ class PortfolioRepositoryImplTest {
     @Test
     fun `cuando pide los items del portfolio, los mapea de entidad a dominio correctamente`() = runTest(mainDispatcherExtension.testDispatcher) {
         // Given
+        val now = LocalDate.now()
         val entity = InvestmentEntity(
             symbol = "AAPL",
             name = "Apple Inc",
@@ -58,10 +61,12 @@ class PortfolioRepositoryImplTest {
             previousPrice = 145.0,
             currency = CurrencyEntity("EUR"),
             type = InvestmentType.STOCK,
-            year = 2026,
-            month = 3
+            year = now.year,
+            month = now.monthValue
         )
+        every { sharedPreferences.getBoolean(any(), false) } returns true
         every { dao.getLatestPortfolio() } returns flowOf(listOf(entity))
+        every { dao.getPortfolio(now.year, now.monthValue) } returns flowOf(listOf(entity))
 
         // When & Then
         repository.getPortfolioItems().test {
@@ -70,6 +75,33 @@ class PortfolioRepositoryImplTest {
             assertEquals("AAPL", domainList[0].symbol)
             assertEquals(150.0, domainList[0].price, 0.0)
             assertEquals(EUR, domainList[0].currency.code)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `cuando el mes actual ya fue inicializado pero esta vacio, getPortfolioItems devuelve lista vacia y no los del mes anterior`() = runTest(mainDispatcherExtension.testDispatcher) {
+        // Given
+        val now = LocalDate.now()
+        val entityPreviousMonth = InvestmentEntity(
+            symbol = "AAPL",
+            name = "Apple Inc",
+            quantity = 10.0,
+            price = 150.0,
+            previousPrice = 145.0,
+            currency = CurrencyEntity("EUR"),
+            type = InvestmentType.STOCK,
+            year = 2020,
+            month = 1
+        )
+        every { sharedPreferences.getBoolean("portfolio_initialized_${now.year}_${now.monthValue}", false) } returns true
+        every { dao.getLatestPortfolio() } returns flowOf(listOf(entityPreviousMonth))
+        every { dao.getPortfolio(now.year, now.monthValue) } returns flowOf(emptyList())
+
+        // When & Then
+        repository.getPortfolioItems().test {
+            val domainList = awaitItem()
+            assertEquals(0, domainList.size)
             cancelAndIgnoreRemainingEvents()
         }
     }

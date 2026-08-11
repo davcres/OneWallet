@@ -31,6 +31,7 @@ import com.davidcrespo.onewallet.presentation.portfolio.allocation.models.ItemsB
 import com.davidcrespo.onewallet.presentation.portfolio.models.PortfolioCoachmarks
 import com.davidcrespo.onewallet.presentation.widget.WidgetsRefreshWorker
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -131,13 +132,22 @@ class PortfolioViewModel(
             is PortfolioIntent.DismissOnboardingCompletionDialog -> _uiState.update { it.copy(showOnboardingCompletionDialog = false) }
             is PortfolioIntent.ClearPortfolio -> clearPortfolio()
             is PortfolioIntent.ChangeAllocationMode -> _uiState.update { it.copy(allocationMode = intent.modeIndex) }
-            else -> {}
         }
     }
 
     private fun clearPortfolio() {
         viewModelScope.launch {
             clearPortfolioUseCase()
+            _uiState.update {
+                it.copy(
+                    portfolioItems = persistentListOf(),
+                    totalBalance = 0.0,
+                    previousBalance = 0.0,
+                    portfolioItemsByType = persistentListOf(),
+                    portfolioItemsByCategory = persistentListOf(),
+                    symbolsWithPrice = persistentListOf()
+                )
+            }
         }
     }
 
@@ -263,9 +273,12 @@ class PortfolioViewModel(
                         preferredApi = item.preferredApi
                     ).fold(
                         onSuccess = { api ->
-                            val currency = item.originalCurrency.takeIf { it.code != UNKNOWN } ?: api.currency.toUI()
+                            val apiCurrency = api.currency.takeIf { it.code != UNKNOWN }?.toUI()
+                                ?: item.originalCurrency.takeIf { it.code != UNKNOWN }
+                                ?: CurrencyView.get(EUR)
+
                             val rate = getCurrencyRateUseCase(
-                                from = currency.code,
+                                from = apiCurrency.code,
                                 to = selectedCurrency.code
                             ).fold(
                                 onSuccess = { it },
@@ -274,20 +287,20 @@ class PortfolioViewModel(
 
                             val priceConverted = currencyConverter.convert(
                                 amount = api.price,
-                                from = currency.code,
+                                from = apiCurrency.code,
                                 to = selectedCurrency.code,
                                 rate = rate
                             )
 
                             val previousPriceConverted = currencyConverter.convert(
                                 amount = api.previousPrice,
-                                from = currency.code,
+                                from = apiCurrency.code,
                                 to = selectedCurrency.code,
                                 rate = rate
                             )
 
                             item.copy(
-                                originalCurrency = currency,
+                                originalCurrency = apiCurrency,
                                 originalPrice = api.price,
                                 originalPreviousPrice = api.previousPrice,
                                 displayPrice = priceConverted,
@@ -383,10 +396,11 @@ class PortfolioViewModel(
                     )
 
                     addInvestmentToPortfolioUseCase(fund)
-                    _uiState.update {
-                        it.copy(
+                    _uiState.update { state ->
+                        state.copy(
                             isLoadingBottomSheet = false,
-                            isFundDialogVisible = false
+                            isFundDialogVisible = false,
+                            symbolsWithPrice = state.symbolsWithPrice.filterNot { it == isin }.toImmutableList()
                         )
                     }
                 }
@@ -421,10 +435,11 @@ class PortfolioViewModel(
                     )
 
                     addInvestmentToPortfolioUseCase(etf)
-                    _uiState.update {
-                        it.copy(
+                    _uiState.update { state ->
+                        state.copy(
                             isLoadingBottomSheet = false,
-                            isEtfDialogVisible = false
+                            isEtfDialogVisible = false,
+                            symbolsWithPrice = state.symbolsWithPrice.filterNot { it == isin }.toImmutableList()
                         )
                     }
                 }
@@ -494,7 +509,19 @@ class PortfolioViewModel(
     private fun removeItem(item: InvestmentView) {
         viewModelScope.launch {
             removePortfolioItemUseCase(item.toDomain())
-            _uiState.update { it.copy(deletingItem = null) }
+            _uiState.update { state ->
+                val updatedItems = state.portfolioItems.filterNot { it.symbol == item.symbol }.toImmutableList()
+                val updatedSymbols = state.symbolsWithPrice.filterNot { it == item.symbol }.toImmutableList()
+                state.copy(
+                    deletingItem = null,
+                    portfolioItems = updatedItems,
+                    totalBalance = updatedItems.calculateTotalBalance(),
+                    previousBalance = updatedItems.calculatePreviousBalance(),
+                    portfolioItemsByType = updatedItems.calculateItemsByType(),
+                    portfolioItemsByCategory = updatedItems.calculateItemsByCategory(),
+                    symbolsWithPrice = updatedSymbols
+                )
+            }
         }
     }
 

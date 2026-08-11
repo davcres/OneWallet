@@ -5,6 +5,7 @@ import app.cash.turbine.test
 import com.davidcrespo.onewallet.core.models.ThemeMode
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.EUR
+import com.davidcrespo.onewallet.domain.model.investment.USD
 import com.davidcrespo.onewallet.domain.model.investment.Investment
 import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
@@ -30,6 +31,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -281,6 +283,86 @@ class PortfolioViewModelTest {
             val state = awaitItem()
             assertTrue(state.isOnboardingCompleted)
             assertTrue(state.onboardingPlaylist.isEmpty())
+        }
+    }
+
+    @Test
+    fun `cuando la API devuelve un precio en USD y la moneda seleccionada es EUR, se convierte correctamente el precio a EUR`() = runTest(mainDispatcherExtension.testDispatcher) {
+        val mockInvestment = Investment(
+            symbol = "GOOGL",
+            name = "Alphabet Inc.",
+            quantity = 1.0,
+            price = 100.0,
+            previousPrice = 90.0,
+            currency = Currency(USD),
+            type = InvestmentType.STOCK,
+            year = 2024,
+            month = 3
+        )
+        
+        val apiInvestment = mockInvestment.copy(
+            price = 100.0,
+            previousPrice = 90.0,
+            currency = Currency(USD)
+        )
+
+        every { getPortfolioItemsUseCase.invoke() } returns flowOf(listOf(mockInvestment))
+        coEvery { getCurrencyRateUseCase.invoke("USD", "EUR") } returns Result.success(0.85)
+        coEvery { getInvestmentPriceUseCase.invoke(any(), any(), any(), any(), any(), any(), any()) } returns Result.success(apiInvestment)
+
+        createViewModel()
+
+        viewModel.uiState.test {
+            var lastState = awaitItem()
+            while (lastState.isLoading || lastState.portfolioItems.isEmpty()) {
+                lastState = awaitItem()
+            }
+            
+            val item = lastState.portfolioItems[0]
+            assertEquals("GOOGL", item.symbol)
+            assertEquals(USD, item.originalCurrency.code)
+            assertEquals(100.0, item.originalPrice)
+            assertEquals(85.0, item.displayPrice)
+            assertEquals(85.0, lastState.totalBalance)
+        }
+    }
+
+    @Test
+    fun `cuando se elimina un item, se purga de portfolioItems y de symbolsWithPrice`() = runTest(mainDispatcherExtension.testDispatcher) {
+        val mockInvestment = Investment(
+            symbol = "AAPL",
+            name = "Apple",
+            quantity = 1.0,
+            price = 150.0,
+            previousPrice = 140.0,
+            currency = Currency(EUR),
+            type = InvestmentType.STOCK,
+            year = 2024,
+            month = 3
+        )
+
+        every { getPortfolioItemsUseCase.invoke() } returns flowOf(listOf(mockInvestment))
+        coEvery { getInvestmentPriceUseCase.invoke(any(), any(), any(), any(), any(), any(), any()) } returns Result.success(mockInvestment)
+
+        createViewModel()
+
+        viewModel.uiState.test {
+            var lastState = awaitItem()
+            while (lastState.isLoading || lastState.portfolioItems.isEmpty()) {
+                lastState = awaitItem()
+            }
+            assertEquals(1, lastState.portfolioItems.size)
+            assertTrue(lastState.symbolsWithPrice.contains("AAPL"))
+
+            viewModel.handleIntent(PortfolioIntent.RemoveItem(lastState.portfolioItems[0]))
+
+            var stateAfterDelete = awaitItem()
+            while (stateAfterDelete.portfolioItems.isNotEmpty()) {
+                stateAfterDelete = awaitItem()
+            }
+
+            assertEquals(0, stateAfterDelete.portfolioItems.size)
+            assertFalse(stateAfterDelete.symbolsWithPrice.contains("AAPL"))
         }
     }
 }

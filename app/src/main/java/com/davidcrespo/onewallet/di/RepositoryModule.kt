@@ -21,7 +21,7 @@ val repositoryModule = module {
             get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()
         )
     }
-    single<PortfolioRepository> { PortfolioRepositoryImpl(get(), get()) }
+    single<PortfolioRepository> { PortfolioRepositoryImpl(get(), get(), get()) }
     single<OnboardingRepository> { OnboardingRepositoryImpl(get()) }
     single<ThemeRepository> { ThemeRepositoryImpl(get()) }
     single<PriceAlertNotificationRepository> { PriceAlertNotificationRepositoryImpl(get()) }
