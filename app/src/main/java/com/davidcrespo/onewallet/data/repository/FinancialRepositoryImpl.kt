@@ -304,7 +304,7 @@ class FinancialRepositoryImpl(
                 telemetry.log("${source.value} get $isin succeed ${valid.price} ${valid.currency.code}")
                 symbolCache.setCachedInvestment(valid.toEntity(preferredApi = source))
             }
-            valid?.toDomain(preferredApi = source)
+            valid?.toDomain(preferredApi = if (source != DataSource.JUST_ETF_PRICE) source else null)
         }.getOrElse {
             it.printStackTrace()
             null

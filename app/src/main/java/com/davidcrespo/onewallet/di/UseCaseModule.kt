@@ -31,7 +31,7 @@ val useCaseModule = module {
     single { ClearPortfolioUseCase(get(), get()) }
     single { AddInvestmentToPortfolioUseCase(get()) }
     single { AddMarketAssetToPortfolioUseCase(get()) }
-    single { RemovePortfolioItemUseCase(get()) }
+    single { RemovePortfolioItemUseCase(get(), get()) }
 
     single { SaveMonthlyPortfolioUseCase(get()) }
     single { GetMonthlyHistoryUseCase(get()) }

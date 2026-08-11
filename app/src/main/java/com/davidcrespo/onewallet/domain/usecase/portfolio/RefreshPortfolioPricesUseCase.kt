@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.domain.usecase.portfolio
 
 import com.davidcrespo.onewallet.domain.model.investment.Investment
+import com.davidcrespo.onewallet.domain.model.investment.UNKNOWN
 import com.davidcrespo.onewallet.domain.model.investment.isManual
 import com.davidcrespo.onewallet.domain.repository.FinancialRepository
 import kotlinx.coroutines.async
@@ -40,6 +41,7 @@ class RefreshPortfolioPricesUseCase(
                         val updatedItem = item.copy(
                             price = api.price,
                             previousPrice = api.previousPrice,
+                            currency = api.currency.takeIf { it.code != UNKNOWN } ?: item.currency,
                             preferredApi = api.preferredApi
                         )
                         updatedItem to changePercent

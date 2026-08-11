@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.domain.usecase.portfolio
 
+import com.davidcrespo.onewallet.data.local.cache.SymbolCache
 import com.davidcrespo.onewallet.domain.model.investment.Currency
 import com.davidcrespo.onewallet.domain.model.investment.EUR
 import com.davidcrespo.onewallet.domain.model.investment.Investment
@@ -10,6 +11,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
+import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -19,6 +21,7 @@ import java.time.LocalDate
 class RemovePortfolioItemUseCaseTest {
 
     private val portfolioRepository = mockk<PortfolioRepository>(relaxed = true)
+    private val symbolCache = mockk<SymbolCache>(relaxed = true)
     private lateinit var useCase: RemovePortfolioItemUseCase
     private val fixedDate = LocalDate.of(2026, 3, 10)
 
@@ -26,7 +29,7 @@ class RemovePortfolioItemUseCaseTest {
     fun setUp() {
         mockkStatic(LocalDate::class)
         every { LocalDate.now() } returns fixedDate
-        useCase = RemovePortfolioItemUseCase(portfolioRepository)
+        useCase = RemovePortfolioItemUseCase(portfolioRepository, symbolCache)
     }
 
     @AfterEach
@@ -35,7 +38,7 @@ class RemovePortfolioItemUseCaseTest {
     }
 
     @Test
-    fun `cuando se invoca, se llama al repositorio con la inversion y la fecha actual`() = runTest {
+    fun `cuando se invoca, se llama al repositorio con la inversion y la fecha actual y se borra del cache`() = runTest {
         // Given
         val investment = Investment(
             symbol = "AAPL",
@@ -55,6 +58,9 @@ class RemovePortfolioItemUseCaseTest {
         // Then
         coVerify(exactly = 1) { 
             portfolioRepository.removeItem(investment, 2026, 3) 
+        }
+        verify(exactly = 1) {
+            symbolCache.removeCachedInvestment("AAPL")
         }
     }
 }

@@ -33,6 +33,13 @@ class SymbolCacheImpl(
         }
     }
 
+    override fun removeCachedInvestment(symbol: String) {
+        sharedPreferences.edit {
+            remove(cachedAtKey(symbol))
+            remove(valueKey(symbol))
+        }
+    }
+
     private fun isValid(symbol: String, validCacheHours: Long): Boolean {
         val nowMillis = clock.millis()
         val cachedAt = sharedPreferences.getLong(cachedAtKey(symbol), 0L)
