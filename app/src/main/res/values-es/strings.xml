@@ -163,7 +163,7 @@
 
     <!-- Tooltips -->
     <string name="tooltip_positions">Consulta tus inversiones activas y el balance total.</string>
-    <string name="tooltip_allocation">Visualiza cómo se distribuye tu capital por tipo de activo.</string>
+    <string name="tooltip_allocation">Visualiza cómo se distribuye tu capital por tipo de activo o categoría.</string>
     <string name="tooltip_prices">Sigue los precios de mercado en tiempo real para tus activos.</string>
     <string name="tooltip_history">Analiza la evolución de tu cartera con datos históricos mensuales.</string>
     <string name="tooltip_total_balance">Consulta el balance total de tu cartera y el cambio diario.</string>

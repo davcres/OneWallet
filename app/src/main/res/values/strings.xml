@@ -163,7 +163,7 @@
 
     <!-- Tooltips -->
     <string name="tooltip_positions">Check your active investments and total balance.</string>
-    <string name="tooltip_allocation">Visualize how your capital is distributed by asset type.</string>
+    <string name="tooltip_allocation">Visualize how your capital is distributed by asset type or category.</string>
     <string name="tooltip_prices">Track real-time market prices for your assets.</string>
     <string name="tooltip_history">Analyze your portfolio evolution with historical monthly data.</string>
     <string name="tooltip_total_balance">View your total portfolio balance and daily change.</string>

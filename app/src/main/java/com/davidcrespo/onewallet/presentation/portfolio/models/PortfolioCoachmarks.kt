@@ -12,7 +12,7 @@ enum class PortfolioCoachmarks(@StringRes val tooltip: Int, val tab: PortfolioTa
     PRICES_TAB(R.string.tooltip_prices, PortfolioTabs.PRICES),
     PRICES_LIST(R.string.tooltip_prices_list, PortfolioTabs.PRICES),
     HISTORY_TAB(R.string.tooltip_history, PortfolioTabs.HISTORY),
-    HISTORY_LIST(R.string.tooltip_history_list, PortfolioTabs.HISTORY),
+    //HISTORY_LIST(R.string.tooltip_history_list, PortfolioTabs.HISTORY),
     EDIT_INVESTMENT(R.string.tooltip_edit_investment, PortfolioTabs.POSITIONS),
     DELETE_INVESTMENT(R.string.tooltip_delete_investment, PortfolioTabs.POSITIONS),
     ADD_INVESTMENT(R.string.tooltip_add_investment, PortfolioTabs.POSITIONS),
