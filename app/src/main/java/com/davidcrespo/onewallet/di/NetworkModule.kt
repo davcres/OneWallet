@@ -1,6 +1,7 @@
 package com.davidcrespo.onewallet.di
 
 import android.util.Log
+import com.davidcrespo.onewallet.BuildConfig
 import com.davidcrespo.onewallet.data.remote.alphaVantage.AlphaVantageApiConfig
 import com.davidcrespo.onewallet.data.remote.binance.BinanceApiConfig
 import com.davidcrespo.onewallet.data.remote.extraEtf.ExtraEtfApiConfig
@@ -44,14 +45,16 @@ val networkModule = module {
                 socketTimeoutMillis = 15000
             }
 
-            install(Logging) {
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        Log.d("KtorLog", message)
+            if (BuildConfig.DEBUG) {
+                install(Logging) {
+                    logger = object : Logger {
+                        override fun log(message: String) {
+                            Log.d("KtorLog", message)
+                        }
                     }
+                    level = LogLevel.ALL
+                    filter { req -> req.url.host != "api.telegram.org" }
                 }
-                level = LogLevel.ALL
-                filter { req -> req.url.host != "api.telegram.org" }
             }
 
             expectSuccess = true

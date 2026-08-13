@@ -100,11 +100,14 @@ android {
         buildConfigField("String", "MARKETSTACK_API_KEY", "\"$marketstackApiKey\"")
         buildConfigField("String", "MARKETSTACK_API_KEY_2", "\"$marketstackApiKey2\"")
         buildConfigField("String", "TWELVE_DATA_API_KEY", "\"$twelveDataApiKey\"")
-        buildConfigField("String", "TELEGRAM_API_KEY", "\"$telegramApiKey\"")
-        buildConfigField("String", "TELEGRAM_CHAT_ID", "\"$telegramChatId\"")
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "TELEGRAM_API_KEY", "\"$telegramApiKey\"")
+            buildConfigField("String", "TELEGRAM_CHAT_ID", "\"$telegramChatId\"")
+        }
+
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -112,21 +115,21 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            buildConfigField("String", "TELEGRAM_API_KEY", "\"\"")
+            buildConfigField("String", "TELEGRAM_CHAT_ID", "\"\"")
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
         buildConfig = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
     }
     testOptions {
         animationsDisabled = true
