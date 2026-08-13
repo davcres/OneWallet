@@ -1,5 +1,6 @@
 package com.davidcrespo.onewallet.presentation.designsystem.theme
 
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -8,9 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import com.davidcrespo.onewallet.core.models.ThemeMode
 
 val DarkScheme = darkColorScheme(
@@ -133,6 +137,16 @@ fun OneWalletTheme(
 
     val colorScheme = if (darkTheme) DarkScheme else LightScheme
     val gradients = if (darkTheme) DarkGradients else LightGradients
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as? Activity)?.window ?: return@SideEffect
+            val insetsController = WindowCompat.getInsetsController(window, view)
+            insetsController.isAppearanceLightStatusBars = !darkTheme
+            insetsController.isAppearanceLightNavigationBars = !darkTheme
+        }
+    }
 
     CompositionLocalProvider(
         LocalAppGradients provides gradients
