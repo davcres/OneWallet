@@ -1,0 +1,54 @@
+package com.davidcrespo.onewallet.feature.portfolio.allocation.composables
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.davidcrespo.onewallet.domain.model.investment.InvestmentType
+import com.davidcrespo.onewallet.core.designsystem.composables.OWAnimatedList
+import com.davidcrespo.onewallet.core.designsystem.composables.OWInvestmentItem
+import com.davidcrespo.onewallet.core.designsystem.composables.auxiliar.SectionType
+import com.davidcrespo.onewallet.core.models.CurrencyView
+import com.davidcrespo.onewallet.core.models.InvestmentView
+import kotlinx.collections.immutable.ImmutableList
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AllocationList(
+    header: @Composable () -> Unit,
+    items: ImmutableList<InvestmentView>,
+    currency: CurrencyView,
+    onSelect: (InvestmentView) -> Unit,
+    modifier: Modifier = Modifier,
+    isBalanceVisible: Boolean = true,
+    shouldAnimate: Boolean = true,
+    showTypeIcon: Boolean = false
+) {
+    if (shouldAnimate) {
+        OWAnimatedList(
+            header = header,
+            items = items,
+            key = { it.symbol },
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 32.dp),
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            itemContent = { modifier, priceItem, index ->
+                OWInvestmentItem(
+                    item = priceItem,
+                    currency = currency,
+                    section = SectionType.ALLOCATION,
+                    onClick = { onSelect(it) },
+                    modifier = modifier,
+                    isBalanceVisible = isBalanceVisible,
+                    showTypeIcon = showTypeIcon
+                )
+            }
+        )
+    } else {
+        Box(modifier = modifier.fillMaxSize())
+    }
+}
