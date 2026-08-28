@@ -11,8 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.davidcrespo.onewallet.presentation.designsystem.theme.OneWalletTheme
-import com.davidcrespo.onewallet.presentation.navigation.MainNavigation
+import com.davidcrespo.onewallet.core.designsystem.theme.OneWalletTheme
+import com.davidcrespo.onewallet.navigation.MainNavigation
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {

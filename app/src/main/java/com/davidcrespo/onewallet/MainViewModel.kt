@@ -2,7 +2,7 @@ package com.davidcrespo.onewallet
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.davidcrespo.onewallet.core.models.ThemeMode
+import com.davidcrespo.onewallet.domain.model.ThemeMode
 import com.davidcrespo.onewallet.domain.usecase.appRoot.GetThemeUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

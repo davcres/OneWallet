@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ConstructorParameterNaming:SendMessageRequest.kt$SendMessageRequest$val chat_id: String</ID>
+    <ID>MagicNumber:InvestmentEntity.kt$10</ID>
+    <ID>MagicNumber:InvestmentEntity.kt$11</ID>
+    <ID>MagicNumber:InvestmentEntity.kt$5</ID>
+    <ID>MagicNumber:InvestmentEntity.kt$6</ID>
+    <ID>MagicNumber:InvestmentEntity.kt$9</ID>
+    <ID>MagicNumber:QueFondosApiClient.kt$QueFondosApiClient$100.0</ID>
+    <ID>NewLineAtEndOfFile:AlphaVantageApiConfig.kt$com.davidcrespo.onewallet.data.remote.alphaVantage.AlphaVantageApiConfig.kt</ID>
+    <ID>NewLineAtEndOfFile:AlphaVantageDataSource.kt$com.davidcrespo.onewallet.data.remote.alphaVantage.AlphaVantageDataSource.kt</ID>
+    <ID>NewLineAtEndOfFile:AlphaVantageHttpClient.kt$com.davidcrespo.onewallet.data.remote.alphaVantage.AlphaVantageHttpClient.kt</ID>
+    <ID>NewLineAtEndOfFile:BinanceApiConfig.kt$com.davidcrespo.onewallet.data.remote.binance.BinanceApiConfig.kt</ID>
+    <ID>NewLineAtEndOfFile:BinanceDataSource.kt$com.davidcrespo.onewallet.data.remote.binance.BinanceDataSource.kt</ID>
+    <ID>NewLineAtEndOfFile:CurrencyCacheImpl.kt$com.davidcrespo.onewallet.data.local.cache.CurrencyCacheImpl.kt</ID>
+    <ID>NewLineAtEndOfFile:CurrencyEntity.kt$com.davidcrespo.onewallet.data.local.database.portfolio.entities.CurrencyEntity.kt</ID>
+    <ID>NewLineAtEndOfFile:ExtraEtfApiConfig.kt$com.davidcrespo.onewallet.data.remote.extraEtf.ExtraEtfApiConfig.kt</ID>
+    <ID>NewLineAtEndOfFile:ExtraEtfDataSource.kt$com.davidcrespo.onewallet.data.remote.extraEtf.ExtraEtfDataSource.kt</ID>
+    <ID>NewLineAtEndOfFile:FinancialRepositoryImpl.kt$com.davidcrespo.onewallet.data.repository.FinancialRepositoryImpl.kt</ID>
+    <ID>NewLineAtEndOfFile:FinnhubApiConfig.kt$com.davidcrespo.onewallet.data.remote.finnhub.FinnhubApiConfig.kt</ID>
+    <ID>NewLineAtEndOfFile:FinnhubDataSource.kt$com.davidcrespo.onewallet.data.remote.finnhub.FinnhubDataSource.kt</ID>
+    <ID>NewLineAtEndOfFile:InvestingApiConfig.kt$com.davidcrespo.onewallet.data.remote.investing.InvestingApiConfig.kt</ID>
+    <ID>NewLineAtEndOfFile:InvestingDataSource.kt$com.davidcrespo.onewallet.data.remote.investing.InvestingDataSource.kt</ID>
+    <ID>NewLineAtEndOfFile:JustEtfApiConfig.kt$com.davidcrespo.onewallet.data.remote.justEtf.JustEtfApiConfig.kt</ID>
+    <ID>NewLineAtEndOfFile:JustEtfDataSource.kt$com.davidcrespo.onewallet.data.remote.justEtf.JustEtfDataSource.kt</ID>
+    <ID>NewLineAtEndOfFile:MarketCacheImpl.kt$com.davidcrespo.onewallet.data.local.cache.MarketCacheImpl.kt</ID>
+    <ID>NewLineAtEndOfFile:MarketstackApiConfig.kt$com.davidcrespo.onewallet.data.remote.marketstack.MarketstackApiConfig.kt</ID>
+    <ID>NewLineAtEndOfFile:MarketstackDataSource.kt$com.davidcrespo.onewallet.data.remote.marketstack.MarketstackDataSource.kt</ID>
+    <ID>NewLineAtEndOfFile:MarketstackHttpClient.kt$com.davidcrespo.onewallet.data.remote.marketstack.MarketstackHttpClient.kt</ID>
+    <ID>NewLineAtEndOfFile:NoOpTelemetry.kt$com.davidcrespo.onewallet.data.logging.NoOpTelemetry.kt</ID>
+    <ID>NewLineAtEndOfFile:PolicyModule.kt$com.davidcrespo.onewallet.data.di.PolicyModule.kt</ID>
+    <ID>NewLineAtEndOfFile:PortfolioRepositoryImpl.kt$com.davidcrespo.onewallet.data.repository.PortfolioRepositoryImpl.kt</ID>
+    <ID>NewLineAtEndOfFile:QueFondosApiConfig.kt$com.davidcrespo.onewallet.data.remote.quefondos.QueFondosApiConfig.kt</ID>
+    <ID>NewLineAtEndOfFile:QueFondosDataSource.kt$com.davidcrespo.onewallet.data.remote.quefondos.QueFondosDataSource.kt</ID>
+    <ID>NewLineAtEndOfFile:RateResponse.kt$com.davidcrespo.onewallet.data.remote.twelveData.models.RateResponse.kt</ID>
+    <ID>NewLineAtEndOfFile:RoomConverters.kt$com.davidcrespo.onewallet.data.local.database.converters.RoomConverters.kt</ID>
+    <ID>NewLineAtEndOfFile:SendMessageRequest.kt$com.davidcrespo.onewallet.data.remote.telegram.models.SendMessageRequest.kt</ID>
+    <ID>NewLineAtEndOfFile:TelegramApiConfig.kt$com.davidcrespo.onewallet.data.remote.telegram.TelegramApiConfig.kt</ID>
+    <ID>NewLineAtEndOfFile:TelegramDataSource.kt$com.davidcrespo.onewallet.data.remote.telegram.TelegramDataSource.kt</ID>
+    <ID>NewLineAtEndOfFile:TelegramTelemetry.kt$com.davidcrespo.onewallet.data.logging.TelegramTelemetry.kt</ID>
+    <ID>NewLineAtEndOfFile:TwelveDataApiConfig.kt$com.davidcrespo.onewallet.data.remote.twelveData.TwelveDataApiConfig.kt</ID>
+    <ID>NewLineAtEndOfFile:YahooFinanceApiConfig.kt$com.davidcrespo.onewallet.data.remote.yahooFinance.YahooFinanceApiConfig.kt</ID>
+    <ID>NewLineAtEndOfFile:YahooFinanceDataSource.kt$com.davidcrespo.onewallet.data.remote.yahooFinance.YahooFinanceDataSource.kt</ID>
+    <ID>ReturnCount:FinancialRepositoryImpl.kt$FinancialRepositoryImpl$private suspend fun tryFetchFromSequence( isin: String, apis: List&lt;Pair&lt;DataSource, suspend () -&gt; InvestmentDto?&gt;&gt;, preferredApi: DataSource? ): Investment?</ID>
+    <ID>TooGenericExceptionThrown:FileRepositoryImpl.kt$FileRepositoryImpl$throw Exception("Failed to create MediaStore entry")</ID>
+    <ID>TooGenericExceptionThrown:FileRepositoryImpl.kt$FileRepositoryImpl$throw Exception("Failed to open input stream")</ID>
+    <ID>TooGenericExceptionThrown:FileRepositoryImpl.kt$FileRepositoryImpl$throw Exception("Failed to open output stream")</ID>
+    <ID>UseCheckOrError:FinancialRepositoryImpl.kt$FinancialRepositoryImpl$throw IllegalStateException("No se pudo obtener el precio de $symbol")</ID>
+    <ID>UseCheckOrError:FinancialRepositoryImpl.kt$FinancialRepositoryImpl$throw IllegalStateException("No se pudo obtener el precio del ETF")</ID>
+    <ID>UseCheckOrError:FinancialRepositoryImpl.kt$FinancialRepositoryImpl$throw IllegalStateException("No se pudo obtener el precio del fondo")</ID>
+    <ID>UseCheckOrError:InvestingApiClient.kt$InvestingApiClient$throw IllegalStateException("No se encontró &lt;h1&gt; (nombre)")</ID>
+    <ID>UseCheckOrError:InvestingApiClient.kt$InvestingApiClient$throw IllegalStateException("No se encontró el valor actual (pid-*-last)")</ID>
+    <ID>UseCheckOrError:QueFondosApiClient.kt$QueFondosApiClient$throw IllegalStateException("No se encontró el nombre del fondo")</ID>
+    <ID>UseCheckOrError:QueFondosApiClient.kt$QueFondosApiClient$throw IllegalStateException("No se encontró el valor liquidativo")</ID>
+  </CurrentIssues>
+</SmellBaseline>

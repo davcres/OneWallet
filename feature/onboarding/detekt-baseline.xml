@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>MagicNumber:OnboardingScreen.kt$0.95f</ID>
+    <ID>MagicNumber:OnboardingScreen.kt$20</ID>
+    <ID>MagicNumber:OnboardingScreen.kt$500</ID>
+    <ID>MatchingDeclarationName:OnboardingContract.kt$OnboardingIntent</ID>
+    <ID>MatchingDeclarationName:PortfolioOnboardingContract.kt$PortfolioOnboardingIntent</ID>
+    <ID>UnusedPrivateMember:PortfolioOnboardingScreen.kt$@Preview @Composable private fun PortfolioOnboardingScreenPreview()</ID>
+  </CurrentIssues>
+</SmellBaseline>

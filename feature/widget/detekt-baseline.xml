@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>EmptyDefaultConstructor:GetWidgetCallback.kt$GetWidgetCallback$()</ID>
+    <ID>MagicNumber:OWInvestmentWidget.kt$0xFF1b2620</ID>
+    <ID>MagicNumber:OWInvestmentWidget.kt$0xFFE8F5EC</ID>
+    <ID>MagicNumber:OWInvestmentWidget.kt$100.0</ID>
+    <ID>NewLineAtEndOfFile:formatTrendPercent.kt$com.davidcrespo.onewallet.feature.widget.utils.formatTrendPercent.kt</ID>
+    <ID>NewLineAtEndOfFile:trendColor.kt$com.davidcrespo.onewallet.feature.widget.utils.trendColor.kt</ID>
+    <ID>UnusedPrivateMember:PortfolioWidget.kt$@Preview @Composable private fun PortfolioWidgetPreview()</ID>
+    <ID>UnusedPrivateMember:StocksWidget.kt$@Preview @Composable private fun StocksWidgetPreview()</ID>
+    <ID>UnusedPrivateProperty:PortfolioWidget.kt$PortfolioWidget$val context = LocalContext.current</ID>
+    <ID>UnusedPrivateProperty:StocksWidget.kt$StocksWidget$val context = LocalContext.current</ID>
+  </CurrentIssues>
+</SmellBaseline>
