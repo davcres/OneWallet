@@ -58,7 +58,6 @@ import com.davidcrespo.onewallet.core.composables.modifiers.animations.pulse
 import com.davidcrespo.onewallet.core.composables.modifiers.privacyBlur
 import com.davidcrespo.onewallet.core.designsystem.composables.OWFloatingActionButton
 import com.davidcrespo.onewallet.core.designsystem.composables.OWLoader
-import com.davidcrespo.onewallet.core.designsystem.composables.OWShakeListener
 import com.davidcrespo.onewallet.core.designsystem.theme.OneWalletTheme
 import com.davidcrespo.onewallet.core.extensions.applyIf
 import com.davidcrespo.onewallet.core.models.CurrencyView
@@ -290,11 +289,11 @@ private fun PortfolioScreen(
         label = "overlay"
     )
 
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-        OWShakeListener(
-            onShake = { if (isInteractionEnabled) isBalanceVisible = !isBalanceVisible }
-        )
-    }
+//    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+//        OWShakeListener(
+//            onShake = { if (isInteractionEnabled) isBalanceVisible = !isBalanceVisible }
+//        )
+//    }
 
     Scaffold(
         floatingActionButton = {
