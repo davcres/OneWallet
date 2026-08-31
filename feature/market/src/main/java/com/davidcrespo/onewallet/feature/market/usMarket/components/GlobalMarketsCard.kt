@@ -27,11 +27,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -60,16 +65,32 @@ fun GlobalMarketsCard(
 
     val offsetY = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
+    var isCardPressed by remember { mutableStateOf(false) }
 
     // Evita que la card reaparezca al deslizarla
     LaunchedEffect(visible) {
-        if (visible) offsetY.snapTo(0f)
+        if (visible) {
+            offsetY.snapTo(0f)
+            isCardPressed = false
+        }
     }
 
     Card(
         modifier = modifier
             .fillMaxWidth()
             .offset { IntOffset(0, offsetY.value.roundToInt()) }
+            .pointerInput(Unit) {
+                try {
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                            isCardPressed = event.changes.any { it.pressed }
+                        }
+                    }
+                } finally {
+                    isCardPressed = false
+                }
+            }
             .draggable(
                 orientation = Orientation.Vertical,
                 state = rememberDraggableState { delta ->
@@ -100,6 +121,7 @@ fun GlobalMarketsCard(
                 imageVector = Icons.Outlined.Close,
                 onClick = onClose,
                 contentDescription = stringResource(R.string.close_cd),
+                isPaused = isCardPressed,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(16.dp)

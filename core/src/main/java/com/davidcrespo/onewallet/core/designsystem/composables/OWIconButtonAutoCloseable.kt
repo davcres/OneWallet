@@ -10,7 +10,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
@@ -19,6 +21,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.davidcrespo.onewallet.core.composables.modifiers.animations.bounceClick
+import kotlin.math.roundToInt
+import kotlinx.coroutines.delay
 
 @Composable
 fun OWIconButtonAutoCloseable(
@@ -27,18 +31,30 @@ fun OWIconButtonAutoCloseable(
     contentDescription: String,
     modifier: Modifier = Modifier,
     durationMillis: Int = 5000,
-    delayMillis: Int = 500
+    delayMillis: Int = 500,
+    isPaused: Boolean = false
 ) {
 
     val borderColor = MaterialTheme.colorScheme.primary
     val progress = remember { Animatable(0f) }
+    val currentOnClick by rememberUpdatedState(onClick)
 
-    LaunchedEffect(Unit) {
-        progress.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = durationMillis, delayMillis = delayMillis, easing = LinearEasing)
-        )
-        onClick()
+    LaunchedEffect(isPaused) {
+        if (!isPaused) {
+            if (progress.value == 0f && delayMillis > 0) {
+                delay(delayMillis.toLong())
+            }
+            val remainingMillis = ((1f - progress.value) * durationMillis).roundToInt().coerceAtLeast(0)
+            if (remainingMillis > 0) {
+                progress.animateTo(
+                    targetValue = 1f,
+                    animationSpec = tween(durationMillis = remainingMillis, easing = LinearEasing)
+                )
+            }
+            if (progress.value >= 1f) {
+                currentOnClick()
+            }
+        }
     }
 
     IconButton(
