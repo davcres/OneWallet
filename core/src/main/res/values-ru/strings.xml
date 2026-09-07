@@ -1,0 +1,230 @@
+<resources>
+    <string name="app_name">OneWallet</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_1_title">Добро пожаловать в OneWallet</string>
+    <string name="onboarding_1_description">Управляйте всеми своими инвестициями в одном месте. Просто, быстро и надежно.</string>
+    <string name="onboarding_2_title">Отслеживание в реальном времени</string>
+    <string name="onboarding_2_description">Получайте актуальные рыночные данные по акциям, фондам, ETF и криптовалютам.</string>
+    <string name="onboarding_3_title">Виджеты на главном экране</string>
+    <string name="onboarding_3_description">Контролируйте свои финансы не открывая приложение. Используйте виджет «Портфель» для просмотра баланса и виджет «Котировки» для отслеживания рынка в реальном времени.</string>
+    <string name="onboarding_4_title">Анализ ежемесячной динамики</string>
+    <string name="onboarding_4_description">Наглядно оценивайте доходность своего портфеля с помощью подробных графиков и исторических данных.</string>
+    <string name="onboarding_5_title">Ваши данные принадлежат только вам</string>
+    <string name="onboarding_5_description">Все данные хранятся локально на вашем устройстве. Никаких облаков и отслеживания.</string>
+    <string name="onboarding_6_title">Ваши финансы — это просто</string>
+    <string name="onboarding_6_description">Начнем?</string>
+    <string name="onboarding_button_next">Далее</string>
+    <string name="onboarding_button_get_started">Начать</string>
+
+    <!-- Portfolio -->
+    <string name="empty_investments_title">Вы еще не добавили ни одной инвестиции</string>
+    <string name="empty_investments_description">Нажмите кнопку +, чтобы начать отслеживать свои инвестиции.</string>
+    <string name="greeting_morning">Доброе утро</string>
+    <string name="greeting_afternoon">Добрый день</string>
+    <string name="greeting_evening">Добрый вечер</string>
+    <string name="tab_positions_title">Ваши активы</string>
+    <string name="currency_selector_cd">Выбор валюты</string>
+    <string name="ui_mode_cd">Переключатель темы интерфейса. Текущая тема: %1$s. Нажмите для переключения на тему %2$s</string>
+    <string name="tab_positions">Портфель</string>
+    <string name="tab_allocation">Распределение</string>
+    <string name="tab_prices">Котировки</string>
+    <string name="tab_history">История</string>
+    <string name="add_new_fund_title">Добавить новый фонд</string>
+    <string name="add_new_etf_title">Добавить новый ETF</string>
+    <string name="close_cd">Закрыть</string>
+    <string name="isin_label">ISIN</string>
+    <string name="isin_helper_text">Международный идентификационный номер ценных бумаг</string>
+    <string name="quantity_shares_label">Количество паев / акций</string>
+    <string name="cancel_action">Отмена</string>
+    <string name="cancel_add_fund_cd">Нажмите, чтобы не добавлять фонд</string>
+    <string name="add_action">Добавить</string>
+    <string name="add_fund_cd">Добавить новый фонд в портфель</string>
+    <string name="error_isin_empty">Введите код ISIN для добавления в портфель.</string>
+    <string name="error_isin_invalid">Введите корректный ISIN для добавления в кошелек.\n12 символов и заглавные буквы: ES12345ABCD0</string>
+    <string name="add_investment_title">Добавить инвестицию</string>
+    <string name="add_investment_subtitle">Выберите тип отслеживаемого актива</string>
+    <string name="asset_stock">Акции</string>
+    <string name="asset_stock_subtitle">Акции и долевые бумаги</string>
+    <string name="asset_crypto">Криптовалюта</string>
+    <string name="asset_crypto_subtitle">Bitcoin, Ethereum и другие криптоактивы</string>
+    <string name="asset_fund">Фонды</string>
+    <string name="asset_fund_subtitle">Управляемые и индексные фонды</string>
+    <string name="asset_etf">ETF</string>
+    <string name="asset_etf_subtitle">Биржевые фонды и индексы</string>
+    <string name="asset_bank">Банковский счет</string>
+    <string name="asset_bank_subtitle">Наличные, сбережения и вклады</string>
+    <string name="asset_other">Другое</string>
+    <string name="asset_other_subtitle">Любой другой тип актива для вашего портфеля</string>
+    <string name="accessibility_add_investment_fab">Добавить инвестиционный актив</string>
+    <string name="accessibility_add_investment_expanded">Меню выбора типа инвестиций открыто</string>
+    <string name="accessibility_add_investment_collapsed">Меню выбора типа инвестиций закрыто</string>
+    <string name="accessibility_show_add_investment">Показать меню добавления актива</string>
+    <string name="accessibility_dismiss_add_investment">Закрыть меню добавления актива</string>
+    <string name="add_bank_title">Добавить наличные / вклад</string>
+    <string name="bank_name_label">Название банка / вклада:</string>
+    <string name="bank_name_placeholder">например, Сбербанк</string>
+    <string name="add_other_title">Добавить актив</string>
+    <string name="other_name_label">Название актива:</string>
+    <string name="other_name_placeholder">например, Вилла на Ибице</string>
+    <string name="total_money_label">Общая сумма:</string>
+    <string name="add_bank_cd">Добавить новые наличные / вклад в портфель</string>
+    <string name="update_quantity_action">Обновить</string>
+    <string name="fund_fetch_error">К сожалению, не удалось получить данные о фонде.\nПопробуйте другой ISIN.</string>
+    <string name="etf_fetch_error">К сожалению, не удалось получить данные об ETF.\nПопробуйте другой ISIN.</string>
+    <string name="current_holding_label">Текущая позиция</string>
+    <string name="current_holding">%.2f паев/акций</string>
+    <string name="total_value">Общая стоимость</string>
+    <string name="new_quantity_market">Введите новое количество паев/акций</string>
+    <string name="new_quantity_manual">Введите новый баланс</string>
+    <string name="new_quantity_manual_info">Используйте исходную валюту актива (%s)</string>
+    <string name="receive_notifications">Получать уведомления</string>
+    <string name="alert_threshold_placeholder">например, 5.0</string>
+    <string name="alert_threshold_info">Уведомлять при изменении цены более чем на:</string>
+    <string name="notification_price_up_title">%s растет!</string>
+    <string name="notification_price_down_title">%s падает!</string>
+    <string name="notification_price_body">%1$s изменился на %2$s%% за сегодня.</string>
+    <string name="estimated_new_value">Расчетная новая стоимость</string>
+    <string name="cancel_edit_investment_cd">Нажмите, чтобы отменить изменение количества</string>
+    <string name="error_quantity_empty">Введите корректную сумму.</string>
+    <string name="error_alert_threshold_invalid">Процент для уведомления должен быть больше 0.</string>
+    <string name="error_category_empty">Пожалуйста, выберите категорию.</string>
+    <string name="delete_action">Удалить</string>
+    <string name="delete_investment_message">Вы уверены, что хотите удалить эту инвестицию из своего портфеля?</string>
+    <string name="asset_name_cd">Введите название актива</string>
+    <string name="asset_manual_quantity_cd">Введите сумму актива</string>
+    <string name="asset_isin_cd">Введите ISIN актива</string>
+    <string name="asset_market_quantity_cd">Введите количество акций актива</string>
+    <string name="asset_alert_threshold_cd">Введите процент изменения цены для уведомления</string>
+
+    <!-- Allocation -->
+    <string name="tab_allocation_title">Распределение по типам активов</string>
+    <string name="tab_allocation_type">Тип</string>
+    <string name="tab_allocation_category">Категория</string>
+
+    <!-- Prices -->
+    <string name="tab_prices_title">Цена за единицу</string>
+
+    <!-- Market -->
+    <string name="add_crypto_title">Добавить криптовалюту</string>
+    <string name="add_us_stocks_title">Добавить акции США</string>
+    <string name="add_global_stocks_title">Добавить мировые акции</string>
+    <string name="add_count_action">Добавить (%d)</string>
+    <string name="search_crypto_placeholder">Поиск криптовалюты</string>
+    <string name="search_us_stock_placeholder">Поиск по тикеру, названию или FIGI</string>
+    <string name="search_global_stock_placeholder">Поиск по тикеру или названию</string>
+    <string name="unselect_asset_cd">Снять выбор с актива</string>
+    <string name="select_asset_cd">Выбрать актив</string>
+    <string name="search_market_cd">Поиск активов по тикеру, названию или FIGI</string>
+
+    <!-- Global Market -->
+    <string name="global_markets_request_limit">Из-за высокого спроса наш API временно отдыхает, но не волнуйтесь, завтра он снова будет в строю.</string>
+    <string name="global_markets_card_title">Ищете международные рынки?</string>
+    <string name="global_markets_card_description">В этом списке отображаются только акции США, но вы можете торговать акциями бирж Лондона, Токио или любых других мировых площадок. Просто введите тикер или название компании.</string>
+    <string name="global_markets_card_button">Перейти к мировым рынкам</string>
+    <string name="global_markets_card_button_cd">На этом экране доступны только акции США. Нажмите кнопку для перехода к поиску акций других стран.</string>
+    <string name="global_markets_warning">Обратите внимание, что мы только начинаем, и для обеспечения наивысшего качества данных доступ к некоторым акциям может отсутствовать. Приносим извинения за временные неудобства, мы активно расширяем каталог.</string>
+    <string name="global_markets_no_results">К сожалению, по вашему запросу ничего не найдено.</string>
+    <string name="global_markets_try_again">Попробовать снова</string>
+
+    <!-- History -->
+    <string name="history_monthly_title">Ежемесячная история</string>
+    <string name="import_history">Импорт истории</string>
+    <string name="export_history">Экспорт истории</string>
+    <string name="back_cd">Назад</string>
+    <string name="investments_of_month_fmt">Инвестиции за %1$s %2$d</string>
+    <string name="shares_in_portfolio_label">Паев/акций в портфеле</string>
+    <string name="price_per_share_label">Цена за единицу</string>
+    <string name="total_value_label">Общая стоимость</string>
+    <string name="pl_month_label">Прибыль/убыток (мес.)</string>
+    <string name="history_import_success">История успешно импортирована</string>
+    <string name="history_import_error">Ошибка при импорте истории</string>
+    <string name="history_read_error">Ошибка чтения файла</string>
+    <string name="history_export_success">История сохранена в Загрузки</string>
+    <string name="history_export_error">Ошибка при экспорте истории</string>
+    <string name="history_save_error">Ошибка сохранения файла</string>
+
+    <!-- Core -->
+    <string name="clear_cd">Удалить инвестицию</string>
+    <string name="clear_text_cd">Очистить текст</string>
+    <string name="copiable_text_snackbar">Скопировано в буфер обмена</string>
+    <string name="copiable_text_cd">Копировать</string>
+
+    <string name="total_balance">Общий баланс</string>
+    <string name="hide_balance_cd">Скрыть баланс</string>
+    <string name="show_balance_cd">Показать баланс</string>
+    <string-array name="rich_phrases">
+        <item>Слишком много денег, чтобы смотреть без солнцезащитных очков.</item>
+        <item>Налоговая служба одобряет это.</item>
+        <item>Вы определенно можете позволить себе чаевые скромному разработчику.</item>
+        <item>Вы уверены, что не добавили лишних нулей? Подумайте над этим.</item>
+    </string-array>
+    <string name="your_investments">Ваши инвестиции</string>
+
+    <!-- Tooltips -->
+    <string name="tooltip_positions">Просматривайте свои активные инвестиции и общий баланс.</string>
+    <string name="tooltip_allocation">Оцените распределение капитала по типам активов или категориям.</string>
+    <string name="tooltip_prices">Отслеживайте рыночные цены ваших активов в режиме реального времени.</string>
+    <string name="tooltip_history">Анализируйте динамику портфеля на основе ежемесячных исторических данных.</string>
+    <string name="tooltip_total_balance">Просматривайте общий баланс портфеля и его дневное изменение.</string>
+    <string name="tooltip_portfolio_list">Отслеживайте доходность отдельных активов по сравнению с предыдущим днем.</string>
+    <string name="tooltip_allocation_graph">Наглядное распределение активов с помощью интерактивного графика.</string>
+    <string name="tooltip_prices_list">Вы можете видеть текущую цену и ее изменение по сравнению со вчерашним днем.</string>
+    <string name="tooltip_history_list">Доходность вашего портфеля с течением времени.</string>
+    <string name="tooltip_edit_investment">Нажмите на актив, чтобы отредактировать инвестицию или настроить уведомления.</string>
+    <string name="tooltip_delete_investment">Смахните актив влево, чтобы удалить его из портфеля.</string>
+    <string name="tooltip_add_investment">Нажмите, чтобы выбрать актив и начать формировать портфель.</string>
+
+    <string name="onboarding_finished_title">Обучение завершено!</string>
+    <string name="onboarding_finished_description">Теперь вы знаете, как устроен OneWallet. Давайте удалим эти примеры, чтобы вы могли добавить реальные активы и взять финансы под контроль.</string>
+    <string name="onboarding_finished_button">Начать сейчас</string>
+
+    <!-- Portfolio Onboarding -->
+    <string name="portfolio_onboarding_title">Приступим к делу</string>
+    <string name="portfolio_onboarding_description">Чтобы помочь вам освоиться в приложении, мы подготовили краткое руководство с 3 тестовыми инвестициями. Это займет всего минуту!</string>
+    <string name="portfolio_onboarding_start">Начать обучение</string>
+    <string name="portfolio_onboarding_skip">Пропустить обучение</string>
+
+    <!-- Widget -->
+    <string name="portfolio_widget">Виджет «Портфель»</string>
+    <string name="prices_widget">Виджет «Котировки»</string>
+    <string name="widget_portfolio_description">Проверяйте состояние своего портфеля</string>
+    <string name="widget_stocks_description">Отслеживайте активы в реальном времени</string>
+    <string name="asset_prices_title">Рыночные цены</string>
+    <string name="reload_cd">Обновить</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_selected">Выбрано</string>
+    <string name="accessibility_not_selected">Не выбрано</string>
+    <string name="loading_cd">Загрузка</string>
+    <string name="accessibility_percent_increased_by">вырос на %1$s процентов</string>
+    <string name="accessibility_percent_decreased_by">снизился на %1$s процентов</string>
+    <string name="accessibility_price_increased_by">и на %1$s %2$s по сравнению с предыдущим днем</string>
+    <string name="accessibility_price_decreased_by">и на %1$s %2$s по сравнению с предыдущим днем</string>
+    <string name="accessibility_unchanged">не изменился по сравнению с предыдущим днем</string>
+
+    <!-- Dropdown Selector -->
+    <string name="dropdown_select_category">Выберите категорию</string>
+    <string name="dropdown_custom_category_title">Своя категория</string>
+    <string name="dropdown_custom_category_placeholder">Название категории</string>
+    <string name="dropdown_custom_category_cancel_cd">Отменить создание категории</string>
+    <string name="accept_action">Применить</string>
+    <string name="dropdown_custom_category_accept_cd">Подтвердить свою категорию</string>
+    <string name="dropdown_custom_category_add_cd">Добавить свою категорию</string>
+    <string name="dropdown_custom_category_item">Своя…</string>
+
+    <!-- Categories -->
+    <string name="category_label">Категория</string>
+    <string name="category_tech">Технологии</string>
+    <string name="category_real_estate">Недвижимость</string>
+    <string name="category_healthcare">Здравоохранение</string>
+    <string name="category_energy">Энергетика</string>
+    <string name="category_finance">Финансы и страхование</string>
+    <string name="category_consumer">Потребительские товары</string>
+    <string name="category_industrial">Промышленность</string>
+    <string name="category_telecom">Телекоммуникации</string>
+    <string name="category_raw_materials">Сырьевые материалы</string>
+    <string name="category_utilities">Коммунальные услуги</string>
+    <string name="category_crypto">Криптовалюта</string>
+    <string name="category_other">Другое</string>
+</resources>
