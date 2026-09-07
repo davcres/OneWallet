@@ -38,3 +38,4 @@ google-services.json
 
 # Keys
 secrets.properties
+.hotswan/

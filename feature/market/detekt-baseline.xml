@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>EmptyFunctionBlock:UsMarketViewModelTest.kt$UsMarketViewModelTest${ }</ID>
+    <ID>LongMethod:GlobalMarketScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun GlobalMarketScreen( uiState: GlobalMarketUiState, onAction: (GlobalMarketIntent) -&gt; Unit, onBack: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>MagicNumber:GlobalMarketsCard.kt$1800f</ID>
+    <ID>NewLineAtEndOfFile:GlobalMarketScreen.kt$com.davidcrespo.onewallet.feature.market.globalMarket.GlobalMarketScreen.kt</ID>
+    <ID>NewLineAtEndOfFile:GlobalMarketViewModel.kt$com.davidcrespo.onewallet.feature.market.globalMarket.GlobalMarketViewModel.kt</ID>
+    <ID>NewLineAtEndOfFile:GlobalMarketsCard.kt$com.davidcrespo.onewallet.feature.market.usMarket.components.GlobalMarketsCard.kt</ID>
+    <ID>NewLineAtEndOfFile:UsMarketScreen.kt$com.davidcrespo.onewallet.feature.market.usMarket.UsMarketScreen.kt</ID>
+    <ID>NewLineAtEndOfFile:UsMarketViewModel.kt$com.davidcrespo.onewallet.feature.market.usMarket.UsMarketViewModel.kt</ID>
+    <ID>UnusedPrivateMember:GlobalMarketScreen.kt$@Preview @Composable private fun GlobalMarketScreenPreview()</ID>
+    <ID>UnusedPrivateMember:GlobalMarketsCard.kt$@Preview @Composable private fun GlobalMarketsCardPreview()</ID>
+    <ID>UnusedPrivateMember:MarketListItem.kt$@Preview @Composable private fun MarketListItemPreview()</ID>
+    <ID>UnusedPrivateMember:MarketSearchBar.kt$@Preview @Composable private fun MarketSearchBarPreview()</ID>
+    <ID>UnusedPrivateMember:UsMarketScreen.kt$@Preview @Composable private fun UsMarketScreenPreview()</ID>
+    <ID>WildcardImport:MarketListItem.kt$import com.davidcrespo.onewallet.core.models.*</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>MagicNumber:ImportHistoryUseCase.kt$ImportHistoryUseCase$5</ID>
+    <ID>MagicNumber:ImportHistoryUseCase.kt$ImportHistoryUseCase$6</ID>
+    <ID>MagicNumber:ImportHistoryUseCase.kt$ImportHistoryUseCase$9</ID>
+    <ID>MagicNumber:RefreshPortfolioPricesUseCase.kt$RefreshPortfolioPricesUseCase$100.0</ID>
+    <ID>NewLineAtEndOfFile:AppCoroutineScope.kt$com.davidcrespo.onewallet.domain.di.AppCoroutineScope.kt</ID>
+    <ID>NewLineAtEndOfFile:FinancialRepository.kt$com.davidcrespo.onewallet.domain.repository.FinancialRepository.kt</ID>
+    <ID>NewLineAtEndOfFile:GetCurrencyRateUseCase.kt$com.davidcrespo.onewallet.domain.usecase.portfolio.GetCurrencyRateUseCase.kt</ID>
+    <ID>NewLineAtEndOfFile:GetGlobalMarketAssetsUseCase.kt$com.davidcrespo.onewallet.domain.usecase.market.GetGlobalMarketAssetsUseCase.kt</ID>
+    <ID>NewLineAtEndOfFile:GetInvestmentPriceUseCase.kt$com.davidcrespo.onewallet.domain.usecase.portfolio.GetInvestmentPriceUseCase.kt</ID>
+    <ID>NewLineAtEndOfFile:GetMonthlyHistoryUseCase.kt$com.davidcrespo.onewallet.domain.usecase.history.GetMonthlyHistoryUseCase.kt</ID>
+    <ID>NewLineAtEndOfFile:GetUSMarketAssetsUseCase.kt$com.davidcrespo.onewallet.domain.usecase.market.GetUSMarketAssetsUseCase.kt</ID>
+    <ID>NewLineAtEndOfFile:PortfolioRepository.kt$com.davidcrespo.onewallet.domain.repository.PortfolioRepository.kt</ID>
+    <ID>NewLineAtEndOfFile:Rate.kt$com.davidcrespo.onewallet.domain.model.rate.Rate.kt</ID>
+    <ID>NewLineAtEndOfFile:SeedAsset.kt$com.davidcrespo.onewallet.domain.model.onboarding.SeedAsset.kt</ID>
+    <ID>ReturnCount:GlobalMarketRegion.kt$GlobalMarketRegion.Companion$fun from(value: String?): GlobalMarketRegion</ID>
+    <ID>VariableNaming:GetUSMarketAssetsUseCase.kt$GetUSMarketAssetsUseCase$private val FAVORITE_SYMBOLS = setOf( "AAPL", "AMZN", "GOOGL", "META", "MSFT", "META", "NVDA", "TSLA", "BTCEUR", "BTCUSD", "BTCUSDC", "BTCUSDCT", "ETHUSDC", "ETHUSDT" )</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -22,62 +22,6 @@ composeCompiler {
     metricsDestination.set(layout.buildDirectory.dir("compose_metrics"))
 }
 
-// Intentamos leer primero de secrets.properties (root extra), luego de env var (para CI)
-val finnhubApiKey: String = (rootProject.extra["FINNHUB_API_KEY"] as? String)
-    ?: System.getenv("FINNHUB_API_KEY")
-    ?: throw GradleException(
-        "FINNHUB_API_KEY not set. " +
-                "Add it to secrets.properties (root) or as env var FINNHUB_API_KEY"
-    )
-val alphaVantageApiKey: String = (rootProject.extra["ALPHA_VANTAGE_API_KEY"] as? String)
-    ?: System.getenv("ALPHA_VANTAGE_API_KEY")
-    ?: throw GradleException(
-        "ALPHA_VANTAGE_API_KEY not set. " +
-                "Add it to secrets.properties (root) or as env var ALPHA_VANTAGE_API_KEY"
-    )
-val alphaVantageApiKey2: String = (rootProject.extra["ALPHA_VANTAGE_API_KEY_2"] as? String)
-    ?: System.getenv("ALPHA_VANTAGE_API_KEY_2")
-    ?: throw GradleException(
-        "ALPHA_VANTAGE_API_KEY_2 not set. " +
-                "Add it to secrets.properties (root) or as env var ALPHA_VANTAGE_API_KEY_2"
-    )
-val alphaVantageApiKey3: String = (rootProject.extra["ALPHA_VANTAGE_API_KEY_3"] as? String)
-    ?: System.getenv("ALPHA_VANTAGE_API_KEY_3")
-    ?: throw GradleException(
-        "ALPHA_VANTAGE_API_KEY_3 not set. " +
-                "Add it to secrets.properties (root) or as env var ALPHA_VANTAGE_API_KEY_3"
-    )
-val marketstackApiKey: String = (rootProject.extra["MARKETSTACK_API_KEY"] as? String)
-    ?: System.getenv("MARKETSTACK_API_KEY")
-    ?: throw GradleException(
-        "MARKETSTACK_API_KEY not set. " +
-                "Add it to secrets.properties (root) or as env var MARKETSTACK_API_KEY"
-    )
-val marketstackApiKey2: String = (rootProject.extra["MARKETSTACK_API_KEY_2"] as? String)
-    ?: System.getenv("MARKETSTACK_API_KEY_2")
-    ?: throw GradleException(
-        "MARKETSTACK_API_KEY_2 not set. " +
-                "Add it to secrets.properties (root) or as env var MARKETSTACK_API_KEY_2"
-    )
-val twelveDataApiKey: String = (rootProject.extra["TWELVE_DATA_API_KEY"] as? String)
-    ?: System.getenv("TWELVE_DATA_API_KEY")
-    ?: throw GradleException(
-        "TWELVE_DATA_API_KEY not set. " +
-                "Add it to secrets.properties (root) or as env var TWELVE_DATA_API_KEY"
-    )
-val telegramApiKey: String = (rootProject.extra["TELEGRAM_API_KEY"] as? String)
-    ?: System.getenv("TELEGRAM_API_KEY")
-    ?: throw GradleException(
-        "TELEGRAM_API_KEY not set. " +
-                "Add it to secrets.properties (root) or as env var TELEGRAM_API_KEY"
-    )
-val telegramChatId: String = (rootProject.extra["TELEGRAM_CHAT_ID"] as? String)
-    ?: System.getenv("TELEGRAM_CHAT_ID")
-    ?: throw GradleException(
-        "TELEGRAM_CHAT_ID not set. " +
-                "Add it to secrets.properties (root) or as env var TELEGRAM_CHAT_ID"
-    )
-
 android {
     namespace = "com.davidcrespo.onewallet"
     compileSdk {
@@ -88,26 +32,13 @@ android {
         applicationId = "com.davidcrespo.onewallet"
         minSdk = 30
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "FINNHUB_API_KEY", "\"$finnhubApiKey\"")
-        buildConfigField("String", "ALPHA_VANTAGE_API_KEY", "\"$alphaVantageApiKey\"")
-        buildConfigField("String", "ALPHA_VANTAGE_API_KEY_2", "\"$alphaVantageApiKey2\"")
-        buildConfigField("String", "ALPHA_VANTAGE_API_KEY_3", "\"$alphaVantageApiKey3\"")
-        buildConfigField("String", "MARKETSTACK_API_KEY", "\"$marketstackApiKey\"")
-        buildConfigField("String", "MARKETSTACK_API_KEY_2", "\"$marketstackApiKey2\"")
-        buildConfigField("String", "TWELVE_DATA_API_KEY", "\"$twelveDataApiKey\"")
     }
 
     buildTypes {
-        debug {
-            buildConfigField("String", "TELEGRAM_API_KEY", "\"$telegramApiKey\"")
-            buildConfigField("String", "TELEGRAM_CHAT_ID", "\"$telegramChatId\"")
-        }
-
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -115,9 +46,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
-            buildConfigField("String", "TELEGRAM_API_KEY", "\"\"")
-            buildConfigField("String", "TELEGRAM_CHAT_ID", "\"\"")
         }
     }
     compileOptions {
@@ -129,7 +57,6 @@ android {
     }
     buildFeatures {
         compose = true
-        buildConfig = true
     }
     testOptions {
         animationsDisabled = true
@@ -149,7 +76,17 @@ android {
 }
 
 dependencies {
+    implementation(project(":di"))
+    implementation(project(":core"))
+    implementation(project(":domain"))
+    implementation(project(":data"))
+    implementation(project(":feature:portfolio"))
+    implementation(project(":feature:market"))
+    implementation(project(":feature:onboarding"))
+    implementation(project(":feature:widget"))
+
     implementation(libs.androidx.core.ktx)
+
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

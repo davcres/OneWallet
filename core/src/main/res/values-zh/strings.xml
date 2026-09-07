@@ -1,0 +1,230 @@
+<resources>
+    <string name="app_name">OneWallet</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_1_title">欢迎使用 OneWallet</string>
+    <string name="onboarding_1_description">一站式管理您的所有投资。简单、快捷、安全。</string>
+    <string name="onboarding_2_title">实时行情跟踪</string>
+    <string name="onboarding_2_description">获取股票、基金、ETF及加密货币的最新市场数据。</string>
+    <string name="onboarding_3_title">主屏幕小组件</string>
+    <string name="onboarding_3_description">无需打开应用即可随时掌握投资动态。使用投资组合组件查看资产余额，使用行情组件实时关注市场走势。</string>
+    <string name="onboarding_4_title">分析月度收益演变</string>
+    <string name="onboarding_4_description">通过详细图表与历史数据，清晰直观地评估投资表现。</string>
+    <string name="onboarding_5_title">您的数据仅归您所有</string>
+    <string name="onboarding_5_description">所有数据均安全保存在您的本地设备上。无云端存储，绝无跟踪。</string>
+    <string name="onboarding_6_title">让您的财务管理更简单</string>
+    <string name="onboarding_6_description">准备好开始了吗？</string>
+    <string name="onboarding_button_next">下一步</string>
+    <string name="onboarding_button_get_started">立即开始</string>
+
+    <!-- Portfolio -->
+    <string name="empty_investments_title">您尚未添加任何投资</string>
+    <string name="empty_investments_description">点击 + 按钮开始跟踪您的投资资产。</string>
+    <string name="greeting_morning">早上好</string>
+    <string name="greeting_afternoon">下午好</string>
+    <string name="greeting_evening">晚上好</string>
+    <string name="tab_positions_title">您的资产</string>
+    <string name="currency_selector_cd">货币选择器</string>
+    <string name="ui_mode_cd">界面主题选择器。当前主题：%1$s。点击切换为主题 %2$s</string>
+    <string name="tab_positions">持仓</string>
+    <string name="tab_allocation">配置</string>
+    <string name="tab_prices">行情</string>
+    <string name="tab_history">历史</string>
+    <string name="add_new_fund_title">添加新基金</string>
+    <string name="add_new_etf_title">添加新 ETF</string>
+    <string name="close_cd">关闭</string>
+    <string name="isin_label">ISIN 编码</string>
+    <string name="isin_helper_text">国际证券识别码 (ISIN)</string>
+    <string name="quantity_shares_label">持股 / 份额数量</string>
+    <string name="cancel_action">取消</string>
+    <string name="cancel_add_fund_cd">点击取消添加基金</string>
+    <string name="add_action">添加</string>
+    <string name="add_fund_cd">向投资组合中添加新基金</string>
+    <string name="error_isin_empty">请输入 ISIN 编码以添加到投资组合中。</string>
+    <string name="error_isin_invalid">请输入有效的 ISIN 编码。\n12位大写字母与数字：ES12345ABCD0</string>
+    <string name="add_investment_title">添加投资</string>
+    <string name="add_investment_subtitle">选择要跟踪的资产类型</string>
+    <string name="asset_stock">股票</string>
+    <string name="asset_stock_subtitle">股票与股权</string>
+    <string name="asset_crypto">加密货币</string>
+    <string name="asset_crypto_subtitle">比特币、以太坊等加密资产</string>
+    <string name="asset_fund">基金</string>
+    <string name="asset_fund_subtitle">主动管理型及指数型基金</string>
+    <string name="asset_etf">ETF</string>
+    <string name="asset_etf_subtitle">交易型开放式指数基金与指数</string>
+    <string name="asset_bank">银行账户</string>
+    <string name="asset_bank_subtitle">现金、储蓄与定期存款</string>
+    <string name="asset_other">其他</string>
+    <string name="asset_other_subtitle">您想添加到投资组合中的任何其他资产</string>
+    <string name="accessibility_add_investment_fab">添加投资资产</string>
+    <string name="accessibility_add_investment_expanded">投资类型选择器已展开</string>
+    <string name="accessibility_add_investment_collapsed">投资类型选择器已折叠</string>
+    <string name="accessibility_show_add_investment">显示投资资产类型选择器</string>
+    <string name="accessibility_dismiss_add_investment">关闭投资资产类型选择器</string>
+    <string name="add_bank_title">添加现金 / 存款</string>
+    <string name="bank_name_label">银行 / 存款名称：</string>
+    <string name="bank_name_placeholder">例如：中国银行</string>
+    <string name="add_other_title">添加资产</string>
+    <string name="other_name_label">资产名称：</string>
+    <string name="other_name_placeholder">例如：伊比萨海滨别墅</string>
+    <string name="total_money_label">总金额：</string>
+    <string name="add_bank_cd">向投资组合中添加新现金或存款</string>
+    <string name="update_quantity_action">更新</string>
+    <string name="fund_fetch_error">抱歉，无法获取该基金信息。\n请尝试其他 ISIN 编码。</string>
+    <string name="etf_fetch_error">抱歉，无法获取该 ETF 信息。\n请尝试其他 ISIN 编码。</string>
+    <string name="current_holding_label">当前持仓</string>
+    <string name="current_holding">%.2f 股/份</string>
+    <string name="total_value">总市值</string>
+    <string name="new_quantity_market">输入新的持股/份额数量</string>
+    <string name="new_quantity_manual">输入新的资产余额</string>
+    <string name="new_quantity_manual_info">使用投资的原始货币单位 (%s)</string>
+    <string name="receive_notifications">接收通知提醒</string>
+    <string name="alert_threshold_placeholder">例如：5.0</string>
+    <string name="alert_threshold_info">当价格波动超过以下比例时通知我：</string>
+    <string name="notification_price_up_title">%s 正在上涨！</string>
+    <string name="notification_price_down_title">%s 正在下跌！</string>
+    <string name="notification_price_body">%1$s 今日已变动 %2$s%%。</string>
+    <string name="estimated_new_value">预估新市值</string>
+    <string name="cancel_edit_investment_cd">点击取消修改持仓数量</string>
+    <string name="error_quantity_empty">请输入有效金额或数量。</string>
+    <string name="error_alert_threshold_invalid">通知百分比阈值必须大于 0。</string>
+    <string name="error_category_empty">请选择一个资产分类。</string>
+    <string name="delete_action">删除</string>
+    <string name="delete_investment_message">确定要从投资组合中删除此项投资吗？</string>
+    <string name="asset_name_cd">输入资产名称</string>
+    <string name="asset_manual_quantity_cd">输入资产金额</string>
+    <string name="asset_isin_cd">输入资产 ISIN 编码</string>
+    <string name="asset_market_quantity_cd">输入资产股数或份额</string>
+    <string name="asset_alert_threshold_cd">输入触发提醒的价格波动百分比</string>
+
+    <!-- Allocation -->
+    <string name="tab_allocation_title">按资产类型配置</string>
+    <string name="tab_allocation_type">类型</string>
+    <string name="tab_allocation_category">分类</string>
+
+    <!-- Prices -->
+    <string name="tab_prices_title">单价行情</string>
+
+    <!-- Market -->
+    <string name="add_crypto_title">添加加密货币</string>
+    <string name="add_us_stocks_title">添加美股</string>
+    <string name="add_global_stocks_title">添加全球股票</string>
+    <string name="add_count_action">添加 (%d)</string>
+    <string name="search_crypto_placeholder">搜索加密货币</string>
+    <string name="search_us_stock_placeholder">搜索代码、名称或 FIGI</string>
+    <string name="search_global_stock_placeholder">搜索代码或名称</string>
+    <string name="unselect_asset_cd">取消选择资产</string>
+    <string name="select_asset_cd">选择资产</string>
+    <string name="search_market_cd">通过代码、名称或 FIGI 搜索资产</string>
+
+    <!-- Global Market -->
+    <string name="global_markets_request_limit">由于访问量过高，我们的行情接口正在休整，不过别担心，明天将满血恢复。</string>
+    <string name="global_markets_card_title">想探索全球其他证券市场？</string>
+    <string name="global_markets_card_description">本列表目前仅显示美股，但您也可以交易伦敦、东京或任何全球交易所的股票。只需输入股票代码或公司名称即可。</string>
+    <string name="global_markets_card_button">前往全球市场</string>
+    <string name="global_markets_card_button_cd">当前页面仅可搜索美股，点击按钮可访问其他国家的股票搜索引擎。</string>
+    <string name="global_markets_warning">请注意，我们仍在快速发展中，为确保显示数据的最高质量，可能存在部分股票无法获取的情况。对此造成的不便深表歉意，我们正在持续扩充覆盖范围。</string>
+    <string name="global_markets_no_results">抱歉，未找到与您的搜索相匹配的股票。</string>
+    <string name="global_markets_try_again">重试</string>
+
+    <!-- History -->
+    <string name="history_monthly_title">月度历史</string>
+    <string name="import_history">导入历史</string>
+    <string name="export_history">导出历史</string>
+    <string name="back_cd">返回</string>
+    <string name="investments_of_month_fmt">%2$d 年 %1$s 投资持仓</string>
+    <string name="shares_in_portfolio_label">持仓份额 / 股数</string>
+    <string name="price_per_share_label">每股单价</string>
+    <string name="total_value_label">总市值</string>
+    <string name="pl_month_label">月度盈亏</string>
+    <string name="history_import_success">历史记录导入成功</string>
+    <string name="history_import_error">导入历史记录时出错</string>
+    <string name="history_read_error">读取文件时出错</string>
+    <string name="history_export_success">历史记录已保存到“下载”目录</string>
+    <string name="history_export_error">导出历史记录时出错</string>
+    <string name="history_save_error">保存文件时出错</string>
+
+    <!-- Core -->
+    <string name="clear_cd">删除投资</string>
+    <string name="clear_text_cd">清空文字</string>
+    <string name="copiable_text_snackbar">已复制到剪贴板</string>
+    <string name="copiable_text_cd">复制</string>
+
+    <string name="total_balance">总资产余额</string>
+    <string name="hide_balance_cd">隐藏余额</string>
+    <string name="show_balance_cd">显示余额</string>
+    <string-array name="rich_phrases">
+        <item>资产太过耀眼，请佩戴墨镜观看。</item>
+        <item>税务部门对这笔财富表示很满意。</item>
+        <item>您绝对有实力给辛苦的独立开发者打赏一杯咖啡。</item>
+        <item>您确定没有多输几个零？不妨先思考冷静一下。</item>
+    </string-array>
+    <string name="your_investments">您的投资</string>
+
+    <!-- Tooltips -->
+    <string name="tooltip_positions">查看您的有效投资持仓与总资产余额。</string>
+    <string name="tooltip_allocation">按资产类型或分类直观查看资金分布比例。</string>
+    <string name="tooltip_prices">实时跟踪持仓资产的最新市场价格走势。</string>
+    <string name="tooltip_history">通过月度历史数据分析您的投资组合表现与演变。</string>
+    <string name="tooltip_total_balance">查看投资组合总资产及较前一日的涨跌变动。</string>
+    <string name="tooltip_portfolio_list">跟踪各项单独资产的表现以及与上一交易日对比的盈亏。</string>
+    <string name="tooltip_allocation_graph">通过交互式图表查看您的资产分布情况。</string>
+    <string name="tooltip_prices_list">查看资产当前行情价格以及较前一天的涨跌幅度。</string>
+    <string name="tooltip_history_list">查看投资组合历年来的表现与收益趋势。</string>
+    <string name="tooltip_edit_investment">点击资产可编辑投资数量或设置价格变动提醒。</string>
+    <string name="tooltip_delete_investment">向左滑动资产卡片可将其从投资组合中移除。</string>
+    <string name="tooltip_add_investment">点击选择资产并开始构建属于您的专属投资组合。</string>
+
+    <string name="onboarding_finished_title">新手教程完成！</string>
+    <string name="onboarding_finished_description">您现在已经了解了 OneWallet 的使用方式。我们这就清空示例数据，以便您开始录入真实资产，全面掌控您的财富。</string>
+    <string name="onboarding_finished_button">立即开始</string>
+
+    <!-- Portfolio Onboarding -->
+    <string name="portfolio_onboarding_title">开启投资之旅</string>
+    <string name="portfolio_onboarding_description">为了帮助您快速熟悉操作，我们为您准备了包含 3 笔示例投资的简短教程，带您领略 OneWallet 的强大功能。仅需一分钟！</string>
+    <string name="portfolio_onboarding_start">开始教程</string>
+    <string name="portfolio_onboarding_skip">跳过教程</string>
+
+    <!-- Widget -->
+    <string name="portfolio_widget">投资组合小组件</string>
+    <string name="prices_widget">行情监控小组件</string>
+    <string name="widget_portfolio_description">随时查看您的投资组合总览</string>
+    <string name="widget_stocks_description">实时关注您的持仓资产价格</string>
+    <string name="asset_prices_title">市场行情</string>
+    <string name="reload_cd">重新加载</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_selected">已选中</string>
+    <string name="accessibility_not_selected">未选中</string>
+    <string name="loading_cd">加载中</string>
+    <string name="accessibility_percent_increased_by">上涨了 %1$s%%</string>
+    <string name="accessibility_percent_decreased_by">下跌了 %1$s%%</string>
+    <string name="accessibility_price_increased_by">较上一交易日上涨 %1$s %2$s</string>
+    <string name="accessibility_price_decreased_by">较上一交易日下跌 %1$s %2$s</string>
+    <string name="accessibility_unchanged">较上一交易日持平</string>
+
+    <!-- Dropdown Selector -->
+    <string name="dropdown_select_category">选择分类</string>
+    <string name="dropdown_custom_category_title">自定义分类</string>
+    <string name="dropdown_custom_category_placeholder">分类名称</string>
+    <string name="dropdown_custom_category_cancel_cd">取消自定义分类</string>
+    <string name="accept_action">确定</string>
+    <string name="dropdown_custom_category_accept_cd">确定自定义分类</string>
+    <string name="dropdown_custom_category_add_cd">添加自定义分类</string>
+    <string name="dropdown_custom_category_item">自定义…</string>
+
+    <!-- Categories -->
+    <string name="category_label">分类</string>
+    <string name="category_tech">科技</string>
+    <string name="category_real_estate">房地产</string>
+    <string name="category_healthcare">医疗健康</string>
+    <string name="category_energy">能源</string>
+    <string name="category_finance">金融与保险</string>
+    <string name="category_consumer">消费品</string>
+    <string name="category_industrial">工业</string>
+    <string name="category_telecom">通信</string>
+    <string name="category_raw_materials">原材料</string>
+    <string name="category_utilities">公用事业</string>
+    <string name="category_crypto">加密货币</string>
+    <string name="category_other">其他</string>
+</resources>

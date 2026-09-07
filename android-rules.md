@@ -5,41 +5,77 @@
 
 
 
-# Profile: Senior Android Engineer
+## Profile: Senior Android Engineer
 
-# Android Project Guidelines: Clean Architecture, SOLID & MVI
+# Android Project Guidelines: Multi-Module Feature-by-Layer Architecture, Clean Architecture, SOLID & MVI
 
 This document serves as a reference for AI agents and developers working on this Android project. It establishes the architectural standards, design patterns, and best practices to ensure code quality, maintainability, and scalability.
 
-## 1. Architecture Overview: Clean Architecture
+## 1. Architecture Overview: Multi-Module Feature-by-Layer Architecture
 
-The project follows a **Feature-based** top-level organization to ensure scalability and modularity. Inside each feature module, a **Layer-based** structure (Clean Architecture) must be strictly applied, dividing the codebase into three distinct layers with a unidirectional dependency rule (outer layers depend on inner layers).
+The project follows a modern **Feature-by-Layer Multi-Module Architecture** to maximize compilation speed, reusability, testability, and strict decoupling. The codebase is organized into multi-project Gradle modules divided by layers and feature domains:
 
-### 🟢 Domain Layer (Inner Core)
-*   **Responsibility:** Contains the business logic and enterprise rules. It is the most stable layer.
-*   **Dependencies:** **None**. It must remain pure Kotlin, free from Android framework dependencies.
+```
+                          ┌──────────┐
+                          │   :app   │
+                          └────┬─────┘
+                               │
+            ┌──────────────────┼──────────────────┐
+            ▼                  ▼                  ▼
+       ┌──────────┐      ┌───────────┐       ┌──────────┐
+       │   :di    │      │  :feature │       │  :data   │
+       └────┬─────┘      └─────┬─────┘       └────┬─────┘
+            │                  │                  │
+            └──────────┬───────┴───────┬──────────┘
+                       ▼               ▼
+                  ┌─────────┐     ┌──────────┐
+                  │  :core  │ ──> │ :domain  │ (Pure Kotlin 100%)
+                  └─────────┘     └──────────┘
+```
+
+### 🟢 Domain Module (`:domain`)
+*   **Responsibility:** Pure Kotlin business logic, domain models, repository interfaces, and use cases.
+*   **Dependencies:** **None (0 dependencies)**. Must remain 100% Pure Kotlin, free from Android framework and third-party UI libraries.
 *   **Components:**
-    *   **Entities/Models:** Pure data classes representing business objects.
-    *   **Use Cases (Interactors):** Encapsulate specific business logic (e.g., `GetUserInfoUseCase`). Each Use Case should ideally have a single public `invoke` function.
-    *   **Repository Interfaces:** Abstractions defining data operations.
+    *   **Domain Models:** Pure data classes representing business objects (e.g., `Investment`, `Currency`, `ThemeMode`).
+    *   **Use Cases (Interactors):** Encapsulate specific business logic (e.g., `GetPortfolioItemsUseCase`). Each Use Case should have a single public `invoke` function.
+    *   **Repository Interfaces:** Abstractions defining data operations (e.g., `FinancialRepository`).
 
-### 🟡 Data Layer (Outer Core)
-*   **Responsibility:** Handling data retrieval and storage. It implements the interfaces defined in the Domain layer.
-*   **Dependencies:** Domain Layer.
+### 🔵 Core Module (`:core`)
+*   **Responsibility:** Design system composables, app theme, shared UI models, base composables, and pure UI helper utilities.
+*   **Dependencies:** `:domain`.
 *   **Components:**
-    *   **Repository Implementations:** Implement domain repository interfaces. They orchestrate data flow between local and remote sources.
+    *   **Design System:** `OneWalletTheme`, color tokens, typography, shapes.
+    *   **Reusable Composables:** `OWBalance`, `OWInvestmentItem`, `OWLoader`, `AutoScrollingText`, etc.
+    *   **UI Models:** Immutable UI view models (`InvestmentView`, `CurrencyView`) and UI extension mappers (`toUI()`).
+    *   **Utilities:** `CurrencyConverter`, double/number formatters.
+
+### 🟡 Data Module (`:data`)
+*   **Responsibility:** Data retrieval, local persistence, and remote API networking.
+*   **Dependencies:** `:domain`.
+*   **Components:**
+    *   **Repository Implementations:** Implement domain repository interfaces, orchestrating flow between local and remote sources.
     *   **Data Sources:**
-        *   *Remote:* API clients (Retrofit), Network services.
-        *   *Local:* Databases (Room), DataStore, Files.
-    *   **Mappers:** Functions to transform Data entities (DTOs) into Domain models and vice-versa. The API models (DTOs) never have to go away from the data layer. The Repository is responsible for mapping DTOs to Domain Models before they are released.
+        *   *Remote:* Ktor HTTP clients (`FinnhubHttpClient`, `AlphaVantageHttpClient`, `MarketstackHttpClient`).
+        *   *Local:* Room Database (`OneWalletDatabase`), DAOs (`InvestmentDao`, `MonthlySnapshotDao`).
+    *   **Mappers:** Functions to transform Data entities/DTOs into Domain models and vice-versa. API DTOs never escape the data layer.
 
-### 🔴 Presentation Layer (UI)
-*   **Responsibility:** Rendering the UI and handling user interaction.
-*   **Dependencies:** Domain Layer.
+### 🟣 Feature Modules (`:feature:*`)
+*   **Responsibility:** Rendering UI, handling user interactions, and managing feature-specific state.
+*   **Modules:** `:feature:portfolio` (includes `Positions`, `Allocation`, `Prices`, and `History` tabs), `:feature:market`, `:feature:onboarding`, `:feature:widget`.
+*   **Dependencies:** `:core`, `:domain`. (No direct compile-time dependencies between feature modules).
 *   **Components:**
-    *   **UI Components:** Activities, Fragments, Jetpack Compose functions.
-    *   **ViewModels:** Manage UI state and handle business logic execution via Use Cases.
-    *   **MVI Contracts:** Define State, Events, and Effects. The ViewModel must expose a single StateFlow<State>. It is forbidden to expose multiple independent states. Status updates must be done via .update { it.copy(...) }.
+    *   **UI Roots & Screens:** `PortfolioScreen`, `MarketScreen`, `OnboardingScreen`, Glance AppWidgets.
+    *   **ViewModels:** Manage UI state and execute domain Use Cases.
+    *   **MVI Contracts:** Define State, Events (Intents), and Side-Effects.
+
+### ⚙️ Dependency Injection Module (`:di`)
+*   **Responsibility:** Centralized Koin module declarations (`dataModule`, `domainModule`, `presentationModule`, `workerModule`).
+*   **Dependencies:** `:data`, `:domain`, `:core`, and all `:feature:*` modules.
+
+### 📱 Application Module (`:app`)
+*   **Responsibility:** Application entry point (`OneWalletApplication`), `MainActivity`, Navigation Graph (`MainNavigation`, `NavKeys`), and app-level ViewModels (`SplashViewModel`, `MainViewModel`).
+*   **Dependencies:** `:di`, `:core`, `:domain`, `:data`, and all `:feature:*` modules.
 
 ---
 
@@ -49,11 +85,11 @@ We use **MVI** for state management to ensure a unidirectional data flow and pre
 
 ### Key Components
 1.  **State:** An **immutable** data class representing the single source of truth for a specific screen/view.
-    *   *Example:* `data class HomeState(val isLoading: Boolean, val items: List<Item>, val error: String?)`
+    *   *Example:* `data class PortfolioUiState(val isLoading: Boolean, val portfolioItems: ImmutableList<InvestmentView>, val error: String?)`
 2.  **Event (Intent):** Represents user actions or system events that trigger logic.
-    *   *Example:* `sealed interface HomeEvent { data object LoadData : HomeEvent; data class ItemClicked(val id: Int) : HomeEvent }`
+    *   *Example:* `sealed interface PortfolioIntent { data object RefreshData : PortfolioIntent; data class SelectItem(val id: String) : PortfolioIntent }`
 3.  **Effect (Side Effect):** One-time events that shouldn't persist in the state (e.g., Navigation, Snackbars, Toasts).
-    *   *Example:* `sealed interface HomeEffect { data class NavigateToDetails(val id: Int) : HomeEffect }`
+    *   *Example:* `sealed interface PortfolioEffect { data class NavigateToMarket(val isCrypto: Boolean) : PortfolioEffect }`
 
 ### Flow
 1.  **View** emits an **Event**.
@@ -62,20 +98,13 @@ We use **MVI** for state management to ensure a unidirectional data flow and pre
 4.  **View** observes **State** to render UI and collects **Effects** for navigation/alerts.
 
 ### Model
-1. Use a sealed class {ProjectName}Result to return the data or the given error. This sealed class have two data classes:
-sealed interface {ProjectName}Result<out T> {
-    data class Success<T>(val data: T) : {ProjectName}Result<T>
-    data class Error(val error: {ProjectName}Error) : {ProjectName}Result<Nothing>
+1. Use a sealed interface for domain/repository execution results where appropriate:
+```kotlin
+sealed interface Result<out T> {
+    data class Success<T>(val data: T) : Result<T>
+    data class Error(val exception: Throwable) : Result<Nothing>
 }
-
-
-sealed interface {ProjectName}Error {
-    object Network : {ProjectName}Error
-    object Unauthorized : {ProjectName}Error
-    object NoFunds : {ProjectName}Error
-    data class ServerError(val code: Int) : {ProjectName}Error
-    object Unknown : {ProjectName}Error
-}
+```
 
 ---
 
@@ -88,7 +117,7 @@ sealed interface {ProjectName}Error {
 *   **L - Liskov Substitution Principle:**
     *   *Apply:* Implementations of interfaces should behave predictably so they can be interchanged without breaking the app.
 *   **I - Interface Segregation Principle:**
-    *   *Apply:* Create specific interfaces (e.g., `ReadOnlyRepository`, `WriteRepository`) if a client doesn't need all methods.
+    *   *Apply:* Create specific interfaces if a client doesn't need all methods.
 *   **D - Dependency Inversion Principle:**
     *   *Apply:* The Domain layer defines interfaces; the Data layer implements them. Use Dependency Injection (Koin) to provide implementations.
 
@@ -103,67 +132,40 @@ sealed interface {ProjectName}Error {
 
 ### UI (Jetpack Compose)
 *   Composables should be stateless whenever possible (hoist state to parent or ViewModel).
-*   Use `preview` functions to test UI components in isolation.
-*   Follow Material Design guidelines.
-*   In the View (Compose), always use collectAsStateWithLifecycle() to observe the State and avoid memory leaks or unnecessary consumption of resources.
-*   Each Composable Panel must have a 'Content' version containing only the State and Events (lambdas), to facilitate the creation of Previews without the need to mock the ViewModel. The 'Content' composable is called by a 'Root' composable which makes the initial calls to the ViewModel and obtains its state.
-*   Use always colors from com.davidcrespo.onewallet.presentation.designsystem.theme.Theme and follow com.davidcrespo.onewallet.presentation.designsystem.composables.OWInvestmentItem style.
-*   In Text composables use style = MaterialTheme.typography instead of fontSize.
+*   Use `@Preview` functions to test UI components in isolation.
+*   Follow Material 3 Design guidelines.
+*   In the View (Compose), always use `collectAsStateWithLifecycle()` to observe State and avoid memory leaks.
+*   Each Composable Panel must have a 'Content' version containing only the State and Events (lambdas), to facilitate the creation of Previews without the need to mock the ViewModel. The 'Content' composable is called by a 'Root' composable which obtains its ViewModel state.
+*   Always use colors from `com.davidcrespo.onewallet.core.designsystem.theme.OneWalletTheme` and follow `com.davidcrespo.onewallet.core.designsystem.composables.OWInvestmentItem` style.
+*   In Text composables use `style = MaterialTheme.typography` instead of hardcoded `fontSize`.
 
 ### Testing
-*   **Dependencies** Use MockK and JUnit5 for business logic tests. Use Jetpack Compose Tests with JUnit 4 for UI tests and robolectric for running them without emulator. Create also screenshot tests with roborazzi.
+*   **Dependencies:** Use MockK and JUnit5 for unit tests. Use Jetpack Compose Tests with JUnit 4 for UI tests.
 *   **Domain:** 100% unit test coverage for Use Cases (fast, pure Kotlin).
-*   **Data:** Unit test Repositories and Mappers using mocks (Mockk).
-*   **Presentation:** Unit test ViewModels (verify State updates and Effects). UI Tests (Compose Test Rule) for critical flows.
-*   Every time a new class is created or modified, ensure that the old tests passes and are updated with the new changes, and create test class if necessary.
-*   Every time a new composable is created or modified, ensure that the old tests passes and are updated with the new changes, and create compose test and screenshot tests if necessary.
-*   Share the same TestDispatcher instance across your tests and the DispatcherProvider. This ensures that both Dispatchers.Main (which the extension handles) and your background dispatchers (IO, Default) are perfectly synchronized. For that, use MainDispatcherExtension and TestDispatcherProvider.
+*   **Data:** Unit test Repositories and Mappers using MockK.
+*   **Presentation / Features:** Unit test ViewModels (verify State updates and Effects).
+*   Every time a new class is created or modified, ensure existing tests pass and write new tests as needed.
+*   Share the same `TestDispatcher` instance across tests using `MainDispatcherExtension`.
 
 ### Naming Conventions
-*   **Use Cases:** `Verb` + `Noun` + `UseCase` (e.g., `LoginUserUseCase`).
-*   **Repositories:** `DataName` + `Repository` (e.g., `UserRepository`).
-*   **Implementations:** `Name` + `Impl` (e.g., `UserRepositoryImpl`).
-
-### Structure
-Use the Given-When-Then pattern in the test comments. Note the test methods using backticks and a descriptive form: `should update state to success when data is fetched`.
+*   **Use Cases:** `Verb` + `Noun` + `UseCase` (e.g., `GetPortfolioItemsUseCase`).
+*   **Repositories:** `DataName` + `Repository` (e.g., `FinancialRepository`).
+*   **Implementations:** `Name` + `Impl` (e.g., `FinancialRepositoryImpl`).
 
 ---
 
-## 5. Project Organization: Feature-First
-The project follows a **Feature-based** top-level organization to ensure scalability and modularity. Inside each feature module, a **Layer-based** structure (Clean Architecture) must be strictly applied.
-
-### Internal Feature Structure:
-Each feature module must contain:
-- **domain:** Use Cases, Domain Models, and Repository Interfaces.
-- **data:** Repository Impls, DTOs, Entities, Mappers, and Data Sources.
-- **presentation:** UI (Compose), ViewModels, and MVI Contracts.
-
----
-
-## 6. Folder Structure Template
+## 5. Project Organization: Multi-Module Layout
 
 ```
-com.example.project
-├── core
-│   ├── data          (Network provider, Database config, Base DTOs)
-│   ├── domain        (Base UseCase, Result wrapper, Error types)
-│   ├── ui            (Common components, Theme, Design System)
-│   └── di            (Global Koin modules: NetworkModule, DatabaseModule)
-└── features
-    └── [feature_name] (e.g., login, profile)
-        ├── data
-        │   ├── remote (API interfaces & DTOs)
-        │   ├── local  (DAOs & Entities)
-        │   ├── mapper (Extension functions)
-        │   └── repository (Implementations)
-        ├── domain
-        │   ├── model  (Domain entities)
-        │   ├── repository (Interfaces)
-        │   └── usecase
-        ├── presentation
-        │   ├── [Feature]Screen.kt   (Root & Content)
-        │   ├── [Feature]ViewModel.kt
-        │   └── [Feature]Contract.kt (State, Event, Effect)
-        └── di
-            └── [Feature]Module.kt (Koin module for this specific feature)
+OneWallet
+├── app               (Application, MainActivity, NavHost, SplashViewModel)
+├── core              (Theme, DesignSystem composables, CurrencyView, CurrencyConverter)
+├── domain            (100% Pure Kotlin: Use Cases, Repositories, Domain Models)
+├── data              (Room DB, DAOs, Ktor remote clients, Repository Impls, dataModule, BuildConfig keys)
+├── di                (Central Koin modules aggregator: appModules)
+└── feature           (Independent UI Feature Modules)
+    ├── portfolio     (PortfolioScreen, PositionsTab, AllocationTab, PricesTab, HistoryTab, PriceAlertWorker, portfolioFeatureModule)
+    ├── market        (MarketScreen, UsMarketScreen, GlobalMarketScreen, marketFeatureModule)
+    ├── onboarding    (OnboardingScreen, PortfolioOnboardingScreen, onboardingFeatureModule)
+    └── widget        (PortfolioWidget, StocksWidget, Glance appwidgets, widgetFeatureModule)
 ```

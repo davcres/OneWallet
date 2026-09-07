@@ -21,4 +21,14 @@ dependencyResolutionManagement {
 
 rootProject.name = "OneWallet"
 include(":app")
+include(":core")
+include(":domain")
+include(":data")
+include(":di")
+
+include(":feature:portfolio")
+include(":feature:market")
+include(":feature:onboarding")
+include(":feature:widget")
+
  
