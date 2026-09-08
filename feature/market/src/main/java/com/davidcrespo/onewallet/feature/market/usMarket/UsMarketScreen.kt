@@ -14,23 +14,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -86,36 +91,48 @@ private fun UsMarketScreen(
 ) {
     Scaffold(
         topBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding() // Necesaria para no solapar al no utilizar una TopAppBar estandar de material3
-                    .padding(16.dp)
-            ) {
-                TextButton(
-                    onClick = onBack,
-                    modifier = Modifier.align(Alignment.CenterStart)
-                ) {
-                    Text(stringResource(R.string.cancel_action))
-                }
-
-                Text(
-                    text = if (isCrypto) stringResource(R.string.add_crypto_title) else stringResource(R.string.add_us_stocks_title),
-                    modifier = Modifier.align(Alignment.Center),
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                if (uiState.assetsToSaveToPortfolio.isNotEmpty()) {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = if (isCrypto) stringResource(R.string.add_crypto_title) else stringResource(R.string.add_us_stocks_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                navigationIcon = {
+                    TextButton(
+                        onClick = onBack
+                    ) {
+                        Text(stringResource(R.string.cancel_action))
+                    }
+                },
+                actions = {
+                    val hasSelection = uiState.assetsToSaveToPortfolio.isNotEmpty()
                     TextButton(
                         onClick = {
-                            onAction(UsMarketIntent.SaveAssetsSelected)
+                            if (hasSelection) {
+                                onAction(UsMarketIntent.SaveAssetsSelected)
+                            }
                         },
-                        modifier = Modifier.align(Alignment.CenterEnd)
+                        enabled = hasSelection,
+                        modifier = Modifier
+                            .alpha(if (hasSelection) 1f else 0f)
+                            .then(if (!hasSelection) Modifier.clearAndSetSemantics { } else Modifier)
                     ) {
-                        Text(stringResource(R.string.add_count_action, uiState.assetsToSaveToPortfolio.size))
+                        Text(
+                            text = stringResource(
+                                R.string.add_count_action,
+                                maxOf(uiState.assetsToSaveToPortfolio.size, 1)
+                            )
+                        )
                     }
-                }
-            }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
+            )
         },
         modifier = modifier
             .fillMaxSize()
