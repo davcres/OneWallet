@@ -29,6 +29,7 @@ roomKmp = "2.7.0-alpha13"
 sqliteKmp = "2.5.0-alpha13"
 turbine = "1.1.0"
 workRuntimeKtx = "2.11.0"
+datetime = "0.6.1"
 
 [libraries]
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
@@ -83,6 +84,7 @@ ktor-client-darwin = { group = "io.ktor", name = "ktor-client-darwin", version.r
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }
 multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatformSettings" }
 androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "sqliteKmp" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
 
 [bundles]
 koin = [
