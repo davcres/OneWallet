@@ -1,0 +1,230 @@
+<resources>
+    <string name="app_name">OneWallet</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_1_title">OneWallet में आपका स्वागत है</string>
+    <string name="onboarding_1_description">अपने सभी निवेशों को एक ही स्थान पर प्रबंधित करें। सरल, तेज़ और सुरक्षित।</string>
+    <string name="onboarding_2_title">रीयल-टाइम ट्रैकिंग</string>
+    <string name="onboarding_2_description">स्टॉक, म्यूचुअल फंड, ETF और क्रिप्टोकरेंसी के लिए नवीनतम बाज़ार डेटा प्राप्त करें।</string>
+    <string name="onboarding_3_title">होम स्क्रीन विजेट्स</string>
+    <string name="onboarding_3_description">ऐप खोले बिना नियंत्रण में रहें। अपना बैलेंस देखने के लिए पोर्टफोलियो विजेट और रीयल-टाइम बाज़ार देखने के लिए मूल्य विजेट का उपयोग करें।</string>
+    <string name="onboarding_4_title">अपने मासिक विकास का विश्लेषण करें</string>
+    <string name="onboarding_4_description">विस्तृत चार्ट और ऐतिहासिक डेटा के साथ अपने पोर्टफोलियो के प्रदर्शन का विश्लेषण करें।</string>
+    <string name="onboarding_5_title">आपका डेटा केवल आपका है</string>
+    <string name="onboarding_5_description">आपका सारा डेटा स्थानीय रूप से आपके डिवाइस पर संग्रहीत होता है। कोई क्लाउड नहीं, कोई ट्रैकिंग नहीं।</string>
+    <string name="onboarding_6_title">आपका वित्तीय प्रबंधन हुआ आसान</string>
+    <string name="onboarding_6_description">क्या हम शुरू करें?</string>
+    <string name="onboarding_button_next">आगे</string>
+    <string name="onboarding_button_get_started">शुरू करें</string>
+
+    <!-- Portfolio -->
+    <string name="empty_investments_title">आपने अभी तक कोई निवेश नहीं जोड़ा है</string>
+    <string name="empty_investments_description">अपने निवेशों को ट्रैक करने के लिए + बटन पर क्लिक करें।</string>
+    <string name="greeting_morning">शुभ प्रभात</string>
+    <string name="greeting_afternoon">शुभ दोपहर</string>
+    <string name="greeting_evening">शुभ संध्या</string>
+    <string name="tab_positions_title">आपकी संपत्तियां</string>
+    <string name="currency_selector_cd">मुद्रा चयनकर्ता</string>
+    <string name="ui_mode_cd">यूआई थीम चयनकर्ता। वर्तमान थीम: %1$s। थीम %2$s पर बदलने के लिए क्लिक करें</string>
+    <string name="tab_positions">पोर्टफोलियो</string>
+    <string name="tab_allocation">आवंटन</string>
+    <string name="tab_prices">मूल्य</string>
+    <string name="tab_history">इतिहास</string>
+    <string name="add_new_fund_title">नया फंड जोड़ें</string>
+    <string name="add_new_etf_title">नया ETF जोड़ें</string>
+    <string name="close_cd">बंद करें</string>
+    <string name="isin_label">ISIN</string>
+    <string name="isin_helper_text">अंतर्राष्ट्रीय प्रतिभूति पहचान संख्या</string>
+    <string name="quantity_shares_label">शेयरों की संख्या</string>
+    <string name="cancel_action">रद्द करें</string>
+    <string name="cancel_add_fund_cd">कोई फंड न जोड़ने के लिए टैप करें</string>
+    <string name="add_action">जोड़ें</string>
+    <string name="add_fund_cd">अपने पोर्टफोलियो में नया फंड जोड़ें</string>
+    <string name="error_isin_empty">अपने पोर्टफोलियो में जोड़ने के लिए ISIN दर्ज करें।</string>
+    <string name="error_isin_invalid">अपने वॉलेट में जोड़ने के लिए एक वैध ISIN दर्ज करें।\n12 अक्षर और बड़े अक्षर: ES12345ABCD0</string>
+    <string name="add_investment_title">निवेश जोड़ें</string>
+    <string name="add_investment_subtitle">ट्रैक करने के लिए संपत्ति का प्रकार चुनें</string>
+    <string name="asset_stock">शेयर</string>
+    <string name="asset_stock_subtitle">शेयर और इक्विटी</string>
+    <string name="asset_crypto">क्रिप्टो</string>
+    <string name="asset_crypto_subtitle">बिटकॉइन, एथेरियम और अन्य क्रिप्टो संपत्तियां</string>
+    <string name="asset_fund">फंड्स</string>
+    <string name="asset_fund_subtitle">प्रबंधित और इंडेक्स फंड्स</string>
+    <string name="asset_etf">ETF</string>
+    <string name="asset_etf_subtitle">एक्सचेंज ट्रेडेड फंड और सूचकांक</string>
+    <string name="asset_bank">बैंक</string>
+    <string name="asset_bank_subtitle">नकद, बचत और सावधि जमा</string>
+    <string name="asset_other">अन्य</string>
+    <string name="asset_other_subtitle">कोई अन्य संपत्ति जिसे आप अपने पोर्टफोलियो में जोड़ना चाहते हैं</string>
+    <string name="accessibility_add_investment_fab">निवेश संपत्ति जोड़ें</string>
+    <string name="accessibility_add_investment_expanded">निवेश प्रकार चयनकर्ता खुला है</string>
+    <string name="accessibility_add_investment_collapsed">निवेश प्रकार चयनकर्ता बंद है</string>
+    <string name="accessibility_show_add_investment">निवेश संपत्ति जोड़ने के लिए चयनकर्ता दिखाएं</string>
+    <string name="accessibility_dismiss_add_investment">निवेश संपत्ति जोड़ने के लिए चयनकर्ता बंद करें</string>
+    <string name="add_bank_title">नकद / जमा जोड़ें</string>
+    <string name="bank_name_label">बैंक / जमा का नाम:</string>
+    <string name="bank_name_placeholder">उदा. भारतीय स्टेट बैंक</string>
+    <string name="add_other_title">संपत्ति जोड़ें</string>
+    <string name="other_name_label">संपत्ति का नाम:</string>
+    <string name="other_name_placeholder">उदा. इबिसा में विला</string>
+    <string name="total_money_label">कुल राशि:</string>
+    <string name="add_bank_cd">अपने पोर्टफोलियो में नया नकद / जमा जोड़ें</string>
+    <string name="update_quantity_action">अपडेट करें</string>
+    <string name="fund_fetch_error">दुर्भाग्य से हम फंड प्राप्त नहीं कर सके।\nदूसरा ISIN आज़माएं।</string>
+    <string name="etf_fetch_error">दुर्भाग्य से हम ETF प्राप्त नहीं कर सके।\nदूसरा ISIN आज़माएं।</string>
+    <string name="current_holding_label">वर्तमान होल्डिंग</string>
+    <string name="current_holding">%.2f शेयर</string>
+    <string name="total_value">कुल मूल्य</string>
+    <string name="new_quantity_market">शेयरों की नई संख्या दर्ज करें</string>
+    <string name="new_quantity_manual">नया बैलेंस दर्ज करें</string>
+    <string name="new_quantity_manual_info">मूल निवेश मुद्रा का उपयोग करें (%s)</string>
+    <string name="receive_notifications">सूचनाएं प्राप्त करें</string>
+    <string name="alert_threshold_placeholder">उदा. 5.0</string>
+    <string name="alert_threshold_info">यदि कीमत में इससे अधिक बदलाव होता है तो मुझे सूचित करें:</string>
+    <string name="notification_price_up_title">%s बढ़ रहा है!</string>
+    <string name="notification_price_down_title">%s गिर रहा है!</string>
+    <string name="notification_price_body">%1$s में आज %2$s%% का बदलाव हुआ है।</string>
+    <string name="estimated_new_value">अनुमानित नया मूल्य</string>
+    <string name="cancel_edit_investment_cd">मात्रा संपादित न करने के लिए टैप करें</string>
+    <string name="error_quantity_empty">एक मान्य राशि दर्ज करें।</string>
+    <string name="error_alert_threshold_invalid">सूचना प्रतिशत 0 से अधिक होना चाहिए।</string>
+    <string name="error_category_empty">कृपया एक श्रेणी चुनें।</string>
+    <string name="delete_action">हटाएं</string>
+    <string name="delete_investment_message">क्या आप वाकई इस निवेश को अपने पोर्टफोलियो से हटाना चाहते हैं?</string>
+    <string name="asset_name_cd">संपत्ति का नाम दर्ज करें</string>
+    <string name="asset_manual_quantity_cd">संपत्ति की मात्रा दर्ज करें</string>
+    <string name="asset_isin_cd">संपत्ति का ISIN दर्ज करें</string>
+    <string name="asset_market_quantity_cd">संपत्ति के शेयरों की संख्या दर्ज करें</string>
+    <string name="asset_alert_threshold_cd">वह प्रतिशत दर्ज करें जिससे अधिक बदलाव पर आप सूचना पाना चाहते हैं</string>
+
+    <!-- Allocation -->
+    <string name="tab_allocation_title">संपत्ति प्रकार के अनुसार आवंटन</string>
+    <string name="tab_allocation_type">प्रकार</string>
+    <string name="tab_allocation_category">श्रेणी</string>
+
+    <!-- Prices -->
+    <string name="tab_prices_title">प्रति इकाई मूल्य</string>
+
+    <!-- Market -->
+    <string name="add_crypto_title">क्रिप्टो जोड़ें</string>
+    <string name="add_us_stocks_title">अमेरिकी शेयर जोड़ें</string>
+    <string name="add_global_stocks_title">अंतर्राष्ट्रीय शेयर जोड़ें</string>
+    <string name="add_count_action">जोड़ें (%d)</string>
+    <string name="search_crypto_placeholder">क्रिप्टो खोजें</string>
+    <string name="search_us_stock_placeholder">सिंबल, नाम या figi खोजें</string>
+    <string name="search_global_stock_placeholder">सिंबल या नाम खोजें</string>
+    <string name="unselect_asset_cd">संपत्ति अचयनित करें</string>
+    <string name="select_asset_cd">संपत्ति चुनें</string>
+    <string name="search_market_cd">सिंबल, नाम या figi द्वारा संपत्तियां खोजें</string>
+
+    <!-- Global Market -->
+    <string name="global_markets_request_limit">भारी मांग के कारण हमारे API ने एक विराम लिया है, लेकिन चिंता न करें, यह कल पूरी गति से वापस आ जाएगा।</string>
+    <string name="global_markets_card_title">अंतर्राष्ट्रीय बाज़ार खोज रहे हैं?</string>
+    <string name="global_markets_card_description">यह सूची केवल अमेरिकी शेयर दिखाती है, लेकिन आप लंदन, टोक्यो या किसी भी वैश्विक एक्सचेंज के शेयरों में व्यापार कर सकते हैं। आपको बस टिकर या कंपनी का नाम टाइप करना होगा।</string>
+    <string name="global_markets_card_button">वैश्विक बाज़ार पर जाएं</string>
+    <string name="global_markets_card_button_cd">इस स्क्रीन पर आप केवल अमेरिकी शेयर खोज सकते हैं। अन्य देशों के शेयरों के खोज इंजन तक पहुंचने के लिए बटन दबाएं।</string>
+    <string name="global_markets_warning">कृपया ध्यान दें कि हम अभी शुरुआत कर रहे हैं और प्रदर्शित डेटा की उच्चतम गुणवत्ता सुनिश्चित करने के लिए, कुछ शेयर ऐसे हो सकते हैं जिन तक हमारी पहुंच नहीं है। किसी भी असुविधा के लिए हमें खेद है और हम अपनी पेशकश का विस्तार करने पर काम कर रहे हैं।</string>
+    <string name="global_markets_no_results">क्षमा करें, आपकी खोज से मेल खाने वाले कोई शेयर नहीं मिले।</string>
+    <string name="global_markets_try_again">पुनः प्रयास करें</string>
+
+    <!-- History -->
+    <string name="history_monthly_title">मासिक इतिहास</string>
+    <string name="import_history">इतिहास आयात करें</string>
+    <string name="export_history">इतिहास निर्यात करें</string>
+    <string name="back_cd">वापस</string>
+    <string name="investments_of_month_fmt">%1$s %2$d के निवेश</string>
+    <string name="shares_in_portfolio_label">पोर्टफोलियो में शेयर</string>
+    <string name="price_per_share_label">प्रति शेयर मूल्य</string>
+    <string name="total_value_label">कुल मूल्य</string>
+    <string name="pl_month_label">लाभ/हानि (माह)</string>
+    <string name="history_import_success">इतिहास सफलतापूर्वक आयात किया गया</string>
+    <string name="history_import_error">इतिहास आयात करने में त्रुटि</string>
+    <string name="history_read_error">फ़ाइल पढ़ने में त्रुटि</string>
+    <string name="history_export_success">इतिहास डाउनलोड में सहेजा गया</string>
+    <string name="history_export_error">इतिहास निर्यात करने में त्रुटि</string>
+    <string name="history_save_error">फ़ाइल सहेजने में त्रुटि</string>
+
+    <!-- Core -->
+    <string name="clear_cd">निवेश हटाएं</string>
+    <string name="clear_text_cd">टेक्स्ट साफ़ करें</string>
+    <string name="copiable_text_snackbar">क्लिपबोर्ड पर कॉपी किया गया</string>
+    <string name="copiable_text_cd">कॉपी करें</string>
+
+    <string name="total_balance">कुल बैलेंस</string>
+    <string name="hide_balance_cd">बैलेंस छिपाएं</string>
+    <string name="show_balance_cd">बैलेंस दिखाएं</string>
+    <string-array name="rich_phrases">
+        <item>बिना धूप के चश्मे के देखने के लिए बहुत अधिक पैसा।</item>
+        <item>आयकर विभाग इसे पसंद करता है।</item>
+        <item>आप निश्चित रूप से विनम्र डेवलपर को टिप दे सकते हैं।</item>
+        <item>क्या आप वाकई आश्वस्त हैं कि आपने बहुत अधिक शून्य नहीं जोड़े हैं? इस पर विचार करें।</item>
+    </string-array>
+    <string name="your_investments">आपके निवेश</string>
+
+    <!-- Tooltips -->
+    <string name="tooltip_positions">अपने सक्रिय निवेश और कुल बैलेंस की जांच करें।</string>
+    <string name="tooltip_allocation">संपत्ति प्रकार या श्रेणी के अनुसार अपनी पूंजी का वितरण देखें।</string>
+    <string name="tooltip_prices">अपनी संपत्तियों के लिए रीयल-टाइम बाज़ार कीमतों को ट्रैक करें।</string>
+    <string name="tooltip_history">ऐतिहासिक मासिक डेटा के साथ अपने पोर्टफोलियो के विकास का विश्लेषण करें।</string>
+    <string name="tooltip_total_balance">अपना कुल पोर्टफोलियो बैलेंस और दैनिक परिवर्तन देखें।</string>
+    <string name="tooltip_portfolio_list">अपनी व्यक्तिगत संपत्तियों और पिछले दिन की तुलना में उनके प्रदर्शन को ट्रैक करें।</string>
+    <string name="tooltip_allocation_graph">इस इंटरैक्टिव चार्ट के साथ अपनी संपत्तियों का वितरण देखें।</string>
+    <string name="tooltip_prices_list">आप इसकी वर्तमान कीमत और पिछले दिन की तुलना में इसका बदलाव देख सकते हैं।</string>
+    <string name="tooltip_history_list">समय के साथ अपने पोर्टफोलियो का प्रदर्शन देखें।</string>
+    <string name="tooltip_edit_investment">अपने निवेश को संपादित करने या मूल्य परिवर्तन अलर्ट जोड़ने के लिए किसी संपत्ति पर क्लिक करें।</string>
+    <string name="tooltip_delete_investment">अपने पोर्टफोलियो से हटाने के लिए किसी संपत्ति को बाईं ओर स्वाइप करें।</string>
+    <string name="tooltip_add_investment">संपत्ति चुनने और अपना पोर्टफोलियो बनाना शुरू करने के लिए क्लिक करें।</string>
+
+    <string name="onboarding_finished_title">ट्यूटोरियल पूरा हुआ!</string>
+    <string name="onboarding_finished_description">अब आप जानते हैं कि OneWallet कैसे काम करता है। आइए इन उदाहरणों को हटा दें ताकि आप अपनी वास्तविक संपत्तियां जोड़ना शुरू कर सकें और अपने निवेश पर नियंत्रण रख सकें।</string>
+    <string name="onboarding_finished_button">अभी शुरू करें</string>
+
+    <!-- Portfolio Onboarding -->
+    <string name="portfolio_onboarding_title">चलिए शुरू करते हैं</string>
+    <string name="portfolio_onboarding_description">ऐप कैसे काम करता है यह समझने में आपकी मदद के लिए, हमने आपको यह दिखाने के लिए 3 उदाहरण निवेशों के साथ एक छोटा ट्यूटोरियल तैयार किया है कि OneWallet का अधिकतम लाभ कैसे उठाया जाए। इसमें केवल एक मिनट लगता है!</string>
+    <string name="portfolio_onboarding_start">ट्यूटोरियल शुरू करें</string>
+    <string name="portfolio_onboarding_skip">ट्यूटोरियल छोड़ें</string>
+
+    <!-- Widget -->
+    <string name="portfolio_widget">पोर्टफोलियो विजेट</string>
+    <string name="prices_widget">मूल्य विजेट</string>
+    <string name="widget_portfolio_description">अपने पोर्टफोलियो के मूल्यों की जांच करें</string>
+    <string name="widget_stocks_description">रीयल-टाइम में अपनी संपत्तियों को ट्रैक करें</string>
+    <string name="asset_prices_title">बाज़ार मूल्य</string>
+    <string name="reload_cd">पुनः लोड करें</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_selected">चयनित</string>
+    <string name="accessibility_not_selected">अचयनित</string>
+    <string name="loading_cd">लोड हो रहा है</string>
+    <string name="accessibility_percent_increased_by">%1$s प्रतिशत बढ़ गया है</string>
+    <string name="accessibility_percent_decreased_by">%1$s प्रतिशत घट गया है</string>
+    <string name="accessibility_price_increased_by">और पिछले दिन की तुलना में %1$s %2$s</string>
+    <string name="accessibility_price_decreased_by">और पिछले दिन की तुलना में %1$s %2$s</string>
+    <string name="accessibility_unchanged">पिछले दिन की तुलना में कोई बदलाव नहीं हुआ है</string>
+
+    <!-- Dropdown Selector -->
+    <string name="dropdown_select_category">श्रेणी चुनें</string>
+    <string name="dropdown_custom_category_title">कस्टम श्रेणी</string>
+    <string name="dropdown_custom_category_placeholder">श्रेणी का नाम</string>
+    <string name="dropdown_custom_category_cancel_cd">कस्टम श्रेणी रद्द करें</string>
+    <string name="accept_action">स्वीकार करें</string>
+    <string name="dropdown_custom_category_accept_cd">कस्टम श्रेणी स्वीकार करें</string>
+    <string name="dropdown_custom_category_add_cd">कस्टम श्रेणी जोड़ें</string>
+    <string name="dropdown_custom_category_item">कस्टम…</string>
+
+    <!-- Categories -->
+    <string name="category_label">श्रेणी</string>
+    <string name="category_tech">प्रौद्योगिकी</string>
+    <string name="category_real_estate">रियल एस्टेट</string>
+    <string name="category_healthcare">स्वास्थ्य सेवा</string>
+    <string name="category_energy">ऊर्जा</string>
+    <string name="category_finance">वित्त और बीमा</string>
+    <string name="category_consumer">उपभोक्ता वस्तुएं</string>
+    <string name="category_industrial">औद्योगिक</string>
+    <string name="category_telecom">दूरसंचार</string>
+    <string name="category_raw_materials">कच्चा माल</string>
+    <string name="category_utilities">उपयोगिताएं</string>
+    <string name="category_crypto">क्रिप्टो</string>
+    <string name="category_other">अन्य</string>
+</resources>

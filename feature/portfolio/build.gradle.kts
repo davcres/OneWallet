@@ -1,6 +1,7 @@
 plugins {
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.detekt)
 }
@@ -10,6 +11,14 @@ detekt {
     allRules = false
     baseline = file("detekt-baseline.xml")
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+    source.setFrom(
+        files(
+            "src/commonMain/kotlin",
+            "src/androidMain/kotlin",
+            "src/iosMain/kotlin",
+            "src/androidUnitTest/kotlin"
+        )
+    )
 }
 
 android {
@@ -25,13 +34,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
+
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -39,33 +47,53 @@ android {
     }
 }
 
-dependencies {
-    implementation(project(":core"))
-    implementation(project(":domain"))
+kotlin {
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
+    }
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.icons.extended)
-    implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.colletions.immutable)
+    iosArm64()
+    iosSimulatorArm64()
+    iosX64()
 
-    // Koin
-    implementation(libs.bundles.koin)
-    implementation(libs.koin.androidx.workmanager)
+    sourceSets {
+        commonMain.dependencies {
+            implementation(project(":core"))
+            implementation(project(":domain"))
 
-    // Onboarding
-    implementation(libs.onboarding)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
+            implementation(compose.materialIconsExtended)
 
-    // Work Manager
-    implementation(libs.work.runtime.ktx)
+            implementation(libs.colletions.immutable)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.onboarding)
+        }
 
-    testImplementation(libs.bundles.unit.testing)
-    testRuntimeOnly(libs.junit.jupiter.engine)
+        androidMain.dependencies {
+            implementation(libs.androidx.core.ktx)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.workmanager)
+            implementation(libs.work.runtime.ktx)
+        }
+
+        iosMain.dependencies {
+        }
+
+        val androidUnitTest by getting {
+            dependencies {
+                implementation(libs.bundles.unit.testing)
+                runtimeOnly(libs.junit.jupiter.engine)
+            }
+        }
+    }
 }
