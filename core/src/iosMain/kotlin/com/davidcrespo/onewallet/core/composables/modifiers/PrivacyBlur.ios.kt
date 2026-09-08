@@ -7,3 +7,5 @@ import androidx.compose.ui.unit.Dp
 actual fun Modifier.privacyBlur(
     radius: Dp
 ): Modifier = this.then(Modifier.blur(radius))
+
+actual fun isPrivacyBlurSupported(): Boolean = true

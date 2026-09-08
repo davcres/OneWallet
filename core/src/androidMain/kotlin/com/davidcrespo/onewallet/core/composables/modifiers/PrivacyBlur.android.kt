@@ -12,3 +12,5 @@ actual fun Modifier.privacyBlur(
 } else {
     this
 }
+
+actual fun isPrivacyBlurSupported(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
