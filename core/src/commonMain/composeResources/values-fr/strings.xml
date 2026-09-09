@@ -1,0 +1,230 @@
+<resources>
+    <string name="app_name">OneWallet</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_1_title">Bienvenue sur OneWallet</string>
+    <string name="onboarding_1_description">Gérez tous vos investissements en un seul endroit. Simple, rapide et sécurisé.</string>
+    <string name="onboarding_2_title">Suivi en temps réel</string>
+    <string name="onboarding_2_description">Obtenez des données de marché actualisées pour les actions, fonds, ETF et cryptomonnaies.</string>
+    <string name="onboarding_3_title">Widgets sur l\'écran d\'accueil</string>
+    <string name="onboarding_3_description">Gardez le contrôle sans ouvrir l\'application. Utilisez le widget Portefeuille pour voir vos soldes et le widget Cours pour suivre le marché en temps réel.</string>
+    <string name="onboarding_4_title">Analysez votre évolution mensuelle</string>
+    <string name="onboarding_4_description">Visualisez les performances de votre portefeuille avec des graphiques détaillés et des données historiques.</string>
+    <string name="onboarding_5_title">Vos données vous appartiennent</string>
+    <string name="onboarding_5_description">Toutes vos données sont stockées localement sur votre appareil. Pas de cloud, pas de suivi.</string>
+    <string name="onboarding_6_title">Vos finances en toute simplicité</string>
+    <string name="onboarding_6_description">On commence ?</string>
+    <string name="onboarding_button_next">Suivant</string>
+    <string name="onboarding_button_get_started">Commencer</string>
+
+    <!-- Portfolio -->
+    <string name="empty_investments_title">Vous n\'avez pas encore ajouté d\'investissement</string>
+    <string name="empty_investments_description">Cliquez sur le bouton + pour suivre vos investissements.</string>
+    <string name="greeting_morning">Bonjour</string>
+    <string name="greeting_afternoon">Bon après-midi</string>
+    <string name="greeting_evening">Bonsoir</string>
+    <string name="tab_positions_title">Vos actifs</string>
+    <string name="currency_selector_cd">Sélecteur de devise</string>
+    <string name="ui_mode_cd">Sélecteur de thème. Thème actuel : %1$s. Cliquez pour passer au thème %2$s</string>
+    <string name="tab_positions">Portefeuille</string>
+    <string name="tab_allocation">Répartition</string>
+    <string name="tab_prices">Cours</string>
+    <string name="tab_history">Historique</string>
+    <string name="add_new_fund_title">Ajouter un nouveau fonds</string>
+    <string name="add_new_etf_title">Ajouter un nouvel ETF</string>
+    <string name="close_cd">Fermer</string>
+    <string name="isin_label">ISIN</string>
+    <string name="isin_helper_text">Numéro d\'identification international des titres</string>
+    <string name="quantity_shares_label">Nombre de parts</string>
+    <string name="cancel_action">Annuler</string>
+    <string name="cancel_add_fund_cd">Appuyez pour ne pas ajouter de fonds</string>
+    <string name="add_action">Ajouter</string>
+    <string name="add_fund_cd">Ajouter un nouveau fonds à votre portefeuille</string>
+    <string name="error_isin_empty">Entrez un ISIN pour l\'ajouter à votre portefeuille.</string>
+    <string name="error_isin_invalid">Entrez un ISIN valide pour l\'ajouter à votre portefeuille.\n12 caractères et lettres majuscules : ES12345ABCD0</string>
+    <string name="add_investment_title">Ajouter un investissement</string>
+    <string name="add_investment_subtitle">Sélectionnez le type d\'actif à suivre</string>
+    <string name="asset_stock">Actions</string>
+    <string name="asset_stock_subtitle">Actions et participations</string>
+    <string name="asset_crypto">Crypto</string>
+    <string name="asset_crypto_subtitle">Bitcoin, Ethereum et autres crypto-actifs</string>
+    <string name="asset_fund">Fonds</string>
+    <string name="asset_fund_subtitle">Fonds gérés et indiciels</string>
+    <string name="asset_etf">ETF</string>
+    <string name="asset_etf_subtitle">Fonds négociés en bourse et indices</string>
+    <string name="asset_bank">Banque</string>
+    <string name="asset_bank_subtitle">Liquidités, épargne et dépôts</string>
+    <string name="asset_other">Autre</string>
+    <string name="asset_other_subtitle">Tout autre type d\'actif que vous souhaitez ajouter à votre portefeuille</string>
+    <string name="accessibility_add_investment_fab">Ajouter un actif d\'investissement</string>
+    <string name="accessibility_add_investment_expanded">Sélecteur de type d\'investissement ouvert</string>
+    <string name="accessibility_add_investment_collapsed">Sélecteur de type d\'investissement fermé</string>
+    <string name="accessibility_show_add_investment">Afficher le sélecteur pour ajouter un actif</string>
+    <string name="accessibility_dismiss_add_investment">Fermer le sélecteur pour ajouter un actif</string>
+    <string name="add_bank_title">Ajouter des liquidités / un dépôt</string>
+    <string name="bank_name_label">Nom de la banque / du dépôt :</string>
+    <string name="bank_name_placeholder">ex. BNP Paribas</string>
+    <string name="add_other_title">Ajouter un actif</string>
+    <string name="other_name_label">Nom de l\'actif :</string>
+    <string name="other_name_placeholder">ex. Villa à Ibiza</string>
+    <string name="total_money_label">Montant total :</string>
+    <string name="add_bank_cd">Ajouter un nouveau solde / dépôt à votre portefeuille</string>
+    <string name="update_quantity_action">Mettre à jour</string>
+    <string name="fund_fetch_error">Malheureusement, nous n\'avons pas pu récupérer le fonds.\nEssayez un autre ISIN.</string>
+    <string name="etf_fetch_error">Malheureusement, nous n\'avons pas pu récupérer l\'ETF.\nEssayez un autre ISIN.</string>
+    <string name="current_holding_label">Parts actuelles</string>
+    <string name="current_holding">%.2f Parts</string>
+    <string name="total_value">Valeur totale</string>
+    <string name="new_quantity_market">Entrez le nouveau nombre de parts</string>
+    <string name="new_quantity_manual">Entrez le nouveau solde</string>
+    <string name="new_quantity_manual_info">Utilisez la devise d\'origine de l\'investissement (%s)</string>
+    <string name="receive_notifications">Recevoir des notifications</string>
+    <string name="alert_threshold_placeholder">ex. 5,0</string>
+    <string name="alert_threshold_info">M\'avertir si le cours varie\nde plus de :</string>
+    <string name="notification_price_up_title">%s est en hausse !</string>
+    <string name="notification_price_down_title">%s est en baisse !</string>
+    <string name="notification_price_body">%1$s a varié de %2$s%% aujourd\'hui.</string>
+    <string name="estimated_new_value">Nouvelle valeur estimée</string>
+    <string name="cancel_edit_investment_cd">Appuyez pour ne pas modifier la quantité</string>
+    <string name="error_quantity_empty">Entrez un montant valide.</string>
+    <string name="error_alert_threshold_invalid">Le pourcentage de notification doit être supérieur à 0.</string>
+    <string name="error_category_empty">Veuillez sélectionner une catégorie.</string>
+    <string name="delete_action">Supprimer</string>
+    <string name="delete_investment_message">Voulez-vous vraiment supprimer cet investissement de votre portefeuille ?</string>
+    <string name="asset_name_cd">Entrer le nom de l\'actif</string>
+    <string name="asset_manual_quantity_cd">Entrer la quantité de l\'actif</string>
+    <string name="asset_isin_cd">Entrer l\'ISIN de l\'actif</string>
+    <string name="asset_market_quantity_cd">Entrer le nombre de parts de l\'actif</string>
+    <string name="asset_alert_threshold_cd">Entrer le pourcentage de variation à partir duquel vous souhaitez être notifié</string>
+
+    <!-- Allocation -->
+    <string name="tab_allocation_title">Répartition par type d\'actif</string>
+    <string name="tab_allocation_type">Type</string>
+    <string name="tab_allocation_category">Catégorie</string>
+
+    <!-- Prices -->
+    <string name="tab_prices_title">Prix par unité</string>
+
+    <!-- Market -->
+    <string name="add_crypto_title">Ajouter des cryptos</string>
+    <string name="add_us_stocks_title">Ajouter des actions US</string>
+    <string name="add_global_stocks_title">Ajouter des actions internationales</string>
+    <string name="add_count_action">Ajouter (%d)</string>
+    <string name="search_crypto_placeholder">Rechercher une crypto</string>
+    <string name="search_us_stock_placeholder">Rechercher symbole, nom ou figi</string>
+    <string name="search_global_stock_placeholder">Rechercher symbole ou nom</string>
+    <string name="unselect_asset_cd">Désélectionner l\'actif</string>
+    <string name="select_asset_cd">Sélectionner l\'actif</string>
+    <string name="search_market_cd">Rechercher des actifs par symbole, nom ou figi</string>
+
+    <!-- Global Market -->
+    <string name="global_markets_request_limit">En raison d\'une forte demande, notre API fait une pause, mais ne vous inquiétez pas, elle sera de retour en pleine forme demain.</string>
+    <string name="global_markets_card_title">Vous cherchez les marchés internationaux ?</string>
+    <string name="global_markets_card_description">Cette liste n\'affiche que les actions américaines, mais vous pouvez négocier des actions de Londres, Tokyo ou toute autre bourse mondiale. Il vous suffit de saisir le symbole ou le nom de l\'entreprise.</string>
+    <string name="global_markets_card_button">Aller aux Marchés Globaux</string>
+    <string name="global_markets_card_button_cd">Sur cet écran, vous ne pouvez rechercher que des actions américaines. Appuyez sur le bouton pour accéder au moteur de recherche d\'actions d\'autres pays.</string>
+    <string name="global_markets_warning">Veuillez noter que nous débutons et que, pour garantir la meilleure qualité des données affichées, certains titres peuvent ne pas être accessibles. Nous nous excusons pour la gêne occasionnée et nous nous efforçons d\'élargir notre offre.</string>
+    <string name="global_markets_no_results">Désolé, nous n\'avons trouvé aucune action correspondant à votre recherche.</string>
+    <string name="global_markets_try_again">Réessayer</string>
+
+    <!-- History -->
+    <string name="history_monthly_title">Historique mensuel</string>
+    <string name="import_history">Importer l\'historique</string>
+    <string name="export_history">Exporter l\'historique</string>
+    <string name="back_cd">Retour</string>
+    <string name="investments_of_month_fmt">Investissements de %1$s %2$d</string>
+    <string name="shares_in_portfolio_label">Parts en portefeuille</string>
+    <string name="price_per_share_label">Prix par part</string>
+    <string name="total_value_label">Valeur totale</string>
+    <string name="pl_month_label">P/L (Mois)</string>
+    <string name="history_import_success">Historique importé avec succès</string>
+    <string name="history_import_error">Erreur lors de l\'importation de l\'historique</string>
+    <string name="history_read_error">Erreur lors de la lecture du fichier</string>
+    <string name="history_export_success">Historique enregistré dans les Téléchargements</string>
+    <string name="history_export_error">Erreur lors de l\'exportation de l\'historique</string>
+    <string name="history_save_error">Erreur lors de l\'enregistrement du fichier</string>
+
+    <!-- Core -->
+    <string name="clear_cd">Supprimer l\'investissement</string>
+    <string name="clear_text_cd">Effacer le texte</string>
+    <string name="copiable_text_snackbar">Copié dans le presse-papiers</string>
+    <string name="copiable_text_cd">Copier</string>
+
+    <string name="total_balance">Solde Total</string>
+    <string name="hide_balance_cd">Masquer le solde</string>
+    <string name="show_balance_cd">Afficher le solde</string>
+    <string-array name="rich_phrases">
+        <item>Trop d\'argent pour regarder sans lunettes de soleil.</item>
+        <item>Le fisc apprécie ceci.</item>
+        <item>Vous pouvez certainement offrir un pourboire à l\'humble développeur.</item>
+        <item>Êtes-vous sûr de ne pas avoir ajouté trop de zéros ? Prenez un instant pour réfléchir.</item>
+    </string-array>
+    <string name="your_investments">Vos investissements</string>
+
+    <!-- Tooltips -->
+    <string name="tooltip_positions">Consultez vos investissements actifs et votre solde total.</string>
+    <string name="tooltip_allocation">Visualisez la répartition de votre capital par type d\'actif ou par catégorie.</string>
+    <string name="tooltip_prices">Suivez les cours en temps réel de vos actifs sur le marché.</string>
+    <string name="tooltip_history">Analysez l\'évolution de votre portefeuille grâce aux données historiques mensuelles.</string>
+    <string name="tooltip_total_balance">Consultez le solde total de votre portefeuille et sa variation quotidienne.</string>
+    <string name="tooltip_portfolio_list">Suivez vos actifs individuels et leurs performances par rapport à la veille.</string>
+    <string name="tooltip_allocation_graph">Visualisez la répartition de vos actifs grâce à ce graphique interactif.</string>
+    <string name="tooltip_prices_list">Vous pouvez voir son cours actuel et sa variation par rapport à la veille.</string>
+    <string name="tooltip_history_list">Consultez la performance de votre portefeuille au fil du temps.</string>
+    <string name="tooltip_edit_investment">Cliquez sur un actif pour modifier votre investissement ou ajouter des alertes de cours.</string>
+    <string name="tooltip_delete_investment">Glissez un actif vers la gauche pour le retirer de votre portefeuille.</string>
+    <string name="tooltip_add_investment">Cliquez pour sélectionner un actif et commencer à bâtir votre portefeuille.</string>
+
+    <string name="onboarding_finished_title">Tutoriel terminé !</string>
+    <string name="onboarding_finished_description">Vous savez maintenant comment fonctionne OneWallet. Supprimons ces exemples pour que vous puissiez commencer à ajouter vos vrais actifs et prendre le contrôle de vos investissements.</string>
+    <string name="onboarding_finished_button">Commencer maintenant</string>
+
+    <!-- Portfolio Onboarding -->
+    <string name="portfolio_onboarding_title">Commençons</string>
+    <string name="portfolio_onboarding_description">Pour vous aider à comprendre le fonctionnement de l\'application, nous avons préparé un court tutoriel avec 3 investissements d\'exemple pour vous montrer comment tirer le meilleur parti de OneWallet. Cela ne prend qu\'une minute !</string>
+    <string name="portfolio_onboarding_start">Commencer le tutoriel</string>
+    <string name="portfolio_onboarding_skip">Passer le tutoriel</string>
+
+    <!-- Widget -->
+    <string name="portfolio_widget">Widget Portefeuille</string>
+    <string name="prices_widget">Widget Cours</string>
+    <string name="widget_portfolio_description">Consultez les valeurs de votre portefeuille</string>
+    <string name="widget_stocks_description">Suivez vos actifs en temps réel</string>
+    <string name="asset_prices_title">Cours du Marché</string>
+    <string name="reload_cd">Recharger</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_selected">Sélectionné</string>
+    <string name="accessibility_not_selected">Non sélectionné</string>
+    <string name="loading_cd">Chargement</string>
+    <string name="accessibility_percent_increased_by">a augmenté de %1$s pour cent</string>
+    <string name="accessibility_percent_decreased_by">a diminué de %1$s pour cent</string>
+    <string name="accessibility_price_increased_by">et de %1$s %2$s par rapport à la veille</string>
+    <string name="accessibility_price_decreased_by">et de %1$s %2$s par rapport à la veille</string>
+    <string name="accessibility_unchanged">n\'a pas changé par rapport à la veille</string>
+
+    <!-- Dropdown Selector -->
+    <string name="dropdown_select_category">Sélectionnez une catégorie</string>
+    <string name="dropdown_custom_category_title">Catégorie personnalisée</string>
+    <string name="dropdown_custom_category_placeholder">Nom de la catégorie</string>
+    <string name="dropdown_custom_category_cancel_cd">Annuler la catégorie personnalisée</string>
+    <string name="accept_action">Accepter</string>
+    <string name="dropdown_custom_category_accept_cd">Accepter la catégorie personnalisée</string>
+    <string name="dropdown_custom_category_add_cd">Ajouter une catégorie personnalisée</string>
+    <string name="dropdown_custom_category_item">Personnalisée…</string>
+
+    <!-- Categories -->
+    <string name="category_label">Catégorie</string>
+    <string name="category_tech">Technologie</string>
+    <string name="category_real_estate">Immobilier</string>
+    <string name="category_healthcare">Santé</string>
+    <string name="category_energy">Énergie</string>
+    <string name="category_finance">Finance &amp; Assurance</string>
+    <string name="category_consumer">Biens de consommation</string>
+    <string name="category_industrial">Industrie</string>
+    <string name="category_telecom">Télécommunications</string>
+    <string name="category_raw_materials">Matières premières</string>
+    <string name="category_utilities">Services publics</string>
+    <string name="category_crypto">Crypto</string>
+    <string name="category_other">Autre</string>
+</resources>

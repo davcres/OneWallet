@@ -28,6 +28,7 @@ import com.davidcrespo.onewallet.domain.model.investment.isMarket
 import com.davidcrespo.onewallet.core.designsystem.composables.auxiliar.SectionType
 import com.davidcrespo.onewallet.core.models.CurrencyView
 import com.davidcrespo.onewallet.core.models.InvestmentView
+import com.davidcrespo.onewallet.core.models.getIconRes
 import com.davidcrespo.onewallet.feature.widget.utils.formatPrice
 import com.davidcrespo.onewallet.feature.widget.utils.formatTrendPercent
 import com.davidcrespo.onewallet.feature.widget.utils.trendColor

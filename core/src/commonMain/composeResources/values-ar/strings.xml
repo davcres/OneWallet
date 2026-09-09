@@ -1,0 +1,230 @@
+<resources>
+    <string name="app_name">OneWallet</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_1_title">مرحبًا بك في OneWallet</string>
+    <string name="onboarding_1_description">أدر جميع استثماراتك في مكان واحد. بسيط وسريع وآمن.</string>
+    <string name="onboarding_2_title">تتبع الأسعار في الوقت الفعلي</string>
+    <string name="onboarding_2_description">احصل على أحدث بيانات السوق للأسهم والصناديق الاستثمارية وصناديق المؤشرات المتداولة والعملات المشفرة.</string>
+    <string name="onboarding_3_title">أدوات الشاشة الرئيسية</string>
+    <string name="onboarding_3_description">تحكم في استثماراتك دون فتح التطبيق. استخدم أداة المحفظة لعرض أرصدتك وأداة الأسعار لمتابعة السوق في الوقت الفعلي.</string>
+    <string name="onboarding_4_title">حلل تطور محفظتك شهريًا</string>
+    <string name="onboarding_4_description">راقب أداء محفظتك من خلال رسوم بيانية مفصلة وبيانات تاريخية.</string>
+    <string name="onboarding_5_title">بياناتك ملكك وحدك</string>
+    <string name="onboarding_5_description">يتم تخزين جميع بياناتك محليًا على جهازك. لا توجد سحابة ولا تتبع.</string>
+    <string name="onboarding_6_title">إدارتك المالية أصبحت أسهل</string>
+    <string name="onboarding_6_description">هل نبدأ؟</string>
+    <string name="onboarding_button_next">التالي</string>
+    <string name="onboarding_button_get_started">ابدأ الآن</string>
+
+    <!-- Portfolio -->
+    <string name="empty_investments_title">لم تضف أي استثمار بعد</string>
+    <string name="empty_investments_description">اضغط على زر + لبدء تتبع استثماراتك.</string>
+    <string name="greeting_morning">صباح الخير</string>
+    <string name="greeting_afternoon">مساء الخير</string>
+    <string name="greeting_evening">مساء الخير</string>
+    <string name="tab_positions_title">أصولك الاستثمارية</string>
+    <string name="currency_selector_cd">محدد العملة</string>
+    <string name="ui_mode_cd">محدد مظهر الواجهة. المظهر الحالي: %1$s. انقر للتغيير إلى المظهر %2$s</string>
+    <string name="tab_positions">المحفظة</string>
+    <string name="tab_allocation">التوزيع</string>
+    <string name="tab_prices">الأسعار</string>
+    <string name="tab_history">السجل</string>
+    <string name="add_new_fund_title">إضافة صندوق استثماري جديد</string>
+    <string name="add_new_etf_title">إضافة صندوق مؤشرات متداول جديد</string>
+    <string name="close_cd">إغلاق</string>
+    <string name="isin_label">رمز ISIN</string>
+    <string name="isin_helper_text">رقم التعريف الدولي للأوراق المالية</string>
+    <string name="quantity_shares_label">عدد الأسهم / الحصص</string>
+    <string name="cancel_action">إلغاء</string>
+    <string name="cancel_add_fund_cd">انقر لعدم إضافة أي صندوق</string>
+    <string name="add_action">إضافة</string>
+    <string name="add_fund_cd">إضافة صندوق جديد إلى محفظتك</string>
+    <string name="error_isin_empty">أدخل رمز ISIN لإضافته إلى محفظتك.</string>
+    <string name="error_isin_invalid">أدخل رمز ISIN صالحًا لإضافته إلى محفظتك.\n12 حرفًا وأرقام وأحرف كبيرة: ES12345ABCD0</string>
+    <string name="add_investment_title">إضافة استثمار</string>
+    <string name="add_investment_subtitle">حدد نوع الأصل للتتبع</string>
+    <string name="asset_stock">أسهم</string>
+    <string name="asset_stock_subtitle">أسهم وحصص ملكية</string>
+    <string name="asset_crypto">عملات مشفرة</string>
+    <string name="asset_crypto_subtitle">بيتكوين وإيثيريوم وأصول مشفرة أخرى</string>
+    <string name="asset_fund">صناديق استثمار</string>
+    <string name="asset_fund_subtitle">صناديق مدارة وصناديق مؤشرات</string>
+    <string name="asset_etf">صناديق مؤشرات (ETF)</string>
+    <string name="asset_etf_subtitle">صناديق المؤشرات المتداولة في البورصة</string>
+    <string name="asset_bank">حساب بنكي</string>
+    <string name="asset_bank_subtitle">نقد ومدخرات وودائع</string>
+    <string name="asset_other">أصول أخرى</string>
+    <string name="asset_other_subtitle">أي نوع آخر من الأصول ترغب في إضافته إلى محفظتك</string>
+    <string name="accessibility_add_investment_fab">إضافة أصل استثماري</string>
+    <string name="accessibility_add_investment_expanded">قائمة تحديد نوع الاستثمار مفتوحة</string>
+    <string name="accessibility_add_investment_collapsed">قائمة تحديد نوع الاستثمار مغلقة</string>
+    <string name="accessibility_show_add_investment">إظهار قائمة إضافة أصل استثماري</string>
+    <string name="accessibility_dismiss_add_investment">إغلاق قائمة إضافة أصل استثماري</string>
+    <string name="add_bank_title">إضافة نقد / وديعة</string>
+    <string name="bank_name_label">اسم البنك / الوديعة:</string>
+    <string name="bank_name_placeholder">مثل: مصرف الراجحي</string>
+    <string name="add_other_title">إضافة أصل</string>
+    <string name="other_name_label">اسم الأصل:</string>
+    <string name="other_name_placeholder">مثل: فيلا في إيبيزا</string>
+    <string name="total_money_label">المبلغ الإجمالي:</string>
+    <string name="add_bank_cd">إضافة رصيد نقدي / وديعة جديدة إلى محفظتك</string>
+    <string name="update_quantity_action">تحديث</string>
+    <string name="fund_fetch_error">تعذر جلب بيانات الصندوق للأسف.\nيرجى تجربة رمز ISIN آخر.</string>
+    <string name="etf_fetch_error">تعذر جلب بيانات صندوق المؤشرات للأسف.\nيرجى تجربة رمز ISIN آخر.</string>
+    <string name="current_holding_label">الحصة الحالية</string>
+    <string name="current_holding">%.2f سهم/حصة</string>
+    <string name="total_value">القيمة الإجمالية</string>
+    <string name="new_quantity_market">أدخل العدد الجديد للأسهم</string>
+    <string name="new_quantity_manual">أدخل الرصيد الجديد</string>
+    <string name="new_quantity_manual_info">استخدم عملة الاستثمار الأصلية (%s)</string>
+    <string name="receive_notifications">تلقي الإشعارات</string>
+    <string name="alert_threshold_placeholder">مثل: 5.0</string>
+    <string name="alert_threshold_info">أرسل إشعارًا إذا تغير السعر بأكثر من:</string>
+    <string name="notification_price_up_title">%s في ارتفاع!</string>
+    <string name="notification_price_down_title">%s في انخفاض!</string>
+    <string name="notification_price_body">تغير سعر %1$s بنسبة %2$s%% اليوم.</string>
+    <string name="estimated_new_value">القيمة التقديرية الجديدة</string>
+    <string name="cancel_edit_investment_cd">انقر لعدم تعديل الكمية</string>
+    <string name="error_quantity_empty">أدخل مبلغًا صالحًا.</string>
+    <string name="error_alert_threshold_invalid">يجب أن تكون نسبة التنبيه أكبر من 0.</string>
+    <string name="error_category_empty">يرجى تحديد فئة.</string>
+    <string name="delete_action">حذف</string>
+    <string name="delete_investment_message">هل أنت متأكد من رغبتك في حذف هذا الاستثمار من محفظتك؟</string>
+    <string name="asset_name_cd">أدخل اسم الأصل</string>
+    <string name="asset_manual_quantity_cd">أدخل كمية الأصل</string>
+    <string name="asset_isin_cd">أدخل رمز ISIN للأصل</string>
+    <string name="asset_market_quantity_cd">أدخل عدد أسهم الأصل</string>
+    <string name="asset_alert_threshold_cd">أدخل نسبة التغير التي ترغب في تلقي إشعار عندها</string>
+
+    <!-- Allocation -->
+    <string name="tab_allocation_title">التوزيع حسب نوع الأصل</string>
+    <string name="tab_allocation_type">النوع</string>
+    <string name="tab_allocation_category">الفئة</string>
+
+    <!-- Prices -->
+    <string name="tab_prices_title">السعر للوحدة</string>
+
+    <!-- Market -->
+    <string name="add_crypto_title">إضافة عملة مشفرة</string>
+    <string name="add_us_stocks_title">إضافة أسهم أمريكية</string>
+    <string name="add_global_stocks_title">إضافة أسهم عالمية</string>
+    <string name="add_count_action">إضافة (%d)</string>
+    <string name="search_crypto_placeholder">البحث عن عملة مشفرة</string>
+    <string name="search_us_stock_placeholder">ابحث بالرمز أو الاسم أو figi</string>
+    <string name="search_global_stock_placeholder">ابحث بالرمز أو الاسم</string>
+    <string name="unselect_asset_cd">إلغاء تحديد الأصل</string>
+    <string name="select_asset_cd">تحديد الأصل</string>
+    <string name="search_market_cd">ابحث عن الأصول بالرمز أو الاسم أو figi</string>
+
+    <!-- Global Market -->
+    <string name="global_markets_request_limit">نظرًا للإقبال الكبير، استراحت واجهة برمجة التطبيقات (API) قليلاً، لكن لا تقلق ستعود بكامل طاقتها غدًا.</string>
+    <string name="global_markets_card_title">تبحث عن الأسواق العالمية؟</string>
+    <string name="global_markets_card_description">تعرض هذه القائمة الأسهم الأمريكية فقط، ولكن يمكنك التداول في أسهم بورصات لندن وطوكيو وأي بورصة عالمية أخرى. ما عليك سوى كتابة الرمز أو اسم الشركة.</string>
+    <string name="global_markets_card_button">الانتقال إلى الأسواق العالمية</string>
+    <string name="global_markets_card_button_cd">يمكنك في هذه الشاشة البحث عن الأسهم الأمريكية فقط. اضغط على الزر للوصول إلى محرك البحث لأسهم البلدان الأخرى.</string>
+    <string name="global_markets_warning">يُرجى ملاحظة أننا ما زلنا في البداية، ولضمان أعلى جودة للبيانات المعروضة، قد تكون هناك أسهم لا نملك وصولاً إليها حاليًا. نعتذر عن أي إزعاج ونعمل جاهدين لتوسيع نطاق تغطيتنا.</string>
+    <string name="global_markets_no_results">عذرًا، لم نتمكن من العثور على أي أسهم مطابقة لبحثك.</string>
+    <string name="global_markets_try_again">حاول مجددًا</string>
+
+    <!-- History -->
+    <string name="history_monthly_title">السجل الشهري</string>
+    <string name="import_history">استيراد السجل</string>
+    <string name="export_history">تصدير السجل</string>
+    <string name="back_cd">رجوع</string>
+    <string name="investments_of_month_fmt">استثمارات %1$s %2$d</string>
+    <string name="shares_in_portfolio_label">الأسهم في المحفظة</string>
+    <string name="price_per_share_label">السعر لكل سهم</string>
+    <string name="total_value_label">القيمة الإجمالية</string>
+    <string name="pl_month_label">الأرباح/الخسائر (شهريًا)</string>
+    <string name="history_import_success">تم استيراد السجل بنجاح</string>
+    <string name="history_import_error">حدث خطأ أثناء استيراد السجل</string>
+    <string name="history_read_error">حدث خطأ أثناء قراءة الملف</string>
+    <string name="history_export_success">تم حفظ السجل في مجلد التنزيلات</string>
+    <string name="history_export_error">حدث خطأ أثناء تصدير السجل</string>
+    <string name="history_save_error">حدث خطأ أثناء حفظ الملف</string>
+
+    <!-- Core -->
+    <string name="clear_cd">حذف الاستثمار</string>
+    <string name="clear_text_cd">مسح النص</string>
+    <string name="copiable_text_snackbar">تم النسخ إلى الحافظة</string>
+    <string name="copiable_text_cd">نسخ</string>
+
+    <string name="total_balance">الرصيد الإجمالي</string>
+    <string name="hide_balance_cd">إخفاء الرصيد</string>
+    <string name="show_balance_cd">إظهار الرصيد</string>
+    <string-array name="rich_phrases">
+        <item>أموال طائلة لا يمكن النظر إليها بدون نظارات شمسية.</item>
+        <item>مصلحة الضرائب يعجبها هذا بالتأكيد.</item>
+        <item>يمكنك بلا شك تقديم إكرامية للمطور المجتهد.</item>
+        <item>هل أنت متأكد من أنك لم تضف أصفارًا زائدة؟ خذ لحظة للتفكير.</item>
+    </string-array>
+    <string name="your_investments">استثماراتك</string>
+
+    <!-- Tooltips -->
+    <string name="tooltip_positions">تحقق من استثماراتك النشطة وإجمالي رصيدك.</string>
+    <string name="tooltip_allocation">شاهد كيفية توزيع رأس مالك حسب نوع الأصل أو الفئة.</string>
+    <string name="tooltip_prices">تتبع أسعار السوق في الوقت الفعلي لأصولك.</string>
+    <string name="tooltip_history">حلل تطور محفظتك من خلال البيانات التاريخية الشهرية.</string>
+    <string name="tooltip_total_balance">استعرض الرصيد الإجمالي لمحفظتك والتغير اليومي.</string>
+    <string name="tooltip_portfolio_list">تتبع أداء أصولك الفردية مقارنة باليوم السابق.</string>
+    <string name="tooltip_allocation_graph">اطلع على توزيع أصولك باستخدام هذا الرسم البياني التفاعلي.</string>
+    <string name="tooltip_prices_list">يمكنك رؤية السعر الحالي وتغيره مقارنة باليوم السابق.</string>
+    <string name="tooltip_history_list">راقب أداء محفظتك عبر الزمن.</string>
+    <string name="tooltip_edit_investment">اضغط على الأصل لتعديل استثمارك أو إضافة تنبيهات لتغير الأسعار.</string>
+    <string name="tooltip_delete_investment">اسحب الأصل إلى اليسار لإزالته من محفظتك.</string>
+    <string name="tooltip_add_investment">اضغط لاختيار أصل والبدء في بناء محفظتك الاستثمارية.</string>
+
+    <string name="onboarding_finished_title">اكتمل الدليل التعليمي!</string>
+    <string name="onboarding_finished_description">أنت الآن تعرف كيف يعمل OneWallet. سنقوم بحذف هذه الأمثلة لتتمكن من إضافة أصولك الحقيقية والتحكم في استثماراتك.</string>
+    <string name="onboarding_finished_button">ابدأ الآن</string>
+
+    <!-- Portfolio Onboarding -->
+    <string name="portfolio_onboarding_title">هيا نبدأ</string>
+    <string name="portfolio_onboarding_description">لمساعدتك على فهم آلية عمل التطبيق، قمنا بإعداد دليل إرشادي قصير يحتوي على 3 استثمارات تجريبية لتوضيح كيفية الاستفادة القصوى من OneWallet. لن يستغرق الأمر سوى دقيقة واحدة!</string>
+    <string name="portfolio_onboarding_start">بدء الدليل التعليمي</string>
+    <string name="portfolio_onboarding_skip">تخطي الدليل التعليمي</string>
+
+    <!-- Widget -->
+    <string name="portfolio_widget">أداة المحفظة</string>
+    <string name="prices_widget">أداة الأسعار</string>
+    <string name="widget_portfolio_description">تحقق من قيم محفظتك الاستثمارية</string>
+    <string name="widget_stocks_description">تتبع أسعار أصولك في الوقت الفعلي</string>
+    <string name="asset_prices_title">أسعار السوق</string>
+    <string name="reload_cd">إعادة تحميل</string>
+
+    <!-- Accessibility -->
+    <string name="accessibility_selected">محدد</string>
+    <string name="accessibility_not_selected">غير محدد</string>
+    <string name="loading_cd">جارٍ التحميل</string>
+    <string name="accessibility_percent_increased_by">ارتفع بنسبة %1$s بالمائة</string>
+    <string name="accessibility_percent_decreased_by">انخفض بنسبة %1$s بالمائة</string>
+    <string name="accessibility_price_increased_by">و %1$s %2$s مقارنة باليوم السابق</string>
+    <string name="accessibility_price_decreased_by">و %1$s %2$s مقارنة باليوم السابق</string>
+    <string name="accessibility_unchanged">لم يتغير مقارنة باليوم السابق</string>
+
+    <!-- Dropdown Selector -->
+    <string name="dropdown_select_category">اختر فئة</string>
+    <string name="dropdown_custom_category_title">فئة مخصصة</string>
+    <string name="dropdown_custom_category_placeholder">اسم الفئة</string>
+    <string name="dropdown_custom_category_cancel_cd">إلغاء الفئة المخصصة</string>
+    <string name="accept_action">تأكيد</string>
+    <string name="dropdown_custom_category_accept_cd">قبول الفئة المخصصة</string>
+    <string name="dropdown_custom_category_add_cd">إضافة فئة مخصصة</string>
+    <string name="dropdown_custom_category_item">مخصص…</string>
+
+    <!-- Categories -->
+    <string name="category_label">الفئة</string>
+    <string name="category_tech">التكنولوجيا</string>
+    <string name="category_real_estate">العقارات</string>
+    <string name="category_healthcare">الرعاية الصحية</string>
+    <string name="category_energy">الطاقة</string>
+    <string name="category_finance">المالية والتأمين</string>
+    <string name="category_consumer">السلع الاستهلاكية</string>
+    <string name="category_industrial">الصناعة</string>
+    <string name="category_telecom">الاتصالات</string>
+    <string name="category_raw_materials">المواد الخام</string>
+    <string name="category_utilities">المرافق العامة</string>
+    <string name="category_crypto">العملات المشفرة</string>
+    <string name="category_other">أخرى</string>
+</resources>
