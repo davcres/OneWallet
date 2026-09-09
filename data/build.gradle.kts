@@ -1,6 +1,6 @@
 plugins {
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.detekt)
@@ -11,6 +11,7 @@ detekt {
     allRules = false
     baseline = file("detekt-baseline.xml")
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+    source.setFrom("src/commonMain/kotlin", "src/androidMain/kotlin", "src/iosMain/kotlin", "src/androidUnitTest/kotlin")
 }
 
 val finnhubApiKey: String = (rootProject.extra["FINNHUB_API_KEY"] as? String)
@@ -49,6 +50,46 @@ val telegramChatId: String = (rootProject.extra["TELEGRAM_CHAT_ID"] as? String)
     ?: System.getenv("TELEGRAM_CHAT_ID")
     ?: throw GradleException("TELEGRAM_CHAT_ID not set. Add it to secrets.properties (root) or as env var TELEGRAM_CHAT_ID")
 
+kotlin {
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
+    }
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(project(":domain"))
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.coroutines)
+            implementation(libs.bundles.ktor)
+            implementation(libs.koin.core)
+            implementation(libs.kotlinx.datetime)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.androidx.core.ktx)
+            implementation(libs.koin.android)
+            implementation(libs.androidx.room.ktx)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+
+        androidUnitTest.dependencies {
+            implementation(libs.bundles.unit.testing)
+            implementation(libs.multiplatform.settings.test)
+            runtimeOnly(libs.junit.jupiter.engine)
+        }
+    }
+}
+
 android {
     namespace = "com.davidcrespo.onewallet.data"
     compileSdk = 36
@@ -81,9 +122,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     buildFeatures {
         buildConfig = true
     }
@@ -95,22 +133,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain"))
-    implementation(project(":core"))
-
-    implementation(libs.androidx.core.ktx)
-
-    // Room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
-
-    // Ktor
-    implementation(libs.bundles.ktor)
-
-    // Koin
-    implementation(libs.bundles.koin)
-
-    testImplementation(libs.bundles.unit.testing)
-    testRuntimeOnly(libs.junit.jupiter.engine)
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
 }

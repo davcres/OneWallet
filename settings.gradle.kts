@@ -30,5 +30,5 @@ include(":feature:portfolio")
 include(":feature:market")
 include(":feature:onboarding")
 include(":feature:widget")
-
+include(":shared")
  
