@@ -1,8 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.detekt)
 }
 
@@ -11,29 +8,33 @@ detekt {
     allRules = false
     baseline = file("detekt-baseline.xml")
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+    source.setFrom("src/commonMain/kotlin", "src/jvmMain/kotlin", "src/jvmTest/kotlin")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
+kotlin {
+    jvm()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.koin.core)
+            implementation(libs.coroutines.test)
+            implementation(libs.kotlinx.datetime)
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.junit.jupiter.api)
+        }
+
+        jvmTest.dependencies {
+            implementation(libs.bundles.unit.testing)
+            runtimeOnly(libs.junit.jupiter.engine)
+        }
     }
 }
 
-tasks.test {
+tasks.named<Test>("jvmTest") {
     useJUnitPlatform()
-}
-
-dependencies {
-    implementation(libs.koin.core)
-
-    implementation(libs.junit.jupiter.api)
-    implementation(libs.coroutines.test)
-
-    testImplementation(libs.bundles.unit.testing)
-    testRuntimeOnly(libs.junit.jupiter.engine)
 }
