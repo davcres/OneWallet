@@ -14,7 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Addchart
+import androidx.compose.material.icons.filled.AddChart
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Euro
 import androidx.compose.material.icons.outlined.Close
@@ -205,7 +205,7 @@ private fun Form(
             },
             placeholder = if (isBank) stringResource(Res.string.bank_name_placeholder) else stringResource(Res.string.other_name_placeholder),
             contentDescription = stringResource(Res.string.asset_name_cd),
-            leadingIcon = Icons.Default.Addchart,
+            leadingIcon = Icons.Default.AddChart,
             hasClearIcon = true,
             cornerRadius = 16.dp
         )
